@@ -1,0 +1,201 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'assets/img/favicon.ico' %}">
+    <title>{% block title %}Dashboard{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/css/style.css' %}">
+</head>
+<style>
+    /* Set the top bar to white */
+    .header {
+        background-color: #ffffff; /* White background for top bar */
+        border-bottom: 1px solid #ddd; /* Light gray border */
+    }
+
+    /* Change icons in the top bar to blue */
+    .header .nav.user-menu a i,
+    .header .nav.user-menu a span {
+        color: #007bff; /* Blue color for icons and text */
+    }
+
+    /* Ensure notifications and badge colors are consistent */
+    .header .nav.user-menu a .badge {
+        background-color: #dc3545; /* Red color for badge */
+        color: white; /* White text for badge */
+    }
+
+    /* Change the three-line menu icon to blue */
+    #toggle_btn,
+    #mobile_btn {
+        color: #007bff; /* Blue color for the menu icon */
+    }
+
+    /* Adjust the Admin text color */
+    .header .dropdown-toggle.nav-link.user-link span {
+        color: #007bff; /* Blue color for "Admin" text */
+        font-weight: bold; /* Optional for emphasis */
+    }
+
+    /* Adjust the dropdown menu style */
+    .dropdown-menu {
+        background-color: #ffffff; /* White dropdown background */
+        border: 1px solid #ddd; /* Light gray border */
+        border-radius: 4px; /* Rounded corners */
+    }
+
+    .dropdown-menu a {
+        color: #333; /* Dark text color for dropdown items */
+    }
+
+    .dropdown-menu a:hover {
+        background-color: #f8f9fa; /* Light gray hover effect */
+        color: #007bff; /* Blue text on hover */
+    }
+
+    /* Style the logo text */
+    .header .logo span {
+        color: #007bff; /* Blue logo text */
+        font-weight: bold; /* Emphasized logo text */
+    }
+
+    /* Ensure sidebar icons and menu are styled consistently */
+    .sidebar #sidebar-menu ul li a {
+        color: #333; /* Default dark gray for sidebar text */
+    }
+
+    .sidebar #sidebar-menu ul li.active a {
+        color: #007bff; /* Blue for active menu item */
+        font-weight: bold; /* Optional for emphasis */
+    }
+
+    /* Sidebar hover effect */
+    .sidebar #sidebar-menu ul li a:hover {
+        color: #007bff; /* Blue color on hover */
+        background-color: #f8f9fa; /* Light gray background on hover */
+    }
+</style>
+
+<body>
+    <div class="header">
+        <div class="header-left">
+            <a href="index.html" class="logo">
+                <img src="{% static 'logo.png' %}" width="35" height="35" alt="Preclinic">
+            </a>
+        </div>
+        <a id="toggle_btn" href="javascript:void(0);"><i class="fa fa-bars"></i></a>
+        <a id="mobile_btn" class="mobile_btn float-left" href="#sidebar"><i class="fa fa-bars"></i></a>
+        <ul class="nav user-menu float-right">
+            <li class="nav-item dropdown d-none d-sm-block">
+                <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+                    <i class="fa fa-bell-o"></i>
+                    <span class="badge badge-pill bg-danger float-right">3</span>
+                </a>
+                <div class="dropdown-menu notifications">
+                    <div class="topnav-dropdown-header">
+                        <span>Notifications</span>
+                    </div>
+                    <div class="drop-scroll">
+                        <ul class="notification-list">
+                            <li class="notification-message">
+                                <a href="#">
+                                    <div class="media">
+                                        <span class="avatar">
+                                            <img alt="User" src="{% static 'assets/img/user.jpg' %}" class="img-fluid">
+                                        </span>
+                                        <div class="media-body">
+                                            <p class="noti-details"><span class="noti-title">John Doe</span> added new task <span class="noti-title">Patient Appointment</span></p>
+                                            <p class="noti-time"><span class="notification-time">4 mins ago</span></p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="topnav-dropdown-footer">
+                        <a href="#">View all Notifications</a>
+                    </div>
+                </div>
+            </li>
+            <li class="nav-item dropdown has-arrow">
+                <a href="#" class="dropdown-toggle nav-link user-link" data-toggle="dropdown">
+                    <span class="user-img">
+                        <img class="rounded-circle" src="{% static 'assets/img/user.jpg' %}" width="24" alt="Admin">
+                        <span class="status online"></span>
+                    </span>
+                    <span>Admin</span>
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#">My Profile</a>
+                    <a class="dropdown-item" href="#">Settings</a>
+                    <a class="dropdown-item" href="#">Logout</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+    
+    <div class="main-wrapper">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-inner slimscroll">
+                <div id="sidebar-menu" class="sidebar-menu">
+                    <ul>
+                        <li class="menu-title">Main</li>
+                        <li class="active">
+                            <a href=""><i class="fa fa-dashboard"></i> <span>Dashboard</span></a>
+                        </li>
+                        <li>
+                            <a href=""><i class="fa fa-wheelchair"></i> <span>Patients</span></a>
+                        </li>
+                        <li>
+                            <a href=""><i class="fa fa-calendar"></i> <span>Appointments</span></a>
+                        </li>
+                        <li>
+                            <a href=""><i class="fa fa-calendar-check-o"></i> <span>Waiting List</span></a>
+                        </li>
+                        <li class="submenu">
+                            <a href="#"><i class="fa fa-user"></i> <span>Departments</span> <span class="menu-arrow"></span></a>
+                            <ul style="display: none;">
+                                <li><a href="">Heart Disease</a></li>
+                                <li><a href="">Neurology</a></li>
+                                <li><a href="">Lungs Disease</a></li>
+                            </ul>
+                        </li>
+                        <li class="submenu">
+                            <a href="#"><i class="fa fa-money"></i> <span>Accounts</span> <span class="menu-arrow"></span></a>
+                            <ul style="display: none;">
+                                <li><a href="">Invoices</a></li>
+                                <li><a href="">Payments</a></li>
+                                <li><a href="">Expenses</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href=""><i class="fa fa-comments"></i> <span>Chat</span> <span class="badge badge-pill bg-primary float-right">5</span></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="page-wrapper">
+            {% block content %}
+            {% endblock content %}
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="{% static 'assets/js/jquery-3.2.1.min.js' %}"></script>
+    <script src="{% static 'assets/js/popper.min.js' %}"></script>
+    <script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/js/jquery.slimscroll.js' %}"></script>
+    <script src="{% static 'assets/js/app.js' %}"></script>
+</body>
+
+</html>
