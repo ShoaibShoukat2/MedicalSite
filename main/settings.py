@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'frontend',
     'user_account',
+    'patientdashboard'
 ]
 
 MIDDLEWARE = [
