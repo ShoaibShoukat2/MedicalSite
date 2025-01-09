@@ -1,0 +1,36 @@
+{% extends "patientdashboard/base.html" %}
+
+{% block title %}
+Dashboard 
+{% endblock %}
+
+{% block content %}
+<div class="row mt-5 pt-5 justify-content-center">
+    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+        <div class="card text-center p-4">
+            <i class="fas fa-user-md mb-3"></i>
+            <h5 class="card-title">Patients</h5>
+            <p class="card-text">Manage your patient profile.</p>
+            <a href="#" class="btn btn-primary">Browse</a>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+        <div class="card text-center p-4">
+            <i class="fas fa-calendar-check mb-3"></i>
+            <h5 class="card-title">Appointments</h5>
+            <p class="card-text">Access your appointment list.</p>
+            <a href="#" class="btn btn-primary">Browse</a>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+        <div class="card text-center p-4">
+            <i class="fas fa-tasks mb-3"></i>
+            <h5 class="card-title">Waiting List</h5>
+            <p class="card-text">Track your waiting list registrations.</p>
+            <a href="#" class="btn btn-primary">Browse</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
