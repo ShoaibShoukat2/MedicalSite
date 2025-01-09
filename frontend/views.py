@@ -86,6 +86,7 @@ def patient_signup(request):
 
 
 
+
 def verify_otp(request):
     """Verify OTP entered by the user."""
     if request.method == 'POST':
@@ -107,6 +108,8 @@ def verify_otp(request):
                     password=patient_data['password']  # Consider hashing the password before saving
                 )
                 patient.save()
+                
+                request.session.flush()
                 messages.success(request, "Patient signed up successfully!")
                 return redirect('frontend:success')  # Redirect after successful registration
             except Exception as e:
@@ -117,8 +120,6 @@ def verify_otp(request):
             return redirect('patient_verify_otp')
 
     return render(request, 'verify_otp.html')  # Render OTP verification form
-
-
 
 
 
