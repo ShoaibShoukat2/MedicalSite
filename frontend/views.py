@@ -194,10 +194,6 @@ def practitioner_signup(request):
 
 
 
-
-
-
-
 def patient_login(request):
     if request.method == 'POST':
         # Retrieve email and password from the login form
