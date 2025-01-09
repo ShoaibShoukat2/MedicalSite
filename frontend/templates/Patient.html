@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Signup</title>
+    <!-- Include MDB CSS -->
+    <link
+        href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.3.1/mdb.min.css"
+        rel="stylesheet"
+    />
+    <style>
+        .logo {
+            max-height: 120px;
+        }
+        .container {
+            max-width: 600px; /* Adjust the width of the form container */
+        }
+    </style>
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css" rel="stylesheet">
+
+</head>
+<body>
+    <div class="container mt-5">
+        <!-- Header Section -->
+        <div class="row align-items-center mb-4">
+            <div class="col-auto">
+                <img src="{% static 'logo.png' %}" alt="Logo" class="logo">
+            </div>
+            <div class="col text-center">
+                <h2 class="mb-0">Patient Signup</h2>
+            </div>
+        </div>
+
+
+        <!-- Signup Form -->
+        <form method="post" action="{% url 'frontend:patient_signup' %}" class="mb-4" style="margin-bottom: 60px;">
+            {% csrf_token %}
+
+            <!-- Greeting Choices -->
+            <div class="mb-3">
+                <label for="greeting" class="form-label">Greeting</label>
+                <select class="form-select" id="greeting" name="greeting" required>
+                    <option value="" selected disabled>Choose...</option>
+                    {% for key, value in greeting_choices %}
+                    <option value="{{ key }}">{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- First Name -->
+            <div class="mb-3">
+                <label for="first_name" class="form-label">First Name</label>
+                <input type="text" class="form-control" id="first_name" name="first_name" required>
+            </div>
+
+            <!-- Last Name -->
+            <div class="mb-3">
+                <label for="last_name" class="form-label">Last Name</label>
+                <input type="text" class="form-control" id="last_name" name="last_name" required>
+            </div>
+
+            <!-- Gender Choices -->
+            <div class="mb-3">
+                <label for="gender" class="form-label">Gender</label>
+                <select class="form-select" id="gender" name="gender" required>
+                    <option value="" selected disabled>Choose...</option>
+                    {% for key, value in gender_choices %}
+                    <option value="{{ key }}">{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Mobile Phone -->
+            <div class="mb-3">
+                <label for="mobile_phone" class="form-label">Mobile Phone</label>
+                <input type="text" class="form-control" id="mobile_phone" name="mobile_phone" required>
+            </div>
+
+            <!-- Date of Birth -->
+            <div class="mb-3">
+                <label for="date_of_birth" class="form-label">Date of Birth</label>
+                <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" required>
+            </div>
+
+            <!-- Email -->
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+
+            <!-- Password -->
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary">Signup</button>
+        </form>
+    </div>
+
+
+
+    <!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+
+<script>
+    // Check if there are any error messages
+    {% if messages %}
+        {% for message in messages %}
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: '{{ message }}',  // Show the error message
+                confirmButtonText: 'Close'
+            });
+        {% endfor %}
+    {% endif %}
+</script>
+
+    <!-- Include MDB JS -->
+    <script
+        type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.3.1/mdb.min.js"
+    ></script>
+</body>
+</html>

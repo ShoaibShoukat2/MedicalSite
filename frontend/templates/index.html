@@ -1,0 +1,245 @@
+{% extends 'base.html' %}
+{% block title %}
+Home
+{% endblock title %}
+{% load static %}
+{% block main_content %}
+
+<div class="col-md-9 col-lg-10 ms-auto" style="margin-left: 270px; padding-top: 20px;">
+    <!-- Our Services Section -->
+    <div class="container my-5">
+        <div class="row">
+
+            <h2 class="text-center mb-4">Our Services</h2>
+        
+            <!-- Health Care Service -->
+            <div class="col-md-6 mb-4 d-flex">
+                <div class="card shadow border-light rounded w-100">
+                    <div class="card-body text-center d-flex flex-column">
+                        <i class="fas fa-stethoscope fa-3x mb-3" style="color: #007bff;"></i>
+                        <h5 class="card-title">Health Care</h5>
+                        <p class="card-text">Providing top-quality medical services to keep you healthy and active.</p>
+                        <!-- Read More Button -->
+                        <a href="#" class="btn btn-link text-primary">
+                            Read More <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Physical Care Service -->
+            <div class="col-md-6 mb-4 d-flex">
+                <div class="card shadow border-light rounded w-100">
+                    <div class="card-body text-center d-flex flex-column">
+                        <i class="fas fa-running fa-3x mb-3" style="color: #007bff;"></i>
+                        <h5 class="card-title">Physical Care</h5>
+                        <p class="card-text">Offering physical therapy and wellness services to improve your strength and mobility.</p>
+                        <!-- Read More Button -->
+                        <a href="#" class="btn btn-link text-primary">
+                            Read More <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
+        <!-- interiewfo eadn this code canmake the sysem e -->
+
+        
+
+        <h2 class="text-center mb-4">Meet Our Doctors</h2>
+        
+        <div class="row">
+            <!-- Categories Section (Above the Doctors) -->
+<div class="mb-4 text-center">
+    <span class="badge badge-pill badge-primary mx-2">General Practitioner</span>
+    <span class="badge badge-pill badge-primary mx-2">Pediatrician</span>
+    <span class="badge badge-pill badge-primary mx-2">Psychiatrist</span>
+    <span class="badge badge-pill badge-primary mx-2">Dermatologist</span>
+    <span class="badge badge-pill badge-primary mx-2">Gynecologist</span>
+</div>
+
+            <!-- Doctor 1 -->
+            <div class="col-md-4 mb-4 d-flex">
+                <div class="card shadow border-light rounded w-100" style="height: 380px;">
+                    <div class="card-body text-center d-flex flex-column justify-content-between">
+                        <!-- Doctor Image -->
+                        <div class="mx-auto mb-3" style="width: 150px; height: 150px; overflow: hidden; border-radius: 50%;">
+                            <img src="data:image/jpeg;base64,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" style="width: 100%; height: 100%; object-fit: cover;" alt="Doctor 1">
+                        </div>
+                        <h5 class="card-title">Dr. John Doe</h5>
+                        <p class="card-text">Cardiologist</p>
+        
+                        <!-- Price -->
+                        <h6 class="text-primary mb-3">$200 per consultation</h6>
+        
+                        <!-- Rating Stars -->
+                        <div class="d-flex justify-content-center mb-3">
+                            <span class="fas fa-star" style="color: #f39c12;"></span>
+                            <span class="fas fa-star" style="color: #f39c12;"></span>
+                            <span class="fas fa-star" style="color: #f39c12;"></span>
+                            <span class="fas fa-star" style="color: #f39c12;"></span>
+                            <span class="fas fa-star-half-alt" style="color: #f39c12;"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Doctor 2 -->
+            <div class="col-md-4 mb-4 d-flex">
+                <div class="card shadow border-light rounded w-100" style="height: 380px;">
+                    <div class="card-body text-center d-flex flex-column justify-content-between">
+                        <!-- Doctor Image -->
+                        <div class="mx-auto mb-3" style="width: 150px; height: 150px; overflow: hidden; border-radius: 50%;">
+                            <img src="data:image/jpeg;base64,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" style="width: 100%; height: 100%; object-fit: cover;" alt="Doctor 2">
+                        </div>
+                        <h5 class="card-title">Dr. Jane Smith</h5>
+                        <p class="card-text">Orthopedic Surgeon</p>
+        
+                        <!-- Price -->
+                        <h6 class="text-primary mb-3">$180 per consultation</h6>
+        
+                        <!-- Rating Stars -->
+                        <div class="d-flex justify-content-center mb-3">
+                            <span class="fas fa-star" style="color: #f39c12;"></span>
+                            <span class="fas fa-star" style="color: #f39c12;"></span>
+                            <span class="fas fa-star" style="color: #f39c12;"></span>
+                            <span class="fas fa-star-half-alt" style="color: #f39c12;"></span>
+                            <span class="fas fa-star-half-alt" style="color: #f39c12;"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Doctor 3 -->
+            <div class="col-md-4 mb-4 d-flex">
+                <div class="card shadow border-light rounded w-100" style="height: 380px;">
+                    <div class="card-body text-center d-flex flex-column justify-content-between">
+                        <!-- Doctor Image -->
+                        <div class="mx-auto mb-3" style="width: 150px; height: 150px; overflow: hidden; border-radius: 50%;">
+                            <img src="data:image/jpeg;base64,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" style="width: 100%; height: 100%; object-fit: cover;" alt="Doctor 3">
+                        </div>
+                        <h5 class="card-title">Dr. Emily Davis</h5>
+                        <p class="card-text">Pediatrician</p>
+        
+                        <!-- Price -->
+                        <h6 class="text-primary mb-3">$150 per consultation</h6>
+        
+                        <!-- Rating Stars -->
+                        <div class="d-flex justify-content-center mb-3">
+                            <span class="fas fa-star" style="color: #f39c12;"></span>
+                            <span class="fas fa-star" style="color: #f39c12;"></span>
+                            <span class="fas fa-star" style="color: #f39c12;"></span>
+                            <span class="fas fa-star" style="color: #f39c12;"></span>
+                            <span class="fas fa-star" style="color: #f39c12;"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <br>
+        <br>
+        <br>
+
+        <div class="row text-center">
+
+            <h2 class="text-center mb-4">Our Quality Commitments</h2>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+
+
+            <!-- Training -->
+            <div class="col-md-3 mb-4">
+                <div class="d-flex flex-column align-items-center">
+                    <i class="fas fa-graduation-cap fa-3x mb-3 text-danger"></i>
+                    <h5 class="font-weight-bold">Training</h5>
+                    <p class="text-muted">
+                        100% of doctors are trained in teleconsultation by Qare. They are registered with the Medical Council and practice in France, either in private offices or hospitals.
+                    </p>
+                </div>
+            </div>
+        
+            <!-- Listening -->
+            <div class="col-md-3 mb-4">
+                <div class="d-flex flex-column align-items-center">
+                    <i class="fas fa-headset fa-3x mb-3 text-danger"></i>
+                    <h5 class="font-weight-bold">Listening</h5>
+                    <p class="text-muted">
+                        Doctors take the necessary time for each patient and adapt to your situation.
+                    </p>
+                </div>
+            </div>
+        
+            <!-- Follow-up -->
+            <div class="col-md-3 mb-4">
+                <div class="d-flex flex-column align-items-center">
+                    <i class="fas fa-heart fa-3x mb-3 text-danger"></i>
+                    <h5 class="font-weight-bold">Follow-up</h5>
+                    <p class="text-muted">
+                        You benefit from follow-up care after your teleconsultations. You can easily book another appointment with your medical team.
+                    </p>
+                </div>
+            </div>
+        
+            <!-- Trust -->
+            <div class="col-md-3 mb-4">
+                <div class="d-flex flex-column align-items-center">
+                    <i class="fas fa-chart-line fa-3x mb-3 text-danger"></i>
+                    <h5 class="font-weight-bold">Trust</h5>
+                    <p class="text-muted">
+                        Our Medical Directorate continuously monitors 15 quality indicators to ensure the quality of care provided.
+                    </p>
+                </div>
+            </div>
+        
+        </div>
+        
+
+
+
+
+
+
+        
+        
+    </div>
+
+        
+       
+        
+        <script>
+            // Get the container and the buttons
+            const doctorContainer = document.getElementById('doctorContainer');
+            const extraDoctors = document.getElementById('extraDoctors');
+            const scrollLeftButton = document.getElementById('scrollLeft');
+            const scrollRightButton = document.getElementById('scrollRight');
+        
+            // Add extra doctor profiles to the scrolling container
+            doctorContainer.innerHTML += extraDoctors.innerHTML;
+            
+            // Scroll by 300px when clicking the left or right buttons
+            scrollLeftButton.addEventListener('click', () => {
+                doctorContainer.scrollBy({
+                    left: -300, // Scroll left by 300px
+                    behavior: 'smooth' // Smooth scroll effect
+                });
+            });
+        
+            scrollRightButton.addEventListener('click', () => {
+                doctorContainer.scrollBy({
+                    left: 300, // Scroll right by 300px
+                    behavior: 'smooth' // Smooth scroll effect
+                });
+            });
+        </script>
+        
+
+</div>
+    
+{% endblock main_content %}
