@@ -9,30 +9,28 @@
     <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/8.1.0/mdb.min.css">
+    <link rel="stylesheet" href="{% static 'css/slick.css' %}">
+    <link rel="stylesheet" href="{% static 'css/slick-theme.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
+
+
+
+
     <style>
         /* Sidebar styling */
         #sidebar {
             position: fixed;
             top: 0;
-            left: -250px;
+            left: 0;
             width: 250px;
             height: 100vh;
             background-color: #ffffff;
             overflow-y: auto;
-            transition: left 0.3s ease;
             z-index: 1040;
-        }
-        #sidebar.active {
-            left: 0;
-        }
-
-        @media (min-width: 769px) {
-            #sidebar {
-                left: 0;
-            }
-            #sidebarToggle {
-                display: none;
-            }
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
         }
 
         .menu-item {
@@ -40,39 +38,210 @@
             font-size: 16px;
             transition: background-color 0.3s ease;
         }
+
         .menu-item:hover {
             background-color: #f1f1f1;
         }
 
-        /* Burger icon customization for visibility */
-        .navbar-toggler-icon {
-            background-image: url("data:image/svg+xml;charset=UTF8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23FF69B4' viewBox='0 0 30 30'%3E%3Cpath stroke='%23FF69B4' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+        /* Main content adjustment */
+        main.container {
+            margin-left: 250px; /* Match the width of the sidebar */
+        }
+
+        /* Navbar styling */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        /* Add padding to avoid content overlap with navbar */
+        body {
+            padding-top: 70px; /* Adjust this value if the navbar height changes */
+        }
+
+        /* Optional: Add a smooth scrolling effect for better UX */
+        html {
+            scroll-behavior: smooth;
         }
 
         /* Enhance card hover effect */
         .card {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
+
         .card:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
         }
+      .section-specialities {
+            padding: 50px 0;
+          }
+          
+          .section-specialities .section-header h2 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+          }
+          
+          .section-specialities .section-header .sub-title {
+            color: #777;
+            font-size: 14px;
+            margin-bottom: 30px;
+          }
+          
+          .specialities-slider {
+            display: flex;
+            overflow-x: auto;
+            gap: 20px;
+            scroll-snap-type: x mandatory;
+          }
+          /* Custom arrow styles */
+.slick-prev,
+.slick-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    background: #00c8ff;
+    border-radius: 50%;
+    z-index: 1;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
 
-        /* Adjustments for mobile */
-        @media (max-width: 768px) {
-            .navbar-nav {
-                text-align: center;
-            }
-            .navbar-nav .nav-item {
-                padding: 8px 0;
-            }
-            .navbar-nav .nav-link {
-                font-size: 16px;
-            }
-            .navbar-toggler {
-                background-color: #FF69B4;  /* Optional: Add color to toggler button */
-            }
-        }
+.slick-prev:hover,
+.slick-next:hover {
+    background: #00b2e6;
+}
+
+.slick-prev {
+    left: -50px;
+}
+
+.slick-next {
+    right: -50px;
+}
+
+/* Custom arrow icons */
+.slick-prev:before,
+.slick-next:before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    border-top: 2px solid white;
+    border-right: 2px solid white;
+}
+
+.slick-prev:before {
+    transform: translate(-25%, -50%) rotate(-135deg);
+}
+
+.slick-next:before {
+    transform: translate(-75%, -50%) rotate(45deg);
+}
+
+/* Hide arrows on mobile */
+@media (max-width: 768px) {
+    .slick-prev,
+    .slick-next {
+        display: none !important;
+    }
+}
+
+/* Speciality items styling */
+.speciality-item {
+    min-width: 120px;
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+    padding: 10px;
+}
+
+.speciality-img {
+    transition: transform 0.3s ease;
+}
+
+.speciality-img:hover {
+    transform: translateY(-5px);
+}
+
+/* Ensure proper spacing between slides */
+.slick-slide {
+    margin: 0 15px;
+}
+
+.slick-list {
+    margin: 0 -15px;
+}
+
+
+
+
+
+.appointment-card {
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.appointment-card .profile-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.appointment-card .patient-details h5 {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.appointment-card .appointment-action a {
+    font-size: 0.9rem;
+    margin-right: 10px;
+}
+
+.appointment-card .btn-view {
+    background-color: #e0f7fa;
+    color: #007bff;
+}
+
+.appointment-card .btn-view:hover {
+    background-color: #b2ebf2;
+    color: #0056b3;
+}
+
+.appointment-card .btn-accept {
+    background-color: #e8f5e9;
+    color: #28a745;
+}
+
+.appointment-card .btn-accept:hover {
+    background-color: #c8e6c9;
+    color: #1e7e34;
+}
+
+.appointment-card .btn-cancel {
+    background-color: #ffebee;
+    color: #dc3545;
+}
+
+.appointment-card .btn-cancel:hover {
+    background-color: #ffcdd2;
+    color: #c82333;
+}
+
+
     </style>
 </head>
 <body>
@@ -83,13 +252,13 @@
                 <img src="{% static 'logo.png' %}" alt="Logo" class="img-fluid" style="height: 50px; max-width: 120px;">
             </a>
             <!-- Toggler Button for Mobile -->
-            <button class="navbar-toggler" type="button" id="sidebarToggle" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" id="sidebarToggle" aria-expanded="false">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            
+
             <!-- Collapsible Navbar Items -->
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto"> <!-- 'ms-auto' for right alignment -->
+                <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="/">Home</a>
                     </li>
@@ -119,7 +288,6 @@
     <a href="#" class="menu-item text-dark mb-3 d-flex align-items-center ms-3 text-decoration-none">
         <i class="fas fa-notes-medical me-2"></i> Medical Advice
     </a>
-    <!-- Add more menu items as needed -->
 </div>
 
 <main class="container mt-4">
@@ -129,12 +297,71 @@
 </main>
 
 <script>
-    // Toggle sidebar visibility
+    // Toggle sidebar visibility for mobile
     document.getElementById('sidebarToggle').addEventListener('click', function () {
-        document.getElementById('sidebar').classList.toggle('active');
+        const sidebar = document.getElementById('sidebar');
+        if (sidebar.style.left === '0px') {
+            sidebar.style.left = '-250px';
+        } else {
+            sidebar.style.left = '0px';
+        }
     });
 </script>
-
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script src="{% static 'js/slick.min.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        $('.specialities-slider').slick({
+            infinite: true,
+            slidesToShow: 5,
+            slidesToScroll: 1,
+            autoplay: true,
+            autoplaySpeed: 2000,
+            dots: false,
+            arrows: true,
+            prevArrow: '<button class="slick-prev" aria-label="Previous"></button>',
+            nextArrow: '<button class="slick-next" aria-label="Next"></button>',
+            responsive: [
+                {
+                    breakpoint: 1024,
+                    settings: {
+                        slidesToShow: 3,
+                        slidesToScroll: 1,
+                    }
+                },
+                {
+                    breakpoint: 600,
+                    settings: {
+                        slidesToShow: 2,
+                        slidesToScroll: 1,
+                        arrows: false
+                    }
+                },
+                {
+                    breakpoint: 480,
+                    settings: {
+                        slidesToShow: 1,
+                        slidesToScroll: 1,
+                        arrows: false
+                    }
+                }
+            ]
+        });
+    });
+</script>
+<!-- First add jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Then add slick -->
+<script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+<!-- Add slick CSS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/8.1.0/mdb.min.js"></script>
+
+
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+<!-- Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
+

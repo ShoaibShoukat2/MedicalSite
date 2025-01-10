@@ -1,0 +1,139 @@
+{% extends "patientdashboard/base.html" %}
+{% load static %}
+
+{% block title %}Book Appointment{% endblock %}
+
+{% block extra_css %}
+
+<style>
+
+.time-slot {
+    display: inline-block;
+    padding: 10px 15px;
+    margin: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #f8f9fa;
+    transition: all 0.3s;
+    font-weight: bold;
+    position: relative;
+}
+.time-slot.active {
+    background-color: #007bff; /* Change to a blue color */
+    color: #fff; /* White text for the active slot */
+    border-color: #007bff;
+}
+.time-slot.active::after {
+    content: '✔'; /* Blue tick mark */
+    color: #fff;
+    font-size: 1rem;
+    position: absolute;
+    top: 50%;
+    right: 2px;
+    transform: translateY(-50%);
+}
+.time-slot:hover {
+    background-color: #0056b3; /* Darker blue for hover */
+    color: #fff;
+}
+
+.proceed-btn {
+    padding: 10px 20px; /* Adjust padding for button size */
+    font-size: 14px; /* Smaller text size */
+    font-weight: bold; /* Bold text */
+    color: white; /* White text */
+    background-color: #28a745; /* Green background */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    width: auto; /* Remove full width */
+    display: inline-block; /* Prevent block-level width */
+}
+
+.proceed-btn:hover {
+    background-color: #218838; /* Darker green on hover */
+}
+
+.text-center {
+    margin-top: 20px; /* Add some margin above */
+}
+</style>
+
+{% endblock extra_css%}
+
+{% block content %}
+<div class="doctor-card d-flex align-items-center mb-4 p-3 border rounded">
+    <!-- Doctor's Profile Picture -->
+    <img src="{% static 'img/doctor-thumb-02.jpg' %}" alt="Doctor Image" class="img-thumbnail mr-3">
+    <div class="doctor-info">
+        <h5>Dr. Darren Elder</h5>
+        <div class="rating text-warning">
+            ⭐⭐⭐⭐ 4.0
+        </div>
+        <p class="text-muted">New York, USA</p>
+    </div>
+</div>
+
+<!-- Schedule Table -->
+<div class="schedule-table">
+    <table class="table table-bordered text-center">
+        <thead>
+            <tr>
+                <th>Mon<br>11 NOV 2019</th>
+                <th>Tue<br>12 NOV 2019</th>
+                <th>Wed<br>13 NOV 2019</th>
+                <th>Thu<br>14 NOV 2019</th>
+                <th>Fri<br>15 NOV 2019</th>
+                <th>Sat<br>16 NOV 2019</th>
+                <th>Sun<br>17 NOV 2019</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><div class="time-slot">9:00 AM</div></td>
+                <td><div class="time-slot">9:00 AM</div></td>
+                <td><div class="time-slot">9:00 AM</div></td>
+                <td><div class="time-slot">9:00 AM</div></td>
+                <td><div class="time-slot">9:00 AM</div></td>
+                <td><div class="time-slot">9:00 AM</div></td>
+                <td><div class="time-slot">9:00 AM</div></td>
+            </tr>
+            <tr>
+                <td><div class="time-slot">10:00 AM</div></td>
+                <td><div class="time-slot">10:00 AM</div></td>
+                <td><div class="time-slot">10:00 AM</div></td>
+                <td><div class="time-slot">10:00 AM</div></td>
+                <td><div class="time-slot active">10:00 AM</div></td>
+                <td><div class="time-slot">10:00 AM</div></td>
+                <td><div class="time-slot">10:00 AM</div></td>
+            </tr>
+            <tr>
+                <td><div class="time-slot">11:00 AM</div></td>
+                <td><div class="time-slot">11:00 AM</div></td>
+                <td><div class="time-slot">11:00 AM</div></td>
+                <td><div class="time-slot">11:00 AM</div></td>
+                <td><div class="time-slot">11:00 AM</div></td>
+                <td><div class="time-slot">11:00 AM</div></td>
+                <td><div class="time-slot">11:00 AM</div></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="text-center">
+    <button class="btn btn-success proceed-btn">Proceed to Pay</button>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // JavaScript to handle active time-slot selection
+    document.querySelectorAll('.time-slot').forEach(slot => {
+        slot.addEventListener('click', function () {
+            // Remove active class from all time slots
+            document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('active'));
+            // Add active class to the clicked time slot
+            this.classList.add('active');
+        });
+    });
+</script>
+{% endblock %}

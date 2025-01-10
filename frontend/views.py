@@ -23,6 +23,8 @@ def generate_otp():
 
 
 
+def appointment(request):
+    return render(request, 'appointment.html')
 
 def patient_signup(request):
     if request.method == 'POST':
@@ -86,6 +88,7 @@ def patient_signup(request):
 
 
 
+
 def verify_otp(request):
     """Verify OTP entered by the user."""
     if request.method == 'POST':
@@ -107,6 +110,8 @@ def verify_otp(request):
                     password=patient_data['password']  # Consider hashing the password before saving
                 )
                 patient.save()
+                
+                request.session.flush()
                 messages.success(request, "Patient signed up successfully!")
                 return redirect('frontend:success')  # Redirect after successful registration
             except Exception as e:
@@ -117,9 +122,6 @@ def verify_otp(request):
             return redirect('patient_verify_otp')
 
     return render(request, 'verify_otp.html')  # Render OTP verification form
-
-
-
 
 
 def practitioner_signup(request):
@@ -133,56 +135,52 @@ def practitioner_signup(request):
         email = request.POST.get('email')
         password = request.POST.get('password')
         terms_accepted = request.POST.get('terms') == 'on'  # Checkbox for terms acceptance
-        
-        
-        
-         # Check if the email already exists in the database
+
+        # Check if the email already exists in the database
         if Practitioner.objects.filter(email=email).exists():
             messages.error(request, "The email address is already in use. Please use a different one.")
-            return render(request, 'practitioner.html', {'civilities': Practitioner.CIVILITY_CHOICES, 'doctor_types': Practitioner.DOCTOR_TYPE_CHOICES, 'specialties': Practitioner.SPECIALTY_CHOICES})
-        
-        # Validate password strength here (using custom validation or built-in Django validators)
-        if len(password) < 8:
-            messages.error(request, "Password must be at least 8 characters long.")
-            return render(request, 'practitioner.html', {'civilities': Practitioner.CIVILITY_CHOICES, 'doctor_types': Practitioner.DOCTOR_TYPE_CHOICES, 'specialties': Practitioner.SPECIALTY_CHOICES})
-        
-        if not any(char.isupper() for char in password):
-            messages.error(request, "Password must contain at least one uppercase letter.")
-            return render(request, 'practitioner.html', {'civilities': Practitioner.CIVILITY_CHOICES, 'doctor_types': Practitioner.DOCTOR_TYPE_CHOICES, 'specialties': Practitioner.SPECIALTY_CHOICES})
-        
-        if not any(char.isdigit() for char in password):
-            messages.error(request, "Password must contain at least one number.")
-            return render(request, 'practitioner.html', {'civilities': Practitioner.CIVILITY_CHOICES, 'doctor_types': Practitioner.DOCTOR_TYPE_CHOICES, 'specialties': Practitioner.SPECIALTY_CHOICES})
-        
-        if not any(char in "!@#$%^&*()-_+={}[]|\:;'<>?,./" for char in password):
-            messages.error(request, "Password must contain at least one special character.")
-            return render(request, 'practitioner.html', {'civilities': Practitioner.CIVILITY_CHOICES, 'doctor_types': Practitioner.DOCTOR_TYPE_CHOICES, 'specialties': Practitioner.SPECIALTY_CHOICES})
+            return redirect('frontend:practitioner_signup')
+
+        # Validate password strength
+        if len(password) < 8 or not any(char.isupper() for char in password) or not any(char.isdigit() for char in password) or not any(char in "!@#$%^&*()-_+={}[]|\\:;'<>?,./" for char in password):
+            messages.error(request, "Password must meet the required strength criteria.")
+            return redirect('frontend:practitioner_signup')
 
         # Check if terms are accepted
         if not terms_accepted:
             messages.error(request, "You must accept the terms and conditions.")
-            return render(request, 'practitioner.html', {'civilities': Practitioner.CIVILITY_CHOICES, 'doctor_types': Practitioner.DOCTOR_TYPE_CHOICES, 'specialties': Practitioner.SPECIALTY_CHOICES})
+            return redirect('frontend:practitioner_signup')
 
-        # Hash the password before saving
-        hashed_password = make_password(password)
+        # Generate OTP and send it to the provided email
+        otp = generate_otp()
+        try:
+            send_mail(
+                'Your OTP for Email Verification',
+                f'Your OTP for email verification is {otp}.',
+                'no-reply@yourdomain.com',
+                [email],
+                fail_silently=False,
+            )
 
-        # Save practitioner details to the database
-        practitioner = Practitioner(
-            civility=civility,
-            first_name=first_name,
-            last_name=last_name,
-            doctor_type=doctor_type,
-            specialty=specialty,
-            email=email,
-            password=hashed_password,
-            terms_accepted=terms_accepted
-        )
-        practitioner.save()
+            # Save OTP and practitioner data in session for later verification
+            request.session['otp'] = otp
+            request.session['practitioner_data'] = {
+                'civility': civility,
+                'first_name': first_name,
+                'last_name': last_name,
+                'doctor_type': doctor_type,
+                'specialty': specialty,
+                'email': email,
+                'password': make_password(password),  # Hash the password before saving
+                'terms_accepted': terms_accepted
+            }
 
-        # Success message and redirect (or render a success page)
-        messages.success(request, "Account created successfully!")
-        return redirect('frontend:success')  # Redirect to the login page or any other page
-    
+            messages.info(request, "An OTP has been sent to your email. Please verify it to complete the registration.")
+            return redirect('frontend:practinor_verify_otp')  # Redirect to OTP verification page
+        except Exception as e:
+            messages.error(request, f"Error sending OTP: {str(e)}")
+            return redirect('frontend:practitioner_signup')
+
     # GET request handling (render the form with dropdown choices)
     context = {
         'doctor_types': Practitioner.DOCTOR_TYPE_CHOICES,
@@ -192,7 +190,38 @@ def practitioner_signup(request):
     return render(request, 'practitioner.html', context)
 
 
+def practitioner_verify_otp(request):
+    """Verify OTP for practitioner signup."""
+    if request.method == 'POST':
+        entered_otp = request.POST.get('otp')
+        # If OTP matches, create the practitioner record
+        practitioner_data = request.session.get('practitioner_data')
+        try:
+            # Hash the password before saving
+            hashed_password = make_password(practitioner_data['password'])
+            practitioner = Practitioner.objects.create(
+                civility=practitioner_data['civility'],
+                first_name=practitioner_data['first_name'],
+                last_name=practitioner_data['last_name'],
+                doctor_type=practitioner_data['doctor_type'],
+                specialty=practitioner_data['specialty'],
+                email=practitioner_data['email'],
+                password=hashed_password,
+            )
+            practitioner.save()
 
+            # Clear session data after successful registration
+            request.session.flush()
+            messages.success(request, "Practitioner signed up successfully!")
+            return redirect('frontend:success')  # Redirect to success page
+        except Exception as e:
+            messages.error(request, f"An error occurred while saving the data: {str(e)}")
+            return redirect('frontend:practitioner_signup')
+
+        messages.error(request, "Invalid OTP. Please try again.")
+        return redirect('frontend:practinor_verify_otp')
+
+    return render(request, 'verify_practitioner_otp.html')  # Render OTP verification form
 
 
 

@@ -1,0 +1,133 @@
+{% extends "patientdashboard/base.html" %}
+{% load static %}
+
+{% block title %}Payment Page{% endblock %}
+
+{% block extra_css %}
+
+<style>
+/* Payment Page Styling */
+.container {
+    background-color: #f9f9f9;
+    padding: 30px;
+    border-radius: 8px;
+}
+
+.card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.card-body {
+    padding: 15px;
+}
+
+.form-control {
+    border-radius: 4px;
+}
+
+.btn-success {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+}
+
+.form-check-input {
+    margin-right: 10px;
+}
+</style>
+
+{% endblock extra_css%}
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <!-- Left Section: Personal Information and Payment Method -->
+        <div class="col-md-8">
+            <!-- Personal Information Section -->
+            <div class="mb-4">
+                <h5>Personal Information</h5>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <input type="text" class="form-control" placeholder="First Name">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <input type="text" class="form-control" placeholder="Last Name">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <input type="email" class="form-control" placeholder="Email">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <input type="text" class="form-control" placeholder="Phone">
+                    </div>
+                </div>
+                <p>Existing Customer? <a href="#" class="text-primary">Click here to login</a></p>
+            </div>
+
+            <!-- Payment Method Section -->
+            <div class="mb-4">
+                <h5>Payment Method</h5>
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="radio" name="paymentMethod" id="creditCard" checked>
+                    <label class="form-check-label" for="creditCard">Credit Card</label>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <input type="text" class="form-control" placeholder="Name on Card">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <input type="text" class="form-control" placeholder="Card Number">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <input type="text" class="form-control" placeholder="Expiry Month (MM)">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <input type="text" class="form-control" placeholder="Expiry Year (YY)">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <input type="text" class="form-control" placeholder="CVV">
+                    </div>
+                </div>
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="radio" name="paymentMethod" id="paypal">
+                    <label class="form-check-label" for="paypal">Paypal</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="terms">
+                    <label class="form-check-label" for="terms">I have read and accept <a href="#" class="text-primary">Terms & Conditions</a></label>
+                </div>
+            </div>
+
+            <!-- Confirm and Pay Button -->
+            <button class="btn btn-success">Confirm and Pay</button>
+        </div>
+
+        <!-- Right Section: Booking Summary -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="{% static 'img/doctor-thumb-02.jpg' %}" alt="Doctor Image" class="img-thumbnail" style="width: 70px; height: 70px;">
+                        <div class="ml-3">
+                            <h6 class="mb-0">Dr. Darren Elder</h6>
+                            <small class="text-muted">New York, USA</small>
+                        </div>
+                    </div>
+                    <p class="mb-2"><strong>Date:</strong> 16 Nov 2019</p>
+                    <p class="mb-2"><strong>Time:</strong> 10:00 AM</p>
+                    <p class="mb-2"><strong>Consulting Fee:</strong> $100</p>
+                    <p class="mb-2"><strong>Booking Fee:</strong> $10</p>
+                    <p class="mb-2"><strong>Video Call:</strong> $50</p>
+                    <hr>
+                    <p class="text-primary"><strong>Total:</strong> $160</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
