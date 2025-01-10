@@ -139,8 +139,14 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 465  # Use SSL port
 EMAIL_USE_SSL = True
 EMAIL_USE_TLS = False  # Don't need TLS when using SSL
-EMAIL_HOST_USER = 'your_email@gmail.com'
-EMAIL_HOST_PASSWORD = 'your_email_password'
-DEFAULT_FROM_EMAIL = 'your_email@gmail.com'
+EMAIL_HOST_USER = 'shoaibahmadbhatti6252@gmail.com'  # Your email address
+EMAIL_HOST_PASSWORD = 'sxcj icku hldv hufp'  # Replace with the App Password you copied
+DEFAULT_FROM_EMAIL = 'shoaibahmadbhatti6252@gmail.com'
+
+
+
+
+
+
 
 
