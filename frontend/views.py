@@ -230,6 +230,7 @@ def patient_login(request):
         # Retrieve email and password from the login form
         email = request.POST.get('email')
         password = request.POST.get('password')
+        
 
         # Validate input fields
         if not email or not password:

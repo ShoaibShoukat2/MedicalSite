@@ -6,90 +6,78 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="icon" href="{% static 'img/favicon.png' %}" type="image/png">
     <title>{% block title %}{% endblock title %}</title>
-    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/8.1.0/mdb.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     <style>
         /* Sidebar styling */
         #sidebar {
+            height: 100vh;
+            background-color: #f8f9fa;
             position: fixed;
             top: 0;
-            left: -250px;
+            left: 0;
             width: 250px;
-            height: 100vh;
-            background-color: #ffffff;
-            overflow-y: auto;
-            transition: left 0.3s ease;
-            z-index: 1040;
+            transform: translateX(-250px);
+            transition: transform 0.3s ease;
+            z-index: 1039; /* Lower z-index to make it behind the navbar */
         }
         #sidebar.active {
-            left: 0;
+            transform: translateX(0);
         }
-
-        @media (min-width: 769px) {
+    
+        @media (min-width: 768px) {
             #sidebar {
-                left: 0;
-            }
-            #sidebarToggle {
-                display: none;
+                transform: translateX(0);
             }
         }
-
+    
         .menu-item {
-            padding: 15px 10px;
+            padding: 15px 20px;
             font-size: 16px;
             transition: background-color 0.3s ease;
         }
         .menu-item:hover {
-            background-color: #f1f1f1;
+            background-color: #e9ecef;
         }
-
-        /* Burger icon customization for visibility */
-        .navbar-toggler-icon {
-            background-image: url("data:image/svg+xml;charset=UTF8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23FF69B4' viewBox='0 0 30 30'%3E%3Cpath stroke='%23FF69B4' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+    
+        /* Adjust main content margin when sidebar is visible */
+        main {
+            margin-left: 250px;
+            padding-top: 60px;
         }
-
-        /* Enhance card hover effect */
-        .card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Adjustments for mobile */
+        
         @media (max-width: 768px) {
-            .navbar-nav {
-                text-align: center;
+            main {
+                margin-left: 0;
             }
-            .navbar-nav .nav-item {
-                padding: 8px 0;
-            }
-            .navbar-nav .nav-link {
-                font-size: 16px;
-            }
-            .navbar-toggler {
-                background-color: #FF69B4;  /* Optional: Add color to toggler button */
-            }
+        }
+    
+        /* Navbar styling */
+        .navbar {
+            z-index: 1040; /* Ensure navbar stays on top of sidebar */
         }
     </style>
+    
+
+
+
 </head>
 <body>
-<header class="header_area">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container">
-            <a class="navbar-brand logo_h" href="/">
-                <img src="{% static 'logo.png' %}" alt="Logo" class="img-fluid" style="height: 50px; max-width: 120px;">
-            </a>
-            <!-- Toggler Button for Mobile -->
-            <button class="navbar-toggler" type="button" id="sidebarToggle" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+<header>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <div class="container-fluid">
+            <button class="navbar-toggler" id="sidebarToggle" type="button" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            
-            <!-- Collapsible Navbar Items -->
+            <a class="navbar-brand ms-2" href="/">
+                <img src="{% static 'logo.png' %}" alt="Logo" style="height: 50px; max-width: 120px;">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto"> <!-- 'ms-auto' for right alignment -->
+                <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="/">Home</a>
                     </li>
@@ -100,8 +88,7 @@
                         <a class="nav-link" href="{% url 'frontend:practitioner_signup' %}">Practitioner</a>
                     </li>
                 </ul>
-                <!-- Search Form -->
-                <form class="d-flex ms-3" style="max-width: 300px;">
+                <form class="d-flex ms-3">
                     <input class="form-control me-2" type="search" placeholder="Search">
                     <button class="btn btn-outline-success" type="submit">Search</button>
                 </form>
@@ -110,32 +97,38 @@
     </nav>
 </header>
 
+
 <!-- Sidebar -->
-<div id="sidebar" class="bg-light">
-    <h5 class="fw-bold my-4 ms-3">Menu</h5>
-    <a href="#" class="menu-item text-dark mb-3 d-flex align-items-center ms-3 text-decoration-none">
+<div id="sidebar">
+    <h5 class="fw-bold my-4 text-center">Menu</h5>
+    <a href="#" class="menu-item d-block text-dark text-decoration-none">
         <i class="fas fa-user-md me-2"></i> Medical Team
     </a>
-    <a href="#" class="menu-item text-dark mb-3 d-flex align-items-center ms-3 text-decoration-none">
+    <a href="#" class="menu-item d-block text-dark text-decoration-none">
         <i class="fas fa-notes-medical me-2"></i> Medical Advice
     </a>
-    <!-- Add more menu items as needed -->
 </div>
 
-<main class="container mt-4">
+<main class="container-fluid">
     {% block main_content %}
     <!-- Main content goes here -->
     {% endblock %}
 </main>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 <script>
     // Toggle sidebar visibility
+    const sidebar = document.getElementById('sidebar');
     document.getElementById('sidebarToggle').addEventListener('click', function () {
-        document.getElementById('sidebar').classList.toggle('active');
+        sidebar.classList.toggle('active');
+    });
+
+    // Close sidebar on outside click (mobile)
+    document.addEventListener('click', function (e) {
+        if (!sidebar.contains(e.target) && e.target.id !== 'sidebarToggle' && window.innerWidth < 768) {
+            sidebar.classList.remove('active');
+        }
     });
 </script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/8.1.0/mdb.min.js"></script>
 </body>
 </html>
-
