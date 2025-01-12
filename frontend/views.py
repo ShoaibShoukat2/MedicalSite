@@ -27,9 +27,7 @@ def appointment(request):
     return render(request, 'appointment.html')
 
 def patient_signup(request):
-    
-     
-    
+        
     if request.method == 'POST':
         # Retrieve form data from the POST request
         greeting = request.POST.get('greeting')
@@ -297,9 +295,11 @@ def practitioner_login(request):
 
 
 
+def logout(request):
+    request.session.flush()
 
 
-
+    return redirect('frontend:index')  
 
 
 
