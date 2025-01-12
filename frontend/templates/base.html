@@ -1,5 +1,6 @@
 <!doctype html>
 {% load static %}
+{% load user_info_tags %}
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -13,6 +14,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
+
+
         /* Navbar styling */
         .navbar {
             z-index: 1040;
@@ -172,34 +175,71 @@
 <body>
 <header>
     <!-- Navbar -->
+
     <nav class="navbar navbar-expand-lg navbar-light fixed-top">
         <div class="container-fluid">
+            <!-- Sidebar Toggle Button -->
             <button class="navbar-toggler" id="sidebarToggle" type="button" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
+    
+            <!-- Brand Logo -->
             <a class="navbar-brand ms-2" href="/" style="display: flex; justify-content: center; align-items: center;">
                 <img src="{% static 'logo.png' %}" alt="Logo" style="max-height: 60px; transform: scale(1.5);">
             </a>
-            
-            
+    
+            <!-- Navbar Toggle Button for Collapsible Items -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
+    
+            <!-- Collapsible Navbar Items -->
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                 
+                <ul class="navbar-nav ms-auto align-items-center">
+                    {% get_practitioner_name request as practitioner_name %}
+                    {% get_patient_name request as patient_name %}
+    
+                    {% if practitioner_name %}
+                    <!-- Show Practitioner Name -->
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'frontend:patient_signup' %}">Patient</a>
+                        <span class="nav-link">Welcome, {{ practitioner_name }}</span>
                     </li>
+                    {% elif patient_name %}
+                    <!-- Show Patient Name -->
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'frontend:practitioner_signup' %}">Practitioner</a>
+                        <span class="nav-link">Welcome, {{ patient_name }}</span>
                     </li>
+                    {% else %}
+                    <!-- Patient Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="patientDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Patient
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="patientDropdown">
+                            <li><a class="dropdown-item" href="{% url 'frontend:patient_login' %}">Patient Login</a></li>
+                            <li><a class="dropdown-item" href="{% url 'frontend:patient_signup' %}">Patient Signup</a></li>
+                        </ul>
+                    </li>
+    
+                    <!-- Practitioner Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="practitionerDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Practitioner
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="practitionerDropdown">
+                            <li><a class="dropdown-item" href="{% url 'frontend:practitioner_login' %}">Practitioner Login</a></li>
+                            <li><a class="dropdown-item" href="{% url 'frontend:practitioner_signup' %}">Practitioner Signup</a></li>
+                        </ul>
+                    </li>
+                    {% endif %}
                 </ul>
-               
             </div>
         </div>
     </nav>
+    
+    
+   
 </header>
 
 
@@ -213,9 +253,30 @@
         <i class="fas fa-notes-medical me-2"></i> Medical Advice
     </a>
     <a href="#" class="menu-item d-block text-dark text-decoration-none">
-        <i class="fas fa-cogs me-2"></i> Settings
+        <i class="fas fa-brain me-2"></i> Qare Psy
+    </a>
+    <a href="#" class="menu-item d-block text-dark text-decoration-none">
+        <i class="fas fa-hospital-alt me-2"></i> Ehpad Offer
+    </a>
+    <a href="#" class="menu-item d-block text-dark text-decoration-none">
+        <i class="fas fa-university me-2"></i> Universities Offer
+    </a>
+    <a href="#" class="menu-item d-block text-dark text-decoration-none">
+        <i class="fas fa-info-circle me-2"></i> About
+    </a>
+    <a href="#" class="menu-item d-block text-dark text-decoration-none">
+        <i class="fas fa-blog me-2"></i> Blog
+    </a>
+    <a href="#" class="menu-item d-block text-dark text-decoration-none">
+        <i class="fas fa-question-circle me-2"></i> Help
+    </a>
+    <a href="#" class="menu-item d-block text-dark text-decoration-none">
+        <i class="fas fa-envelope me-2"></i> Contact
     </a>
 </div>
+
+
+
 
     {% block main_content %}
     <!-- Main content goes here -->
