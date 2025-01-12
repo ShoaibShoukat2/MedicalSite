@@ -27,6 +27,12 @@ def appointment(request):
     return render(request, 'appointment.html')
 
 def patient_signup(request):
+    
+    
+    if 'patient_id' not in request.session:
+            messages.error(request, "You must be logged in to register as a patient.")
+            return redirect('frontend:patient_login')  # Replace 'frontend:login' with the actual name of your login URL    
+    
     if request.method == 'POST':
         # Retrieve form data from the POST request
         greeting = request.POST.get('greeting')
@@ -124,7 +130,18 @@ def verify_otp(request):
     return render(request, 'verify_otp.html')  # Render OTP verification form
 
 
+
 def practitioner_signup(request):
+    
+    
+    
+      # Check if patient_id exists in session, if not, redirect to login page
+    if 'patient_id' not in request.session:
+        messages.error(request, "You must be logged in to register as a practitioner.")
+        return redirect('frontend:practitioner_login')  # Replace 'frontend:login' with the actual name of your login URL
+    
+    
+    
     if request.method == 'POST':
         # Retrieve data from the form
         civility = request.POST.get('civility')
