@@ -266,6 +266,7 @@ def patient_login(request):
         if patient.password == password:  # Ensure you hash the password during signup and use proper comparison
             # Mark the user as logged in (you can replace this with Django's authentication system)
             request.session['patient_id'] = patient.id
+            request.session['patient_name'] = patient.first_name
             messages.success(request, f"Welcome back, {patient.first_name}!")
             return redirect('frontend:index')  # Redirect to a dashboard or home page
         else:
@@ -290,6 +291,10 @@ def practitioner_login(request):
             if check_password(password, practitioner.password):
                 # Save practitioner info in session or redirect to dashboard
                 request.session['practitioner_id'] = practitioner.id
+                request.session['practitioner_name'] = practitioner.first_name
+                
+                
+                
                 messages.success(request, 'Login successful.')
                 return redirect('frontend:index')  # Replace with the practitioner's dashboard URL
             else:
@@ -298,6 +303,7 @@ def practitioner_login(request):
             messages.error(request, 'Email not found.')
 
     return render(request, 'PractiLogin.html')
+
 
 
 
