@@ -54,70 +54,120 @@
     </div>
 
     <!-- Clinic and Specialities Section -->
-    <section class="section-specialities">
-        <div class="container-fluid">
-            <div class="section-header text-center">
-                <h2>Clinic and Specialities</h2>
-                <p class="sub-title">Explore a wide range of medical specialities for comprehensive care.</p>
+    <section class="section-specialities py-5 bg-light">
+        <div class="container">
+            <div class="section-header text-center mb-5">
+                <h2 class="fw-bold display-6">Clinic and Specialities</h2>
+                <p class="text-muted fs-5">Explore a wide range of medical specialties for comprehensive care.</p>
             </div>
-            <div class="row justify-content-center">
-                <div class="col-md-9">
-                    <!-- Specialities Slider -->
-                    <div class="specialities-slider">
-                        <div class="speciality-item text-center">
-                            <div class="speciality-img position-relative">
-                                <img src="{% static 'img/specialities/specialities-01.png' %}" class="img-fluid" alt="Urology">
-                                <span class="circle-indicator"></span>
+    
+            <!-- Specialities Carousel -->
+            <div id="specialitiesCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <!-- Slide 1 -->
+                    <div class="carousel-item active">
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <div class="card speciality-card text-center border-0 shadow-sm">
+                                    <div class="speciality-img position-relative mx-auto">
+                                        <img src="{% static 'img/specialities/specialities-01.png' %}" 
+                                             class="img-fluid rounded-circle p-3 border border-3" 
+                                             alt="Urology" style="width: 150px; height: 150px;">
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="fw-semibold">Urology</h5>
+                                        <p class="text-muted small">Advanced care for urological conditions.</p>
+                                    </div>
+                                </div>
                             </div>
-                            <p class="speciality-name">Urology</p>
+                            <div class="col-md-4">
+                                <div class="card speciality-card text-center border-0 shadow-sm">
+                                    <div class="speciality-img position-relative mx-auto">
+                                        <img src="{% static 'img/specialities/specialities-02.png' %}" 
+                                             class="img-fluid rounded-circle p-3 border border-3" 
+                                             alt="Neurology" style="width: 150px; height: 150px;">
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="fw-semibold">Neurology</h5>
+                                        <p class="text-muted small">Comprehensive neurological treatments.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card speciality-card text-center border-0 shadow-sm">
+                                    <div class="speciality-img position-relative mx-auto">
+                                        <img src="{% static 'img/specialities/specialities-03.png' %}" 
+                                             class="img-fluid rounded-circle p-3 border border-3" 
+                                             alt="Orthopedic" style="width: 150px; height: 150px;">
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="fw-semibold">Orthopedic</h5>
+                                        <p class="text-muted small">Specialized care for bones and joints.</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="speciality-item text-center">
-                            <div class="speciality-img position-relative">
-                                <img src="{% static 'img/specialities/specialities-02.png' %}" class="img-fluid" alt="Neurology">
-                                <span class="circle-indicator"></span>
+                    </div>
+    
+                    <!-- Slide 2 -->
+                    <div class="carousel-item">
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <div class="card speciality-card text-center border-0 shadow-sm">
+                                    <div class="speciality-img position-relative mx-auto">
+                                        <img src="{% static 'img/specialities/specialities-04.png' %}" 
+                                             class="img-fluid rounded-circle p-3 border border-3" 
+                                             alt="Cardiology" style="width: 150px; height: 150px;">
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="fw-semibold">Cardiology</h5>
+                                        <p class="text-muted small">Comprehensive heart care solutions.</p>
+                                    </div>
+                                </div>
                             </div>
-                            <p class="speciality-name">Neurology</p>
-                        </div>
-                        <div class="speciality-item text-center">
-                            <div class="speciality-img position-relative">
-                                <img src="{% static 'img/specialities/specialities-03.png' %}" class="img-fluid" alt="Orthopedic">
-                                <span class="circle-indicator"></span>
+                            <div class="col-md-4">
+                                <div class="card speciality-card text-center border-0 shadow-sm">
+                                    <div class="speciality-img position-relative mx-auto">
+                                        <img src="{% static 'img/specialities/specialities-05.png' %}" 
+                                             class="img-fluid rounded-circle p-3 border border-3" 
+                                             alt="Dentistry" style="width: 150px; height: 150px;">
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="fw-semibold">Dentistry</h5>
+                                        <p class="text-muted small">Oral health and dental treatments.</p>
+                                    </div>
+                                </div>
                             </div>
-                            <p class="speciality-name">Orthopedic</p>
-                        </div>
-                        <div class="speciality-item text-center">
-                            <div class="speciality-img position-relative">
-                                <img src="{% static 'img/specialities/specialities-04.png' %}" class="img-fluid" alt="Cardiology">
-                                <span class="circle-indicator"></span>
+                            <div class="col-md-4">
+                                <div class="card speciality-card text-center border-0 shadow-sm">
+                                    <div class="speciality-img position-relative mx-auto">
+                                        <img src="{% static 'img/specialities/specialities-05.png' %}" 
+                                             class="img-fluid rounded-circle p-3 border border-3" 
+                                             alt="Gynecology" style="width: 150px; height: 150px;">
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="fw-semibold">Gynecology</h5>
+                                        <p class="text-muted small">Women's health and wellness.</p>
+                                    </div>
+                                </div>
                             </div>
-                            <p class="speciality-name">Cardiology</p>
-                        </div>
-                        <div class="speciality-item text-center">
-                            <div class="speciality-img position-relative">
-                                <img src="{% static 'img/specialities/specialities-05.png' %}" class="img-fluid" alt="Dentistry">
-                                <span class="circle-indicator"></span>
-                            </div>
-                            <p class="speciality-name">Dentistry</p>
-                        </div>
-                        <div class="speciality-item text-center">
-                            <div class="speciality-img position-relative">
-                                <img src="{% static 'img/specialities/specialities-05.png' %}" class="img-fluid" alt="Gynecology">
-                                <span class="circle-indicator"></span>
-                            </div>
-                            <p class="speciality-name">Gynecology</p>
-                        </div>
-                        <div class="speciality-item text-center">
-                            <div class="speciality-img position-relative">
-                                <img src="{% static 'img/specialities/specialities-02.png' %}" class="img-fluid" alt="Pediatrics">
-                                <span class="circle-indicator"></span>
-                            </div>
-                            <p class="speciality-name">Pediatrics</p>
                         </div>
                     </div>
                 </div>
+    
+                <!-- Carousel Controls -->
+                <button class="carousel-control-prev" type="button" data-bs-target="#specialitiesCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#specialitiesCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
             </div>
         </div>
     </section>
+    
 
     <!-- Meet Our Doctors Section -->
     <div class="container my-5">
