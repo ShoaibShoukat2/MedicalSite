@@ -267,7 +267,7 @@ def patient_login(request):
             # Mark the user as logged in (you can replace this with Django's authentication system)
             request.session['patient_id'] = patient.id
             messages.success(request, f"Welcome back, {patient.first_name}!")
-            return redirect('dashboard')  # Redirect to a dashboard or home page
+            return redirect('frontend:index')  # Redirect to a dashboard or home page
         else:
             messages.error(request, "Invalid email or password.")
             return redirect('frontend:patient_login')
@@ -291,7 +291,7 @@ def practitioner_login(request):
                 # Save practitioner info in session or redirect to dashboard
                 request.session['practitioner_id'] = practitioner.id
                 messages.success(request, 'Login successful.')
-                return redirect('dashboard')  # Replace with the practitioner's dashboard URL
+                return redirect('frontend:index')  # Replace with the practitioner's dashboard URL
             else:
                 messages.error(request, 'Invalid password.')
         except Practitioner.DoesNotExist:
