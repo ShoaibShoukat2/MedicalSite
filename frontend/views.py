@@ -259,13 +259,6 @@ def patient_login(request):
 
 
 
-
-
-
-
-
-
-
 def practitioner_login(request):
     if request.method == 'POST':
         email = request.POST.get('email')
@@ -287,6 +280,9 @@ def practitioner_login(request):
             messages.error(request, 'Email not found.')
 
     return render(request, 'PractiLogin.html')
+
+
+
 
 
 
