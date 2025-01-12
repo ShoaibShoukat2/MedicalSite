@@ -23,6 +23,8 @@ def generate_otp():
 
 
 
+def appointment(request):
+    return render(request, 'appointment.html')
 
 def patient_signup(request):
     if request.method == 'POST':
@@ -120,7 +122,6 @@ def verify_otp(request):
             return redirect('patient_verify_otp')
 
     return render(request, 'verify_otp.html')  # Render OTP verification form
-
 
 
 def practitioner_signup(request):

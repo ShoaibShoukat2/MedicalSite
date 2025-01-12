@@ -6,9 +6,203 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="icon" href="{% static 'img/favicon.png' %}" type="image/png">
     <title>{% block title %}{% endblock title %}</title>
+    
+    <!-- CSS Stylesheets -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/8.1.0/mdb.min.css">
+    <link rel="stylesheet" href="{% static 'css/slick.css' %}">
+    <link rel="stylesheet" href="{% static 'css/slick-theme.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
+        /* Sidebar styling */
+#sidebar {
+    height: 100vh;
+    background-color: #ffffff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    overflow-y: auto;
+    z-index: 1040;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    transform: translateX(-250px);
+    transition: transform 0.3s ease;
+    z-index: 1039; /* Lower z-index to make it behind the navbar */
+}
+#sidebar.active {
+    transform: translateX(0);
+}
+
+@media (min-width: 768px) {
+    #sidebar {
+        transform: translateX(0);
+    }
+}
+
+.menu-item {
+    padding: 15px 20px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.menu-item:hover {
+    background-color: #e9ecef;
+}
+
+/* Main content adjustment */
+main.container {
+    margin-left: 250px; /* Match the width of the sidebar */
+}
+
+/* Navbar styling */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+/* Add padding to avoid content overlap with navbar */
+body {
+    padding-top: 70px; /* Adjust this value if the navbar height changes */
+}
+
+/* Optional: Add a smooth scrolling effect for better UX */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Enhance card hover effect */
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Specialities Section */
+.section-specialities {
+    padding: 50px 0;
+}
+
+.section-specialities .section-header h2 {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.section-specialities .section-header .sub-title {
+    color: #777;
+    font-size: 14px;
+    margin-bottom: 30px;
+}
+
+/* Specialities slider styling */
+.specialities-slider {
+    display: flex;
+    overflow-x: auto;
+    gap: 20px;
+    scroll-snap-type: x mandatory;
+
+    /* Hide scrollbar */
+    scrollbar-width: none; /* For Firefox */
+    -ms-overflow-style: none; /* For IE and Edge */
+}
+
+.specialities-slider::-webkit-scrollbar {
+    display: none; /* For Chrome, Safari, and Opera */
+}
+
+.speciality-item {
+    min-width: 120px;
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+    padding: 10px;
+}
+
+.speciality-img {
+    transition: transform 0.3s ease;
+}
+
+.speciality-img:hover {
+    transform: translateY(-5px);
+}
+
+.slick-slide {
+    margin: 0 15px;
+}
+
+.slick-list {
+    margin: 0 -15px;
+}
+
+/* Appointment card styling */
+.appointment-card {
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.appointment-card .profile-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.appointment-card .patient-details h5 {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.appointment-card .appointment-action a {
+    font-size: 0.9rem;
+    margin-right: 10px;
+}
+
+.appointment-card .btn-view {
+    background-color: #e0f7fa;
+    color: #007bff;
+}
+
+.appointment-card .btn-view:hover {
+    background-color: #b2ebf2;
+    color: #0056b3;
+}
+
+.appointment-card .btn-accept {
+    background-color: #e8f5e9;
+    color: #28a745;
+}
+
+.appointment-card .btn-accept:hover {
+    background-color: #c8e6c9;
+    color: #1e7e34;
+}
+
+.appointment-card .btn-cancel {
+    background-color: #ffebee;
+    color: #dc3545;
+}
+
+.appointment-card .btn-cancel:hover {
+    background-color: #ffcdd2;
+    color: #c82333;
+}
+
+    
+</style>    
+    {% comment %} <style>
         /* Sidebar styling */
         #sidebar {
             height: 100vh;
@@ -17,9 +211,10 @@
             top: 0;
             left: 0;
             width: 250px;
+            z-index: 1040;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
             transform: translateX(-250px);
             transition: transform 0.3s ease;
-            z-index: 1039; /* Lower z-index to make it behind the navbar */
         }
         #sidebar.active {
             transform: translateX(0);
@@ -39,8 +234,8 @@
         .menu-item:hover {
             background-color: #e9ecef;
         }
-    
-        /* Adjust main content margin when sidebar is visible */
+        
+        /* Main content adjustment */
         main {
             margin-left: 250px;
             padding-top: 60px;
@@ -58,7 +253,6 @@
         }
     </style>
     
-
 
 
 
@@ -98,7 +292,6 @@
     </nav>
 </header>
 
-
 <!-- Sidebar -->
 <div id="sidebar">
     <h5 class="fw-bold my-4 text-center">Menu</h5>
@@ -116,7 +309,12 @@
     {% endblock %}
 </main>
 
+<!-- JavaScript -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/8.1.0/mdb.min.js"></script>
+
 <script>
     // Toggle sidebar visibility
     const sidebar = document.getElementById('sidebar');
@@ -129,6 +327,46 @@
         if (!sidebar.contains(e.target) && e.target.id !== 'sidebarToggle' && window.innerWidth < 768) {
             sidebar.classList.remove('active');
         }
+    });
+
+    // Slick carousel initialization
+    $(document).ready(function () {
+        $('.specialities-slider').slick({
+            infinite: true,
+            slidesToShow: 5,
+            slidesToScroll: 1,
+            autoplay: true,
+            autoplaySpeed: 2000,
+            dots: false,
+            arrows: true,
+            prevArrow: '<button class="slick-prev" aria-label="Previous"></button>',
+            nextArrow: '<button class="slick-next" aria-label="Next"></button>',
+            responsive: [
+                {
+                    breakpoint: 1024,
+                    settings: {
+                        slidesToShow: 3,
+                        slidesToScroll: 1,
+                    }
+                },
+                {
+                    breakpoint: 600,
+                    settings: {
+                        slidesToShow: 2,
+                        slidesToScroll: 1,
+                        arrows: false
+                    }
+                },
+                {
+                    breakpoint: 480,
+                    settings: {
+                        slidesToShow: 1,
+                        slidesToScroll: 1,
+                        arrows: false
+                    }
+                }
+            ]
+        });
     });
 </script>
 </body>

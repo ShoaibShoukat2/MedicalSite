@@ -16,10 +16,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf.urls.static import static  # Import static
+
+from main import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('frontend.urls')),
-    path('dashboard',include('patientdashboard.urls') )
+    path('dashboard/',include('patientdashboard.urls')),
+
 ]
 
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL)

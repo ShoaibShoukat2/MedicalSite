@@ -1,85 +1,147 @@
+<!DOCTYPE html>
 {% extends 'base.html' %}
-{% block title %}
-Home
-{% endblock title %}
 {% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Home{% endblock title %}</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+
 {% block main_content %}
 <!-- Medical Background Section -->
 
 
 <div class="col-md-9 col-lg-10 ms-auto" style="margin-left: 270px; padding-top: 20px;">
-    <section style="background-image: url('{% static 'background-doctor.jpg' %}'); background-size: contain; background-position: center; height: 400px; color: white; display: flex; align-items: center; justify-content: center; text-align: center; padding: 50px 0;">
-        <div style="max-width: 90%; padding: 20px;">
-            <h2 class="display-4 fw-bold">Your Health, Our Priority</h2>
-            <p class="lead">We provide the best medical services and advice tailored to your needs.</p>
-            <a href="#" class="btn btn-light btn-lg">Learn More</a>
-        </div>
-    </section>
-    
-        
     <!-- Our Services Section -->
     <div class="container my-5">
         <div class="row">
-            <h2 class="text-center mb-4 font-weight-bold" style="color: #333;">Our Services</h2>
-        
-            <!-- Health Care Service -->
+            <h2 class="text-center mb-4 font-weight-bold">Our Services</h2>
+
+            <!-- Service: Health Care -->
             <div class="col-md-6 mb-4 d-flex">
                 <div class="card shadow border-light rounded w-100">
                     <div class="card-body text-center d-flex flex-column">
-                        <i class="fas fa-stethoscope fa-3x mb-3" style="color: #222;"></i>
-                        <h5 class="card-title" style="font-size: 1.25rem; font-weight: 600;">Health Care</h5>
-                        <p class="card-text" style="color: #555;">Providing top-quality medical services to keep you healthy and active.</p>
-                        <!-- Right Arrow Button -->
-                        <a href="#" class="btn btn-outline-dark">
-                            <i class="fas fa-arrow-right"></i>
+                        <i class="fas fa-stethoscope fa-3x mb-3" style="color: #007bff;"></i>
+                        <h5 class="card-title">Health Care</h5>
+                        <p class="card-text">Providing top-quality medical services to keep you healthy and active.</p>
+                        <a href="#" class="btn btn-link text-primary">
+                            Read More <i class="fas fa-arrow-right"></i>
                         </a>
                     </div>
                 </div>
             </div>
 
-            <!-- Physical Care Service -->
+            <!-- Service: Physical Care -->
             <div class="col-md-6 mb-4 d-flex">
                 <div class="card shadow border-light rounded w-100">
                     <div class="card-body text-center d-flex flex-column">
-                        <i class="fas fa-running fa-3x mb-3" style="color: #222;"></i>
-                        <h5 class="card-title" style="font-size: 1.25rem; font-weight: 600;">Physical Care</h5>
-                        <p class="card-text" style="color: #555;">Offering physical therapy and wellness services to improve your strength and mobility.</p>
-                        <!-- Right Arrow Button -->
-                        <a href="#" class="btn btn-outline-dark">
-                            <i class="fas fa-arrow-right"></i>
+                        <i class="fas fa-running fa-3x mb-3" style="color: #007bff;"></i>
+                        <h5 class="card-title">Physical Care</h5>
+                        <p class="card-text">Offering physical therapy and wellness services to improve your strength and mobility.</p>
+                        <a href="#" class="btn btn-link text-primary">
+                            Read More <i class="fas fa-arrow-right"></i>
                         </a>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <h2 class="text-center mb-4 font-weight-bold" style="color: #333;">Meet Our Doctors</h2>
-        
+    <!-- Clinic and Specialities Section -->
+    <section class="section-specialities">
+        <div class="container-fluid">
+            <div class="section-header text-center">
+                <h2>Clinic and Specialities</h2>
+                <p class="sub-title">Explore a wide range of medical specialities for comprehensive care.</p>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-md-9">
+                    <!-- Specialities Slider -->
+                    <div class="specialities-slider">
+                        <div class="speciality-item text-center">
+                            <div class="speciality-img position-relative">
+                                <img src="{% static 'img/specialities/specialities-01.png' %}" class="img-fluid" alt="Urology">
+                                <span class="circle-indicator"></span>
+                            </div>
+                            <p class="speciality-name">Urology</p>
+                        </div>
+                        <div class="speciality-item text-center">
+                            <div class="speciality-img position-relative">
+                                <img src="{% static 'img/specialities/specialities-02.png' %}" class="img-fluid" alt="Neurology">
+                                <span class="circle-indicator"></span>
+                            </div>
+                            <p class="speciality-name">Neurology</p>
+                        </div>
+                        <div class="speciality-item text-center">
+                            <div class="speciality-img position-relative">
+                                <img src="{% static 'img/specialities/specialities-03.png' %}" class="img-fluid" alt="Orthopedic">
+                                <span class="circle-indicator"></span>
+                            </div>
+                            <p class="speciality-name">Orthopedic</p>
+                        </div>
+                        <div class="speciality-item text-center">
+                            <div class="speciality-img position-relative">
+                                <img src="{% static 'img/specialities/specialities-04.png' %}" class="img-fluid" alt="Cardiology">
+                                <span class="circle-indicator"></span>
+                            </div>
+                            <p class="speciality-name">Cardiology</p>
+                        </div>
+                        <div class="speciality-item text-center">
+                            <div class="speciality-img position-relative">
+                                <img src="{% static 'img/specialities/specialities-05.png' %}" class="img-fluid" alt="Dentistry">
+                                <span class="circle-indicator"></span>
+                            </div>
+                            <p class="speciality-name">Dentistry</p>
+                        </div>
+                        <div class="speciality-item text-center">
+                            <div class="speciality-img position-relative">
+                                <img src="{% static 'img/specialities/specialities-05.png' %}" class="img-fluid" alt="Gynecology">
+                                <span class="circle-indicator"></span>
+                            </div>
+                            <p class="speciality-name">Gynecology</p>
+                        </div>
+                        <div class="speciality-item text-center">
+                            <div class="speciality-img position-relative">
+                                <img src="{% static 'img/specialities/specialities-02.png' %}" class="img-fluid" alt="Pediatrics">
+                                <span class="circle-indicator"></span>
+                            </div>
+                            <p class="speciality-name">Pediatrics</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Meet Our Doctors Section -->
+    <div class="container my-5">
+        <h2 class="text-center mb-4 font-weight-bold">Meet Our Doctors</h2>
+
         <div class="row">
-            <!-- Categories Section (Above the Doctors) -->
+            <!-- Categories -->
             <div class="mb-4 text-center">
                 <span class="badge badge-pill badge-dark mx-2">General Practitioner</span>
                 <span class="badge badge-pill badge-dark mx-2">Pediatrician</span>
-                <span class="badge badge-pill badge-dark mx-2">Psychiatrist</span>
-                <span class="badge badge-pill badge-dark mx-2">Dermatologist</span>
-                <span class="badge badge-pill badge-dark mx-2">Gynecologist</span>
+                <span class="badge badge-pill badge-dark mx-2">Cardiologist</span>
+                <span class="badge badge-pill badge-dark mx-2">Neurologist</span>
+                <span class="badge badge-pill badge-dark mx-2">Dentist</span>
             </div>
 
-            <!-- Doctor 1 -->
+            <!-- Example Doctor Profiles -->
             <div class="col-md-4 mb-4 d-flex">
-                <div class="card shadow border-light rounded w-100" style="height: 380px;">
+                <div class="card shadow border-light rounded w-100">
                     <div class="card-body text-center d-flex flex-column justify-content-between">
-                        <!-- Doctor Image -->
                         <div class="mx-auto mb-3" style="width: 150px; height: 150px; overflow: hidden; border-radius: 50%;">
-                            <img src="data:image/jpeg;base64,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" style="width: 100%; height: 100%; object-fit: cover;" alt="Doctor 1">
+                            <img src="" style="width: 100%; height: 100%; object-fit: cover;" alt="Doctor 1">
                         </div>
-                        <h5 class="card-title" style="font-size: 1.25rem; font-weight: 600;">Dr. John Doe</h5>
-                        <p class="card-text" style="color: #777;">Cardiologist</p>
-        
-                        <!-- Price -->
-                        <h6 class="text-dark mb-3" style="font-weight: 600;">$200 per consultation</h6>
-        
-                        <!-- Rating Stars -->
+                        <h5 class="card-title">Dr. John Doe</h5>
+                        <p class="card-text">Cardiologist</p>
+                        <h6 class="text-primary mb-3">$200 per consultation</h6>
                         <div class="d-flex justify-content-center mb-3">
                             <span class="fas fa-star" style="color: #f39c12;"></span>
                             <span class="fas fa-star" style="color: #f39c12;"></span>
@@ -90,22 +152,16 @@ Home
                     </div>
                 </div>
             </div>
-        
-            <!-- Doctor 2 -->
+
             <div class="col-md-4 mb-4 d-flex">
-                <div class="card shadow border-light rounded w-100" style="height: 380px;">
+                <div class="card shadow border-light rounded w-100">
                     <div class="card-body text-center d-flex flex-column justify-content-between">
-                        <!-- Doctor Image -->
                         <div class="mx-auto mb-3" style="width: 150px; height: 150px; overflow: hidden; border-radius: 50%;">
-                            <img src="data:image/jpeg;base64,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" style="width: 100%; height: 100%; object-fit: cover;" alt="Doctor 2">
+                            <img src="" style="width: 100%; height: 100%; object-fit: cover;" alt="Doctor 2">
                         </div>
-                        <h5 class="card-title" style="font-size: 1.25rem; font-weight: 600;">Dr. Jane Smith</h5>
-                        <p class="card-text" style="color: #777;">Orthopedic Surgeon</p>
-        
-                        <!-- Price -->
-                        <h6 class="text-dark mb-3" style="font-weight: 600;">$180 per consultation</h6>
-        
-                        <!-- Rating Stars -->
+                        <h5 class="card-title">Dr. Jane Smith</h5>
+                        <p class="card-text">Orthopedic Surgeon</p>
+                        <h6 class="text-primary mb-3">$180 per consultation</h6>
                         <div class="d-flex justify-content-center mb-3">
                             <span class="fas fa-star" style="color: #f39c12;"></span>
                             <span class="fas fa-star" style="color: #f39c12;"></span>
@@ -116,22 +172,16 @@ Home
                     </div>
                 </div>
             </div>
-        
-            <!-- Doctor 3 -->
+
             <div class="col-md-4 mb-4 d-flex">
-                <div class="card shadow border-light rounded w-100" style="height: 380px;">
+                <div class="card shadow border-light rounded w-100">
                     <div class="card-body text-center d-flex flex-column justify-content-between">
-                        <!-- Doctor Image -->
                         <div class="mx-auto mb-3" style="width: 150px; height: 150px; overflow: hidden; border-radius: 50%;">
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvxv-aOP1Kg25NKYqPdJj3hx0jmJEydfAGYCaLywnW6kiyFkrYsockTqIZOArz2v9SRuY&usqp=CAU" style="width: 100%; height: 100%; object-fit: cover;" alt="Doctor 3">
+                            <img src="" style="width: 100%; height: 100%; object-fit: cover;" alt="Doctor 3">
                         </div>
-                        <h5 class="card-title" style="font-size: 1.25rem; font-weight: 600;">Dr. Emily Davis</h5>
-                        <p class="card-text" style="color: #777;">Pediatrician</p>
-        
-                        <!-- Price -->
-                        <h6 class="text-dark mb-3" style="font-weight: 600;">$150 per consultation</h6>
-        
-                        <!-- Rating Stars -->
+                        <h5 class="card-title">Dr. Emily Davis</h5>
+                        <p class="card-text">Pediatrician</p>
+                        <h6 class="text-primary mb-3">$150 per consultation</h6>
                         <div class="d-flex justify-content-center mb-3">
                             <span class="fas fa-star" style="color: #f39c12;"></span>
                             <span class="fas fa-star" style="color: #f39c12;"></span>
@@ -143,59 +193,54 @@ Home
                 </div>
             </div>
         </div>
-
-        <br><br><br>
-
-        <div class="row text-center">
-            <h2 class="text-center mb-4 font-weight-bold" style="color: #333;">Our Quality Commitments</h2>
-
-            <!-- Training -->
-            <div class="col-md-3 mb-4">
-                <div class="d-flex flex-column align-items-center">
-                    <i class="fas fa-graduation-cap fa-3x mb-3 text-dark"></i>
-                    <h5 class="font-weight-bold" style="color: #222;">Training</h5>
-                    <p class="text-muted">
-                        100% of doctors are trained in teleconsultation by Qare. They are registered with the Medical Council and practice in France, either in private offices or hospitals.
-                    </p>
-                </div>
-            </div>
-        
-            <!-- Listening -->
-            <div class="col-md-3 mb-4">
-                <div class="d-flex flex-column align-items-center">
-                    <i class="fas fa-headset fa-3x mb-3 text-dark"></i>
-                    <h5 class="font-weight-bold" style="color: #222;">Listening</h5>
-                    <p class="text-muted">
-                        Doctors take the necessary time for each patient and adapt to your situation.
-                    </p>
-                </div>
-            </div>
-        
-            <!-- Follow-up -->
-            <div class="col-md-3 mb-4">
-                <div class="d-flex flex-column align-items-center">
-                    <i class="fas fa-heart fa-3x mb-3 text-dark"></i>
-                    <h5 class="font-weight-bold" style="color: #222;">Follow-up</h5>
-                    <p class="text-muted">
-                        You benefit from follow-up care after your teleconsultations. You can easily book another appointment with your medical team.
-                    </p>
-                </div>
-            </div>
-        
-            <!-- Trust -->
-            <div class="col-md-3 mb-4">
-                <div class="d-flex flex-column align-items-center">
-                    <i class="fas fa-chart-line fa-3x mb-3 text-dark"></i>
-                    <h5 class="font-weight-bold" style="color: #222;">Trust</h5>
-                    <p class="text-muted">
-                        Our Medical Directorate continuously monitors 15 quality indicators to ensure the quality of care provided.
-                    </p>
-                </div>
-            </div>
-        
-        </div>
-        
     </div>
+
+    <!-- Quality Commitments Section -->
+    <div class="row text-center">
+        <h2 class="text-center mb-4 font-weight-bold">Our Quality Commitments</h2>
+        <div class="col-md-3 mb-4">
+            <i class="fas fa-graduation-cap fa-3x mb-3 text-danger"></i>
+            <h5>Training</h5>
+            <p class="text-muted">All doctors are highly trained and registered with the Medical Council.</p>
+        </div>
+        <div class="col-md-3 mb-4">
+            <i class="fas fa-headset fa-3x mb-3 text-danger"></i>
+            <h5>Listening</h5>
+            <p class="text-muted">Doctors take time to adapt and listen to patient needs.</p>
+        </div>
+        <div class="col-md-3 mb-4">
+            <i class="fas fa-heart fa-3x mb-3 text-danger"></i>
+            <h5>Follow-up</h5>
+            <p class="text-muted">Seamless follow-ups with your medical team for ongoing care.</p>
+        </div>
+        <div class="col-md-3 mb-4">
+            <i class="fas fa-chart-line fa-3x mb-3 text-danger"></i>
+            <h5>Trust</h5>
+            <p class="text-muted">Continuous monitoring of quality indicators for excellence.</p>
+        </div>
+    </div>
+
 </div>
 
 {% endblock main_content %}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+<script>
+    // Initialize Specialities Slider
+    $(document).ready(function () {
+        $('.specialities-slider').slick({
+            slidesToShow: 4,
+            slidesToScroll: 1,
+            infinite: true,
+            autoplay: true,
+            responsive: [
+                { breakpoint: 1024, settings: { slidesToShow: 3 } },
+                { breakpoint: 768, settings: { slidesToShow: 2 } },
+                { breakpoint: 576, settings: { slidesToShow: 1 } }
+            ]
+        });
+    });
+</script>
+</body>
+</html>
