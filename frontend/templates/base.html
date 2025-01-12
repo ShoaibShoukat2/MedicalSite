@@ -6,174 +6,120 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="icon" href="{% static 'img/favicon.png' %}" type="image/png">
     <title>{% block title %}{% endblock title %}</title>
-
+    
+    <!-- CSS Stylesheets -->
     <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/8.1.0/mdb.min.css">
     <link rel="stylesheet" href="{% static 'css/slick.css' %}">
     <link rel="stylesheet" href="{% static 'css/slick-theme.css' %}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
-
-
-
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         /* Sidebar styling */
-        #sidebar {
-            height: 100vh;
-            background-color: #f8f9fa;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 250px;
-            height: 100vh;
-            background-color: #ffffff;
-            overflow-y: auto;
-            z-index: 1040;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-            transform: translateX(-250px);
-            transition: transform 0.3s ease;
-            z-index: 1039; /* Lower z-index to make it behind the navbar */
-        }
-        #sidebar.active {
-            transform: translateX(0);
-        }
-    
-        @media (min-width: 768px) {
-            #sidebar {
-                transform: translateX(0);
-            }
-        }
-    
-        .menu-item {
-            padding: 15px 20px;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
-        }
-
-        .menu-item:hover {
-            background-color: #e9ecef;
-        }
-
-        /* Main content adjustment */
-        main.container {
-            margin-left: 250px; /* Match the width of the sidebar */
-        }
-
-        /* Navbar styling */
-        .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 1000;
-        }
-
-        /* Add padding to avoid content overlap with navbar */
-        body {
-            padding-top: 70px; /* Adjust this value if the navbar height changes */
-        }
-
-        /* Optional: Add a smooth scrolling effect for better UX */
-        html {
-            scroll-behavior: smooth;
-        }
-
-        /* Enhance card hover effect */
-        .card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-        }
-      .section-specialities {
-            padding: 50px 0;
-          }
-          
-          .section-specialities .section-header h2 {
-            font-size: 28px;
-            font-weight: 600;
-            margin-bottom: 15px;
-            color: #333;
-          }
-          
-          .section-specialities .section-header .sub-title {
-            color: #777;
-            font-size: 14px;
-            margin-bottom: 30px;
-          }
-          
-          .specialities-slider {
-            display: flex;
-            overflow-x: auto;
-            gap: 20px;
-            scroll-snap-type: x mandatory;
-          }
-          /* Custom arrow styles */
-.slick-prev,
-.slick-next {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 40px;
-    height: 40px;
-    background: #00c8ff;
-    border-radius: 50%;
-    z-index: 1;
-    cursor: pointer;
-    transition: all 0.3s ease;
+#sidebar {
+    height: 100vh;
+    background-color: #ffffff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    overflow-y: auto;
+    z-index: 1040;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    transform: translateX(-250px);
+    transition: transform 0.3s ease;
+    z-index: 1039; /* Lower z-index to make it behind the navbar */
+}
+#sidebar.active {
+    transform: translateX(0);
 }
 
-.slick-prev:hover,
-.slick-next:hover {
-    background: #00b2e6;
-}
-
-.slick-prev {
-    left: -50px;
-}
-
-.slick-next {
-    right: -50px;
-}
-
-/* Custom arrow icons */
-.slick-prev:before,
-.slick-next:before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 10px;
-    height: 10px;
-    border-top: 2px solid white;
-    border-right: 2px solid white;
-}
-
-.slick-prev:before {
-    transform: translate(-25%, -50%) rotate(-135deg);
-}
-
-.slick-next:before {
-    transform: translate(-75%, -50%) rotate(45deg);
-}
-
-/* Hide arrows on mobile */
-@media (max-width: 768px) {
-    .slick-prev,
-    .slick-next {
-        display: none !important;
+@media (min-width: 768px) {
+    #sidebar {
+        transform: translateX(0);
     }
 }
 
-/* Speciality items styling */
+.menu-item {
+    padding: 15px 20px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.menu-item:hover {
+    background-color: #e9ecef;
+}
+
+/* Main content adjustment */
+main.container {
+    margin-left: 250px; /* Match the width of the sidebar */
+}
+
+/* Navbar styling */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+/* Add padding to avoid content overlap with navbar */
+body {
+    padding-top: 70px; /* Adjust this value if the navbar height changes */
+}
+
+/* Optional: Add a smooth scrolling effect for better UX */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Enhance card hover effect */
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Specialities Section */
+.section-specialities {
+    padding: 50px 0;
+}
+
+.section-specialities .section-header h2 {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.section-specialities .section-header .sub-title {
+    color: #777;
+    font-size: 14px;
+    margin-bottom: 30px;
+}
+
+/* Specialities slider styling */
+.specialities-slider {
+    display: flex;
+    overflow-x: auto;
+    gap: 20px;
+    scroll-snap-type: x mandatory;
+
+    /* Hide scrollbar */
+    scrollbar-width: none; /* For Firefox */
+    -ms-overflow-style: none; /* For IE and Edge */
+}
+
+.specialities-slider::-webkit-scrollbar {
+    display: none; /* For Chrome, Safari, and Opera */
+}
+
 .speciality-item {
     min-width: 120px;
     flex: 0 0 auto;
@@ -189,7 +135,6 @@
     transform: translateY(-5px);
 }
 
-/* Ensure proper spacing between slides */
 .slick-slide {
     margin: 0 15px;
 }
@@ -198,10 +143,7 @@
     margin: 0 -15px;
 }
 
-
-
-
-
+/* Appointment card styling */
 .appointment-card {
     background-color: #fff;
     border: 1px solid #e0e0e0;
@@ -258,9 +200,42 @@
     color: #c82333;
 }
 
-
     
-        /* Adjust main content margin when sidebar is visible */
+</style>    
+    {% comment %} <style>
+        /* Sidebar styling */
+        #sidebar {
+            height: 100vh;
+            background-color: #f8f9fa;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            z-index: 1040;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            transform: translateX(-250px);
+            transition: transform 0.3s ease;
+        }
+        #sidebar.active {
+            transform: translateX(0);
+        }
+    
+        @media (min-width: 768px) {
+            #sidebar {
+                transform: translateX(0);
+            }
+        }
+    
+        .menu-item {
+            padding: 15px 20px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        .menu-item:hover {
+            background-color: #e9ecef;
+        }
+        
+        /* Main content adjustment */
         main {
             margin-left: 250px;
             padding-top: 60px;
@@ -276,25 +251,18 @@
         .navbar {
             z-index: 1040; /* Ensure navbar stays on top of sidebar */
         }
-    </style>
-    
-
-
-
+        
+        /* Card hover effect */
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+    </style> {% endcomment %}
 </head>
 <body>
-<header class="header_area">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container">
-            <a class="navbar-brand logo_h" href="/">
-                <img src="{% static 'logo.png' %}" alt="Logo" class="img-fluid" style="height: 50px; max-width: 120px;">
-            </a>
-            <!-- Toggler Button for Mobile -->
-            <button class="navbar-toggler" type="button" id="sidebarToggle" aria-expanded="false">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <!-- Collapsible Navbar Items -->
 <header>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
@@ -329,7 +297,6 @@
     </nav>
 </header>
 
-
 <!-- Sidebar -->
 <div id="sidebar">
     <h5 class="fw-bold my-4 text-center">Menu</h5>
@@ -347,21 +314,27 @@
     {% endblock %}
 </main>
 
+<!-- JavaScript -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/8.1.0/mdb.min.js"></script>
+
 <script>
-    // Toggle sidebar visibility for mobile
+    // Toggle sidebar visibility
+    const sidebar = document.getElementById('sidebar');
     document.getElementById('sidebarToggle').addEventListener('click', function () {
-        const sidebar = document.getElementById('sidebar');
-        if (sidebar.style.left === '0px') {
-            sidebar.style.left = '-250px';
-        } else {
-            sidebar.style.left = '0px';
+        sidebar.classList.toggle('active');
+    });
+
+    // Close sidebar on outside click (mobile)
+    document.addEventListener('click', function (e) {
+        if (!sidebar.contains(e.target) && e.target.id !== 'sidebarToggle' && window.innerWidth < 768) {
+            sidebar.classList.remove('active');
         }
     });
-</script>
-<script src="{% static 'js/jquery.min.js' %}"></script>
-<script src="{% static 'js/slick.min.js' %}"></script>
-<script>
+
+    // Slick carousel initialization
     $(document).ready(function () {
         $('.specialities-slider').slick({
             infinite: true,
@@ -399,32 +372,6 @@
                 }
             ]
         });
-    });
-</script>
-<!-- First add jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- Then add slick -->
-<script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
-<!-- Add slick CSS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/8.1.0/mdb.min.js"></script>
-
-
-<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-<!-- Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    // Toggle sidebar visibility
-    const sidebar = document.getElementById('sidebar');
-    document.getElementById('sidebarToggle').addEventListener('click', function () {
-        sidebar.classList.toggle('active');
-    });
-
-    // Close sidebar on outside click (mobile)
-    document.addEventListener('click', function (e) {
-        if (!sidebar.contains(e.target) && e.target.id !== 'sidebarToggle' && window.innerWidth < 768) {
-            sidebar.classList.remove('active');
-        }
     });
 </script>
 </body>
