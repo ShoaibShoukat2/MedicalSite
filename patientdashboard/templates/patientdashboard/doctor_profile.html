@@ -1,110 +1,179 @@
 {% extends "patientdashboard/base.html" %}
-
 {% load static %}
 
-        {% block extra_css %}
+{% block extra_css %}
 <style>
-        .doctor-widget {
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #fff;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
+    .doctor-widget {
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #fff;
+        padding: 15px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
 
-        .doctor-img img {
-            border-radius: 5px;
-            width: 100px;
-            height: 100px;
-            object-fit: cover;
-        }
+    .doctor-img img {
+        border-radius: 5px;
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        margin-bottom: 15px;
+    }
 
-        .doc-info-cont h4 {
-            font-size: 20px;
-            font-weight: bold;
-        }
+    .doc-info-cont h4 {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
 
-        .rating i {
-            color: #ffc107;
-        }
+    .rating i {
+        color: #ffc107;
+    }
 
+    .doc-info-right {
+        text-align: left;
+    }
+
+    @media (min-width: 768px) {
         .doc-info-right {
             text-align: right;
         }
+        .doctor-img img {
+            margin-bottom: 0;
+        }
+    }
 
+    .clinic-booking .btn {
+        width: 100%;
+        margin: 10px 0;
+    }
+
+    @media (min-width: 768px) {
         .clinic-booking .btn {
-            margin: 5px 0;
+            width: auto;
+        }
+    }
+
+    .nav-tabs {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .nav-tabs::-webkit-scrollbar {
+        display: none;
+    }
+
+    .nav-tabs .nav-link {
+        white-space: nowrap;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin: 0 5px;
+        padding: 8px 15px;
+    }
+
+    .nav-tabs .nav-link.active {
+        background-color: #0d6efd;
+        color: #fff;
+    }
+
+    .location-images {
+        display: flex;
+        overflow-x: auto;
+        gap: 10px;
+        padding: 10px 0;
+    }
+
+    .location-images img {
+        width: 80px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 5px;
+    }
+
+    .review-card {
+        margin-bottom: 15px;
+    }
+
+    .review-user-img {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+    }
+
+    @media (max-width: 576px) {
+        .doctor-widget {
+            padding: 10px;
         }
 
-        .nav-tabs .nav-link.active {
-            background-color: #0d6efd;
-            color: #fff;
+        .doc-info-cont h4 {
+            font-size: 18px;
         }
 
-        .nav-tabs .nav-link {
-            border: 1px solid #ddd;
-            border-radius: 5px;
+        .badge {
+            font-size: 11px;
         }
 
-        .nav-content {
-            margin-top: 20px;
+        .clinic-booking {
+            margin-top: 15px;
         }
+    }
 
-        .services-list, .specializations-list {
-            list-style: none;
-            padding: 0;
-        }
+    .tab-content {
+        margin-top: 20px;
+        padding: 15px;
+        background: #fff;
+        border-radius: 5px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
 
-        .services-list li, .specializations-list li {
-            display: inline-block;
-            margin-right: 10px;
-        }
+    .clinic-details img {
+        max-width: 100%;
+        height: auto;
+        margin: 5px;
+    }
+</style>
+{% endblock %}
 
-        .services-list li a, .specializations-list li a {
-            text-decoration: none;
-            color: #007bff;
-        }
-    </style>
-        {% endblock %}
-        {% block content %}
-        
-<div class="container mt-5">
+{% block content %}
+<div class="container mt-4">
     <!-- Doctor Profile Widget -->
     <div class="doctor-widget">
-        <div class="row align-items-center">
-            <div class="col-md-3 text-center">
+        <div class="row g-3 align-items-center">
+            <div class="col-12 col-md-3 text-center">
                 <div class="doctor-img">
-                    <img src="{% static "img/doctor-thumb-01.jpg" %}" alt="Doctor Image">
+                    <img src="{% static 'img/doctor-thumb-01.jpg' %}" alt="Doctor Image" class="img-fluid">
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-12 col-md-6">
                 <div class="doc-info-cont">
-                    <h4>Dr. Darren Elder</h4>
-                    <p class="doc-speciality">BDS, MDS - Oral & Maxillofacial Surgery</p>
-                    <p><i class="fas fa-tooth"></i> Dentist</p>
-                    <div class="rating">
+                    <h4 class="mb-2">Dr. Darren Elder</h4>
+                    <p class="doc-speciality mb-2">BDS, MDS - Oral & Maxillofacial Surgery</p>
+                    <p class="mb-2"><i class="fas fa-tooth me-2"></i>Dentist</p>
+                    <div class="rating mb-2">
                         <i class="fas fa-star"></i>
                         <i class="fas fa-star"></i>
                         <i class="fas fa-star"></i>
                         <i class="fas fa-star"></i>
                         <i class="far fa-star"></i>
-                        <span>(35)</span>
+                        <span class="ms-1">(35)</span>
                     </div>
-                    <p><i class="fas fa-map-marker-alt"></i> New York, USA</p>
-                    <div>
+                    <p class="mb-2"><i class="fas fa-map-marker-alt me-2"></i>New York, USA</p>
+                    <div class="d-flex flex-wrap gap-2">
                         <span class="badge bg-primary">Dental Fillings</span>
                         <span class="badge bg-primary">Teeth Whitening</span>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-12 col-md-3">
                 <div class="doc-info-right">
-                    <ul class="list-unstyled">
-                        <li><i class="far fa-thumbs-up"></i> 99%</li>
-                        <li><i class="far fa-comment"></i> 35 Feedback</li>
-                        <li><i class="fas fa-map-marker-alt"></i> New York, USA</li>
-                        <li><i class="far fa-money-bill-alt"></i> $100/hour</li>
+                    <ul class="list-unstyled mb-3">
+                        <li class="mb-2"><i class="far fa-thumbs-up me-2"></i>99%</li>
+                        <li class="mb-2"><i class="far fa-comment me-2"></i>35 Feedback</li>
+                        <li class="mb-2"><i class="fas fa-map-marker-alt me-2"></i>New York, USA</li>
+                        <li class="mb-2"><i class="far fa-money-bill-alt me-2"></i>$100/hour</li>
                     </ul>
                     <div class="clinic-booking">
                         <button class="btn btn-primary">Book Appointment</button>
@@ -114,194 +183,120 @@
         </div>
     </div>
 
-    <!-- Tab Content -->
-    <ul class="nav nav-tabs" id="profileTabs">
+    <!-- Tabs Navigation -->
+    <ul class="nav nav-tabs mb-3" id="profileTabs" role="tablist">
         <li class="nav-item">
-            <a class="nav-link active" href="#overview" data-bs-toggle="tab">Overview</a>
+            <a class="nav-link active" id="overview-tab" data-bs-toggle="tab" href="#overview" role="tab">Overview</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#locations" data-bs-toggle="tab">Locations</a>
+            <a class="nav-link" id="locations-tab" data-bs-toggle="tab" href="#locations" role="tab">Locations</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#reviews" data-bs-toggle="tab">Reviews</a>
+            <a class="nav-link" id="reviews-tab" data-bs-toggle="tab" href="#reviews" role="tab">Reviews</a>
         </li>
-       
     </ul>
-    <div class="tab-content nav-content">
-        <div class="tab-pane fade show active" id="overview">
-            <h5>About Me</h5>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ullamcorper velit ut neque suscipit, nec facilisis ipsum pulvinar.</p>
-            <h5>Education</h5>
-            <ul>
-                <li>BDS - American Dental Medical University (2003)</li>
-                <li>MDS - American Dental Medical University (2005)</li>
-            </ul>
-            <h5>Work & Experience</h5>
-            <ul>
-                <li>Glowing Smiles Family Dental Clinic (2010 - Present)</li>
-                <li>Comfort Care Dental Clinic (2007 - 2010)</li>
-            </ul>
-            <h5>Awards</h5>
-            <ul>
-                <li>Best Dentist of the Year (2019)</li>
-                <li>Certificate of Excellence in Oral Care (2018)</li>
-            </ul>
-        </div>
-        <div class="tab-pane fade" id="locations">
-            <div class="mt-4">
-                <!-- Location Card 1 -->
-                <div class="card mb-3 p-3">
-                    <div class="row">
-                        <div class="col-md-9">
-                            <h5 class="card-title">Smile Cute Dental Care Center</h5>
-                            <p class="card-text">MDS - Periodontology and Oral Implantology, BDS</p>
-                            <div class="rating mb-2">
-                                <i class="fas fa-star filled"></i>
-                                <i class="fas fa-star filled"></i>
-                                <i class="fas fa-star filled"></i>
-                                <i class="far fa-star"></i>
-                                <i class="far fa-star"></i>
-                                <span class="ml-2">(4)</span>
-                            </div>
-                            <p class="card-text"><i class="fas fa-map-marker-alt"></i> 2286 Sundown Lane, Austin, Texas 78749, USA</p>
-                            <a href="#" class="text-primary">Get Directions</a>
-                            <div class="mt-3">
-                                <img src="{% static "img/doctor-thumb-01.jpg" %}" class="rounded" alt="Clinic 1">
-                                <img src="{% static "img/doctor-thumb-01.jpg" %}" class="rounded" alt="Clinic 2">
-                                <img src="{% static "img/doctor-thumb-01.jpg" %}" class="rounded" alt="Clinic 3">
-                                <img src="{% static "img/doctor-thumb-01.jpg" %}" class="rounded" alt="Clinic 4">
-                            </div>
-                        </div>
-                        <div class="col-md-3 text-md-end mt-3 mt-md-0">
-                            <p class="mb-1"><strong>Mon - Sat:</strong> 10:00 AM - 2:00 PM, 4:00 PM - 9:00 PM</p>
-                            <p class="mb-1"><strong>Sun:</strong> 10:00 AM - 2:00 PM</p>
-                            <h5 class="text-primary mt-2">$250</h5>
-                        </div>
-                    </div>
+
+    <!-- Tab Content -->
+    <div class="tab-content">
+        <!-- Overview Tab -->
+        <div class="tab-pane fade show active" id="overview" role="tabpanel">
+            <div class="row">
+                <div class="col-12">
+                    <h5 class="mb-3">About Me</h5>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ullamcorper velit ut neque suscipit.</p>
+                    
+                    <h5 class="mb-3 mt-4">Education</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">• BDS - American Dental Medical University (2003)</li>
+                        <li class="mb-2">• MDS - American Dental Medical University (2005)</li>
+                    </ul>
+
+                    <h5 class="mb-3 mt-4">Work & Experience</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">• Glowing Smiles Family Dental Clinic (2010 - Present)</li>
+                        <li class="mb-2">• Comfort Care Dental Clinic (2007 - 2010)</li>
+                    </ul>
+
+                    <h5 class="mb-3 mt-4">Awards</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">• Best Dentist of the Year (2019)</li>
+                        <li class="mb-2">• Certificate of Excellence in Oral Care (2018)</li>
+                    </ul>
                 </div>
-        
-                <!-- Location Card 2 -->
-                <div class="card mb-3 p-3">
-                    <div class="row">
-                        <div class="col-md-9">
-                            <h5 class="card-title">The Family Dentistry Clinic</h5>
-                            <p class="card-text">MDS - Periodontology and Oral Implantology, BDS</p>
-                            <div class="rating mb-2">
-                                <i class="fas fa-star filled"></i>
-                                <i class="fas fa-star filled"></i>
-                                <i class="fas fa-star filled"></i>
-                                <i class="far fa-star"></i>
-                                <i class="far fa-star"></i>
-                                <span class="ml-2">(4)</span>
+            </div>
+        </div>
+
+        <!-- Locations Tab -->
+        <div class="tab-pane fade" id="locations" role="tabpanel">
+            <div class="location-card mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 col-md-8">
+                                <h5>Smile Cute Dental Care Center</h5>
+                                <p class="text-muted">MDS - Periodontology and Oral Implantology, BDS</p>
+                                <div class="rating mb-3">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="far fa-star text-warning"></i>
+                                    <i class="far fa-star text-warning"></i>
+                                    <span class="ms-2">(4)</span>
+                                </div>
+                                <p><i class="fas fa-map-marker-alt me-2"></i>2286 Sundown Lane, Austin, Texas</p>
+                                <div class="location-images">
+                                    <img src="{% static 'img/doctor-thumb-01.jpg' %}" alt="Clinic">
+                                    <img src="{% static 'img/doctor-thumb-01.jpg' %}" alt="Clinic">
+                                    <img src="{% static 'img/doctor-thumb-01.jpg' %}" alt="Clinic">
+                                </div>
                             </div>
-                            <p class="card-text"><i class="fas fa-map-marker-alt"></i> 2883 University Street, Seattle, Texas Washington, 98155</p>
-                            <a href="#" class="text-primary">Get Directions</a>
-                            <div class="mt-3">
-                                <img src="{% static "img/doctor-thumb-01.jpg" %}" class="rounded" alt="Clinic 1">
-                                <img src="{% static "img/doctor-thumb-01.jpg" %}" class="rounded" alt="Clinic 2">
-                                <img src="{% static "img/doctor-thumb-01.jpg" %}" class="rounded" alt="Clinic 3">
-                                <img src="{% static "img/doctor-thumb-01.jpg" %}" class="rounded" alt="Clinic 4">
+                            <div class="col-12 col-md-4 mt-3 mt-md-0">
+                                <div class="clinic-timing">
+                                    <p><strong>Mon - Sat:</strong><br>10:00 AM - 2:00 PM</p>
+                                    <p><strong>Sun:</strong><br>10:00 AM - 2:00 PM</p>
+                                    <p class="text-primary mt-3"><strong>$250</strong></p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-3 text-md-end mt-3 mt-md-0">
-                            <p class="mb-1"><strong>Tue - Fri:</strong> 11:00 AM - 1:00 PM, 6:00 PM - 11:00 PM</p>
-                            <p class="mb-1"><strong>Sat - Sun:</strong> 8:00 AM - 10:00 AM, 3:00 PM - 7:00 PM</p>
-                            <h5 class="text-primary mt-2">$350</h5>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        
-        <div class="tab-pane fade" id="reviews">
-            <div class="mt-4">
-                <!-- Review 1 -->
-                <div class="card mb-3 p-3">
-                    <div class="d-flex">
-                        <img src="{% static "img/doctor-thumb-01.jpg" %}" class="rounded-circle me-3" alt="User Image">
-                        <div>
-                            <h6 class="mb-0">Richard Wilson</h6>
-                            <small class="text-muted">Reviewed 2 Days ago</small>
+
+        <!-- Reviews Tab -->
+        <div class="tab-pane fade" id="reviews" role="tabpanel">
+            <div class="review-listing">
+                <!-- Individual Review -->
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="d-flex flex-wrap">
+                            <div class="review-author me-3 mb-3 mb-md-0">
+                                <img src="{% static 'img/doctor-thumb-01.jpg' %}" alt="Reviewer" class="rounded-circle review-user-img">
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6>Richard Wilson</h6>
+                                <p class="text-muted small">Reviewed 2 Days ago</p>
+                                <p class="review-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                                <div class="review-ratings">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="far fa-star text-warning"></i>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <p class="mt-2 text-primary">I recommend the doctor</p>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation. Curabitur non nulla sit amet nisi tempus.</p>
-                    <a href="#" class="text-primary d-block mb-2">Reply</a>
-                    <div class="d-flex align-items-center">
-                        <span class="me-2">Recommend?</span>
-                        <button class="btn btn-outline-success btn-sm me-2">Yes</button>
-                        <button class="btn btn-outline-danger btn-sm">No</button>
-                    </div>
-                    <div class="mt-2">
-                        <i class="fas fa-star filled text-warning"></i>
-                        <i class="fas fa-star filled text-warning"></i>
-                        <i class="fas fa-star filled text-warning"></i>
-                        <i class="fas fa-star filled text-warning"></i>
-                        <i class="far fa-star text-warning"></i>
-                    </div>
                 </div>
-        
-                <!-- Review 2 -->
-                <div class="card mb-3 p-3">
-                    <div class="d-flex">
-                        <img src="{% static "img/doctor-thumb-01.jpg" %}" class="rounded-circle me-3" alt="User Image">
-                        <div>
-                            <h6 class="mb-0">Charlene Reed</h6>
-                            <small class="text-muted">Reviewed 3 Days ago</small>
-                        </div>
-                    </div>
-                    <p class="mt-2 text-primary">I recommend the doctor</p>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation. Curabitur non nulla sit amet nisi tempus.</p>
-                    <a href="#" class="text-primary d-block mb-2">Reply</a>
-                    <div class="d-flex align-items-center">
-                        <span class="me-2">Recommend?</span>
-                        <button class="btn btn-outline-success btn-sm me-2">Yes</button>
-                        <button class="btn btn-outline-danger btn-sm">No</button>
-                    </div>
-                    <div class="mt-2">
-                        <i class="fas fa-star filled text-warning"></i>
-                        <i class="fas fa-star filled text-warning"></i>
-                        <i class="fas fa-star filled text-warning"></i>
-                        <i class="far fa-star text-warning"></i>
-                        <i class="far fa-star text-warning"></i>
-                    </div>
-                </div>
-        
-                <!-- Review 3 -->
-                <div class="card mb-3 p-3">
-                    <div class="d-flex">
-                        <img src="{% static "img/doctor-thumb-01.jpg" %}" class="rounded-circle me-3" alt="User Image">
-                        <div>
-                            <h6 class="mb-0">Travis Trimble</h6>
-                            <small class="text-muted">Reviewed 4 Days ago</small>
-                        </div>
-                    </div>
-                    <p class="mt-2 text-primary">I recommend the doctor</p>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation. Curabitur non nulla sit amet nisi tempus.</p>
-                    <a href="#" class="text-primary d-block mb-2">Reply</a>
-                    <div class="d-flex align-items-center">
-                        <span class="me-2">Recommend?</span>
-                        <button class="btn btn-outline-success btn-sm me-2">Yes</button>
-                        <button class="btn btn-outline-danger btn-sm">No</button>
-                    </div>
-                    <div class="mt-2">
-                        <i class="fas fa-star filled text-warning"></i>
-                        <i class="fas fa-star filled text-warning"></i>
-                        <i class="fas fa-star filled text-warning"></i>
-                        <i class="fas fa-star filled text-warning"></i>
-                        <i class="far fa-star text-warning"></i>
-                    </div>
-                </div>
-        
-                <!-- Feedback Button -->
-                <button class="btn btn-primary btn-block mt-3">Show all feedback (167)</button>
-        
-                <!-- Write a Review Section -->
-                <div class="card p-3 mt-4">
-                    <h5>Write a review for Dr. Darren Elder</h5>
+            </div>
+
+            <!-- Write Review Form -->
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h5 class="mb-4">Write a Review</h5>
                     <form>
                         <div class="mb-3">
-                            <label class="form-label">Review</label>
+                            <label class="form-label">Rating</label>
                             <div class="rating">
                                 <i class="far fa-star text-warning"></i>
                                 <i class="far fa-star text-warning"></i>
@@ -311,32 +306,22 @@
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label for="reviewTitle" class="form-label">Title of your review</label>
-                            <input type="text" class="form-control" id="reviewTitle" placeholder="If you could say it in one sentence, what would you say?">
+                            <label class="form-label">Review Title</label>
+                            <input type="text" class="form-control" placeholder="Title of your review">
                         </div>
                         <div class="mb-3">
-                            <label for="reviewContent" class="form-label">Your review</label>
-                            <textarea class="form-control" id="reviewContent" rows="3" placeholder="Write your review here..."></textarea>
-                            <small class="text-muted">100 characters remaining</small>
+                            <label class="form-label">Your Review</label>
+                            <textarea class="form-control" rows="4" placeholder="Write your review here"></textarea>
                         </div>
-                        <div class="form-check mb-3">
-                            <input class="form-check-input" type="checkbox" id="termsCheck">
-                            <label class="form-check-label" for="termsCheck">
-                                I have read and accept <a href="#">Terms & Conditions</a>
-                            </label>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Add Review</button>
+                        <button type="submit" class="btn btn-primary">Submit Review</button>
                     </form>
                 </div>
             </div>
         </div>
-        
-      
     </div>
 </div>
 {% endblock content %}
+
 {% block extra_js %}
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-
 {% endblock %}
