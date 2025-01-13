@@ -73,12 +73,11 @@ def patient_signup(request):
                 'password': password,
             }
             messages.info(request, "An OTP has been sent to your email. Please verify it to complete the registration.")
-            return redirect('frontend:patient_verify_otp')  # Redirect to OTP verification page
+            return redirect('frontend:patient_verify_otp')  
         except Exception as e:
             messages.error(request, f"Error sending OTP: {str(e)}")
             return redirect('frontend:patient_signup')
 
-    # Pass the choices to the template context for the form
     context = {
         'greeting_choices': Patient.GREETING_CHOICES,
         'gender_choices': Patient.GENDER_CHOICES,
@@ -108,13 +107,13 @@ def verify_otp(request):
                     mobile_phone=patient_data['mobile_phone'],
                     date_of_birth=patient_data['date_of_birth'],
                     email=patient_data['email'],
-                    password=patient_data['password']  # Consider hashing the password before saving
+                    password=patient_data['password']  
                 )
                 patient.save()
                 
                 request.session.flush()
                 messages.success(request, "Patient signed up successfully!")
-                return redirect('frontend:success')  # Redirect after successful registration
+                return redirect('frontend:success')  
             except Exception as e:
                 messages.error(request, f"An error occurred while saving the data: {str(e)}")
                 return redirect('patient_signup')
@@ -122,7 +121,7 @@ def verify_otp(request):
             messages.error(request, "Invalid OTP. Please try again.")
             return redirect('patient_verify_otp')
 
-    return render(request, 'verify_otp.html')  # Render OTP verification form
+    return render(request, 'verify_otp.html')  
 
 
 
@@ -139,7 +138,7 @@ def practitioner_signup(request):
         specialty = request.POST.get('specialty')
         email = request.POST.get('email')
         password = request.POST.get('password')
-        terms_accepted = request.POST.get('terms') == 'on'  # Checkbox for terms acceptance
+        terms_accepted = request.POST.get('terms') == 'on'  
 
         # Check if the email already exists in the database
         if Practitioner.objects.filter(email=email).exists():
@@ -159,6 +158,8 @@ def practitioner_signup(request):
         # Generate OTP and send it to the provided email
         otp = generate_otp()
         try:
+            
+            
             send_mail(
                 'Your OTP for Email Verification',
                 f'Your OTP for email verification is {otp}.',
@@ -305,15 +306,14 @@ def logout(request):
 
 
 
-    
-    
-
 
 
 
 
 def success(request):
     return render(request, 'success.html')
+
+
 
 
 
