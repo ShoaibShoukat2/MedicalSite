@@ -120,8 +120,9 @@
     </table>
 </div>
 <div class="text-center">
-    <button class="btn btn-success proceed-btn">Proceed to Pay</button>
+    <a href="{% url 'patientdashboard:payment' %}" class="btn btn-success proceed-btn">Proceed to Pay</a>
 </div>
+
 {% endblock %}
 
 {% block extra_js %}

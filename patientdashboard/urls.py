@@ -12,6 +12,12 @@ urlpatterns = [
     path('payment/', views.payment, name='payment'),
     path('booking_success/', views.booking_success, name='booking_success'),
     path('view_invoice/', views.view_invoice, name='view_invoice'),
+    path('doctor_profile/', views.doctor_profile, name='doctor_profile'),
+    path('telemedicine/', views.telemedicine, name='telemedicine'),
+    path('chat/', views.chat, name='chat'),
+
+
+
 
 
 

@@ -1,137 +1,83 @@
-
-
-
-
-
 {% extends 'base.html' %}
 {% load static %}
 
 {% block main_content %}
+
+<br>
+<br>
+<br>
 <div class="container my-4">
-    <!-- Appointment 1 -->
-    <div class="appointment-card d-flex align-items-center">
-        <img src="{% static 'img/doctor-thumb-11.jpg' %}" alt="Richard Wilson" class="profile-img mr-3">
-        <div class="flex-grow-1">
-            <h5 class="mb-1">Richard Wilson</h5>
-            <div class="patient-details">
-                <h5><i class="far fa-clock"></i> 14 Nov 2019, 10.00 AM</h5>
-                <h5><i class="fas fa-map-marker-alt"></i> Newyork, United States</h5>
-                <h5><i class="fas fa-envelope"></i> richard@example.com</h5>
-                <h5><i class="fas fa-phone"></i> +1 923 782 4575</h5>
+    <!-- Appointment Card 1 -->
+    <div class="card mb-3 shadow-sm">
+        <div class="card-body d-flex align-items-center">
+            <img src="{% static 'img/doctor-thumb-11.jpg' %}" alt="Richard Wilson" class="rounded mr-3" style="width: 80px; height: 80px; object-fit: cover;">
+            <div class="flex-grow-1">
+                <h5 class="font-weight-bold">Richard Wilson</h5>
+                <p class="mb-1"><i class="far fa-clock"></i> 14 Nov 2019, 10.00 AM</p>
+                <p class="mb-1"><i class="fas fa-map-marker-alt"></i> Newyork, United States</p>
+                <p class="mb-1"><i class="fas fa-envelope"></i> richard@example.com</p>
+                <p class="mb-0"><i class="fas fa-phone"></i> +1 923 782 4575</p>
+            </div>
+            <div>
+                <a href="#" class="btn btn-outline-success btn-sm mr-2"><i class="far fa-eye"></i> View</a>
+                <a href="#" class="btn btn-outline-primary btn-sm mr-2"><i class="fas fa-check"></i> Accept</a>
+                <a href="#" class="btn btn-outline-danger btn-sm"><i class="fas fa-times"></i> Cancel</a>
             </div>
         </div>
-        <div class="appointment-action">
-            <!-- Add data-toggle and data-target for the modal -->
-            <a href="#" class="btn btn-view btn-sm" data-toggle="modal" data-target="#viewAppointmentModal">
-                <i class="far fa-eye"></i> View
-            </a>
-            <a href="#" class="btn btn-accept btn-sm"><i class="fas fa-check"></i> Accept</a>
-            <a href="#" class="btn btn-cancel btn-sm"><i class="fas fa-times"></i> Cancel</a>
-        </div>
     </div>
 
-
-    <!-- Appointment 2 -->
-    <div class="appointment-card d-flex align-items-center">
-      <img src="{% static 'img/doctor-thumb-02.jpg' %}" alt="Charlene Reed" class="profile-img mr-3">
-      <div class="flex-grow-1">
-          <h5 class="mb-1">Charlene Reed</h5>
-          <div class="patient-details">
-              <h5><i class="far fa-clock"></i> 12 Nov 2019, 5.00 PM</h5>
-              <h5><i class="fas fa-map-marker-alt"></i> North Carolina, United States</h5>
-              <h5><i class="fas fa-envelope"></i> charlenereed@example.com</h5>
-              <h5><i class="fas fa-phone"></i> +1 828 632 9170</h5>
-          </div>
-      </div>
-      <div class="appointment-action">
-        <!-- Add data-toggle and data-target for the modal -->
-        <a href="#" class="btn btn-view btn-sm" data-toggle="modal" data-target="#viewAppointmentModal">
-            <i class="far fa-eye"></i> View
-        </a>
-        <a href="#" class="btn btn-accept btn-sm"><i class="fas fa-check"></i> Accept</a>
-        <a href="#" class="btn btn-cancel btn-sm"><i class="fas fa-times"></i> Cancel</a>
-    </div>
-  </div>
-  <div class="appointment-card d-flex align-items-center mb-3">
-    <img src="{% static 'img/doctor-thumb-03.jpg' %}" alt="Elsie Gilley" class="profile-img mr-3">
-    <div class="flex-grow-1">
-        <h5 class="mb-1">Elsie Gilley</h5>
-        <div class="patient-details">
-            <h5><i class="far fa-clock"></i> 6 Nov 2019, 9.00 AM</h5>
-            <h5><i class="fas fa-map-marker-alt"></i> Kentucky, United States</h5>
-            <h5><i class="fas fa-envelope"></i> elsiegilley@example.com</h5>
-            <h5><i class="fas fa-phone"></i> +1 315 384 4562</h5>
-        </div>
-    </div>
-    <div class="appointment-action">
-      <!-- Add data-toggle and data-target for the modal -->
-      <a href="#" class="btn btn-view btn-sm" data-toggle="modal" data-target="#viewAppointmentModal">
-          <i class="far fa-eye"></i> View
-      </a>
-      <a href="#" class="btn btn-accept btn-sm"><i class="fas fa-check"></i> Accept</a>
-      <a href="#" class="btn btn-cancel btn-sm"><i class="fas fa-times"></i> Cancel</a>
-  </div>
-</div>
-<div class="appointment-card d-flex align-items-center mb-3">
-  <img src="{% static 'img/doctor-thumb-10.jpg' %}" alt="Gina Moore" class="profile-img mr-3">
-  <div class="flex-grow-1">
-      <h5 class="mb-1">Gina Moore</h5>
-      <div class="patient-details">
-          <h5><i class="far fa-clock"></i> 8 Nov 2019, 3.00 PM</h5>
-          <h5><i class="fas fa-map-marker-alt"></i> Florida, United States</h5>
-          <h5><i class="fas fa-envelope"></i> ginamoore@example.com</h5>
-          <h5><i class="fas fa-phone"></i> +1 954 820 7887</h5>
-      </div>
-  </div>
-  <div class="appointment-action">
-    <!-- Add data-toggle and data-target for the modal -->
-    <a href="#" class="btn btn-view btn-sm" data-toggle="modal" data-target="#viewAppointmentModal">
-        <i class="far fa-eye"></i> View
-    </a>
-    <a href="#" class="btn btn-accept btn-sm"><i class="fas fa-check"></i> Accept</a>
-    <a href="#" class="btn btn-cancel btn-sm"><i class="fas fa-times"></i> Cancel</a>
-</div></div>
-
-<!-- Modal for Viewing Appointment Details -->
-<div class="modal fade" id="viewAppointmentModal" tabindex="-1" role="dialog" aria-labelledby="viewAppointmentModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="viewAppointmentModalLabel">Appointment Details</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+    <!-- Appointment Card 2 -->
+    <div class="card mb-3 shadow-sm">
+        <div class="card-body d-flex align-items-center">
+            <img src="{% static 'img/doctor-thumb-02.jpg' %}" alt="Charlene Reed" class="rounded mr-3" style="width: 80px; height: 80px; object-fit: cover;">
+            <div class="flex-grow-1">
+                <h5 class="font-weight-bold">Charlene Reed</h5>
+                <p class="mb-1"><i class="far fa-clock"></i> 12 Nov 2019, 5.00 PM</p>
+                <p class="mb-1"><i class="fas fa-map-marker-alt"></i> North Carolina, United States</p>
+                <p class="mb-1"><i class="fas fa-envelope"></i> charlenereed@example.com</p>
+                <p class="mb-0"><i class="fas fa-phone"></i> +1 828 632 9170</p>
             </div>
-            <div class="modal-body">
-                <ul class="info-details">
-                    <li>
-                        <div class="details-header">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <span class="title">#APT0001</span>
-                                    <span class="text">21 Oct 2019, 10:00 AM</span>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="text-right">
-                                        <button type="button" class="btn bg-success-light btn-sm" id="topup_status">Completed</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                    <li>
-                        <span class="title">Status:</span>
-                        <span class="text">Completed</span>
-                    </li>
-                    <li>
-                        <span class="title">Confirm Date:</span>
-                        <span class="text">29 Jun 2019</span>
-                    </li>
-                    <li>
-                        <span class="title">Paid Amount:</span>
-                        <span class="text">$450</span>
-                    </li>
-                </ul>
+            <div>
+                <a href="#" class="btn btn-outline-success btn-sm mr-2"><i class="far fa-eye"></i> View</a>
+                <a href="#" class="btn btn-outline-primary btn-sm mr-2"><i class="fas fa-check"></i> Accept</a>
+                <a href="#" class="btn btn-outline-danger btn-sm"><i class="fas fa-times"></i> Cancel</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Appointment Card 2 -->
+    <div class="card mb-3 shadow-sm">
+        <div class="card-body d-flex align-items-center">
+            <img src="{% static 'img/doctor-thumb-02.jpg' %}" alt="Charlene Reed" class="rounded mr-3" style="width: 80px; height: 80px; object-fit: cover;">
+            <div class="flex-grow-1">
+                <h5 class="font-weight-bold">Charlene Reed</h5>
+                <p class="mb-1"><i class="far fa-clock"></i> 12 Nov 2019, 5.00 PM</p>
+                <p class="mb-1"><i class="fas fa-map-marker-alt"></i> North Carolina, United States</p>
+                <p class="mb-1"><i class="fas fa-envelope"></i> charlenereed@example.com</p>
+                <p class="mb-0"><i class="fas fa-phone"></i> +1 828 632 9170</p>
+            </div>
+            <div>
+                <a href="#" class="btn btn-outline-success btn-sm mr-2"><i class="far fa-eye"></i> View</a>
+                <a href="#" class="btn btn-outline-primary btn-sm mr-2"><i class="fas fa-check"></i> Accept</a>
+                <a href="#" class="btn btn-outline-danger btn-sm"><i class="fas fa-times"></i> Cancel</a>
+            </div>
+        </div>
+    </div>
+    <!-- Appointment Card 2 -->
+    <div class="card mb-3 shadow-sm">
+        <div class="card-body d-flex align-items-center">
+            <img src="{% static 'img/doctor-thumb-02.jpg' %}" alt="Charlene Reed" class="rounded mr-3" style="width: 80px; height: 80px; object-fit: cover;">
+            <div class="flex-grow-1">
+                <h5 class="font-weight-bold">Charlene Reed</h5>
+                <p class="mb-1"><i class="far fa-clock"></i> 12 Nov 2019, 5.00 PM</p>
+                <p class="mb-1"><i class="fas fa-map-marker-alt"></i> North Carolina, United States</p>
+                <p class="mb-1"><i class="fas fa-envelope"></i> charlenereed@example.com</p>
+                <p class="mb-0"><i class="fas fa-phone"></i> +1 828 632 9170</p>
+            </div>
+            <div>
+                <a href="#" class="btn btn-outline-success btn-sm mr-2"><i class="far fa-eye"></i> View</a>
+                <a href="#" class="btn btn-outline-primary btn-sm mr-2"><i class="fas fa-check"></i> Accept</a>
+                <a href="#" class="btn btn-outline-danger btn-sm"><i class="fas fa-times"></i> Cancel</a>
             </div>
         </div>
     </div>

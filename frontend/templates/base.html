@@ -15,12 +15,29 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
 
-
+        /* Fix for dropdown overflow */
+        .dropdown-menu {
+            max-height: 400px; /* Adjust height as needed */
+            overflow-y: auto; /* Add scroll if content exceeds height */
+            overflow-x: hidden; /* Prevent horizontal overflow */
+            position: absolute; /* Ensure dropdown is properly aligned */
+        }
+        
+        /* Adjust for right-side alignment to prevent overflow */
+        .nav-item.dropdown .dropdown-menu {
+            right: 0;
+            left: auto;
+        }
+        
         /* Navbar styling */
         .navbar {
             z-index: 1040;
             background-color: #fff !important; /* White background */
             border-bottom: 1px solid #ddd; /* Optional: subtle border */
+          
+                position: fixed;
+                top: 0;
+               
         }
 
         /* Custom burger icon styling */
@@ -169,6 +186,11 @@
         .slick-list {
             margin: 0 -15px;
         }
+        /* Add this to your stylesheet */
+        .container {
+            margin-top: 100px; /* Adjust based on the height of your top bar */
+        }
+        
     </style>
 </head>
 
@@ -218,26 +240,39 @@
                     </li>
                     {% else %}
                     <!-- Patient Dropdown -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="patientDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Patient
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="patientDropdown">
-                            <li><a class="dropdown-item" href="{% url 'frontend:patient_login' %}">Patient Login</a></li>
-                            <li><a class="dropdown-item" href="{% url 'frontend:patient_signup' %}">Patient Signup</a></li>
-                        </ul>
-                    </li>
-    
-                    <!-- Practitioner Dropdown -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="practitionerDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Practitioner
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="practitionerDropdown">
-                            <li><a class="dropdown-item" href="{% url 'frontend:practitioner_login' %}">Practitioner Login</a></li>
-                            <li><a class="dropdown-item" href="{% url 'frontend:practitioner_signup' %}">Practitioner Signup</a></li>
-                        </ul>
-                    </li>
+                    <!-- Patient Dropdown -->
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="patientDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Patient
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="patientDropdown">
+        <li><a class="dropdown-item" href="{% url 'frontend:patient_login' %}">Patient Login</a></li>
+        <li><a class="dropdown-item" href="{% url 'frontend:patient_signup' %}">Patient Signup</a></li>
+        <li><a class="dropdown-item" href="{% url 'patientdashboard:search' %}">Search and Book Appointments</a></li>
+        <li><a class="dropdown-item" href="{% url 'patientdashboard:doctor_profile' %}">Practitioner Profiles and Reviews</a></li>
+        <li><a class="dropdown-item" href="{% url 'patientdashboard:telemedicine' %}">Telemedicine Services</a></li>
+        <li><a class="dropdown-item" href="{% url 'patientdashboard:chat' %}">Communication with Practitioners</a></li>
+    </ul>
+</li>
+
+<!-- Practitioner Dropdown -->
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="practitionerDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Practitioner
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="practitionerDropdown">
+        <li><a class="dropdown-item" href="{% url 'frontend:practitioner_login' %}">Practitioner Login</a></li>
+        <li><a class="dropdown-item" href="{% url 'frontend:practitioner_signup' %}">Practitioner Signup</a></li>
+        <li><a class="dropdown-item" href="{% url 'frontend:appointment' %}">Appointment Management</a></li>
+        <li><a class="dropdown-item" href="">Patient Records and History</a></li>
+        <li><a class="dropdown-item" href="">Telemedicine Services</a></li>
+        <li><a class="dropdown-item" href="">Billing and Payments</a></li>
+        <li><a class="dropdown-item" href="">Notifications and Reminders</a></li>
+        <li><a class="dropdown-item" href="">Communication with Patients</a></li>
+        <li><a class="dropdown-item" href="">Analytics</a></li>
+    </ul>
+</li>
+
                     {% endif %}
                 </ul>
             </div>

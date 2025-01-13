@@ -18,6 +18,17 @@ def payment(request):
 
 
 
+def telemedicine(request):
+    return render(request, 'patientdashboard/telemedicine.html')
+
+
+def chat(request):
+    return render(request, 'patientdashboard/chat.html')
+
+def doctor_profile(request):
+    return render(request, 'patientdashboard/doctor_profile.html')
+
+
 
 def booking_success(request):
     return render(request, 'patientdashboard/booking_success.html')
