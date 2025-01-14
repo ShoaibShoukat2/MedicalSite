@@ -271,7 +271,6 @@
                     <i class="fas fa-user-md me-2"></i> Patient
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="patientDropdown">
-                    <li><a class="dropdown-item" href="{% url 'frontend:patient_login' %}">Patient Login</a></li>
                     <li><a class="dropdown-item" href="{% url 'frontend:patient_signup' %}">Patient Signup</a></li>
                     <li><a class="dropdown-item" href="{% url 'patientdashboard:appointments_patients' %}">Patient Dashboard</a></li>
                 </ul>
@@ -283,7 +282,6 @@
                     <i class="fas fa-notes-medical me-2"></i> Practitioner
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="practitionerDropdown">
-                    <li><a class="dropdown-item" href="{% url 'frontend:practitioner_login' %}">Practitioner Login</a></li>
                     <li><a class="dropdown-item" href="{% url 'frontend:practitioner_signup' %}">Practitioner Signup</a></li>
                     <li><a class="dropdown-item" href="{% url 'patientdashboard:dashboard' %}">Practitioner Dashboard</a></li>
                 </ul>
