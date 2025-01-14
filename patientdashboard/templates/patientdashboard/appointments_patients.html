@@ -1,0 +1,132 @@
+{% extends 'patientdashboard/patient_base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container my-5">
+    <ul class="nav nav-tabs mb-3" id="appointments-tabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="appointments-tab" data-bs-toggle="tab" data-bs-target="#appointments" type="button" role="tab" aria-controls="appointments" aria-selected="true">
+                Appointments
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="prescriptions-tab" data-bs-toggle="tab" data-bs-target="#prescriptions" type="button" role="tab" aria-controls="prescriptions" aria-selected="false">
+                Prescriptions
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="records-tab" data-bs-toggle="tab" data-bs-target="#records" type="button" role="tab" aria-controls="records" aria-selected="false">
+                Medical Records
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="billing-tab" data-bs-toggle="tab" data-bs-target="#billing" type="button" role="tab" aria-controls="billing" aria-selected="false">
+                Billing
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="appointments-tabs-content">
+        <div class="tab-pane fade show active" id="appointments" role="tabpanel" aria-labelledby="appointments-tab">
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered align-middle text-center">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Doctor</th>
+                            <th>Appt Date</th>
+                            <th>Booking Date</th>
+                            <th>Amount</th>
+                            <th>Follow Up</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <img src="{% static 'img/doctor-thumb-01.jpg' %}" alt="Doctor" class="rounded-circle me-2">
+                                <div class="d-inline-block text-start">
+                                    <strong>Dr. Ruby Perrin</strong><br>
+                                    <small>Dental</small>
+                                </div>
+                            </td>
+                            <td>14 Nov 2019<br><small>10:00 AM</small></td>
+                            <td>12 Nov 2019</td>
+                            <td>$160</td>
+                            <td>16 Nov 2019</td>
+                            <td><span class="badge bg-success">Confirm</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary">Print</button>
+                                <button class="btn btn-sm btn-outline-info">View</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <img src="{% static 'img/doctor-thumb-01.jpg' %}" alt="Doctor" class="rounded-circle me-2">
+                                <div class="d-inline-block text-start">
+                                    <strong>Dr. Darren Elder</strong><br>
+                                    <small>Dental</small>
+                                </div>
+                            </td>
+                            <td>12 Nov 2019<br><small>8:00 PM</small></td>
+                            <td>12 Nov 2019</td>
+                            <td>$250</td>
+                            <td>14 Nov 2019</td>
+                            <td><span class="badge bg-success">Confirm</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary">Print</button>
+                                <button class="btn btn-sm btn-outline-info">View</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <img src="{% static 'img/doctor-thumb-01.jpg' %}" alt="Doctor" class="rounded-circle me-2">
+                                <div class="d-inline-block text-start">
+                                    <strong>Dr. Deborah Angel</strong><br>
+                                    <small>Cardiology</small>
+                                </div>
+                            </td>
+                            <td>11 Nov 2019<br><small>11:00 AM</small></td>
+                            <td>10 Nov 2019</td>
+                            <td>$400</td>
+                            <td>13 Nov 2019</td>
+                            <td><span class="badge bg-danger">Cancelled</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary">Print</button>
+                                <button class="btn btn-sm btn-outline-info">View</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <img src="{% static 'img/doctor-thumb-01.jpg' %}" alt="Doctor" class="rounded-circle me-2">
+                                <div class="d-inline-block text-start">
+                                    <strong>Dr. Sofia Brient</strong><br>
+                                    <small>Urology</small>
+                                </div>
+                            </td>
+                            <td>10 Nov 2019<br><small>3:00 PM</small></td>
+                            <td>10 Nov 2019</td>
+                            <td>$350</td>
+                            <td>12 Nov 2019</td>
+                            <td><span class="badge bg-warning text-dark">Pending</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary">Print</button>
+                                <button class="btn btn-sm btn-outline-info">View</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="prescriptions" role="tabpanel" aria-labelledby="prescriptions-tab">
+            <p>Prescriptions content goes here...</p>
+        </div>
+        <div class="tab-pane fade" id="records" role="tabpanel" aria-labelledby="records-tab">
+            <p>Medical records content goes here...</p>
+        </div>
+        <div class="tab-pane fade" id="billing" role="tabpanel" aria-labelledby="billing-tab">
+            <p>Billing content goes here...</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

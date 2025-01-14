@@ -1,4 +1,4 @@
-{% extends "patientdashboard/base.html" %}
+{% extends 'patientdashboard/patient_base.html' %}
 {% load static %}
 
 {% block title %}Invoice{% endblock %}
@@ -17,12 +17,12 @@
         justify-content: space-between;
         align-items: flex-start;
         margin-bottom: 30px;
+        flex-wrap: wrap; /* Allows items to wrap for responsiveness */
     }
 
     .invoice-header .logo {
-        width: auto; /* Keep the logo width proportional */
-        max-width: 150px; /* Set a maximum width */
-        height: auto; /* Maintain aspect ratio */
+        max-width: 150px;
+        height: auto;
     }
 
     .invoice-header .order-info {
@@ -61,6 +61,22 @@
         margin-top: 30px;
         color: #555;
     }
+
+    @media (max-width: 768px) {
+        .invoice-header {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .invoice-header .order-info {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .invoice-summary {
+            text-align: center;
+        }
+    }
 </style>
 {% endblock extra_css %}
 
@@ -83,13 +99,13 @@
 
         <!-- Invoice Details -->
         <div class="row mb-4">
-            <div class="col-md-6">
+            <div class="col-12 col-md-6">
                 <h5>Payment Method</h5>
                 <p>Debit Card</p>
                 <p>XXXXXXXXXXXX-2541</p>
                 <p>HDFC Bank</p>
             </div>
-            <div class="col-md-6 text-right">
+            <div class="col-12 col-md-6 text-md-right text-center">
                 <h5>Invoice To</h5>
                 <p>Walter Roberson</p>
                 <p>299 Star Trek Drive, Panama City,<br>Florida, 32405, USA</p>
@@ -97,39 +113,39 @@
         </div>
 
         <!-- Invoice Table -->
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Description</th>
-                    <th>Quantity</th>
-                    <th>VAT</th>
-                    <th>Total</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>General Consultation</td>
-                    <td>1</td>
-                    <td>$0</td>
-                    <td>$100</td>
-                </tr>
-                <tr>
-                    <td>Video Call Booking</td>
-                    <td>1</td>
-                    <td>$0</td>
-                    <td>$250</td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Quantity</th>
+                        <th>VAT</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>General Consultation</td>
+                        <td>1</td>
+                        <td>$0</td>
+                        <td>$100</td>
+                    </tr>
+                    <tr>
+                        <td>Video Call Booking</td>
+                        <td>1</td>
+                        <td>$0</td>
+                        <td>$250</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
         <!-- Invoice Summary -->
-        <div class="invoice-summary">
+        <div class="invoice-summary mt-4">
             <p><strong>Subtotal:</strong> $350</p>
             <p><strong>Discount:</strong> -10%</p>
             <p><strong>Total Amount:</strong> $315</p>
         </div>
-
-       
     </div>
 </div>
 {% endblock %}

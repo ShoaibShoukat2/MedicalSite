@@ -1,138 +1,222 @@
-{% extends "patientdashboard/base.html" %}
+{% extends 'patientdashboard/patient_base.html' %}
 {% load static %}
 
 {% block title %}Book Appointment{% endblock %}
 
 {% block extra_css %}
-
 <style>
+/* Container styles */
+.booking-container {
+    padding: 15px;
+    max-width: 100%;
+    overflow-x: hidden;
+}
 
+/* Doctor card styles */
+.doctor-card {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #fff;
+    flex-wrap: wrap;
+}
+
+.doctor-card img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-right: 1rem;
+}
+
+.doctor-info {
+    flex: 1;
+    min-width: 200px;
+}
+
+/* Schedule table styles */
+.schedule-table {
+    overflow-x: auto;
+    margin: 0 -15px;
+    padding: 0 15px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.schedule-table table {
+    min-width: 700px;
+    margin-bottom: 1.5rem;
+}
+
+.schedule-table th {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+/* Time slot styles */
 .time-slot {
     display: inline-block;
-    padding: 10px 15px;
-    margin: 5px;
+    padding: 8px 12px;
+    margin: 3px;
     border: 1px solid #ddd;
     border-radius: 5px;
     cursor: pointer;
     background-color: #f8f9fa;
     transition: all 0.3s;
     font-weight: bold;
-    position: relative;
+    font-size: 0.9rem;
+    white-space: nowrap;
 }
+
 .time-slot.active {
-    background-color: #007bff; /* Change to a blue color */
-    color: #fff; /* White text for the active slot */
+    background-color: #007bff;
+    color: #fff;
     border-color: #007bff;
 }
+
 .time-slot.active::after {
-    content: '✔'; /* Blue tick mark */
+    content: '✔';
     color: #fff;
-    font-size: 1rem;
-    position: absolute;
-    top: 50%;
-    right: 2px;
-    transform: translateY(-50%);
+    font-size: 0.9rem;
+    margin-left: 5px;
 }
+
 .time-slot:hover {
-    background-color: #0056b3; /* Darker blue for hover */
+    background-color: #0056b3;
     color: #fff;
 }
 
+/* Button styles */
 .proceed-btn {
-    padding: 10px 20px; /* Adjust padding for button size */
-    font-size: 14px; /* Smaller text size */
-    font-weight: bold; /* Bold text */
-    color: white; /* White text */
-    background-color: #28a745; /* Green background */
-    border: none; /* No border */
-    border-radius: 5px; /* Rounded corners */
-    width: auto; /* Remove full width */
-    display: inline-block; /* Prevent block-level width */
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: white;
+    background-color: #28a745;
+    border: none;
+    border-radius: 5px;
+    margin: 1rem 0;
+    width: auto;
+    min-width: 200px;
 }
 
 .proceed-btn:hover {
-    background-color: #218838; /* Darker green on hover */
+    background-color: #218838;
 }
 
-.text-center {
-    margin-top: 20px; /* Add some margin above */
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .doctor-card {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .doctor-card img {
+        margin: 0 auto 1rem auto;
+    }
+    
+    .doctor-info {
+        width: 100%;
+        text-align: center;
+    }
+    
+    .time-slot {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+    }
+    
+    .schedule-table th {
+        font-size: 0.8rem;
+        padding: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .booking-container {
+        padding: 10px;
+    }
+    
+    .proceed-btn {
+        width: 100%;
+        margin: 1rem 0;
+    }
 }
 </style>
-
-{% endblock extra_css%}
+{% endblock extra_css %}
 
 {% block content %}
-<div class="doctor-card d-flex align-items-center mb-4 p-3 border rounded">
-    <!-- Doctor's Profile Picture -->
-    <img src="{% static 'img/doctor-thumb-02.jpg' %}" alt="Doctor Image" class="img-thumbnail mr-3">
-    <div class="doctor-info">
-        <h5>Dr. Darren Elder</h5>
-        <div class="rating text-warning">
-            ⭐⭐⭐⭐ 4.0
+<div class="booking-container">
+    <div class="doctor-card">
+        <img src="{% static 'img/doctor-thumb-02.jpg' %}" alt="Doctor Image">
+        <div class="doctor-info">
+            <h5>Dr. Darren Elder</h5>
+            <div class="rating text-warning">
+                ⭐⭐⭐⭐ 4.0
+            </div>
+            <p class="text-muted">New York, USA</p>
         </div>
-        <p class="text-muted">New York, USA</p>
+    </div>
+
+    <div class="schedule-table">
+        <table class="table table-bordered text-center">
+            <thead>
+                <tr>
+                    <th>Mon<br>11 NOV 2019</th>
+                    <th>Tue<br>12 NOV 2019</th>
+                    <th>Wed<br>13 NOV 2019</th>
+                    <th>Thu<br>14 NOV 2019</th>
+                    <th>Fri<br>15 NOV 2019</th>
+                    <th>Sat<br>16 NOV 2019</th>
+                    <th>Sun<br>17 NOV 2019</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><div class="time-slot">9:00 AM</div></td>
+                    <td><div class="time-slot">9:00 AM</div></td>
+                    <td><div class="time-slot">9:00 AM</div></td>
+                    <td><div class="time-slot">9:00 AM</div></td>
+                    <td><div class="time-slot">9:00 AM</div></td>
+                    <td><div class="time-slot">9:00 AM</div></td>
+                    <td><div class="time-slot">9:00 AM</div></td>
+                </tr>
+                <tr>
+                    <td><div class="time-slot">10:00 AM</div></td>
+                    <td><div class="time-slot">10:00 AM</div></td>
+                    <td><div class="time-slot">10:00 AM</div></td>
+                    <td><div class="time-slot">10:00 AM</div></td>
+                    <td><div class="time-slot active">10:00 AM</div></td>
+                    <td><div class="time-slot">10:00 AM</div></td>
+                    <td><div class="time-slot">10:00 AM</div></td>
+                </tr>
+                <tr>
+                    <td><div class="time-slot">11:00 AM</div></td>
+                    <td><div class="time-slot">11:00 AM</div></td>
+                    <td><div class="time-slot">11:00 AM</div></td>
+                    <td><div class="time-slot">11:00 AM</div></td>
+                    <td><div class="time-slot">11:00 AM</div></td>
+                    <td><div class="time-slot">11:00 AM</div></td>
+                    <td><div class="time-slot">11:00 AM</div></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="text-center">
+        <a href="{% url 'patientdashboard:payment' %}" class="btn proceed-btn">Proceed to Pay</a>
     </div>
 </div>
-
-<!-- Schedule Table -->
-<div class="schedule-table">
-    <table class="table table-bordered text-center">
-        <thead>
-            <tr>
-                <th>Mon<br>11 NOV 2019</th>
-                <th>Tue<br>12 NOV 2019</th>
-                <th>Wed<br>13 NOV 2019</th>
-                <th>Thu<br>14 NOV 2019</th>
-                <th>Fri<br>15 NOV 2019</th>
-                <th>Sat<br>16 NOV 2019</th>
-                <th>Sun<br>17 NOV 2019</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><div class="time-slot">9:00 AM</div></td>
-                <td><div class="time-slot">9:00 AM</div></td>
-                <td><div class="time-slot">9:00 AM</div></td>
-                <td><div class="time-slot">9:00 AM</div></td>
-                <td><div class="time-slot">9:00 AM</div></td>
-                <td><div class="time-slot">9:00 AM</div></td>
-                <td><div class="time-slot">9:00 AM</div></td>
-            </tr>
-            <tr>
-                <td><div class="time-slot">10:00 AM</div></td>
-                <td><div class="time-slot">10:00 AM</div></td>
-                <td><div class="time-slot">10:00 AM</div></td>
-                <td><div class="time-slot">10:00 AM</div></td>
-                <td><div class="time-slot active">10:00 AM</div></td>
-                <td><div class="time-slot">10:00 AM</div></td>
-                <td><div class="time-slot">10:00 AM</div></td>
-            </tr>
-            <tr>
-                <td><div class="time-slot">11:00 AM</div></td>
-                <td><div class="time-slot">11:00 AM</div></td>
-                <td><div class="time-slot">11:00 AM</div></td>
-                <td><div class="time-slot">11:00 AM</div></td>
-                <td><div class="time-slot">11:00 AM</div></td>
-                <td><div class="time-slot">11:00 AM</div></td>
-                <td><div class="time-slot">11:00 AM</div></td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-<div class="text-center">
-    <a href="{% url 'patientdashboard:payment' %}" class="btn btn-success proceed-btn">Proceed to Pay</a>
-</div>
-
 {% endblock %}
 
 {% block extra_js %}
 <script>
-    // JavaScript to handle active time-slot selection
     document.querySelectorAll('.time-slot').forEach(slot => {
-        slot.addEventListener('click', function () {
-            // Remove active class from all time slots
+        slot.addEventListener('click', function() {
             document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('active'));
-            // Add active class to the clicked time slot
             this.classList.add('active');
         });
     });
