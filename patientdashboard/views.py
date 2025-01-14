@@ -37,3 +37,6 @@ def booking_success(request):
 
 def view_invoice(request):
     return render(request, 'patientdashboard/view_invoice.html')
+
+
+

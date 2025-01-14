@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password, check_password
 from user_account.models import Patient, Practitioner
 from django.contrib import messages
 import random
@@ -26,8 +26,10 @@ def generate_otp():
 def appointment(request):
     return render(request, 'appointment.html')
 
+
+
+
 def patient_signup(request):
-        
     if request.method == 'POST':
         # Retrieve form data from the POST request
         greeting = request.POST.get('greeting')
@@ -40,7 +42,7 @@ def patient_signup(request):
         password = request.POST.get('password')
 
         # Perform form validation
-        if not greeting or not first_name or not last_name or not gender or not mobile_phone or not date_of_birth or not email or not password:
+        if not all([greeting, first_name, last_name, gender, mobile_phone, date_of_birth, email, password]):
             messages.error(request, "All fields are required.")
             return redirect('frontend:patient_signup')
 
@@ -51,7 +53,6 @@ def patient_signup(request):
 
         # Generate OTP and send it to the provided email
         otp = generate_otp()
-        # You can use Django's send_mail function or any email service
         try:
             send_mail(
                 'Your OTP for Email Verification',
@@ -60,6 +61,8 @@ def patient_signup(request):
                 [email],
                 fail_silently=False,
             )
+            # Hash the password before storing it in the session
+            hashed_password = make_password(password)
             # Save OTP in the session to verify later
             request.session['otp'] = otp
             request.session['patient_data'] = {
@@ -70,7 +73,7 @@ def patient_signup(request):
                 'mobile_phone': mobile_phone,
                 'date_of_birth': date_of_birth,
                 'email': email,
-                'password': password,
+                'password': hashed_password,
             }
             messages.info(request, "An OTP has been sent to your email. Please verify it to complete the registration.")
             return redirect('frontend:patient_verify_otp')  
@@ -83,6 +86,8 @@ def patient_signup(request):
         'gender_choices': Patient.GENDER_CHOICES,
     }
     return render(request, 'Patient.html', context)
+
+
 
 
 
@@ -116,12 +121,19 @@ def verify_otp(request):
                 return redirect('frontend:success')  
             except Exception as e:
                 messages.error(request, f"An error occurred while saving the data: {str(e)}")
-                return redirect('patient_signup')
+                return redirect('frontend:patient_signup')
         else:
             messages.error(request, "Invalid OTP. Please try again.")
-            return redirect('patient_verify_otp')
+            return redirect('frontend:patient_verify_otp')
 
     return render(request, 'verify_otp.html')  
+
+
+
+
+
+
+
 
 
 
@@ -233,36 +245,42 @@ def practitioner_verify_otp(request):
 
 
 def patient_login(request):
+    context = {}
     if request.method == 'POST':
         # Retrieve email and password from the login form
         email = request.POST.get('email')
         password = request.POST.get('password')
         
-
         # Validate input fields
         if not email or not password:
-            messages.error(request, "Email and Password are required.")
-            return redirect('frontend:patient_login')
+            context['error'] = "Email and Password are required."
+            return render(request, 'PatientLogin.html', context)
 
         # Check if a patient with the given email exists
         try:
             patient = Patient.objects.get(email=email)
         except Patient.DoesNotExist:
-            messages.error(request, "Invalid email or password.")
-            return redirect('frontend:patient_login')
+            context['error'] = "Invalid email or password."
+            return render(request, 'PatientLogin.html', context)
 
         # Verify the password
-        if patient.password == password:  # Ensure you hash the password during signup and use proper comparison
-            # Mark the user as logged in (you can replace this with Django's authentication system)
+        if check_password(password, patient.password):  # Use Django's `check_password` to validate
+            # Mark the user as logged in (consider using Django's authentication system for better security)
             request.session['patient_id'] = patient.id
             request.session['patient_name'] = patient.first_name
-            messages.success(request, f"Welcome back, {patient.first_name}!")
+            context['success'] = f"Welcome back, {patient.first_name}!"
             return redirect('frontend:index')  # Redirect to a dashboard or home page
         else:
-            messages.error(request, "Invalid email or password.")
-            return redirect('frontend:patient_login')
+            context['error'] = "Invalid email or password."
+            return render(request, 'PatientLogin.html', context)
 
-    return render(request, 'PatientLogin.html')
+    return render(request, 'PatientLogin.html', context)
+
+
+
+
+
+
 
 
 
