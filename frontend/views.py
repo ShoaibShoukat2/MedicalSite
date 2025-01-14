@@ -257,7 +257,7 @@ def patient_login(request):
             request.session['patient_id'] = patient.id
             request.session['patient_name'] = patient.first_name
             messages.success(request, f"Welcome back, {patient.first_name}!")
-            return redirect('frontend:index')  # Redirect to a dashboard or home page
+            return redirect('patientdashboard:dashboard')  # Redirect to a dashboard or home page
         else:
             messages.error(request, "Invalid email or password.")
             return redirect('frontend:patient_login')
@@ -268,7 +268,7 @@ def patient_login(request):
 
 
 def practitioner_login(request):
-    if request.method == 'POST':
+    if request.method == 'POST': 
         email = request.POST.get('email')
         password = request.POST.get('password')
 
@@ -285,7 +285,7 @@ def practitioner_login(request):
                 
                 
                 messages.success(request, 'Login successful.')
-                return redirect('frontend:index')  # Replace with the practitioner's dashboard URL
+                return redirect('patientdashboard')  # Redirect to a dashboard or home page
             else:
                 messages.error(request, 'Invalid password.')
         except Practitioner.DoesNotExist:

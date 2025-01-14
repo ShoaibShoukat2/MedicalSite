@@ -1,4 +1,6 @@
 {% extends "patientdashboard/base.html" %}
+{% load static %}
+
 {% block content %}
 <div class="content">
     <div class="row justify-content-start" style="margin-left: 5%;">
@@ -33,5 +35,123 @@
             </div>
         </div>
     </div>
+    <div class="container mt-4">
+        <h4 class="mb-3">Patient Appointment</h4>
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#upcoming">Upcoming</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#today">Today</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <!-- Upcoming Appointments -->
+            <div id="upcoming" class="tab-pane fade show active">
+                <div class="table-responsive mt-3">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Patient Name</th>
+                                <th>Appt Date</th>
+                                <th>Purpose</th>
+                                <th>Type</th>
+                                <th>Paid Amount</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <img src="{% static 'assets/img/doctor-thumb-01.jpg' %}" class="rounded-circle me-2" alt="Patient Image" width="40" height="40">
+                                        <div>
+                                            <h6 class="mb-0">Richard Wilson</h6>
+                                            <small>#PT0016</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>11 Nov 2019 <br><small class="text-muted">10:00 AM</small></td>
+                                <td>General</td>
+                                <td>New Patient</td>
+                                <td>$150</td>
+                                <td>
+                                    <div class="d-flex flex-column gap-2">
+                                        <button class="btn btn-sm btn-primary w-100">View</button>
+                                        <button class="btn btn-sm btn-success w-100">Accept</button>
+                                        <button class="btn btn-sm btn-danger w-100">Cancel</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <img src="{% static 'assets/img/doctor-thumb-01.jpg' %}" class="rounded-circle me-2" alt="Patient Image" width="40" height="40">
+                                        <div>
+                                            <h6 class="mb-0">Richard Wilson</h6>
+                                            <small>#PT0016</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>11 Nov 2019 <br><small class="text-muted">10:00 AM</small></td>
+                                <td>General</td>
+                                <td>New Patient</td>
+                                <td>$150</td>
+                                <td>
+                                    <div class="d-flex flex-column gap-2">
+                                        <button class="btn btn-sm btn-primary w-100">View</button>
+                                        <button class="btn btn-sm btn-success w-100">Accept</button>
+                                        <button class="btn btn-sm btn-danger w-100">Cancel</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- Today's Appointments -->
+            <div id="today" class="tab-pane fade">
+                <div class="table-responsive mt-3">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Patient Name</th>
+                                <th>Appt Date</th>
+                                <th>Purpose</th>
+                                <th>Type</th>
+                                <th>Paid Amount</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <img src="{% static 'assets/img/doctor-thumb-01.jpg' %}" class="rounded-circle me-2" alt="Patient Image" width="40" height="40">
+                                        <div>
+                                            <h6 class="mb-0">Carl Kelly</h6>
+                                            <small>#PT0003</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>13 Jan 2025 <br><small class="text-muted">2:30 PM</small></td>
+                                <td>Dental</td>
+                                <td>New Patient</td>
+                                <td>$300</td>
+                                <td>
+                                    <div class="d-flex flex-column gap-2">
+                                        <button class="btn btn-sm btn-primary w-100">View</button>
+                                        <button class="btn btn-sm btn-success w-100">Accept</button>
+                                        <button class="btn btn-sm btn-danger w-100">Cancel</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
 </div>
 {% endblock content %}

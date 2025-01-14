@@ -1,29 +1,37 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block main_content %}
-<!-- Medical Background Section -->
-<div class="container" style="background-color: #f4f9fd; padding-top: 60px;">
-    <div class="col-md-9 col-lg-10 ms-auto" style="margin-left: 270px; padding-top: 20px;">
-        <!-- Our Services Section -->
-        <div class="container my-5">
-            <!-- Large Doctor Background Section with Stylish Search Bar -->
-            <section style="background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnbcgIotPJiEIVcq3fW5efjjcQK55ZpzkZNQ&s'); background-size: cover; background-position: center; height: 600px; position: relative; border-bottom: 5px solid #007bff;">
-                <div style="background: rgba(0, 0, 0, 0.4); position: absolute; top: 0; left: 0; right: 0; bottom: 0; transition: all 0.5s ease;"></div>
-                <div class="container" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
-                    <h2 class="text-white mb-4 font-weight-bold" style="font-size: 40px; text-shadow: 2px 2px 5px rgba(0,0,0,0.7); animation: fadeIn 2s ease-in-out;">Find the Best Healthcare Services</h2>
+<div class="content-wrapper">
+    <div class="main-banner container" id="top">  <!-- Add container class here -->
+        <div class="video-container">  <!-- Add new wrapper div -->
+            <video autoplay muted loop id="bg-video">
+                <source src="{% static 'assets/video/medical.mp4' %}" type="video/mp4" />
+            </video>
+            <div class="video-overlay header-text">
+                <div class="caption">
+                    <h6>Healing begins within</h6>
+                    <h2>Find the Best <em style="color:SteelBlue;">Health</em> Advice</h2>
                     <div class="row justify-content-center">
-                        <div class="col-md-8">
-                            <div class="input-group shadow-lg rounded-pill">
-                                <input type="text" class="form-control border-light py-3 px-4" placeholder="Search for doctors, services, or specialties..." aria-label="Search" aria-describedby="basic-addon2" style="border-radius: 30px; font-size: 18px; padding-left: 20px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); transition: all 0.3s ease;">
-                                <button class="btn btn-primary rounded-pill shadow-sm" type="button" id="basic-addon2" style="border-radius: 30px; background-color: #28a745; color: white; padding: 12px 25px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); font-size: 18px;">
-                                    <i class="fas fa-search"></i>
-                                </button>
+                        <div class="row justify-content-center">
+                            <div class="col-md-8">
+                                <div class="input-group shadow-lg rounded-pill">
+                                    <input type="text" class="form-control border-light py-3 px-4" placeholder="Search for doctors, services, or specialties..." aria-label="Search" aria-describedby="basic-addon2" style="border-radius: 30px; font-size: 18px; padding-left: 20px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); transition: all 0.3s ease;">
+                                    <button class="btn btn-primary rounded-pill shadow-sm" type="button" id="basic-addon2" style="border-radius: 30px; background-color: #28a745; color: white; padding: 12px 25px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); font-size: 18px;">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </section>
-
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Medical Background Section -->
+<div class="container" style="background-color: #f4f9fd; padding-top: 60px;">
+    
+    
 
 
             <br>
