@@ -268,13 +268,8 @@ def patient_login(request):
             # Mark the user as logged in (consider using Django's authentication system for better security)
             request.session['patient_id'] = patient.id
             request.session['patient_name'] = patient.first_name
-<<<<<<< HEAD
             context['success'] = f"Welcome back, {patient.first_name}!"
             return redirect('frontend:index')  # Redirect to a dashboard or home page
-=======
-            messages.success(request, f"Welcome back, {patient.first_name}!")
-            return redirect('patientdashboard:dashboard')  # Redirect to a dashboard or home page
->>>>>>> ad2902326b7a1fb2cfbff81535903d63c0c6678e
         else:
             context['error'] = "Invalid email or password."
             return render(request, 'PatientLogin.html', context)
