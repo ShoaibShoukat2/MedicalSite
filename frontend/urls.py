@@ -10,7 +10,6 @@ urlpatterns = [
     path('patient/', patient_signup, name='patient_signup'),
     path('practitioner/', practitioner_signup, name='practitioner_signup'),
     path('success/', success, name='success'),
-    path('appointment/', appointment, name='appointment'),
 
    
     

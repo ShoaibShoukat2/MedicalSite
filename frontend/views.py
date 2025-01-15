@@ -30,10 +30,6 @@ def generate_otp():
 
 
 
-def appointment(request):
-    return render(request, 'appointment.html')
-
-
 
 
 def patient_signup(request):

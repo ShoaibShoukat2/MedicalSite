@@ -1,11 +1,5 @@
 from django.shortcuts import render
 
-def dashboard_view(request):
-    return render(request, 'patientdashboard/dashboard.html')
-
-def appointment(request):
-    return render(request, 'patientdashboard/book_appointment.html')
-
 def patient_base(request):
     return render(request, 'patientdashboard/patient_base.html')
 def search(request):
@@ -13,6 +7,9 @@ def search(request):
 
 def booking(request):
     return render(request, 'patientdashboard/booking.html')
+
+def chat(request):
+    return render(request, 'patientdashboard/chat.html')
 
 
 
@@ -38,19 +35,6 @@ def booking_success(request):
     return render(request, 'patientdashboard/booking_success.html')
 
 
-
-def chat(request):
-    return render(request, 'patientdashboard/chat.html')
-
-def reviews(request):
-    return render(request, 'patientdashboard/reviews.html')
-
-
-def schedule_timming(request):
-    return render(request, 'patientdashboard/schedule_time.html')
-
-def mypatient(request):
-    return render(request, 'patientdashboard/mypatient.html')
 
 def view_invoice(request):
     return render(request, 'patientdashboard/view_invoice.html')

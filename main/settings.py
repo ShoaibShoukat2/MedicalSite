@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'frontend',
     'user_account',
     'patientdashboard',
+    'practitionerdashboard'
     
 
 ]

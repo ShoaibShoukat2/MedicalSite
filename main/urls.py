@@ -23,7 +23,10 @@ from main import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('frontend.urls')),
-    path('practintinor-dashboard/', include('patientdashboard.urls', namespace='patientdashboard')),
+    path('patient-dashboard/', include('patientdashboard.urls', namespace='patientdashboard')),
+    path('practitioner-dashboard/', include('practitionerdashboard.urls', namespace='practitionerdashboard')),
+
+    
 
 ]
 
