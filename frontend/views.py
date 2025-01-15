@@ -301,6 +301,9 @@ def patient_login(request):
 
 
 def practitioner_login(request):
+    error_message = None
+    success_message = None
+
     if request.method == 'POST': 
         email = request.POST.get('email')
         password = request.POST.get('password')
@@ -315,16 +318,19 @@ def practitioner_login(request):
                 request.session['practitioner_id'] = practitioner.id
                 request.session['practitioner_name'] = practitioner.first_name
                 
-                
-                
-                messages.success(request, 'Login successful.')
+                success_message = 'Login successful.'
                 return redirect('frontend:index')  # Redirect to a dashboard or home page
             else:
-                messages.error(request, 'Invalid password.')
+                error_message = 'Invalid password.'
         except Practitioner.DoesNotExist:
-            messages.error(request, 'Email not found.')
+            error_message = 'Email not found.'
 
-    return render(request, 'PractiLogin.html')
+    # Pass messages to the template
+    return render(request, 'PractiLogin.html', {
+        'error_message': error_message,
+        'success_message': success_message
+    })
+
 
 
 

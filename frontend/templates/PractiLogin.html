@@ -115,7 +115,6 @@
 
     <!-- SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
-
     <script>
         {% if error_message %}
         Swal.fire({
@@ -125,7 +124,7 @@
             confirmButtonText: 'Close'
         });
         {% endif %}
-
+    
         {% if success_message %}
         Swal.fire({
             icon: 'success',
@@ -135,7 +134,6 @@
         });
         {% endif %}
     </script>
-
 
 
 
