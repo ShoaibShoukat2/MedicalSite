@@ -5,12 +5,17 @@ from django.contrib import messages
 import random
 import string
 from django.core.mail import send_mail
+from django.utils.crypto import get_random_string
+from django.urls import reverse
+from django.shortcuts import render, redirect, get_object_or_404
+from django.conf import settings
 
 # Create your views here.
 
 
 def index(request):
     return render(request, 'index.html')
+
 
 
 
@@ -30,8 +35,14 @@ def appointment(request):
 
 
 def patient_signup(request):
+    context = {
+        'greeting_choices': Patient.GREETING_CHOICES,
+        'gender_choices': Patient.GENDER_CHOICES,
+        'error_message': None,
+        'success_message': None,
+    }
+
     if request.method == 'POST':
-        # Retrieve form data from the POST request
         greeting = request.POST.get('greeting')
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
@@ -41,17 +52,16 @@ def patient_signup(request):
         email = request.POST.get('email')
         password = request.POST.get('password')
 
-        # Perform form validation
+        # Form validation
         if not all([greeting, first_name, last_name, gender, mobile_phone, date_of_birth, email, password]):
-            messages.error(request, "All fields are required.")
-            return redirect('frontend:patient_signup')
+            context['error_message'] = "All fields are required."
+            return render(request, 'Patient.html', context)
 
-        # Check if the email is already registered
         if Patient.objects.filter(email=email).exists():
-            messages.error(request, "This email is already registered.")
-            return redirect('frontend:patient_signup')
+            context['error_message'] = "This email is already registered."
+            return render(request, 'Patient.html', context)
 
-        # Generate OTP and send it to the provided email
+        # Generate OTP
         otp = generate_otp()
         try:
             send_mail(
@@ -61,9 +71,8 @@ def patient_signup(request):
                 [email],
                 fail_silently=False,
             )
-            # Hash the password before storing it in the session
+            # Hash password and save session data
             hashed_password = make_password(password)
-            # Save OTP in the session to verify later
             request.session['otp'] = otp
             request.session['patient_data'] = {
                 'greeting': greeting,
@@ -75,17 +84,18 @@ def patient_signup(request):
                 'email': email,
                 'password': hashed_password,
             }
-            messages.info(request, "An OTP has been sent to your email. Please verify it to complete the registration.")
+            context['success_message'] = "An OTP has been sent to your email. Please verify it to complete the registration."
             return redirect('frontend:patient_verify_otp')  
         except Exception as e:
-            messages.error(request, f"Error sending OTP: {str(e)}")
-            return redirect('frontend:patient_signup')
+            context['error_message'] = f"Error sending OTP: {str(e)}"
+            return render(request, 'Patient.html', context)
 
-    context = {
-        'greeting_choices': Patient.GREETING_CHOICES,
-        'gender_choices': Patient.GENDER_CHOICES,
-    }
     return render(request, 'Patient.html', context)
+
+
+
+
+
 
 
 
@@ -126,10 +136,8 @@ def verify_otp(request):
             messages.error(request, "Invalid OTP. Please try again.")
             return redirect('frontend:patient_verify_otp')
 
+
     return render(request, 'verify_otp.html')  
-
-
-
 
 
 
@@ -206,6 +214,9 @@ def practitioner_signup(request):
         'civilities': Practitioner.CIVILITY_CHOICES,
     }
     return render(request, 'practitioner.html', context)
+
+
+
 
 
 def practitioner_verify_otp(request):
@@ -285,8 +296,17 @@ def patient_login(request):
 
 
 
+
+
+
+
 def practitioner_login(request):
-    if request.method == 'POST': 
+    context = {
+        'error_message': None,
+        'success_message': None,
+    }
+
+    if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
 
@@ -300,16 +320,80 @@ def practitioner_login(request):
                 request.session['practitioner_id'] = practitioner.id
                 request.session['practitioner_name'] = practitioner.first_name
                 
-                
-                
-                messages.success(request, 'Login successful.')
-                return redirect('patientdashboard')  # Redirect to a dashboard or home page
+                context['success_message'] = 'Login successful.'
+                return redirect('frontend:index')  # Redirect to a dashboard or home page
             else:
-                messages.error(request, 'Invalid password.')
+                context['error_message'] = 'Invalid password.'
+        except Practitioner.DoesNotExist:
+            context['error_message'] = 'Email not found.'
+
+    return render(request, 'PractiLogin.html', context)
+
+
+
+
+
+
+
+
+
+def practitioner_forgot_password(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+
+        try:
+            # Verify email exists in the database
+            Practitioner.objects.get(email=email)
+
+            # Generate a reset link with the email as a query parameter
+            reset_link = request.build_absolute_uri(
+                reverse('frontend:practitioner_reset_password') + f"?email={email}"
+            )
+
+            # Send the reset link via email
+            send_mail(
+                'Password Reset Request',
+                f'Click the link below to reset your password:\n\n{reset_link}',
+                'your_email@example.com',
+                [email],
+                fail_silently=False,
+            )
+
+            messages.success(request, 'A password reset link has been sent to your email.')
         except Practitioner.DoesNotExist:
             messages.error(request, 'Email not found.')
 
-    return render(request, 'PractiLogin.html')
+    return render(request, 'Pract_ForgotPassword.html')
+
+
+
+
+
+
+def practitioner_reset_password(request):
+    email = request.GET.get('email')
+
+    if not email:
+        messages.error(request, 'Invalid or missing email.')
+        return redirect('frontend:practitioner_forgot_password')
+
+    if request.method == 'POST':
+        new_password = request.POST.get('new_password')
+
+        try:
+            practitioner = Practitioner.objects.get(email=email)
+            practitioner.password = make_password(new_password)
+            practitioner.save()
+
+            messages.success(request, 'Your password has been reset successfully.')
+            return redirect('frontend:practitioner_login')
+        except Practitioner.DoesNotExist:
+            messages.error(request, 'Email not found.')
+
+    return render(request, 'Pract_ResetPassword.html', {'email': email})
+
+
+
 
 
 
@@ -330,6 +414,61 @@ def logout(request):
 
 def success(request):
     return render(request, 'success.html')
+
+
+
+
+
+
+# Step 1: Forgot Password View
+def forgot_password(request):
+    if request.method == "POST":
+        email = request.POST.get("email")
+        try:
+            patient = Patient.objects.get(email=email)
+            # Generate a reset token (e.g., temporary random password or a secure token)
+            reset_token = get_random_string(20)
+            patient.password = reset_token  # Save the token temporarily as the password
+            patient.save()
+
+            # Send the token to the user's email
+            reset_link = request.build_absolute_uri(
+                reverse("frontend:reset_password", kwargs={"token": reset_token})
+            )
+            send_mail(
+                subject="Password Reset",
+                message=f"Click the link to reset your password: {reset_link}",
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[email],
+            )
+            messages.success(
+                request, "A password reset link has been sent to your email."
+            )
+            return redirect("frontend:forgot_password")
+        except Patient.DoesNotExist:
+            messages.error(request, "No account found with that email address.")
+    return render(request, "forgot_password.html")
+
+
+# Step 2: Reset Password View
+def reset_password(request, token):
+    if request.method == "POST":
+        new_password = request.POST.get("new_password")
+        try:
+            # Find the user with the given token
+            patient = get_object_or_404(Patient, password=token)
+            # Update the password securely (hash it)
+            from django.contrib.auth.hashers import make_password
+
+            patient.password = make_password(new_password)
+            patient.save()
+            messages.success(request, "Your password has been reset successfully.")
+            return redirect("frontend:patient_login")
+        except Patient.DoesNotExist:
+            messages.error(request, "Invalid or expired reset token.")
+    return render(request, "reset_password.html", {"token": token})
+
+
 
 
 

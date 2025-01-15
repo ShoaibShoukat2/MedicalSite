@@ -11,18 +11,19 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
     <style>
         body {
-            background-color: #f5f5f5;
+            background-color: #eef2f3;
+            font-family: 'Roboto', sans-serif;
         }
 
         .container {
-            max-width: 900px;
+            max-width: 800px;
         }
 
         .card {
             border: none;
             border-radius: 15px;
             overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
         .left-image img {
@@ -53,7 +54,25 @@
         }
 
         .logo img {
-            max-height: 80px; /* Increased logo size */
+            max-height: 80px;
+        }
+
+        @media (max-width: 768px) {
+            .card {
+                flex-direction: column;
+            }
+
+            .left-image img {
+                height: 250px;
+            }
+
+            .form-container {
+                padding: 1.5rem;
+            }
+
+            .form-title {
+                font-size: 1.5rem;
+            }
         }
     </style>
 </head>
@@ -61,16 +80,13 @@
     <!-- Logo in the top-left corner -->
     <div class="logo position-absolute m-3">
         <a href="/">
-        <img src="{% static 'logo.png' %}" alt="Logo">
+            <img src="{% static 'logo.png' %}" alt="Logo">
         </a>
     </div>
 
-    
-
-
     <div class="d-flex justify-content-center align-items-center vh-100">
         <div class="container">
-            <div class="card d-flex flex-row">
+            <div class="card d-flex flex-md-row">
                 <!-- Left Image Section -->
                 <div class="col-md-6 left-image">
                     <img src="https://img.freepik.com/free-photo/flat-lay-health-still-life-arrangement-with-copy-space_23-2148854064.jpg?semt=ais_hybrid" alt="Medical Image">
@@ -97,6 +113,10 @@
 
                         <!-- Login Button -->
                         <button type="submit" class="btn btn-primary btn-block w-100">Login</button>
+                        <!-- Forgot Password Link -->
+                        <div class="text-center mt-3">
+                            <a href="{% url 'frontend:forgot_password' %}" class="text-muted">Forgot Password?</a>
+                        </div>
                     </form>
 
                     <p class="text-center text-muted mt-4">
@@ -107,11 +127,9 @@
         </div>
     </div>
 
+
     <!-- SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
-
-
-
     <script>
         // Display error message if present
         {% if error %}
@@ -123,7 +141,6 @@
             });
         {% endif %}
 
-    
         // Display success message if present
         {% if success %}
             Swal.fire({
@@ -135,10 +152,7 @@
         {% endif %}
     </script>
 
-
-
     <!-- MDB JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.3.1/mdb.min.js"></script>
 </body>
 </html>
-

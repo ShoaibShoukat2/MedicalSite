@@ -18,7 +18,23 @@ urlpatterns = [
     path('verify_otp/', verify_otp, name='patient_verify_otp'),
     path('practinor_verify_otp/', practitioner_verify_otp, name='practinor_verify_otp'),
     
-     path('logout/', logout, name='logout'),
+    path('logout/', logout, name='logout'),
+     
+     
+    # Reset Password urls
+    
+    path("forgot_password/", forgot_password, name="forgot_password"),
+    path("reset_password/<str:token>/", reset_password, name="reset_password"),
+    
+    
+    
+    # Reset Password Practinoar urls
+    
+    
+    path('practitioner/forgot-password/', practitioner_forgot_password, name='practitioner_forgot_password'),
+    path('practitioner/reset-password/', practitioner_reset_password, name='practitioner_reset_password'),
+    
+    
 
 ]
 
