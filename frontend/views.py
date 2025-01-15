@@ -465,6 +465,13 @@ def reset_password(request, token):
 
 
 
+def temp_index(request):
+    
+    
+    
+    return render(request,'temp_index.html')
+
+
 
 
 
