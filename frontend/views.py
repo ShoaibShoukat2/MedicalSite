@@ -296,10 +296,6 @@ def patient_login(request):
 
 
 
-
-
-
-
 def practitioner_login(request):
     context = {
         'error_message': None,
@@ -412,63 +408,11 @@ def logout(request):
 
 
 
+def temp(request):
+    return render(request, 'temp.html')
+
 def success(request):
     return render(request, 'success.html')
-
-
-
-
-
-
-# Step 1: Forgot Password View
-def forgot_password(request):
-    if request.method == "POST":
-        email = request.POST.get("email")
-        try:
-            patient = Patient.objects.get(email=email)
-            # Generate a reset token (e.g., temporary random password or a secure token)
-            reset_token = get_random_string(20)
-            patient.password = reset_token  # Save the token temporarily as the password
-            patient.save()
-
-            # Send the token to the user's email
-            reset_link = request.build_absolute_uri(
-                reverse("frontend:reset_password", kwargs={"token": reset_token})
-            )
-            send_mail(
-                subject="Password Reset",
-                message=f"Click the link to reset your password: {reset_link}",
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[email],
-            )
-            messages.success(
-                request, "A password reset link has been sent to your email."
-            )
-            return redirect("frontend:forgot_password")
-        except Patient.DoesNotExist:
-            messages.error(request, "No account found with that email address.")
-    return render(request, "forgot_password.html")
-
-
-# Step 2: Reset Password View
-def reset_password(request, token):
-    if request.method == "POST":
-        new_password = request.POST.get("new_password")
-        try:
-            # Find the user with the given token
-            patient = get_object_or_404(Patient, password=token)
-            # Update the password securely (hash it)
-            from django.contrib.auth.hashers import make_password
-
-            patient.password = make_password(new_password)
-            patient.save()
-            messages.success(request, "Your password has been reset successfully.")
-            return redirect("frontend:patient_login")
-        except Patient.DoesNotExist:
-            messages.error(request, "Invalid or expired reset token.")
-    return render(request, "reset_password.html", {"token": token})
-
-
 
 
 
