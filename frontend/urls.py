@@ -20,7 +20,6 @@ urlpatterns = [
     path('practinor_verify_otp/', practitioner_verify_otp, name='practinor_verify_otp'),
     
     path('logout/', logout, name='logout'),
-<<<<<<< HEAD
      
      
     # Reset Password urls
@@ -37,12 +36,9 @@ urlpatterns = [
     path('practitioner/reset-password/', practitioner_reset_password, name='practitioner_reset_password'),
     
     
-=======
-    path('temp/', temp, name='temp'),
-    path('temp_index/', temp_index, name='temp_index'),
+    
 
 
->>>>>>> 3a27a459b2ffba59373169b0a26dd23fd1fe09dd
 
 ]
 
