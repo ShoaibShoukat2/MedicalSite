@@ -9,12 +9,14 @@ from django.utils.crypto import get_random_string
 from django.urls import reverse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.conf import settings
+from django.contrib.auth.hashers import make_password
+
 
 # Create your views here.
 
 
 def index(request):
-    return render(request, 'index.html')
+    return render(request, 'temp_index.html')
 
 
 
@@ -440,6 +442,9 @@ def forgot_password(request):
     return render(request, "forgot_password.html")
 
 
+
+
+
 # Step 2: Reset Password View
 def reset_password(request, token):
     if request.method == "POST":
@@ -448,7 +453,6 @@ def reset_password(request, token):
             # Find the user with the given token
             patient = get_object_or_404(Patient, password=token)
             # Update the password securely (hash it)
-            from django.contrib.auth.hashers import make_password
 
             patient.password = make_password(new_password)
             patient.save()
@@ -457,9 +461,6 @@ def reset_password(request, token):
         except Patient.DoesNotExist:
             messages.error(request, "Invalid or expired reset token.")
     return render(request, "reset_password.html", {"token": token})
-
-
-
 
 
 
