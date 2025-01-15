@@ -19,7 +19,11 @@ urlpatterns = [
     path('verify_otp/', verify_otp, name='patient_verify_otp'),
     path('practinor_verify_otp/', practitioner_verify_otp, name='practinor_verify_otp'),
     
-     path('logout/', logout, name='logout'),
+    path('logout/', logout, name='logout'),
+    path('temp/', temp, name='temp'),
+    path('temp_index/', temp_index, name='temp_index'),
+
+
 
 ]
 

@@ -329,8 +329,16 @@ def logout(request):
 
 
 
+def temp(request):
+    return render(request, 'temp.html')
+
 def success(request):
     return render(request, 'success.html')
+
+
+def temp_index(request):
+    return render(request, 'temp_index.html')
+
 
 
 
