@@ -11,6 +11,7 @@ urlpatterns = [
     path('practitioner/', practitioner_signup, name='practitioner_signup'),
     path('success/', success, name='success'),
     path('appointment/', appointment, name='appointment'),
+
    
     
     path('patient/login/', patient_login, name='patient_login'),

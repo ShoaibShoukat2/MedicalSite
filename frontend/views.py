@@ -267,6 +267,7 @@ def patient_login(request):
 
 
 
+
 def practitioner_login(request):
     if request.method == 'POST': 
         email = request.POST.get('email')
