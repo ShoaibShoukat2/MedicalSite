@@ -36,12 +36,8 @@ urlpatterns = [
     path('practitioner/reset-password/', practitioner_reset_password, name='practitioner_reset_password'),
     
     path('temp_index',temp_index, name="temp-page")
-    
-    
-    
-
-
-
+   
+   
 ]
 
 
