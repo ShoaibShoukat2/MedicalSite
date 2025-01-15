@@ -60,8 +60,13 @@
 <body>
     <!-- Logo in the top-left corner -->
     <div class="logo position-absolute m-3">
+        <a href="/">
         <img src="{% static 'logo.png' %}" alt="Logo">
+        </a>
     </div>
+
+    
+
 
     <div class="d-flex justify-content-center align-items-center vh-100">
         <div class="container">
@@ -105,21 +110,35 @@
     <!-- SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
 
+
+
     <script>
-        // Check if there are any messages to display
-        {% if messages %}
-            {% for message in messages %}
-                Swal.fire({
-                    icon: 'error', // Fixed icon for all messages as "error"
-                    title: 'Oops...',
-                    text: '{{ message }}',  // Display the message text
-                    confirmButtonText: 'Close'
-                });
-            {% endfor %}
+        // Display error message if present
+        {% if error %}
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: '{{ error }}',
+                confirmButtonText: 'Close'
+            });
+        {% endif %}
+
+    
+        // Display success message if present
+        {% if success %}
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: '{{ success }}',
+                confirmButtonText: 'Close'
+            });
         {% endif %}
     </script>
+
+
 
     <!-- MDB JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.3.1/mdb.min.js"></script>
 </body>
 </html>
+
