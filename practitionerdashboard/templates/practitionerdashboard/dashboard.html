@@ -3,38 +3,39 @@
 
 {% block content %}
 <div class="content">
-    <div class="row justify-content-start" style="margin-left: 5%;">
+    <div class="row justify-content-center mx-3">
         <!-- Patients Widget -->
-        <div class="col-md-6 col-sm-6 col-lg-4 col-xl-3">
-            <div class="dash-widget">
-                <span class="dash-widget-bg2"><i class="fa fa-user"></i></span>
-                <div class="dash-widget-info text-right">
-                    <h3>1072</h3>
-                    <span class="widget-title2">Patients <i class="fa fa-check" aria-hidden="true"></i></span>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
+            <div class="dash-widget text-center p-3 d-flex flex-column justify-content-center" style="min-height: 150px;">
+                <div class="dash-widget-bg2 d-flex justify-content-center align-items-center rounded-circle mx-auto mb-2" style="width: 60px; height: 60px;">
+                    <i class="fa fa-user text-white"></i>
                 </div>
+                <h3 class="mb-1">1072</h3>
+                <span class="widget-title2 badge bg-success text-white p-2 rounded">Patients <i class="fa fa-check"></i></span>
             </div>
         </div>
-        <!-- Attend Widget -->
-        <div class="col-md-6 col-sm-6 col-lg-4 col-xl-3">
-            <div class="dash-widget">
-                <span class="dash-widget-bg3"><i class="fa fa-calendar" aria-hidden="true"></i></span>
-                <div class="dash-widget-info text-right">
-                    <h3>72</h3>
-                    <span class="widget-title3">Appointments <i class="fa fa-check" aria-hidden="true"></i></span>
+        <!-- Appointments Widget -->
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
+            <div class="dash-widget text-center p-3 d-flex flex-column justify-content-center" style="min-height: 150px;">
+                <div class="dash-widget-bg3 d-flex justify-content-center align-items-center rounded-circle mx-auto mb-2" style="width: 60px; height: 60px;">
+                    <i class="fa fa-calendar text-white"></i>
                 </div>
+                <h3 class="mb-1">72</h3>
+                <span class="widget-title3 badge bg-primary text-white p-2 rounded">Appointments <i class="fa fa-check"></i></span>
             </div>
         </div>
         <!-- Pending Widget -->
-        <div class="col-md-6 col-sm-6 col-lg-4 col-xl-3">
-            <div class="dash-widget">
-                <span class="dash-widget-bg4"><i class="fa fa-heartbeat" aria-hidden="true"></i></span>
-                <div class="dash-widget-info text-right">
-                    <h3>618</h3>
-                    <span class="widget-title4">Pending <i class="fa fa-check" aria-hidden="true"></i></span>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
+            <div class="dash-widget text-center p-3 d-flex flex-column justify-content-center" style="min-height: 150px;">
+                <div class="dash-widget-bg4 d-flex justify-content-center align-items-center rounded-circle mx-auto mb-2" style="width: 60px; height: 60px;">
+                    <i class="fa fa-heartbeat text-white"></i>
                 </div>
+                <h3 class="mb-1">618</h3>
+                <span class="widget-title4 badge bg-warning text-white p-2 rounded">Pending <i class="fa fa-check"></i></span>
             </div>
         </div>
     </div>
+    
     <div class="container mt-4">
         <h4 class="mb-3">Patient Appointment</h4>
         <ul class="nav nav-tabs">

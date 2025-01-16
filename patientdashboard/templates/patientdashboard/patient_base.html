@@ -20,25 +20,227 @@
     {% block extra_css %}{% endblock %}
 </head>
 <style>
+    /* Base sidebar styles */
+    .sidebar {
+        position: fixed;
+        width: 240px;
+        height: 100vh;
+        top: 0;
+        left: 0;
+        background: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        z-index: 999;
+        overflow-y: auto;
+    }
+    
+    /* Mobile styles */
+    @media (max-width: 991.98px) {
+        /* Reset any max-width constraints */
+        .sidebar {
+            transform: translateX(-100%);
+            width: 100vw !important;
+            max-width: none !important;
+            left: 0;
+            right: 0;
+            margin: 0;
+            padding: 0;
+        }
+    
+        .sidebar.show {
+            transform: translateX(0);
+            width: 100vw !important;
+        }
+    
+        /* Ensure inner content spans full width */
+        .sidebar-inner {
+            width: 100vw;
+            max-width: none;
+            padding: 0;
+            margin: 0;
+        }
+    
+        /* Menu styling */
+        #sidebar-menu {
+            width: 100vw;
+            padding: 0;
+        }
+    
+        #sidebar-menu ul {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    
+        #sidebar-menu ul li {
+            width: 100%;
+        }
+    
+        #sidebar-menu ul li a {
+            width: 100%;
+            padding: 15px 20px;
+            box-sizing: border-box;
+        }
+    
+        /* Profile section */
+        .sidebar-profile {
+            width: 100vw;
+            box-sizing: border-box;
+        }
+    
+        /* Overlay */
+        .sidebar-overlay.show {
+            width: 100vw;
+            left: 0;
+        }
+    
+        /* Close button */
+        .sidebar-close {
+            position: fixed;
+            right: 15px;
+        }
+    
+        /* Remove any margin from page wrapper */
+        .page-wrapper {
+            margin-left: 0 !important;
+            width: 100vw;
+        }
+    
+        /* Force hardware acceleration for smoother transitions */
+        .sidebar {
+            -webkit-transform: translateX(-100%);
+            transform: translateX(-100%);
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+        }
+    
+        .sidebar.show {
+            -webkit-transform: translateX(0);
+            transform: translateX(0);
+        }
+    }
+    
+    /* Ensure no horizontal scrolling */
     body {
         overflow-x: hidden;
-        margin: 0;
-        padding: 0;
-    }
-
-    .header {
-        background-color: #ffffff;
-        border-bottom: 1px solid #ddd;
-        position: fixed;
         width: 100%;
-        top: 0;
-        z-index: 1000;
-        height: 60px;
-        padding: 0 15px;
-        display: flex;
-        align-items: center;
+        position: relative;
     }
 
+        /* Header Styles */
+        .header {
+            background-color: #ffffff;
+            border-bottom: 1px solid #ddd;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            height: 60px;
+            padding: 0 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        /* Logo */
+        .header-left {
+            padding: 0 15px;
+        }
+        
+        /* Search Bar */
+        .search-bar {
+            flex: 1;
+            max-width: 600px;
+            margin: 0 20px;
+        }
+        
+        .search-bar form {
+            width: 100%;
+        }
+        
+        .search-bar .form-control {
+            border-radius: 20px 0 0 20px;
+            border-right: none;
+        }
+        
+        .search-bar .btn {
+            border-radius: 0 20px 20px 0;
+        }
+        
+        /* User Menu */
+        .user-menu {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-menu .nav-item {
+            margin: 0 5px;
+        }
+        
+        .user-menu .nav-link {
+            padding: 0 10px;
+            position: relative;
+        }
+        
+        /* Mobile Search */
+        .mobile-search {
+            display: none;
+            padding: 10px 15px;
+            background: #fff;
+            position: fixed;
+            top: 60px;
+            left: 0;
+            right: 0;
+            z-index: 999;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .mobile-search.show {
+            display: block;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 991.98px) {
+            .header {
+                padding: 0 10px;
+            }
+        
+            .search-bar {
+                display: none;
+            }
+        
+            .user-menu .nav-item {
+                margin: 0 2px;
+            }
+        
+            .user-menu .nav-link {
+                padding: 0 5px;
+            }
+        
+            .header-left {
+                padding: 0 5px;
+            }
+        
+            .notifications {
+                position: fixed;
+                top: 60px;
+                left: 0;
+                right: 0;
+                width: 100%;
+                margin: 0;
+            }
+        }
+        
+        @media (max-width: 575.98px) {
+            .user-menu .nav-item.d-none {
+                display: none !important;
+            }
+            
+            .user-menu .user-link span.user-img {
+                margin-right: 0;
+            }
+        }
+        
     .main-wrapper {
         margin-top: 60px;
         min-height: calc(100vh - 60px);
@@ -59,19 +261,7 @@
     }
 
     /* Sidebar styles */
-    .sidebar {
-        position: fixed;
-        width: 240px;
-        height: 100vh;
-        top: 0;
-        left: 0;
-        background: #fff;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s ease;
-        z-index: 999;
-        overflow-y: auto;
-    }
-
+    
     /* Sidebar inner content */
     .sidebar-inner {
         padding-top: 60px;
@@ -181,52 +371,7 @@
     }
 
     /* Mobile styles */
-    @media (max-width: 991.98px) {
-        .sidebar {
-            transform: translateX(-100%);
-            width: 100% !important;
-            max-width: 100% !important;
-        }
-
-        .sidebar.show {
-            transform: translateX(0);
-        }
-
-        .sidebar-close {
-            display: block;
-        }
-
-        .page-wrapper {
-            margin-left: 0 !important;
-            width: 100%;
-        }
-
-        .sidebar-overlay.show {
-            display: block;
-        }
-
-        .mini-sidebar .sidebar {
-            width: 100% !important;
-        }
-
-        .mini-sidebar .page-wrapper {
-            margin-left: 0;
-        }
-
-        /* Show all text in mobile view */
-        .mini-sidebar .sidebar-profile h4,
-        .mini-sidebar .sidebar-profile p,
-        .mini-sidebar .sidebar-menu ul li a span,
-        .mini-sidebar .menu-title {
-            display: block;
-        }
-
-        /* Keep profile image size normal on mobile */
-        .mini-sidebar .sidebar-profile img {
-            width: 80px;
-            height: 80px;
-        }
-    }
+    
 
     /* Submenu styles */
     .submenu ul {
@@ -244,25 +389,143 @@
         font-weight: 500;
         font-size: 14px;
     }
+    
 </style>
 
 <body>
-    <!-- Header -->
-    <div class="header">
-        <div class="header-left">
-            <a href="index.html" class="logo">
-                <img src="{% static 'logo.png' %}" width="35" height="35" alt="Preclinic">
-            </a>
-        </div>
-        <a id="mobile_btn" class="mobile_btn float-left" href="javascript:void(0);"><i class="fa fa-bars"></i></a>
-        <a id="toggle_btn" href="javascript:void(0);"><i class="fa fa-bars"></i></a>
-        <ul class="nav user-menu float-right">
-             
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'frontend:index' %}" id="practitionerButton" style="color: blue;">Home</a>
-            </li>
-        </ul>
+   <!-- Updated Header HTML -->
+<div class="header">
+    <!-- Mobile Menu Button -->
+    <a id="mobile_btn" class="mobile_btn float-left d-lg-none" href="javascript:void(0);">
+        <i class="fa fa-bars"></i>
+    </a>
+    
+    <!-- Logo -->
+    <div class="header-left">
+        <a href="/" class="logo">
+            <img src="{% static 'logo.png' %}" width="35" height="35" alt="Preclinic">
+        </a>
     </div>
+
+    <!-- Desktop Toggle Button -->
+    <a id="toggle_btn" class="d-none d-lg-block" href="javascript:void(0);">
+        <i class="fa fa-bars"></i>
+    </a>
+
+    <!-- Desktop Search -->
+    <div class="search-bar d-none d-lg-flex">
+        <form action="{% url 'patientdashboard:search' %}" method="get" class="d-flex">
+            <input type="text" name="query" class="form-control" placeholder="Search doctor by name or speciality...">
+            <button class="btn btn-primary" type="submit">
+                <i class="fa fa-search"></i>
+            </button>
+        </form>
+    </div>
+
+    <!-- User Menu -->
+    <ul class="nav user-menu ml-auto">
+        <!-- Mobile Search Toggle -->
+        <li class="nav-item d-lg-none">
+            <a class="nav-link" href="#" id="mobile-search-toggle">
+                <i class="fa fa-search"></i>
+            </a>
+        </li>
+
+        <!-- Notifications -->
+        <li class="nav-item dropdown d-none d-lg-block">
+            <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+                <i class="fa fa-bell"></i>
+                <span class="badge badge-pill bg-danger">3</span>
+            </a>
+            <div class="dropdown-menu notifications">
+                <div class="topnav-dropdown-header">
+                    <span>Notifications</span>
+                </div>
+                <div class="drop-scroll">
+                    <ul class="notification-list">
+                        <li class="notification-message">
+                            <a href="#">
+                                <div class="media">
+                                    <span class="avatar">
+                                        <img alt="User" src="{% static 'assets/img/user.jpg' %}" class="img-fluid">
+                                    </span>
+                                    <div class="media-body">
+                                        <p class="noti-details">
+                                            <span class="noti-title">Upcoming</span> Appointment
+                                        </p>
+                                        <p class="noti-time">
+                                            <span class="notification-time">Tomorrow at 10 AM.</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="topnav-dropdown-footer">
+                    <a href="#">View all Notifications</a>
+                </div>
+            </div>
+        </li>
+
+        <!-- Chat -->
+        <li class="nav-item">
+            <a href="{% url 'patientdashboard:chat' %}" class="nav-link">
+                <i class="fa fa-comments"></i>
+                <span class="badge badge-pill bg-primary">5</span>
+            </a>
+        </li>
+
+        <!-- Profile -->
+        <li class="nav-item dropdown has-arrow">
+            <a href="#" class="dropdown-toggle nav-link user-link" data-toggle="dropdown">
+                <span class="user-img">
+                    <img class="rounded-circle" src="{% static 'assets/img/patient-thumb-01.jpg' %}" width="30" alt="Profile">
+                </span>
+            </a>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" href="#">My Profile</a>
+                <a class="dropdown-item" href="#">Settings</a>
+                <a class="dropdown-item" href="#">Logout</a>
+            </div>
+        </li>
+    </ul>
+</div>
+
+<!-- Mobile Search Bar (Hidden by default) -->
+<div class="mobile-search d-lg-none">
+    <form action="{% url 'patientdashboard:search' %}" method="get" class="d-flex">
+        <input type="text" name="query" class="form-control" placeholder="Search...">
+        <button class="btn btn-primary" type="submit">
+            <i class="fa fa-search"></i>
+        </button>
+    </form>
+</div>
+
+
+<script>
+// Add this to your existing JavaScript
+$(document).ready(function() {
+    // Mobile search toggle
+    $('#mobile-search-toggle').click(function(e) {
+        e.preventDefault();
+        $('.mobile-search').toggleClass('show');
+    });
+
+    // Hide mobile search on scroll
+    $(window).scroll(function() {
+        $('.mobile-search').removeClass('show');
+    });
+
+    // Hide mobile search when clicking outside
+    $(document).click(function(e) {
+        if (!$(e.target).closest('.mobile-search, #mobile-search-toggle').length) {
+            $('.mobile-search').removeClass('show');
+        }
+    });
+});
+</script>
+
 
     <!-- Overlay -->
     <div class="sidebar-overlay"></div>
@@ -275,11 +538,7 @@
                 <i class="fa fa-times"></i>
             </button>
             <div class="sidebar-inner">
-                <div class="sidebar-profile">
-                    <img src="{% static 'assets/img/doctor-thumb-01.jpg' %}" alt="Admin">
-                    <h4>Darren Elder</h4>
-                    <p>Cardial & Patient</p>
-                </div>
+                
                 <div id="sidebar-menu" class="sidebar-menu">
                     <ul>
                         <li class="menu-title">Main</li>
@@ -287,21 +546,16 @@
                             <a href="{% url 'patientdashboard:appointments_patients' %}"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a>
                         </li>
                         <li>
-                            <a href="{% url 'patientdashboard:search' %}"><i class="fa fa-wheelchair"></i> <span>Search</span></a>
+                            <a href=""><i class="fa fa-wheelchair"></i> <span>Medical Records</span></a>
                         </li>
                         <li>
                             <a href="{% url 'patientdashboard:booking' %}"><i class="fa fa-calendar"></i> <span>Book Appointments</span></a>
                         </li>
                         <li>
-                            <a href="{% url 'patientdashboard:doctor_profile' %}"><i class="fa fa-calendar-check-o"></i> <span>Practitioner Profiles</span></a>
+                            <a href=""><i class="fa fa-calendar-check-o"></i> <span>Billing and Payments</span></a>
                         </li>
                        
-                        <li>
-                            <a href="{% url 'patientdashboard:telemedicine' %}"><i class="fa fa-comments"></i> <span>Telemedicine</span> <span class="badge badge-pill bg-primary float-right">5</span></a>
-                        </li>
-                        <li>
-                            <a href="{% url 'patientdashboard:chat' %}"><i class="fa fa-comments"></i> <span>Chat</span> <span class="badge badge-pill bg-primary float-right">5</span></a>
-                        </li>
+                       
                     </ul>
                 </div>
             </div>
@@ -379,6 +633,29 @@
             // Initial setup
             updateSidebarHeight();
         });
+    </script>
+    
+<script>
+    // Add this to your existing JavaScript
+    $(document).ready(function() {
+        // Mobile search toggle
+        $('#mobile-search-toggle').click(function(e) {
+            e.preventDefault();
+            $('.mobile-search').toggleClass('show');
+        });
+    
+        // Hide mobile search on scroll
+        $(window).scroll(function() {
+            $('.mobile-search').removeClass('show');
+        });
+    
+        // Hide mobile search when clicking outside
+        $(document).click(function(e) {
+            if (!$(e.target).closest('.mobile-search, #mobile-search-toggle').length) {
+                $('.mobile-search').removeClass('show');
+            }
+        });
+    });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 

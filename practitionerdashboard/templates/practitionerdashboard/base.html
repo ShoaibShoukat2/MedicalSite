@@ -22,11 +22,112 @@
     {% block extra_css %}{% endblock %}
 </head>
 <style>
-    body {
-        overflow-x: hidden;
+    /* Base sidebar styles */
+.sidebar {
+    position: fixed;
+    width: 240px;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    z-index: 999;
+    overflow-y: auto;
+}
+
+/* Mobile styles */
+@media (max-width: 991.98px) {
+    /* Reset any max-width constraints */
+    .sidebar {
+        transform: translateX(-100%);
+        width: 100vw !important;
+        max-width: none !important;
+        left: 0;
+        right: 0;
         margin: 0;
         padding: 0;
     }
+
+    .sidebar.show {
+        transform: translateX(0);
+        width: 100vw !important;
+    }
+
+    /* Ensure inner content spans full width */
+    .sidebar-inner {
+        width: 100vw;
+        max-width: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    /* Menu styling */
+    #sidebar-menu {
+        width: 100vw;
+        padding: 0;
+    }
+
+    #sidebar-menu ul {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    #sidebar-menu ul li {
+        width: 100%;
+    }
+
+    #sidebar-menu ul li a {
+        width: 100%;
+        padding: 15px 20px;
+        box-sizing: border-box;
+    }
+
+    /* Profile section */
+    .sidebar-profile {
+        width: 100vw;
+        box-sizing: border-box;
+    }
+
+    /* Overlay */
+    .sidebar-overlay.show {
+        width: 100vw;
+        left: 0;
+    }
+
+    /* Close button */
+    .sidebar-close {
+        position: fixed;
+        right: 15px;
+    }
+
+    /* Remove any margin from page wrapper */
+    .page-wrapper {
+        margin-left: 0 !important;
+        width: 100vw;
+    }
+
+    /* Force hardware acceleration for smoother transitions */
+    .sidebar {
+        -webkit-transform: translateX(-100%);
+        transform: translateX(-100%);
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+    }
+
+    .sidebar.show {
+        -webkit-transform: translateX(0);
+        transform: translateX(0);
+    }
+}
+
+/* Ensure no horizontal scrolling */
+body {
+    overflow-x: hidden;
+    width: 100%;
+    position: relative;
+}
 
     .header {
         background-color: #ffffff;
@@ -61,18 +162,7 @@
     }
 
     /* Sidebar styles */
-    .sidebar {
-        position: fixed;
-        width: 240px;
-        height: 100vh;
-        top: 0;
-        left: 0;
-        background: #fff;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s ease;
-        z-index: 999;
-        overflow-y: auto;
-    }
+    
 
     /* Sidebar inner content */
     .sidebar-inner {
@@ -147,7 +237,43 @@
     .header .nav.user-menu {
         margin-left: auto;
     }
-
+        .dash-widget {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .dash-widget:hover {
+            transform: translateY(-5px);
+        }
+        
+        .dash-widget-bg2 {
+            background-color: #28a745;
+        }
+        
+        .dash-widget-bg3 {
+            background-color: #007bff;
+        }
+        
+        .dash-widget-bg4 {
+            background-color: #ffc107;
+        }
+        
+        .widget-title2,
+        .widget-title3,
+        .widget-title4 {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .dash-widget h3 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+        }
+        
     .header .nav.user-menu a i,
     .header .nav.user-menu a span {
         color: #007bff;
@@ -183,53 +309,7 @@
     }
 
     /* Mobile styles */
-    @media (max-width: 991.98px) {
-        .sidebar {
-            transform: translateX(-100%);
-            width: 100% !important;
-            max-width: 100% !important;
-        }
-
-        .sidebar.show {
-            transform: translateX(0);
-        }
-
-        .sidebar-close {
-            display: block;
-        }
-
-        .page-wrapper {
-            margin-left: 0 !important;
-            width: 100%;
-        }
-
-        .sidebar-overlay.show {
-            display: block;
-        }
-
-        .mini-sidebar .sidebar {
-            width: 100% !important;
-        }
-
-        .mini-sidebar .page-wrapper {
-            margin-left: 0;
-        }
-
-        /* Show all text in mobile view */
-        .mini-sidebar .sidebar-profile h4,
-        .mini-sidebar .sidebar-profile p,
-        .mini-sidebar .sidebar-menu ul li a span,
-        .mini-sidebar .menu-title {
-            display: block;
-        }
-
-        /* Keep profile image size normal on mobile */
-        .mini-sidebar .sidebar-profile img {
-            width: 80px;
-            height: 80px;
-        }
-    }
-
+   
     /* Submenu styles */
     .submenu ul {
         display: none;
@@ -250,69 +330,73 @@
 
 <body>
     <!-- Header -->
-    <div class="header">
-        <div class="header-left">
-            <a href="/" class="logo">
-                <img src="{% static 'logo.png' %}" width="35" height="35" alt="Preclinic">
-            </a>
-        </div>
-        <a id="mobile_btn" class="mobile_btn float-left" href="javascript:void(0);"><i class="fa fa-bars"></i></a>
-        <a id="toggle_btn" href="javascript:void(0);"><i class="fa fa-bars"></i></a>
-        <ul class="nav user-menu float-right">
-            <li class="nav-item dropdown d-none d-sm-block">
-                <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
-                    <i class="fa fa-bell-o"></i>
-                    <span class="badge badge-pill bg-danger float-right">3</span>
-                </a>
-                <div class="dropdown-menu notifications">
-
-                    
-                    <div class="topnav-dropdown-header">
-                        <span>Notifications</span>
-                    </div>
-                    <div class="drop-scroll">
-                        <ul class="notification-list">
-                            <li class="notification-message">
-                                <a href="#">
-                                    <div class="media">
-                                        <span class="avatar">
-                                            <img alt="User" src="{% static 'assets/img/user.jpg' %}" class="img-fluid">
-                                        </span>
-                                        <div class="media-body">
-                                            <p class="noti-details"><span class="noti-title">John Doe</span> added new task <span class="noti-title">Patient Appointment</span></p>
-                                            <p class="noti-time"><span class="notification-time">4 mins ago</span></p>
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="topnav-dropdown-footer">
-                        <a href="#">View all Notifications</a>
-                    </div>
-                </div>
-            </li>
-            <li class="nav-item dropdown has-arrow">
-                <a href="#" class="dropdown-toggle nav-link user-link" data-toggle="dropdown">
-                    <span class="user-img">
-                        <img class="rounded-circle" src="{% static 'assets/img/user.jpg' %}" width="24" alt="Admin">
-                        <span class="status online"></span>
-                    </span>
-                    <span>Admin</span>
-                </a>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#">My Profile</a>
-                    <a class="dropdown-item" href="#">Settings</a>
-                    <a class="dropdown-item" href="#">Logout</a>
-                </div>
-           
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'frontend:index' %}" id="practitionerButton" style="color: blue;">Home</a>
-            </li>
-            
-            
-        </ul>
+    <!-- Header -->
+<div class="header">
+    <div class="header-left">
+        <a href="/" class="logo">
+            <img src="{% static 'logo.png' %}" width="35" height="35" alt="Preclinic">
+        </a>
     </div>
+    <a id="mobile_btn" class="mobile_btn float-left" href="javascript:void(0);"><i class="fa fa-bars"></i></a>
+    <a id="toggle_btn" href="javascript:void(0);"><i class="fa fa-bars"></i></a>
+    <ul class="nav user-menu float-right">
+        <!-- Notifications Button -->
+        <li class="nav-item dropdown d-none d-sm-block">
+            <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+                <i class="fa fa-bell"></i>
+                <span class="badge badge-pill bg-danger float-right">3</span>
+            </a>
+            <div class="dropdown-menu notifications">
+                <div class="topnav-dropdown-header">
+                    <span>Notifications</span>
+                </div>
+                <div class="drop-scroll">
+                    <ul class="notification-list">
+                        <li class="notification-message">
+                            <a href="#">
+                                <div class="media">
+                                    <span class="avatar">
+                                        <img alt="User" src="{% static 'assets/img/user.jpg' %}" class="img-fluid">
+                                    </span>
+                                    <div class="media-body">
+                                        <p class="noti-details"><span class="noti-title">John Doe</span> added new task <span class="noti-title">Patient Appointment</span></p>
+                                        <p class="noti-time"><span class="notification-time">4 mins ago</span></p>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="topnav-dropdown-footer">
+                    <a href="#">View all Notifications</a>
+                </div>
+            </div>
+        </li>
+
+        <!-- Chat Button -->
+        <li class="nav-item">
+            <a href="{% url 'practitionerdashboard:chat' %}" class="nav-link">
+                <i class="fa fa-comments"></i>
+                <span class="badge badge-pill bg-primary float-right">5</span>
+            </a>
+        </li>
+
+        <!-- Profile Picture -->
+        <li class="nav-item dropdown has-arrow">
+            <a href="#" class="dropdown-toggle nav-link user-link" data-toggle="dropdown">
+                <span class="user-img">
+                    <img class="rounded-circle" src="{% static 'assets/img/doctor-thumb-02.jpg' %}" width="30" height="30" alt="Profile Picture">
+                </span>
+            </a>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" href="#">My Profile</a>
+                <a class="dropdown-item" href="#">Settings</a>
+                <a class="dropdown-item" href="#">Logout</a>
+            </div>
+        </li>
+    </ul>
+</div>
+
 
     <!-- Overlay -->
     <div class="sidebar-overlay"></div>
@@ -325,11 +409,7 @@
                 <i class="fa fa-times"></i>
             </button>
             <div class="sidebar-inner">
-                <div class="sidebar-profile">
-                    <img src="{% static 'assets/img/doctor-thumb-01.jpg' %}" alt="Admin">
-                    <h4>Dr. Darren Elder</h4>
-                    <p>BDS, MDS - Oral & Maxillofacial Surgery</p>
-                </div>
+               
                 <div id="sidebar-menu" class="sidebar-menu">
                     <ul>
                         <li class="menu-title">Main</li>
@@ -347,20 +427,11 @@
                         <li>
                             <a href="{% url 'practitionerdashboard:schedule_timming' %}"><i class="fa fa-calendar-check-o"></i> <span>Schedule Timming</span></a>
                         </li>
-                        <li class="submenu">
-                            <a href="#"><i class="fa fa-user"></i> <span>Departments</span> <span class="menu-arrow"></span></a>
-                            <ul>
-                                <li><a href="">Heart Disease</a></li>
-                                <li><a href="">Neurology</a></li>
-                                <li><a href="">Lungs Disease</a></li>
-                            </ul>
-                        </li>
+                        
                         <li>
                             <a href="{% url 'practitionerdashboard:reviews' %}"><i class="fa fa-comments"></i> <span>Reviews</span> <span class="badge badge-pill bg-primary float-right">5</span></a>
                         </li>
-                        <li>
-                            <a href="{% url 'practitionerdashboard:chat' %}"><i class="fa fa-comments"></i> <span>Chat</span> <span class="badge badge-pill bg-primary float-right">5</span></a>
-                        </li>
+                       
                     </ul>
                 </div>
             </div>

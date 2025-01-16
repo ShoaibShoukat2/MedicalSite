@@ -5,7 +5,7 @@ from django.urls import path, include
 from patientdashboard import views
 app_name='patient_dashboard'
 urlpatterns = [
-    path('', views.patient_base, name='patient_base'),
+    path('', views.appointments_patients, name='appointments_patients'),
 
     
 
