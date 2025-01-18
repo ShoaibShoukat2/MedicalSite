@@ -438,7 +438,13 @@
         padding-top: 20px;
         margin-top: 20px;
     }
-    
+    /* Reduce logo size when mini-sidebar is active */
+.mini-sidebar .header .logo img {
+    width: 50px;
+    height: 50px;
+    transition: all 0.3s ease; /* Smooth transition */
+}
+
 </style>
 
 
@@ -528,27 +534,40 @@
                
                 <div id="sidebar-menu" class="sidebar-menu">
                     <ul>
-                        <li class="active">
-                            <a href="{% url 'practitionerdashboard:dashboard' %}"><i class="fa fa-dashboard"style="color: white;"></i> <spanstyle="color: white;">Dashboard</span></a>
+                        <li class="{% if request.path == '/practitioner-dashboard/' %}active{% endif %}">
+                            <a href="{% url 'practitionerdashboard:dashboard' %}">
+                                <i class="fa fa-tachometer-alt" style="color: white;"></i>
+                                <span style="color: white;">Dashboard</span>
+                            </a>
                         </li>
-                        <li>
-                            <a href="{% url 'practitionerdashboard:mypatient' %}"><i class="fa fa-wheelchair"style="color: white;"></i> <span style="color: white;">Patients</span></a>
+                        <li class="{% if request.path == '/practitioner-dashboard/mypatient/' %}active{% endif %}">
+                            <a href="{% url 'practitionerdashboard:mypatient' %}">
+                                <i class="fa fa-wheelchair" style="color: white;"></i>
+                                <span style="color: white;">Patients</span>
+                            </a>
                         </li>
-
-
-                        <li>
-                            <a href="{% url 'practitionerdashboard:appointment' %}"><i class="fa fa-calendar" style="color: white;"></i> <span style="color: white;">Appointments</span></a>
+                        <li class="{% if request.path == '/practitioner-dashboard/appointment/' %}active{% endif %}">
+                            <a href="{% url 'practitionerdashboard:appointment' %}">
+                                <i class="fa fa-calendar" style="color: white;"></i>
+                                <span style="color: white;">Appointments</span>
+                            </a>
                         </li>
-                        <li>
-                            <a href="{% url 'practitionerdashboard:schedule_timming' %}"><i class="fa fa-calendar-check-o" style="color: white;"></i> <span style="color: white;">Schedule Timming</span></a>
+                        <li class="{% if request.path == '/practitioner-dashboard/schedule_timming/' %}active{% endif %}">
+                            <a href="{% url 'practitionerdashboard:schedule_timming' %}">
+                                <i class="fa fa-calendar-check-o" style="color: white;"></i>
+                                <span style="color: white;">Schedule Timming</span>
+                            </a>
                         </li>
-                        
-                        <li>
-                            <a href="{% url 'practitionerdashboard:reviews' %}"><i class="fa fa-comments" style="color: white;"></i> <span style="color: white;">Reviews</span> <span class="badge badge-pill bg-primary float-right">5</span></a>
+                        <li class="{% if request.path == '/practitioner-dashboard/reviews/' %}active{% endif %}">
+                            <a href="{% url 'practitionerdashboard:reviews' %}">
+                                <i class="fa fa-comments" style="color: white;"></i>
+                                <span style="color: white;">Reviews</span>
+                                <span class="badge badge-pill bg-primary float-right">5</span>
+                            </a>
                         </li>
-                       
                     </ul>
                 </div>
+                
             </div>
         </div>
 

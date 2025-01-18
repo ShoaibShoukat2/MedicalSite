@@ -226,7 +226,10 @@
                 z-index: 999;
                 box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             }
-            
+            .mobile-search .btn {
+    margin-left: auto; /* Pushes the button to the far right */
+    display: block;
+}
             .mobile-search.show {
                 display: block;
             }
@@ -277,6 +280,8 @@
             margin-top: 60px;
             min-height: calc(100vh - 60px);
             position: relative;
+            flex: 1; /* Makes the main content area take up the remaining space */
+
         }
     
         /* Sidebar Overlay */
@@ -313,7 +318,13 @@
             border: 2px solid #007bff;
             padding: 5px;
         }
-    
+    /* Reduce logo size when mini-sidebar is active */
+.mini-sidebar .header .logo img {
+    width: 50px;
+    height: 50px;
+    transition: all 0.3s ease; /* Smooth transition */
+}
+
         .sidebar-menu ul {
             list-style: none;
             padding: 0;
@@ -403,6 +414,8 @@
             /* Footer Styles */
             .footer {
             z-index: 1040;
+            bottom: 0;
+
 
             background-color:rgb(14, 82, 116);
             color: #fff;
@@ -545,14 +558,16 @@
     </div>
     
     <!-- Mobile Search Bar (Hidden by default) -->
-    <div class="mobile-search d-lg-none">
-        <form action="{% url 'patientdashboard:search' %}" method="get" class="d-flex">
-            <input type="text" name="query" class="form-control" placeholder="Search...">
-            <button class="btn btn-primary" type="submit">
-                <i class="fa fa-search"></i>
-            </button>
-        </form>
-    </div>
+    <!-- Mobile Search Bar (Hidden by default) -->
+<div class="mobile-search d-lg-none">
+    <form action="{% url 'patientdashboard:search' %}" method="get" class="d-flex">
+        <input type="text" name="query" class="form-control" placeholder="Search...">
+        <button class="btn btn-primary" type="submit" style="margin-left: auto;">
+            <i class="fa fa-search"></i>
+        </button>
+    </form>
+</div>
+
     
     
     
@@ -788,6 +803,7 @@
         });
     });
     </script>
+    <script></script>
      <script src="{% static 'assets3/js/jquery.min.js' %}"></script>
      <script src="{% static 'assets3/js/popper.js' %}"></script>
      <script src="{% static 'assets3/js/bootstrap.min.js' %}"></script>
