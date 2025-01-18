@@ -74,28 +74,33 @@
             padding: 0;
         }
     
-        .sidebar-menu ul li {
-            width: 100%;
-        }
-       /* Base Sidebar Menu Item */
+       /* Default menu item styles (not active) */
+.sidebar-menu ul li {
+    list-style: none;
+}
+
 .sidebar-menu ul li a {
-    color: #f5f5f5; /* Light text color */
+    color: white;
+    background: rgb(14, 82, 116);
     text-decoration: none;
     display: flex;
     align-items: center;
-    padding: 12px 20px;
-    transition: color 0.3s ease; /* Smooth transition for color change */
+    padding: 10px 15px;
+    border-radius: 5px; /* Optional for rounded corners */
+    transition: all 0.3s ease; /* Smooth transition */
 }
 
-/* Hover Effect */
-.sidebar-menu ul li a:hover {
-    color: #ffffff; /* White text on hover */
-}
-
-/* Active State */
+/* Active menu item styles */
 .sidebar-menu ul li.active a {
-    color: #ffffff; /* White text for active state */
-    font-weight: bold; /* Bold text for emphasis */
+    color: rgb(14, 82, 116); /* Active text color */
+    background: white; /* Active background */
+    font-weight: bold; /* Optional: Bold text for emphasis */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: Shadow for active item */
+}
+
+/* Hover effect */
+.sidebar-menu ul li a:hover {
+    color: rgb(200, 200, 200); /* Optional: Hover text color */
 }
 
 /* Icon Colors */
@@ -536,32 +541,32 @@
                     <ul>
                         <li class="{% if request.path == '/practitioner-dashboard/' %}active{% endif %}">
                             <a href="{% url 'practitionerdashboard:dashboard' %}">
-                                <i class="fa fa-tachometer-alt" style="color: white;"></i>
-                                <span style="color: white;">Dashboard</span>
+                                <i class="fa fa-tachometer-alt" ></i>
+                                <span >Dashboard</span>
                             </a>
                         </li>
                         <li class="{% if request.path == '/practitioner-dashboard/mypatient/' %}active{% endif %}">
                             <a href="{% url 'practitionerdashboard:mypatient' %}">
-                                <i class="fa fa-wheelchair" style="color: white;"></i>
-                                <span style="color: white;">Patients</span>
+                                <i class="fa fa-wheelchair" ></i>
+                                <span >Patients</span>
                             </a>
                         </li>
                         <li class="{% if request.path == '/practitioner-dashboard/appointment/' %}active{% endif %}">
                             <a href="{% url 'practitionerdashboard:appointment' %}">
-                                <i class="fa fa-calendar" style="color: white;"></i>
-                                <span style="color: white;">Appointments</span>
+                                <i class="fa fa-calendar" ></i>
+                                <span >Appointments</span>
                             </a>
                         </li>
                         <li class="{% if request.path == '/practitioner-dashboard/schedule_timming/' %}active{% endif %}">
                             <a href="{% url 'practitionerdashboard:schedule_timming' %}">
-                                <i class="fa fa-calendar-check-o" style="color: white;"></i>
-                                <span style="color: white;">Schedule Timming</span>
+                                <i class="fa fa-calendar-check-o" ></i>
+                                <span >Schedule Timming</span>
                             </a>
                         </li>
                         <li class="{% if request.path == '/practitioner-dashboard/reviews/' %}active{% endif %}">
                             <a href="{% url 'practitionerdashboard:reviews' %}">
-                                <i class="fa fa-comments" style="color: white;"></i>
-                                <span style="color: white;">Reviews</span>
+                                <i class="fa fa-comments" ></i>
+                                <span >Reviews</span>
                                 <span class="badge badge-pill bg-primary float-right">5</span>
                             </a>
                         </li>
