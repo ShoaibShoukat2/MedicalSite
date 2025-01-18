@@ -23,125 +23,256 @@
 </head>
 <style>
     /* Base sidebar styles */
-.sidebar {
-    position: fixed;
-    width: 240px;
-    height: 100vh;
-    top: 0;
-    left: 0;
-    background: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-    z-index: 999;
-    overflow-y: auto;
-}
-
-/* Mobile styles */
-@media (max-width: 991.98px) {
-    /* Reset any max-width constraints */
     .sidebar {
-        transform: translateX(-100%);
-        width: 100vw !important;
-        max-width: none !important;
-        left: 0;
-        right: 0;
-        margin: 0;
-        padding: 0;
-    }
-
-    .sidebar.show {
-        transform: translateX(0);
-        width: 100vw !important;
-    }
-
-    /* Ensure inner content spans full width */
-    .sidebar-inner {
-        width: 100vw;
-        max-width: none;
-        padding: 0;
-        margin: 0;
-    }
-
-    /* Menu styling */
-    #sidebar-menu {
-        width: 100vw;
-        padding: 0;
-    }
-
-    #sidebar-menu ul {
-        width: 100%;
-        margin: 0;
-        padding: 0;
-    }
-
-    #sidebar-menu ul li {
-        width: 100%;
-    }
-
-    #sidebar-menu ul li a {
-        width: 100%;
-        padding: 15px 20px;
-        box-sizing: border-box;
-    }
-
-    /* Profile section */
-    .sidebar-profile {
-        width: 100vw;
-        box-sizing: border-box;
-    }
-
-    /* Overlay */
-    .sidebar-overlay.show {
-        width: 100vw;
-        left: 0;
-    }
-
-    /* Close button */
-    .sidebar-close {
         position: fixed;
-        right: 15px;
-    }
-
-    /* Remove any margin from page wrapper */
-    .page-wrapper {
-        margin-left: 0 !important;
-        width: 100vw;
-    }
-
-    /* Force hardware acceleration for smoother transitions */
-    .sidebar {
-        -webkit-transform: translateX(-100%);
-        transform: translateX(-100%);
-        -webkit-backface-visibility: hidden;
-        backface-visibility: hidden;
-    }
-
-    .sidebar.show {
-        -webkit-transform: translateX(0);
-        transform: translateX(0);
-    }
-}
-
-/* Ensure no horizontal scrolling */
-body {
-    overflow-x: hidden;
-    width: 100%;
-    position: relative;
-}
-
-    .header {
-        background-color: #ffffff;
-        border-bottom: 1px solid #ddd;
-        position: fixed;
-        width: 100%;
+        width: 240px;
+        height: 100vh;
         top: 0;
-        z-index: 1000;
-        height: 60px;
-        padding: 0 15px;
-        display: flex;
-        align-items: center;
+        left: 0;
+        background: rgb(14, 82, 116);
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        z-index: 999;
+        overflow-y: auto;
+    }
+    
+    /* Mobile styles */
+    @media (max-width: 991.98px) {
+        /* Reset any max-width constraints */
+        .sidebar {
+            transform: translateX(-100%);
+            width: 100vw !important;
+            max-width: none !important;
+            left: 0;
+            right: 0;
+            margin: 0;
+            padding: 0;
+        }
+    
+        .sidebar.show {
+            transform: translateX(0);
+            width: 100vw !important;
+        }
+    
+        /* Ensure inner content spans full width */
+        .sidebar-inner {
+            width: 100vw;
+            max-width: none;
+            padding: 0;
+            margin: 0;
+        }
+    
+        /* Menu styling */
+        #sidebar-menu {
+            width: 100vw;
+            padding: 0;
+        }
+    
+        .sidebar-menu ul {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    
+        .sidebar-menu ul li {
+            width: 100%;
+        }
+       /* Base Sidebar Menu Item */
+.sidebar-menu ul li a {
+    color: #f5f5f5; /* Light text color */
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    transition: color 0.3s ease; /* Smooth transition for color change */
+}
+
+/* Hover Effect */
+.sidebar-menu ul li a:hover {
+    color: #ffffff; /* White text on hover */
+}
+
+/* Active State */
+.sidebar-menu ul li.active a {
+    color: #ffffff; /* White text for active state */
+    font-weight: bold; /* Bold text for emphasis */
+}
+
+/* Icon Colors */
+.sidebar-menu ul li a i {
+    margin-right: 10px;
+    font-size: 16px;
+    transition: color 0.3s ease; /* Smooth transition for icon color */
+}
+
+.sidebar-menu ul li a:hover i,
+.sidebar-menu ul li.active a i {
+    color: #ffffff; /* White icon color on hover and active */
+}
+
+        /* Profile section */
+        .sidebar-profile {
+            width: 100vw;
+            box-sizing: border-box;
+        }
+    
+        /* Overlay */
+        .sidebar-overlay.show {
+            width: 100vw;
+            left: 0;
+        }
+    
+        /* Close button */
+        .sidebar-close {
+            position: fixed;
+            right: 15px;
+        }
+    
+        /* Remove any margin from page wrapper */
+        .page-wrapper {
+            margin-left: 0 !important;
+            width: 100vw;
+        }
+    
+        /* Force hardware acceleration for smoother transitions */
+        .sidebar {
+            -webkit-transform: translateX(-100%);
+            transform: translateX(-100%);
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+        }
+    
+        .sidebar.show {
+            -webkit-transform: translateX(0);
+            transform: translateX(0);
+        }
+    }
+    
+    /* Ensure no horizontal scrolling */
+    body {
+        overflow-x: hidden;
+        width: 100%;
+        position: relative;
     }
 
+        /* Header Styles */
+        .header {
+            background-color: rgb(14, 82, 116);;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            height: 60px;
+            padding: 0 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        /* Logo */
+        .header-left {
+            padding: 0 15px;
+        }
+        .header .logo img{
+            height: 100px;
+            width:100px;
+            
+        }
+        /* Search Bar */
+        .search-bar {
+            flex: 1;
+            max-width: 600px;
+            margin: 0 20px;
+        }
+        
+        .search-bar form {
+            width: 100%;
+        }
+        
+        .search-bar .form-control {
+            border-radius: 20px 0 0 20px;
+            border-right: none;
+        }
+        
+        .search-bar .btn {
+            border-radius: 0 20px 20px 0;
+            
+        }
+        
+        /* User Menu */
+        .user-menu {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-menu .nav-item {
+            margin: 0 5px;
+        }
+        
+        .user-menu .nav-link {
+            padding: 0 10px;
+            position: relative;
+        }
+        
+        /* Mobile Search */
+        .mobile-search {
+            display: none;
+            padding: 10px 15px;
+            background: #fff;
+            position: fixed;
+            top: 60px;
+            left: 0;
+            right: 0;
+            z-index: 999;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .mobile-search.show {
+            display: block;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 991.98px) {
+            .header {
+                padding: 0 10px;
+            }
+        
+            .search-bar {
+                display: none;
+            }
+        
+            .user-menu .nav-item {
+                margin: 0 2px;
+            }
+        
+            .user-menu .nav-link {
+                padding: 0 5px;
+            }
+        
+            .header-left {
+                padding: 0 5px;
+            }
+        
+            .notifications {
+                position: fixed;
+                top: 60px;
+                left: 0;
+                right: 0;
+                width: 100%;
+                margin: 0;
+            }
+        }
+        
+        @media (max-width: 575.98px) {
+            .user-menu .nav-item.d-none {
+                display: none !important;
+            }
+            
+            .user-menu .user-link span.user-img {
+                margin-right: 0;
+            }
+        }
+        
     .main-wrapper {
         margin-top: 60px;
         min-height: calc(100vh - 60px);
@@ -163,7 +294,6 @@ body {
 
     /* Sidebar styles */
     
-
     /* Sidebar inner content */
     .sidebar-inner {
         padding-top: 60px;
@@ -190,28 +320,7 @@ body {
         margin: 0;
     }
 
-    .sidebar-menu ul li {
-        position: relative;
-    }
-
-    .sidebar-menu ul li a {
-        display: flex;
-        align-items: center;
-        padding: 12px 20px;
-        color: #333;
-        text-decoration: none;
-        transition: 0.3s;
-    }
-
-    .sidebar-menu ul li a i {
-        margin-right: 10px;
-        font-size: 16px;
-    }
-
-    .sidebar-menu ul li a:hover {
-        background: #f5f5f5;
-    }
-
+   
     /* Close button */
     .sidebar-close {
         display: none;
@@ -237,43 +346,7 @@ body {
     .header .nav.user-menu {
         margin-left: auto;
     }
-        .dash-widget {
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
-        }
-        
-        .dash-widget:hover {
-            transform: translateY(-5px);
-        }
-        
-        .dash-widget-bg2 {
-            background-color: #28a745;
-        }
-        
-        .dash-widget-bg3 {
-            background-color: #007bff;
-        }
-        
-        .dash-widget-bg4 {
-            background-color: #ffc107;
-        }
-        
-        .widget-title2,
-        .widget-title3,
-        .widget-title4 {
-            font-size: 14px;
-            font-weight: 500;
-        }
-        
-        .dash-widget h3 {
-            font-size: 24px;
-            font-weight: 700;
-            color: #333;
-        }
-        
+
     .header .nav.user-menu a i,
     .header .nav.user-menu a span {
         color: #007bff;
@@ -309,7 +382,8 @@ body {
     }
 
     /* Mobile styles */
-   
+    
+
     /* Submenu styles */
     .submenu ul {
         display: none;
@@ -326,7 +400,49 @@ body {
         font-weight: 500;
         font-size: 14px;
     }
+    /* Footer Styles */
+    
+    .footer {
+        z-index: 1040;
+
+        background-color:rgb(14, 82, 116);
+        color: #fff;
+        padding: 40px 20px;
+        position: relative;
+        width: 100%;
+        margin-top: auto;
+    }
+
+    .footer h5 {
+        color: #fff;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .footer a {
+        color: #fff;
+        text-decoration: none;
+    }
+
+    .footer a:hover {
+        color: #ddd;
+    }
+
+    .footer .social-icons a {
+        font-size: 20px;
+        margin-right: 10px;
+    }
+
+    .footer .bottom-footer {
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        padding-top: 20px;
+        margin-top: 20px;
+    }
+    
 </style>
+
+
+
 
 <body>
     <!-- Header -->
@@ -337,13 +453,13 @@ body {
             <img src="{% static 'logo.png' %}" width="35" height="35" alt="Preclinic">
         </a>
     </div>
-    <a id="mobile_btn" class="mobile_btn float-left" href="javascript:void(0);"><i class="fa fa-bars"></i></a>
-    <a id="toggle_btn" href="javascript:void(0);"><i class="fa fa-bars"></i></a>
+    <a id="mobile_btn" class="mobile_btn float-left" href="javascript:void(0);"><i class="fa fa-bars" style="color: white;"></i></a>
+    <a id="toggle_btn" href="javascript:void(0);"><i class="fa fa-bars" style="color: white;"></i></a>
     <ul class="nav user-menu float-right">
         <!-- Notifications Button -->
         <li class="nav-item dropdown d-none d-sm-block">
             <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
-                <i class="fa fa-bell"></i>
+                <i class="fa fa-bell" style="color: white;"></i>
                 <span class="badge badge-pill bg-danger float-right">3</span>
             </a>
             <div class="dropdown-menu notifications">
@@ -376,7 +492,7 @@ body {
         <!-- Chat Button -->
         <li class="nav-item">
             <a href="{% url 'practitionerdashboard:chat' %}" class="nav-link">
-                <i class="fa fa-comments"></i>
+                <i class="fa fa-comments" style="color: white;"></i>
                 <span class="badge badge-pill bg-primary float-right">5</span>
             </a>
         </li>
@@ -412,24 +528,23 @@ body {
                
                 <div id="sidebar-menu" class="sidebar-menu">
                     <ul>
-                        <li class="menu-title">Main</li>
                         <li class="active">
-                            <a href="{% url 'practitionerdashboard:dashboard' %}"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a>
+                            <a href="{% url 'practitionerdashboard:dashboard' %}"><i class="fa fa-dashboard"style="color: white;"></i> <spanstyle="color: white;">Dashboard</span></a>
                         </li>
                         <li>
-                            <a href="{% url 'practitionerdashboard:mypatient' %}"><i class="fa fa-wheelchair"></i> <span>Patients</span></a>
+                            <a href="{% url 'practitionerdashboard:mypatient' %}"><i class="fa fa-wheelchair"style="color: white;"></i> <span style="color: white;">Patients</span></a>
                         </li>
 
 
                         <li>
-                            <a href="{% url 'practitionerdashboard:appointment' %}"><i class="fa fa-calendar"></i> <span>Appointments</span></a>
+                            <a href="{% url 'practitionerdashboard:appointment' %}"><i class="fa fa-calendar" style="color: white;"></i> <span style="color: white;">Appointments</span></a>
                         </li>
                         <li>
-                            <a href="{% url 'practitionerdashboard:schedule_timming' %}"><i class="fa fa-calendar-check-o"></i> <span>Schedule Timming</span></a>
+                            <a href="{% url 'practitionerdashboard:schedule_timming' %}"><i class="fa fa-calendar-check-o" style="color: white;"></i> <span style="color: white;">Schedule Timming</span></a>
                         </li>
                         
                         <li>
-                            <a href="{% url 'practitionerdashboard:reviews' %}"><i class="fa fa-comments"></i> <span>Reviews</span> <span class="badge badge-pill bg-primary float-right">5</span></a>
+                            <a href="{% url 'practitionerdashboard:reviews' %}"><i class="fa fa-comments" style="color: white;"></i> <span style="color: white;">Reviews</span> <span class="badge badge-pill bg-primary float-right">5</span></a>
                         </li>
                        
                     </ul>
@@ -443,7 +558,76 @@ body {
             {% endblock content %}
         </div>
     </div>
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <!-- Logo Section -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <a href="/">
+                    <img src="{% static 'logo.png' %}" alt="Logo" class="img-fluid mb-3" style="max-width: 150px;">
 
+
+                    </a>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook me-3"></i></a>
+                        <a href="#"><i class="fab fa-twitter me-3"></i></a>
+                        <a href="#"><i class="fab fa-linkedin me-3"></i></a>
+                        <a href="#"><i class="fab fa-instagram me-3"></i></a>
+                        <a href="#"><i class="fab fa-dribbble"></i></a>
+                    </div>
+                </div>
+
+                <!-- For Patients Section -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h5 class="text-uppercase">For Patients</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Search for Doctors</a></li>
+                        <li><a href="#">Login</a></li>
+                        <li><a href="#">Register</a></li>
+                        <li><a href="#">Booking</a></li>
+                        <li><a href="#">Patient Dashboard</a></li>
+                    </ul>
+
+
+                </div>
+
+                <!-- For Doctors Section -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h5 class="text-uppercase">For Doctors</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Appointments</a></li>
+                        <li><a href="#">Chat</a></li>
+                        <li><a href="#">Login</a></li>
+                        <li><a href="#">Register</a></li>
+                        <li><a href="#">Doctor Dashboard</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact Us Section -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h5 class="text-uppercase">Contact Us</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-map-marker-alt me-2"></i> 3556 Beech Street, San Francisco</li>
+                        <li><i class="fas fa-phone me-2"></i> +1 315 369 5943</li>
+                        <li><i class="fas fa-envelope me-2"></i> Reeducaive@example.com</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Bottom Footer -->
+<!-- Bottom Footer continued -->
+<div class="row mt-4 pt-3 border-top">
+    <div class="col-md-6 text-center text-md-start">
+        <p class="mb-0">&copy; 2025 Reeducaive. All Rights Reserved.</p>
+    </div>
+    <div class="col-md-6 text-center text-md-end">
+        <a href="#">Terms and Conditions</a>
+        <span class="mx-2">|</span>
+        <a href="#">Policy</a>
+    </div>
+</div>
+</div>
+</footer>
     <!-- Scripts -->
     <script src="{% static 'assets/js/jquery-3.2.1.min.js' %}"></script>
     <script src="{% static 'assets/js/popper.min.js' %}"></script>
