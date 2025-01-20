@@ -1,4 +1,5 @@
 from django import template
+from user_account.models import Practitioner
 
 register = template.Library()
 
@@ -13,6 +14,43 @@ def get_practitioner_name(request):
     if practitioner_name:
         return practitioner_name
     return ''  # Return empty string if no practitioner is logged in
+
+
+
+
+
+@register.simple_tag
+def get_practitioner_image(request):
+    """
+    Returns the image URL of the logged-in practitioner based on their practitioner ID.
+    If no practitioner ID is found, it returns a person icon SVG.
+    """
+    practitioner_id = request.session.get('practitioner_id', None)
+    
+    if practitioner_id:
+        try:
+            practitioner = Practitioner.objects.get(id=practitioner_id)
+            if practitioner.photo:
+                return practitioner.photo.url
+            else:
+                # Return an inline SVG person icon
+                return '''<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                            <circle cx="12" cy="8" r="4" fill="#b0bec5"/>
+                            <path d="M12 14c-4 0-6 2-6 4v2h12v-2c0-2-2-4-6-4z" fill="#b0bec5"/>
+                          </svg>'''
+        except Practitioner.DoesNotExist:
+            return '''<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <circle cx="12" cy="8" r="4" fill="#b0bec5"/>
+                        <path d="M12 14c-4 0-6 2-6 4v2h12v-2c0-2-2-4-6-4z" fill="#b0bec5"/>
+                      </svg>'''
+    return '''<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <circle cx="12" cy="8" r="4" fill="#b0bec5"/>
+                <path d="M12 14c-4 0-6 2-6 4v2h12v-2c0-2-2-4-6-4z" fill="#b0bec5"/>
+              </svg>'''
+              
+              
+              
+
 
 
 @register.simple_tag
