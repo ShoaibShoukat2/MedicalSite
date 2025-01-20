@@ -14,4 +14,14 @@ urlpatterns = [
 
     path('reviews/', views.reviews, name='reviews'),
     path('chat/', views.chat, name='chat'),
+    
+    
+    
+    # Profile url
+    path('practitioner-profile/', views.CompleteProfile, name='practitioner_profile'),
+    
+    
 ]
+
+
+

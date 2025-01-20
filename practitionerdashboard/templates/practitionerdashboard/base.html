@@ -18,6 +18,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.3.0/mdb.min.css" rel="stylesheet">
+    
 
     {% block extra_css %}{% endblock %}
 </head>
@@ -477,6 +478,8 @@
                 <div class="topnav-dropdown-header">
                     <span>Notifications</span>
                 </div>
+
+
                 <div class="drop-scroll">
                     <ul class="notification-list">
                         <li class="notification-message">
@@ -518,7 +521,7 @@
             <div class="dropdown-menu">
                 <a class="dropdown-item" href="#">My Profile</a>
                 <a class="dropdown-item" href="#">Settings</a>
-                <a class="dropdown-item" href="#">Logout</a>
+                <a class="dropdown-item" href="{% url 'frontend:logout' %}">Logout</a>
             </div>
         </li>
     </ul>
@@ -545,6 +548,16 @@
                                 <span >Dashboard</span>
                             </a>
                         </li>
+
+                        <li class="{% if request.path == '/practitioner-profile/' %}active{% endif %}">
+                            <a href="{% url 'practitioner_dashboard:practitioner_profile' %}">
+                                <i class="fa fa-user"></i>
+                                <span>Complete Profile</span>
+                            </a>
+                        </li>
+                        
+
+
                         <li class="{% if request.path == '/practitioner-dashboard/mypatient/' %}active{% endif %}">
                             <a href="{% url 'practitionerdashboard:mypatient' %}">
                                 <i class="fa fa-wheelchair" ></i>
@@ -555,6 +568,8 @@
                             <a href="{% url 'practitionerdashboard:appointment' %}">
                                 <i class="fa fa-calendar" ></i>
                                 <span >Appointments</span>
+
+
                             </a>
                         </li>
                         <li class="{% if request.path == '/practitioner-dashboard/schedule_timming/' %}active{% endif %}">
@@ -589,7 +604,6 @@
                 <div class="col-lg-3 col-md-6 mb-4">
                     <a href="/">
                     <img src="{% static 'logo.png' %}" alt="Logo" class="img-fluid mb-3" style="max-width: 150px;">
-
 
                     </a>
                     <div class="social-icons">

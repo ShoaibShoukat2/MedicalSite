@@ -148,7 +148,6 @@ def verify_otp(request):
 def practitioner_signup(request):
     
     
-    
     if request.method == 'POST':
         # Retrieve data from the form
         civility = request.POST.get('civility')
@@ -216,6 +215,9 @@ def practitioner_signup(request):
     return render(request, 'practitioner.html', context)
 
 
+
+
+
 def practitioner_verify_otp(request):
     """Verify OTP for practitioner signup."""
     if request.method == 'POST':
@@ -248,6 +250,7 @@ def practitioner_verify_otp(request):
         return redirect('frontend:practinor_verify_otp')
 
     return render(request, 'verify_practitioner_otp.html')  # Render OTP verification form
+
 
 
 

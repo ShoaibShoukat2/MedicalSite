@@ -29,5 +29,3 @@ def get_patient_name(request):
 
 
 
-
-
