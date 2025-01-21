@@ -1,0 +1,179 @@
+{% extends "practitionerdashboard/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Schedule Timings</h4>
+
+            <!-- Timing Slot Duration Dropdown -->
+            <div class="mb-4">
+                <label for="slotDuration" class="form-label">Timing Slot Duration</label>
+                <select id="slotDuration" class="form-select w-auto">
+                    <option value="30">30 mins</option>
+                    <option value="45">45 mins</option>
+                    <option value="60">1 hour</option>
+                    <option value="90">1 hour 30 mins</option>
+                </select>
+            </div>
+
+            <!-- Days Tabs -->
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#sunday">Sunday</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#monday">Monday</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#tuesday">Tuesday</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#wednesday">Wednesday</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#thursday">Thursday</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#friday">Friday</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#saturday">Saturday</a>
+                </li>
+            </ul>
+
+            <!-- Tabs Content -->
+            <div class="tab-content mt-4">
+                <!-- Sunday Tab -->
+                <div id="sunday" class="tab-pane fade">
+                    <p class="text-muted">No slots available for Sunday.</p>
+                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addSlotModal">Add Slot</button>
+                </div>
+
+                <!-- Monday Tab -->
+                <div id="monday" class="tab-pane fade show active">
+                    <h5>Time Slots</h5>
+                    <div class="d-flex flex-wrap gap-2">
+                        <div class="badge bg-danger text-white px-3 py-2 d-flex align-items-center">
+                            8:00 pm - 11:30 pm
+                            <button type="button" class="btn-close ms-2" aria-label="Remove"></button>
+                        </div>
+                        <div class="badge bg-danger text-white px-3 py-2 d-flex align-items-center">
+                            11:30 pm - 1:30 pm
+                            <button type="button" class="btn-close ms-2" aria-label="Remove"></button>
+                        </div>
+                        <div class="badge bg-danger text-white px-3 py-2 d-flex align-items-center">
+                            3:00 pm - 5:00 pm
+                            <button type="button" class="btn-close ms-2" aria-label="Remove"></button>
+                        </div>
+                        <div class="badge bg-danger text-white px-3 py-2 d-flex align-items-center">
+                            6:00 pm - 11:00 pm
+                            <button type="button" class="btn-close ms-2" aria-label="Remove"></button>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#editSlotModal"><i class="fa fa-edit"></i> Edit</a>
+                    </div>
+                </div>
+
+                <!-- Other Days -->
+                <div id="tuesday" class="tab-pane fade">
+                    <p class="text-muted">No slots available for Tuesday.</p>
+                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addSlotModal">Add Slot</button>
+                </div>
+                <div id="wednesday" class="tab-pane fade">
+                    <p class="text-muted">No slots available for Wednesday.</p>
+                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addSlotModal">Add Slot</button>
+                </div>
+                <div id="thursday" class="tab-pane fade">
+                    <p class="text-muted">No slots available for Thursday.</p>
+                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addSlotModal">Add Slot</button>
+                </div>
+                <div id="friday" class="tab-pane fade">
+                    <p class="text-muted">No slots available for Friday.</p>
+                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addSlotModal">Add Slot</button>
+                </div>
+                <div id="saturday" class="tab-pane fade">
+                    <p class="text-muted">No slots available for Saturday.</p>
+                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addSlotModal">Add Slot</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Slot Modal -->
+<div class="modal fade" id="addSlotModal" tabindex="-1" aria-labelledby="addSlotModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addSlotModalLabel">Add Time Slots</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <label for="startTime" class="form-label">Start Time</label>
+                        <select id="startTime" class="form-select">
+                            <option>-</option>
+                            <option>12:00 AM</option>
+                            <option>12:30 AM</option>
+                            <!-- Add more times -->
+                        </select>
+                    </div>
+                    <div class="col-6">
+                        <label for="endTime" class="form-label">End Time</label>
+                        <select id="endTime" class="form-select">
+                            <option>-</option>
+                            <option>12:30 AM</option>
+                            <option>1:00 AM</option>
+                            <!-- Add more times -->
+                        </select>
+                    </div>
+                </div>
+                <a href="#" class="text-primary"><i class="fa fa-plus"></i> Add More</a>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Slot Modal -->
+<div class="modal fade" id="editSlotModal" tabindex="-1" aria-labelledby="editSlotModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editSlotModalLabel">Edit Time Slots</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <label for="startTime1" class="form-label">Start Time</label>
+                        <select id="startTime1" class="form-select">
+                            <option>12:00 AM</option>
+                            <option>12:30 AM</option>
+                        </select>
+                    </div>
+                    <div class="col-6">
+                        <label for="endTime1" class="form-label">End Time</label>
+                        <select id="endTime1" class="form-select">
+                            <option>12:30 AM</option>
+                            <option>1:00 AM</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center">
+                    <a href="#" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></a>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
