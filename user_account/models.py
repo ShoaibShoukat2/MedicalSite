@@ -74,7 +74,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     
     
     
-from django.db import models
 
 class Patient(models.Model):
     GREETING_CHOICES = [
