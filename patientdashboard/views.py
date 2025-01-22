@@ -2,6 +2,9 @@ from django.shortcuts import render
 
 def patient_base(request):
     return render(request, 'patientdashboard/patient_base.html')
+
+
+
 def search(request):
     return render(request, 'patientdashboard/search.html')
 
