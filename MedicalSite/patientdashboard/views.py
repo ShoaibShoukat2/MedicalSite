@@ -1,4 +1,5 @@
 
+import json
 from django.db.models import Q
 from user_account.models import Practitioner ,Patient # Assuming Practitioner is the model for doctors/practitioners
 
@@ -8,6 +9,10 @@ from django.core.paginator import Paginator
 
 def patient_base(request):
     return render(request, 'patientdashboard/patient_base.html')
+
+
+def booking(request):
+    return render(request, 'patientdashboard/booking.html')
 
 
 def search_practitioners(request):
@@ -52,24 +57,21 @@ def search_practitioners(request):
         'specialty': specialty,
     })
 
-def booking(request):
-    return render(request, 'patientdashboard/booking.html')
-
 def chat(request):
     return render(request, 'patientdashboard/chat.html')
+from django.shortcuts import render, get_object_or_404, redirect
+from user_account.models import Patient  # Adjust the import based on your app structure
 
 def appointments_patients(request):
-    if request.user.is_authenticated:  # Check if user is logged in
-        try:
-            # Fetch the patient data using the email of the logged-in user
-            patient = get_object_or_404(Patient, email=request.user.email)
-            return render(request, 'patientdashboard/appointments_patients.html', {'patient': patient})
-        except Patient.DoesNotExist:
-            # Redirect or show an error if no matching patient record is found
-            return render(request, 'patientdashboard/appointments_patients.html', {'patient': None})
+    # Check if the session contains patient_id
+    patient_id = request.session.get('patient_id')
+    if patient_id:
+        # Retrieve the Patient object using the session ID
+        patient = get_object_or_404(Patient, id=patient_id)
+        return render(request, 'patientdashboard/appointments_patients.html', {'patient': patient})
     else:
-        # Redirect to login page if user is not authenticated
-        return redirect('frontend:patient_login')  # Update with your login URL name
+        # Redirect to login page if the session is not valid
+        return redirect('frontend:patient_login')
 
 
 def payment(request):
