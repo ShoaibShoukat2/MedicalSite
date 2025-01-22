@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Signup</title>
+
+    <!-- Include Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Include MDB CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.3.1/mdb.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css" rel="stylesheet">
+
+    <style>
+        /* Body Styling */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            color: #495057;
+        }
+
+        /* Main Container Styling */
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            min-height: 100vh;
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Left Side: Medical Image */
+        .left-side {
+            flex: 1;
+            background-image: url("{% static 'signup.jpeg' %}"); /* Add your medical image */
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            padding: 0;
+            border-top-left-radius: 15px;
+            border-bottom-left-radius: 15px;
+        }
+
+        /* Right Side: Form Area */
+        .right-side {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #ffffff;
+            padding: 20px;
+            border-top-right-radius: 15px;
+            border-bottom-right-radius: 15px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e1e1e1;
+        }
+
+        /* Form Section Styling */
+        .form-section {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 480px; /* Adjust the max width for better form appearance */
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #e1e1e1;
+        }
+
+        /* Title Styling */
+        .form-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #000000; /* Black Color */
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        /* Input Fields Styling */
+        .form-label {
+            font-weight: 500;
+            color: #495057;
+        }
+
+        .form-control {
+            border-radius: 0.5rem;
+            border: 1px solid #ced4da;
+            box-shadow: none;
+            font-size: 1rem;
+            height: 45px;
+            padding: 0.75rem 1rem;
+            margin-bottom: 15px;
+        }
+
+        .form-control:focus {
+            border-color: #000000;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .btn-primary {
+            background-color: #000000;
+            border-color: #000000;
+            font-size: 1.2rem;
+            padding: 12px;
+            border-radius: 0.5rem;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: #333333;
+            border-color: #222222;
+        }
+
+        .footer-text {
+            text-align: center;
+            margin-top: 40px;
+            color: #6c757d;
+        }
+
+        /* Left Side Text Overlay */
+        .left-side-text {
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .left-side {
+                height: 300px; /* Fixed height for smaller screens */
+                background-position: top; /* Ensure image isn't cut off */
+                border-radius: 0; /* Remove rounding for smaller screens */
+            }
+
+            .right-side {
+                border-radius: 12px;
+                margin-top: 30px;
+            }
+
+            .form-section {
+                width: 100%;
+                padding: 25px;
+            }
+
+            .form-title {
+                font-size: 1.6rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .left-side-text {
+                font-size: 1.4rem;
+            }
+            .form-title {
+                font-size: 1.5rem;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <!-- Left Side with Medical Image -->
+        <div class="left-side">
+            <div class="left-side-text">
+                <h2>Your Health, Our Priority</h2>
+                <p>Welcome to our healthcare system. Start your journey to better health now.</p>
+            </div>
+        </div>
+
+        <!-- Right Side with Signup Form -->
+        <div class="right-side">
+            <div class="form-section">
+                <h2 class="form-title">Patient Signup</h2>
+
+
+                <form method="post" action="{% url 'frontend:patient_signup' %}">
+                    {% csrf_token %}
+                    <!-- Greeting Choices -->
+                    <div class="mb-3">
+                        <label for="greeting" class="form-label">Greeting</label>
+                        <select class="form-select form-control" id="greeting" name="greeting" required>
+                            <option value="" selected disabled>Choose...</option>
+                            {% for key, value in greeting_choices %}
+                            <option value="{{ key }}">{{ value }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- First Name -->
+                    <div class="mb-3">
+                        <label for="first_name" class="form-label">First Name</label>
+                        <input type="text" class="form-control" id="first_name" name="first_name" required>
+                    </div>
+
+                    <!-- Last Name -->
+                    <div class="mb-3">
+                        <label for="last_name" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="last_name" name="last_name" required>
+                    </div>
+
+                    <!-- Gender Choices -->
+                    <div class="mb-3">
+                        <label for="gender" class="form-label">Gender</label>
+                        <select class="form-select form-control" id="gender" name="gender" required>
+                            <option value="" selected disabled>Choose...</option>
+                            {% for key, value in gender_choices %}
+                            <option value="{{ key }}">{{ value }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Mobile Phone -->
+                    <div class="mb-3">
+                        <label for="mobile_phone" class="form-label">Mobile Phone</label>
+                        <input type="text" class="form-control" id="mobile_phone" name="mobile_phone" required>
+                    </div>
+
+                    <!-- Date of Birth -->
+                    <div class="mb-3">
+                        <label for="date_of_birth" class="form-label">Date of Birth</label>
+                        <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" required>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-primary">Signup</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+
+    <script>
+        {% if error_message %}
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: '{{ error_message }}',
+            confirmButtonText: 'Close'
+        });
+        {% endif %}
+
+        {% if success_message %}
+        Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: '{{ success_message }}',
+            confirmButtonText: 'Close'
+        });
+        {% endif %}
+    </script>
+
+
+
+    <!-- Include MDB JS -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.3.1/mdb.min.js"></script>
+</body>
+
+</html>
+
+
