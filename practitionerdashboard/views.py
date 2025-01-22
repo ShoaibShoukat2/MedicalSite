@@ -6,6 +6,12 @@ from django.http import JsonResponse
 from user_account.models import Practitioner
 from .models import AvailableSlot
 import json
+from django.shortcuts import render, get_object_or_404, redirect
+from user_account.models import Practitioner
+
+from django.http import JsonResponse
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 
 # Create your views here.
 
@@ -26,8 +32,6 @@ def chat(request):
 
 def reviews(request):
     return render(request, 'practitionerdashboard/reviews.html')
-from django.shortcuts import render, get_object_or_404, redirect
-from user_account.models import Practitioner
 
 def schedule_timming(request):
     # Check if practitioner is logged in
@@ -39,10 +43,6 @@ def schedule_timming(request):
     practitioner = get_object_or_404(Practitioner, id=practitioner_id)
     slots = practitioner.available_slots.all()
     return render(request, 'practitionerdashboard/schedule_time.html', {'slots': slots})
-
-from django.http import JsonResponse
-from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
 
 import json
 
