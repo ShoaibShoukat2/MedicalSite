@@ -481,14 +481,14 @@
         <!-- Desktop Search -->
          <!-- Desktop Search -->
          <form action="{% url 'patientdashboard:search' %}" method="get" class="d-flex">
-            <input type="text" name="query" class="form-control" placeholder="Search doctor by name or speciality..." value="{{ query|default:'' }}">
-            <button class="btn btn-primary" type="submit">
+            <input type="text" name="query" class="form-control" placeholder="Search doctor by name or speciality..." value="{{ query|default:'' }}" style="width: 600px;">
+            <button class="btn btn-primary" type="submit" style="margin-left: 8px;">
                 <i class="fa fa-search"></i>
             </button>
         </form>
         
         
-
+        
 
 
 
