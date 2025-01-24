@@ -1,0 +1,35 @@
+{% extends 'patientdashboard/patient_base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h3>Available Slots for Dr. {{ practitioner.first_name }} {{ practitioner.last_name }}</h3>
+    <table class="table table-bordered mt-4">
+        <thead>
+            <tr>
+                <th>Day</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for slot in slots %}
+                <tr>
+                    <td>{{ slot.get_day_of_week_display }}</td>
+                    <td>{{ slot.start_time }}</td>
+                    <td>{{ slot.end_time }}</td>
+                    <td>{{ slot.status }}</td>
+                    <td>
+                        <form method="POST" action="{% url 'patientdashboard:book_appointment' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="slot_id" value="{{ slot.id }}">
+                            <button type="submit" class="btn btn-primary btn-sm">Book</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

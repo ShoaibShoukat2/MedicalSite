@@ -1,0 +1,745 @@
+
+
+{% load static %}
+<!DOCTYPE html>
+
+{% load user_info_tags  %}
+<html lang="en">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'assets/img/favicon.ico' %}">
+    <title>{% block title %}Dashboard{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.3.0/mdb.min.css" rel="stylesheet">
+    
+
+    {% block extra_css %}{% endblock %}
+</head>
+<style>
+    /* Base sidebar styles */
+    .sidebar {
+        position: fixed;
+        width: 240px;
+        height: 100vh;
+        top: 0;
+        left: 0;
+        background: rgb(14, 82, 116);
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        z-index: 999;
+        overflow-y: auto;
+    }
+    
+    /* Mobile styles */
+    @media (max-width: 991.98px) {
+        /* Reset any max-width constraints */
+        .sidebar {
+            transform: translateX(-100%);
+            width: 100vw !important;
+            max-width: none !important;
+            left: 0;
+            right: 0;
+            margin: 0;
+            padding: 0;
+        }
+    
+        .sidebar.show {
+            transform: translateX(0);
+            width: 100vw !important;
+        }
+    
+        /* Ensure inner content spans full width */
+        .sidebar-inner {
+            width: 100vw;
+            max-width: none;
+            padding: 0;
+            margin: 0;
+        }
+    
+        /* Menu styling */
+        #sidebar-menu {
+            width: 100vw;
+            padding: 0;
+        }
+    
+        .sidebar-menu ul {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    
+       /* Default menu item styles (not active) */
+.sidebar-menu ul li {
+    list-style: none;
+}
+
+.sidebar-menu ul li a {
+    color: white;
+    background: rgb(14, 82, 116);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    border-radius: 5px; /* Optional for rounded corners */
+    transition: all 0.3s ease; /* Smooth transition */
+}
+
+/* Active menu item styles */
+.sidebar-menu ul li.active a {
+    color: rgb(14, 82, 116); /* Active text color */
+    background: white; /* Active background */
+    font-weight: bold; /* Optional: Bold text for emphasis */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: Shadow for active item */
+}
+
+/* Hover effect */
+.sidebar-menu ul li a:hover {
+    color: rgb(200, 200, 200); /* Optional: Hover text color */
+}
+
+/* Icon Colors */
+.sidebar-menu ul li a i {
+    margin-right: 10px;
+    font-size: 16px;
+    transition: color 0.3s ease; /* Smooth transition for icon color */
+}
+
+.sidebar-menu ul li a:hover i,
+.sidebar-menu ul li.active a i {
+    color: #ffffff; /* White icon color on hover and active */
+}
+
+        /* Profile section */
+        .sidebar-profile {
+            width: 100vw;
+            box-sizing: border-box;
+        }
+    
+        /* Overlay */
+        .sidebar-overlay.show {
+            width: 100vw;
+            left: 0;
+        }
+    
+        /* Close button */
+        .sidebar-close {
+            position: fixed;
+            right: 15px;
+        }
+    
+        /* Remove any margin from page wrapper */
+        .page-wrapper {
+            margin-left: 0 !important;
+            width: 100vw;
+        }
+    
+        /* Force hardware acceleration for smoother transitions */
+        .sidebar {
+            -webkit-transform: translateX(-100%);
+            transform: translateX(-100%);
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+        }
+    
+        .sidebar.show {
+            -webkit-transform: translateX(0);
+            transform: translateX(0);
+        }
+    }
+    
+    /* Ensure no horizontal scrolling */
+    body {
+        overflow-x: hidden;
+        width: 100%;
+        position: relative;
+    }
+
+        /* Header Styles */
+        .header {
+            background-color: rgb(14, 82, 116);;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            height: 60px;
+            padding: 0 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        /* Logo */
+        .header-left {
+            padding: 0 15px;
+        }
+        .header .logo img{
+            height: 100px;
+            width:100px;
+            
+        }
+        /* Search Bar */
+        .search-bar {
+            flex: 1;
+            max-width: 600px;
+            margin: 0 20px;
+        }
+        
+        .search-bar form {
+            width: 100%;
+        }
+        
+        .search-bar .form-control {
+            border-radius: 20px 0 0 20px;
+            border-right: none;
+        }
+        
+        .search-bar .btn {
+            border-radius: 0 20px 20px 0;
+            
+        }
+        
+        /* User Menu */
+        .user-menu {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-menu .nav-item {
+            margin: 0 5px;
+        }
+        
+        .user-menu .nav-link {
+            padding: 0 10px;
+            position: relative;
+        }
+        
+        /* Mobile Search */
+        .mobile-search {
+            display: none;
+            padding: 10px 15px;
+            background: #fff;
+            position: fixed;
+            top: 60px;
+            left: 0;
+            right: 0;
+            z-index: 999;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .mobile-search.show {
+            display: block;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 991.98px) {
+            .header {
+                padding: 0 10px;
+            }
+        
+            .search-bar {
+                display: none;
+            }
+        
+            .user-menu .nav-item {
+                margin: 0 2px;
+            }
+        
+            .user-menu .nav-link {
+                padding: 0 5px;
+            }
+        
+            .header-left {
+                padding: 0 5px;
+            }
+        
+            .notifications {
+                position: fixed;
+                top: 60px;
+                left: 0;
+                right: 0;
+                width: 100%;
+                margin: 0;
+            }
+        }
+        
+        @media (max-width: 575.98px) {
+            .user-menu .nav-item.d-none {
+                display: none !important;
+            }
+            
+            .user-menu .user-link span.user-img {
+                margin-right: 0;
+            }
+        }
+        
+    .main-wrapper {
+        margin-top: 60px;
+        min-height: calc(100vh - 60px);
+        position: relative;
+    }
+
+    /* Sidebar Overlay */
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(2px);
+        z-index: 998;
+    }
+
+    /* Sidebar styles */
+    
+    /* Sidebar inner content */
+    .sidebar-inner {
+        padding-top: 60px;
+        height: 100%;
+    }
+
+    .sidebar-profile {
+        text-align: center;
+        padding: 20px 15px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .sidebar-profile img {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        border: 2px solid #007bff;
+        padding: 5px;
+    }
+
+    .sidebar-menu ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+   
+    /* Close button */
+    .sidebar-close {
+        display: none;
+        position: absolute;
+        top: 70px;
+        right: 20px;
+        background: none;
+        border: none;
+        color: #333;
+        font-size: 24px;
+        cursor: pointer;
+        z-index: 1001;
+    }
+
+    /* Page wrapper */
+    .page-wrapper {
+        margin-left: 240px;
+        padding: 20px;
+        transition: all 0.3s ease;
+    }
+
+    /* Header elements */
+    .header .nav.user-menu {
+        margin-left: auto;
+    }
+
+    .header .nav.user-menu a i,
+    .header .nav.user-menu a span {
+        color: #007bff;
+    }
+
+    #toggle_btn,
+    #mobile_btn {
+        color: #007bff;
+        cursor: pointer;
+        font-size: 20px;
+        padding: 15px;
+    }
+
+    /* Mini sidebar styles */
+    .mini-sidebar .sidebar {
+        width: 80px;
+    }
+
+    .mini-sidebar .sidebar-profile img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .mini-sidebar .sidebar-profile h4,
+    .mini-sidebar .sidebar-profile p,
+    .mini-sidebar .sidebar-menu ul li a span,
+    .mini-sidebar .menu-title {
+        display: none;
+    }
+
+    .mini-sidebar .page-wrapper {
+        margin-left: 60px;
+    }
+
+    /* Mobile styles */
+    
+
+    /* Submenu styles */
+    .submenu ul {
+        display: none;
+        padding-left: 20px !important;
+    }
+
+    .submenu.active ul {
+        display: block;
+    }
+
+    .menu-title {
+        padding: 12px 20px;
+        color: #333;
+        font-weight: 500;
+        font-size: 14px;
+    }
+    /* Footer Styles */
+    
+    .footer {
+        z-index: 1040;
+
+        background-color:rgb(14, 82, 116);
+        color: #fff;
+        padding: 40px 20px;
+        position: relative;
+        width: 100%;
+        margin-top: auto;
+    }
+
+    .footer h5 {
+        color: #fff;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .footer a {
+        color: #fff;
+        text-decoration: none;
+    }
+
+    .footer a:hover {
+        color: #ddd;
+    }
+
+    .footer .social-icons a {
+        font-size: 20px;
+        margin-right: 10px;
+    }
+
+    .footer .bottom-footer {
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        padding-top: 20px;
+        margin-top: 20px;
+    }
+    /* Reduce logo size when mini-sidebar is active */
+.mini-sidebar .header .logo img {
+    width: 50px;
+    height: 50px;
+    transition: all 0.3s ease; /* Smooth transition */
+}
+
+</style>
+
+
+
+
+<body>
+    <!-- Header -->
+    <!-- Header -->
+<div class="header">
+    <div class="header-left">
+        <a href="/" class="logo">
+            <img src="{% static 'logo.png' %}" width="35" height="35" alt="Preclinic">
+        </a>
+    </div>
+    <a id="mobile_btn" class="mobile_btn float-left" href="javascript:void(0);"><i class="fa fa-bars" style="color: white;"></i></a>
+    <a id="toggle_btn" href="javascript:void(0);"><i class="fa fa-bars" style="color: white;"></i></a>
+    <ul class="nav user-menu float-right">
+        <!-- Notifications Button -->
+        <li class="nav-item dropdown d-none d-sm-block">
+            <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+                <i class="fa fa-bell" style="color: white;"></i>
+                <span class="badge badge-pill bg-danger float-right">3</span>
+            </a>
+            <div class="dropdown-menu notifications">
+                <div class="topnav-dropdown-header">
+                    <span>Notifications</span>
+                </div>
+                
+
+
+                <div class="drop-scroll">
+                    <ul class="notification-list">
+                        <li class="notification-message">
+                            <a href="#">
+                                <div class="media">
+                                    <span class="avatar">
+                                        <img alt="User" src="{% static 'assets/img/user.jpg' %}" class="img-fluid">
+                                    </span>
+                                    <div class="media-body">
+                                        <p class="noti-details"><span class="noti-title">John Doe</span> added new task <span class="noti-title">Patient Appointment</span></p>
+                                        <p class="noti-time"><span class="notification-time">4 mins ago</span></p>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="topnav-dropdown-footer">
+                    <a href="#">View all Notifications</a>
+                    
+                </div>
+            </div>
+        </li>
+
+        <!-- Chat Button -->
+        <li class="nav-item">
+            <a href="{% url 'practitionerdashboard:chat' %}" class="nav-link">
+                <i class="fa fa-comments" style="color: white;"></i>
+                <span class="badge badge-pill bg-primary float-right">5</span>
+            </a>
+        </li>
+
+        <!-- Profile Picture -->
+        <li class="nav-item dropdown has-arrow">
+            <a href="#" class="dropdown-toggle nav-link user-link" data-toggle="dropdown">
+                <span class="user-img">
+                    <img class="rounded-circle" src="{% get_practitioner_image request %}" width="30" height="30" alt="Profile Picture">
+                </span>
+            </a>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" href="#">My Profile</a>
+                <a class="dropdown-item" href="#">Settings</a>
+                <a class="dropdown-item" href="{% url 'frontend:logout' %}">Logout</a>
+            </div>
+        </li>
+    </ul>
+</div>
+
+
+
+    <!-- Overlay -->
+    <div class="sidebar-overlay"></div>
+
+    <!-- Main wrapper -->
+    <div class="main-wrapper">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <button class="sidebar-close">
+                <i class="fa fa-times"></i>
+            </button>
+            <div class="sidebar-inner">
+               
+                <div id="sidebar-menu" class="sidebar-menu">
+                    <ul>
+                        <li class="{% if request.path == '/practitioner-dashboard/' %}active{% endif %}">
+                            <a href="{% url 'practitionerdashboard:dashboard' %}">
+                                <i class="fa fa-tachometer-alt" ></i>
+                                <span >Dashboard</span>
+                            </a>
+                        </li>
+
+                        <li class="{% if request.path == '/practitioner-profile/' %}active{% endif %}">
+                            <a href="{% url 'practitioner_dashboard:practitioner_profile' %}">
+                                <i class="fa fa-user"></i>
+                                <span>Complete Profile</span>
+                            </a>
+                        </li>
+                        
+
+
+                        <li class="{% if request.path == '/practitioner-dashboard/mypatient/' %}active{% endif %}">
+                            <a href="{% url 'practitionerdashboard:mypatient' %}">
+                                <i class="fa fa-wheelchair" ></i>
+                                <span >Patients</span>
+                            </a>
+                        </li>
+                        <li class="{% if request.path == '/practitioner-dashboard/appointment/' %}active{% endif %}">
+                            <a href="">
+                                <i class="fa fa-calendar" ></i>
+                                <span >Appointments</span>
+
+
+                            </a>
+                        </li>
+                        <li class="{% if request.path == '/practitioner-dashboard/schedule_timming/' %}active{% endif %}">
+                            <a href="{% url 'practitionerdashboard:schedule_timming' %}">
+                                <i class="fa fa-calendar-check-o" ></i>
+                                <span >Schedule Timming</span>
+                            </a>
+                        </li>
+                        <li class="{% if request.path == '/practitioner-dashboard/reviews/' %}active{% endif %}">
+                            <a href="{% url 'practitionerdashboard:reviews' %}">
+                                <i class="fa fa-comments" ></i>
+                                <span >Reviews</span>
+                                <span class="badge badge-pill bg-primary float-right">5</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+
+        <!-- Page wrapper -->
+        <div class="page-wrapper">
+            {% block content %}
+            {% endblock content %}
+        </div>
+    </div>
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <!-- Logo Section -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <a href="/">
+                    <img src="{% static 'logo.png' %}" alt="Logo" class="img-fluid mb-3" style="max-width: 150px;">
+
+                    </a>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook me-3"></i></a>
+                        <a href="#"><i class="fab fa-twitter me-3"></i></a>
+                        <a href="#"><i class="fab fa-linkedin me-3"></i></a>
+                        <a href="#"><i class="fab fa-instagram me-3"></i></a>
+                        <a href="#"><i class="fab fa-dribbble"></i></a>
+                    </div>
+                </div>
+
+                <!-- For Patients Section -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h5 class="text-uppercase">For Patients</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Search for Doctors</a></li>
+                        <li><a href="#">Login</a></li>
+                        <li><a href="#">Register</a></li>
+                        <li><a href="#">Booking</a></li>
+                        <li><a href="#">Patient Dashboard</a></li>
+                    </ul>
+
+
+                </div>
+
+                <!-- For Doctors Section -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h5 class="text-uppercase">For Doctors</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Appointments</a></li>
+                        <li><a href="#">Chat</a></li>
+                        <li><a href="#">Login</a></li>
+                        <li><a href="#">Register</a></li>
+                        <li><a href="#">Doctor Dashboard</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact Us Section -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h5 class="text-uppercase">Contact Us</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-map-marker-alt me-2"></i> 3556 Beech Street, San Francisco</li>
+                        <li><i class="fas fa-phone me-2"></i> +1 315 369 5943</li>
+                        <li><i class="fas fa-envelope me-2"></i> Reeducaive@example.com</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Bottom Footer -->
+<!-- Bottom Footer continued -->
+<div class="row mt-4 pt-3 border-top">
+    <div class="col-md-6 text-center text-md-start">
+        <p class="mb-0">&copy; 2025 Reeducaive. All Rights Reserved.</p>
+    </div>
+    <div class="col-md-6 text-center text-md-end">
+        <a href="#">Terms and Conditions</a>
+        <span class="mx-2">|</span>
+        <a href="#">Policy</a>
+    </div>
+</div>
+</div>
+</footer>
+    <!-- Scripts -->
+    <script src="{% static 'assets/js/jquery-3.2.1.min.js' %}"></script>
+    <script src="{% static 'assets/js/popper.min.js' %}"></script>
+    <script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.3.0/mdb.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            const isMobile = () => window.innerWidth <= 991.98;
+
+            // Function to update sidebar height
+            function updateSidebarHeight() {
+                const windowHeight = window.innerHeight;
+                $(".sidebar").css("height", `${windowHeight}px`);
+            }
+
+            // Toggle sidebar function
+            function toggleSidebar() {
+                if (isMobile()) {
+                    updateSidebarHeight();
+                    $(".sidebar").toggleClass("show");
+                    $(".sidebar-overlay").toggleClass("show");
+                } else {
+                    $("body").toggleClass("mini-sidebar");
+                }
+            }
+
+            // Handle sidebar toggle
+            $("#mobile_btn, #toggle_btn").on("click", function(e) {
+                e.preventDefault();
+                toggleSidebar();
+            });
+
+            // Handle close button click
+            $(".sidebar-close").on("click", function() {
+                $(".sidebar").removeClass("show");
+                $(".sidebar-overlay").removeClass("show");
+            });
+
+            // Handle overlay click
+            $(".sidebar-overlay").on("click", function() {
+                $(".sidebar").removeClass("show");
+                $(".sidebar-overlay").removeClass("show");
+            });
+
+            // Handle submenu toggles
+            $(".submenu > a").on("click", function(e) {
+                e.preventDefault();
+                $(this).parent().toggleClass("active");
+                $(this).next("ul").slideToggle(200);
+            });
+
+            // Handle window resize
+            $(window).on('resize', function() {
+                updateSidebarHeight();
+                if (!isMobile()) {
+                    $(".sidebar-overlay").removeClass("show");
+                    $(".sidebar").removeClass("show");
+                } else {
+                    $("body").removeClass("mini-sidebar");
+                }
+            });
+
+            // Initial setup
+            updateSidebarHeight();
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>
