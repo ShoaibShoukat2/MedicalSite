@@ -556,7 +556,8 @@
                         {% if patient and patient.profile_photo %}
                             <img class="rounded-circle" src="{{ patient.profile_photo.url }}" width="30" alt="Profile">
                         {% else %}
-                            <img class="rounded-circle" src="{% static 'assets/img/default_profile.png' %}" width="30" alt="Profile">
+                            <!-- Use a FontAwesome icon if no profile photo -->
+                            <i class="fas fa-user-circle" style="font-size: 30px;"></i>
                         {% endif %}
                     </span>
                 </a>
@@ -567,22 +568,22 @@
                 </div>
             </li>
             
+            
         </ul>
     </div>
     
     <!-- Mobile Search Bar (Hidden by default) -->
     <!-- Mobile Search Bar (Hidden by default) -->
-<div class="mobile-search d-lg-none">
-    <form action="{% url 'patientdashboard:search' %}" method="get" class="d-flex">
-        <input type="text" name="query" class="form-control" placeholder="Search...">
-        <button class="btn btn-primary" type="submit" style="margin-left: auto;">
-            <i class="fa fa-search"></i>
-        </button>
-    </form>
-</div>
+    <div class="mobile-search d-lg-none">
+        <form action="{% url 'patientdashboard:search' %}" method="get" class="d-flex">
+            <input type="text" name="query" class="form-control" placeholder="Search...">
+            <button class="btn btn-primary" type="submit" style="margin-left: auto;">
+                <i class="fa fa-search"></i>
+            </button>
+        </form>
+    </div>
 
-    
-    
+
     
         <!-- Overlay -->
         <div class="sidebar-overlay"></div>
