@@ -147,6 +147,7 @@
 }
 </style>
 {% endblock extra_css %}
+<<<<<<< HEAD
 <!-- patientdashboard/booking.html -->
 {% block content %}
 <div class="container mt-4">
@@ -255,3 +256,79 @@
     });
 </script>
 {% endblock %}
+=======
+
+{% block content %}
+<div class="booking-container">
+    <div class="doctor-card">
+        <img src="{% static 'img/doctor-thumb-02.jpg' %}" alt="Doctor Image">
+        <div class="doctor-info">
+            <h5>Dr. Darren Elder</h5>
+            <div class="rating text-warning">
+                ⭐⭐⭐⭐ 4.0
+            </div>
+            <p class="text-muted">New York, USA</p>
+        </div>
+    </div>
+
+    <div class="schedule-table">
+        <table class="table table-bordered text-center">
+            <thead>
+                <tr>
+                    <th>Mon<br>11 NOV 2019</th>
+                    <th>Tue<br>12 NOV 2019</th>
+                    <th>Wed<br>13 NOV 2019</th>
+                    <th>Thu<br>14 NOV 2019</th>
+                    <th>Fri<br>15 NOV 2019</th>
+                    <th>Sat<br>16 NOV 2019</th>
+                    <th>Sun<br>17 NOV 2019</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><div class="time-slot">9:00 AM</div></td>
+                    <td><div class="time-slot">9:00 AM</div></td>
+                    <td><div class="time-slot">9:00 AM</div></td>
+                    <td><div class="time-slot">9:00 AM</div></td>
+                    <td><div class="time-slot">9:00 AM</div></td>
+                    <td><div class="time-slot">9:00 AM</div></td>
+                </tr>
+                <tr>
+                    <td><div class="time-slot">10:00 AM</div></td>
+                    <td><div class="time-slot">10:00 AM</div></td>
+                    <td><div class="time-slot">10:00 AM</div></td>
+                    <td><div class="time-slot">10:00 AM</div></td>
+                    <td><div class="time-slot active">10:00 AM</div></td>
+                    <td><div class="time-slot">10:00 AM</div></td>
+                    <td><div class="time-slot">10:00 AM</div></td>
+                </tr>
+                <tr>
+                    <td><div class="time-slot">11:00 AM</div></td>
+                    <td><div class="time-slot">11:00 AM</div></td>
+                    <td><div class="time-slot">11:00 AM</div></td>
+                    <td><div class="time-slot">11:00 AM</div></td>
+                    <td><div class="time-slot">11:00 AM</div></td>
+                    <td><div class="time-slot">11:00 AM</div></td>
+                    <td><div class="time-slot">11:00 AM</div></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="text-center">
+        <a href="{% url 'patientdashboard:payment' %}" class="btn proceed-btn">Proceed to Pay</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.querySelectorAll('.time-slot').forEach(slot => {
+        slot.addEventListener('click', function() {
+            document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+</script>
+{% endblock %}
+>>>>>>> 7518d9fe8faa6cbfdf2a9d28cf1c22a489c6f810
