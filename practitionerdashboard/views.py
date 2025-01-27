@@ -10,8 +10,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from user_account.models import Practitioner
 
 from django.http import JsonResponse
-from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
+from patientdashboard.models import Appointment
 
 # Create your views here.
 
@@ -86,7 +86,16 @@ def remove_slot(request, slot_id):
 
 
 def mypatient(request):
-    return render(request, 'practitionerdashboard/mypatient.html')
+    practitioner_id = request.session.get('practitioner_id')
+
+    if practitioner_id:
+        # Fetch patients related to this practitioner
+        appointments = Appointment.objects.filter(practitioner_id=practitioner_id)
+        patients = [appointment.patient for appointment in appointments]
+    else:
+        patients = []  # Handle case when no practitioner session exists
+
+    return render(request, 'practitionerdashboard/mypatient.html', {'patients': patients})
 
 
 
