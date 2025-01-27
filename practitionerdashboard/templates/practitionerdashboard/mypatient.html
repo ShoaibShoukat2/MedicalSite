@@ -2,131 +2,55 @@
 {% load static %}
 
 {% block content %}
-
 <div class="container mt-4">
+    <h3 class="mb-4 text-center text-primary">Patients with Booked Appointments</h3>
     <div class="row gy-4">
-        <!-- Patient 1 -->
+        {% for patient in patients %}
         <div class="col-sm-6 col-md-4 col-lg-3">
-            <div class="card text-center">
+            <div class="card shadow-lg border-light rounded-3">
                 <div class="card-body">
-                    <img src="{% static 'assets/img/doctor-thumb-08.jpg' %}" class="rounded-circle mb-3" alt="Patient Image" width="80" height="80">
-                    <h5 class="card-title">Richard Wilson</h5>
-                    <p class="text-muted mb-1">Patient ID: P0016</p>
-                    <p class="text-muted"><i class="fa fa-map-marker"></i> Alabama, USA</p>
-                    <hr>
-                    <p class="mb-1"><strong>Phone:</strong> +1 952 001 8563</p>
-                    <p class="mb-1"><strong>Age:</strong> 38 Years, Male</p>
-                    <p class="mb-0"><strong>Blood Group:</strong> AB+</p>
-                </div>
-            </div>
+                    <!-- Display profile photo with rounded circle and shadow -->
+                    <img src="{% if patient.profile_photo %}{{ patient.profile_photo.url }}{% else %}{% static 'assets/img/default-profile.jpg' %}{% endif %}" class="rounded-circle mb-3 shadow-sm" alt="Patient Image" width="100" height="100">
+                    <h5 class="card-title">{{ patient.greeting }} {{ patient.first_name }} {{ patient.last_name }}</h5>
+                    <p class="text-muted mb-1"><i class="fa fa-id-badge"></i> Patient ID: <strong>{{ patient.id }}</strong></p>
+                    <!-- <p class="text-muted"><i class="fa fa-map-marker-alt"></i> {{ patient.city }}</p> -->
+                    <hr class="my-2">
+                    <p class="mb-1"><i class="fa fa-phone-alt"></i> <strong>Phone:</strong> {{ patient.mobile_phone }}</p>
+                    <p class="mb-1"><i class="fa fa-calendar-alt"></i> <strong>Age:</strong> {{ patient.date_of_birth|date:"Y" }}</p>
+                    <p class="mb-1"><i class="fa fa-venus-mars"></i> <strong>Gender:</strong> {{ patient.get_gender_display }}</p>
+                    <hr class="my-2">
+                    
+                    <!-- Video call button -->
+                    <a href="https://zoom.us/j/1234567890" class="btn btn-primary btn-block mt-2" target="_blank">
+                        <i class="fa fa-video-camera"></i> Start Video Call
+                    </a>
 
 
-        </div>
-        <!-- Patient 2 -->
-        <div class="col-sm-6 col-md-4 col-lg-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <img src="{% static 'assets/img/doctor-thumb-08.jpg' %}" class="rounded-circle mb-3" alt="Patient Image" width="80" height="80">
-                    <h5 class="card-title">Charlene Reed</h5>
-                    <p class="text-muted mb-1">Patient ID: P0001</p>
-                    <p class="text-muted"><i class="fa fa-map-marker"></i> North Carolina, USA</p>
-                    <hr>
-                    <p class="mb-1"><strong>Phone:</strong> +1 828 632 9170</p>
-                    <p class="mb-1"><strong>Age:</strong> 29 Years, Female</p>
-                    <p class="mb-0"><strong>Blood Group:</strong> O+</p>
+
+                    <hr class="my-2">
+                    
+                    <!-- Display the appointment slot information -->
+                    <h6 class="mt-3 mb-2 text-primary"><i class="fa fa-clock"></i> Appointment Slot</h6>
+                    {% for appointment in patient.appointments.all %}
+                        <div class="mb-2">
+                            <span class="badge bg-success text-white p-2">
+                                <strong>Time:</strong> {{ appointment.slot.start_time|date:"h:i A" }} to {{ appointment.slot.end_time|date:"h:i A" }}
+                            </span>
+                        </div>
+                        <p class="mb-1"><strong>Day:</strong> {{ appointment.slot.get_day_of_week_display }}</p>
+                    {% empty %}
+                        <p class="text-muted">No appointments found for this patient.</p>
+                    {% endfor %}
                 </div>
             </div>
         </div>
-        <!-- Patient 3 -->
-        <div class="col-sm-6 col-md-4 col-lg-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <img src="{% static 'assets/img/doctor-thumb-08.jpg' %}" class="rounded-circle mb-3" alt="Patient Image" width="80" height="80">
-                    <h5 class="card-title">Travis Trimble</h5>
-                    <p class="text-muted mb-1">Patient ID: P0002</p>
-                    <p class="text-muted"><i class="fa fa-map-marker"></i> Maine, USA</p>
-                    <hr>
-                    <p class="mb-1"><strong>Phone:</strong> +1 207 729 9974</p>
-                    <p class="mb-1"><strong>Age:</strong> 23 Years, Male</p>
-                    <p class="mb-0"><strong>Blood Group:</strong> B+</p>
-                </div>
-            </div>
+        {% empty %}
+        <div class="col-12">
+            <p class="text-center text-muted">No patients found for this practitioner.</p>
         </div>
-        <!-- Patient 4 -->
-        <div class="col-sm-6 col-md-4 col-lg-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <img src="{% static 'assets/img/doctor-thumb-08.jpg' %}" class="rounded-circle mb-3" alt="Patient Image" width="80" height="80">
-                    <h5 class="card-title">Carl Kelly</h5>
-                    <p class="text-muted mb-1">Patient ID: P0003</p>
-                    <p class="text-muted"><i class="fa fa-map-marker"></i> Indiana, USA</p>
-                    <hr>
-                    <p class="mb-1"><strong>Phone:</strong> +1 260 724 7769</p>
-                    <p class="mb-1"><strong>Age:</strong> 32 Years, Male</p>
-                    <p class="mb-0"><strong>Blood Group:</strong> A+</p>
-                </div>
-            </div>
-        </div>
-        <!-- Patient 5 -->
-        <div class="col-sm-6 col-md-4 col-lg-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <img src="{% static 'assets/img/doctor-thumb-08.jpg' %}" class="rounded-circle mb-3" alt="Patient Image" width="80" height="80">
-                    <h5 class="card-title">Michelle Fairfax</h5>
-                    <p class="text-muted mb-1">Patient ID: P0004</p>
-                    <p class="text-muted"><i class="fa fa-map-marker"></i> Indiana, USA</p>
-                    <hr>
-                    <p class="mb-1"><strong>Phone:</strong> +1 504 368 6874</p>
-                    <p class="mb-1"><strong>Age:</strong> 25 Years, Female</p>
-                    <p class="mb-0"><strong>Blood Group:</strong> B+</p>
-                </div>
-            </div>
-        </div>
-        <!-- Patient 6 -->
-        <div class="col-sm-6 col-md-4 col-lg-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <img src="{% static 'assets/img/doctor-thumb-08.jpg' %}" class="rounded-circle mb-3" alt="Patient Image" width="80" height="80">
-                    <h5 class="card-title">Gina Moore</h5>
-                    <p class="text-muted mb-1">Patient ID: P0005</p>
-                    <p class="text-muted"><i class="fa fa-map-marker"></i> Florida, USA</p>
-                    <hr>
-                    <p class="mb-1"><strong>Phone:</strong> +1 954 820 7887</p>
-                    <p class="mb-1"><strong>Age:</strong> 25 Years, Female</p>
-                    <p class="mb-0"><strong>Blood Group:</strong> AB-</p>
-                </div>
-            </div>
-        </div>
-        <!-- Patient 7 -->
-        <div class="col-sm-6 col-md-4 col-lg-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <img src="{% static 'assets/img/doctor-thumb-08.jpg' %}" class="rounded-circle mb-3" alt="Patient Image" width="80" height="80">
-                    <h5 class="card-title">Elsie Gilley</h5>
-                    <p class="text-muted mb-1">Patient ID: P0006</p>
-                    <p class="text-muted"><i class="fa fa-map-marker"></i> Kentucky, USA</p>
-                    <hr>
-                    <p class="mb-1"><strong>Phone:</strong> +1 315 384 4562</p>
-                    <p class="mb-1"><strong>Age:</strong> 14 Years, Female</p>
-                    <p class="mb-0"><strong>Blood Group:</strong> O-</p>
-                </div>
-            </div>
-        </div>
-        <!-- Patient 8 -->
-        <div class="col-sm-6 col-md-4 col-lg-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <img src="{% static 'assets/img/doctor-thumb-08.jpg' %}" class="rounded-circle mb-3" alt="Patient Image" width="80" height="80">
-                    <h5 class="card-title">Joan Gardner</h5>
-                    <p class="text-muted mb-1">Patient ID: P0007</p>
-                    <p class="text-muted"><i class="fa fa-map-marker"></i> California, USA</p>
-                    <hr>
-                    <p class="mb-1"><strong>Phone:</strong> +1 707 220 2603</p>
-                    <p class="mb-1"><strong>Age:</strong> 25 Years, Female</p>
-                    <p class="mb-0"><strong>Blood Group:</strong> A-</p>
-                </div>
-            </div>
-        </div>
+        {% endfor %}
     </div>
 </div>
 {% endblock content %}
+
+
