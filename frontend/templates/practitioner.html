@@ -17,8 +17,6 @@
             width: 100%;
             border-radius: 20px;
         }
-      
-     
 
         /* Password Strength Bar */
         .strength-bar {
@@ -52,30 +50,18 @@
             font-size: 12px;
             color: #6c757d;
         }
-
     </style>
-
-    <!-- SweetAlert2 CSS -->
-<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css" rel="stylesheet">
-
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css" rel="stylesheet">
 </head>
 <body>
-
-
-
 <section class="py-5">
     <div class="container">
         <!-- Logo and Header Section -->
         <div class="logo-container">
             <a href="/">
-            <img src="{% static 'logo.png' %}" alt="Medical Company Logo" style="max-width: 150px; max-height: 150px; width: auto; height: auto;">
-
-
+                <img src="{% static 'logo.png' %}" alt="Medical Company Logo" style="max-width: 150px; max-height: 150px; width: auto; height: auto;">
             </a>
         </div>
-        
-       
-        
 
         <!-- Form Section -->
         <div class="row">
@@ -83,10 +69,9 @@
                 <div class="form-container">
                     <h4 class="pb-4 text-center">Practitioner Registration</h4>
                     <form method="post" id="registration-form">
-                        <!-- CSRF Token -->
                         {% csrf_token %}
 
-                        <!-- Dropdown Menu -->
+                        <!-- Personal Information -->
                         <div class="mb-4">
                             <label class="form-label" for="civility-dropdown">Civility</label>
                             <select class="form-select" id="civility-dropdown" name="civility">
@@ -96,7 +81,6 @@
                             </select>
                         </div>
 
-                        <!-- Name Section -->
                         <div class="row mb-4">
                             <div class="col-md-6">
                                 <div class="form-outline">
@@ -112,7 +96,7 @@
                             </div>
                         </div>
 
-                        <!-- Doctor Type -->
+                        <!-- Professional Information -->
                         <div class="mb-4">
                             <label class="form-label">Doctor Type</label>
                             <select class="form-select" name="doctor_type" required>
@@ -123,7 +107,6 @@
                             </select>
                         </div>
 
-                        <!-- Specialty -->
                         <div class="mb-4">
                             <label class="form-label">Specialty</label>
                             <select class="form-select" name="specialty" required>
@@ -134,7 +117,75 @@
                             </select>
                         </div>
 
-                        <!-- Email and Password -->
+                        <!-- License Information -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="form-outline">
+                                    <input type="text" name="license_number" class="form-control" placeholder="License Number" required />
+                                    <label class="form-label">License Number</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-outline">
+                                    <input type="date" name="license_expiry" class="form-control" required />
+                                    <label class="form-label">License Expiry Date</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Practice Information -->
+                        <div class="mb-4">
+                            <div class="form-outline">
+                                <input type="text" name="practice_name" class="form-control" placeholder="Practice/Clinic Name" required />
+                                <label class="form-label">Practice/Clinic Name</label>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="form-outline">
+                                    <input type="tel" name="practice_phone" class="form-control" placeholder="Practice Phone" required />
+                                    <label class="form-label">Practice Phone</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-outline">
+                                    <input type="tel" name="practice_fax" class="form-control" placeholder="Practice Fax" />
+                                    <label class="form-label">Practice Fax (Optional)</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Address Information -->
+                        <div class="mb-4">
+                            <div class="form-outline">
+                                <input type="text" name="street_address" class="form-control" placeholder="Street Address" required />
+                                <label class="form-label">Street Address</label>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <div class="form-outline">
+                                    <input type="text" name="city" class="form-control" placeholder="City" required />
+                                    <label class="form-label">City</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-outline">
+                                    <input type="text" name="state" class="form-control" placeholder="State/Province" required />
+                                    <label class="form-label">State/Province</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-outline">
+                                    <input type="text" name="postal_code" class="form-control" placeholder="Postal Code" required />
+                                    <label class="form-label">Postal Code</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Contact Information -->
                         <div class="row mb-4">
                             <div class="col-md-6">
                                 <div class="form-outline">
@@ -146,11 +197,9 @@
                                 <div class="form-outline position-relative">
                                     <input type="password" id="password" name="password" class="form-control" placeholder="Password" required />
                                     <label class="form-label">Password</label>
-                                    <!-- Password Strength Bar -->
                                     <div class="strength-bar">
                                         <span id="strength-bar" class="strength-weak"></span>
                                     </div>
-                                    <!-- Password Requirements -->
                                     <div class="password-requirements">
                                         <ul>
                                             <li id="length-check" class="text-danger">Minimum 8 characters</li>
@@ -179,14 +228,15 @@
     </div>
 </section>
 
+<!-- Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/5.0.0/mdb.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
 
 <script>
     const passwordField = document.getElementById('password');
     const strengthBar = document.getElementById('strength-bar');
     const submitButton = document.getElementById('submit-btn');
 
-    // Password Criteria Check
     const lengthCheck = document.getElementById('length-check');
     const uppercaseCheck = document.getElementById('uppercase-check');
     const numberCheck = document.getElementById('number-check');
@@ -231,7 +281,7 @@
             specialCheck.classList.replace('text-success', 'text-danger');
         }
 
-        // Update the strength bar based on criteria met
+        // Update strength bar
         if (strength === 0) {
             strengthBar.style.width = '0%';
             strengthBar.className = 'strength-weak';
@@ -249,34 +299,35 @@
             strengthBar.className = 'strength-strong';
         }
 
-        // Enable or disable the submit button based on strength
-        if (strength === 4) {
-            submitButton.disabled = false;
-        } else {
-            submitButton.disabled = true;
-        }
+        submitButton.disabled = strength !== 4;
     });
 </script>
 
-<!-- SweetAlert2 JS -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
-
 <script>
-    // Check if there are any error messages
     {% if messages %}
         {% for message in messages %}
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
-                text: '{{ message }}',  // Show the error message
+                text: '{{ message }}',
                 confirmButtonText: 'Close'
             });
         {% endfor %}
     {% endif %}
 </script>
 
-<!-- SweetAlert2 JS -->
-
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
 

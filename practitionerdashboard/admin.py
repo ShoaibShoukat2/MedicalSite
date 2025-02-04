@@ -4,3 +4,5 @@ from practitionerdashboard.models import AvailableSlot
 
 # Register your models here.
 admin.site.register(AvailableSlot)
+
+
