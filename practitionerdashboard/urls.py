@@ -22,7 +22,14 @@ urlpatterns = [
     path('practitioner-profile/', views.CompleteProfile, name='practitioner_profile'),
     
     
+    path('appointments/<int:appointment_id>/Accepted/', views.accept_appointment, name='accept_appointment'),
+    path('appointments/<int:appointment_id>/Cancelled/', views.cancel_appointment, name='cancel_appointment'),
+    
+    path('patient/<int:appointment_id>/', views.get_patient_details, name='get_patient_details'),
+    
 ]
+
+
 
 
 
