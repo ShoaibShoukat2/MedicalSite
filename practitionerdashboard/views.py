@@ -1,0 +1,345 @@
+import uuid
+from django.shortcuts import render, redirect,get_object_or_404
+from user_account.models import Patient, Practitioner
+from datetime import date, datetime
+
+from django.shortcuts import render, get_object_or_404
+from django.http import JsonResponse
+from user_account.models import Practitioner
+from .models import AvailableSlot
+import json
+from django.shortcuts import render, get_object_or_404, redirect
+from user_account.models import Practitioner
+
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from patientdashboard.models import Appointment, Notification
+from django.http import JsonResponse
+from datetime import date
+
+# Create your views here.
+
+def dashboard_view(request):
+    
+    
+    
+    # Get the practitioner ID from the session
+    practitioner_id = request.session.get('practitioner_id')
+    
+    
+    total_patients = Appointment.objects.filter(practitioner_id=practitioner_id).count()
+
+    # Count completed appointments
+    completed_appointments = Appointment.objects.filter(practitioner_id=practitioner_id, status="Accepted").count()
+
+    # Count pending appointments
+    pending_appointments = Appointment.objects.filter(practitioner_id=practitioner_id, status="Pending").count()    
+    
+
+
+    # Ensure practitioner_id exists in the session
+    if not practitioner_id:
+        # Handle the case where no practitioner is logged in
+        return render(request, 'practitionerdashboard/dashboard.html', {
+            'error': 'No practitioner found in session.'
+        })
+    
+    
+    
+    # Check if the practitioner has photo, price, and description in their profile
+    practitioner = Practitioner.objects.filter(id=practitioner_id).first()
+    
+    if not practitioner or not practitioner.photo or not practitioner.price or not practitioner.description:
+        # Send error message and redirect to complete profile page
+        return render(request, 'practitionerdashboard/dashboard.html', {
+            'error': 'Please complete your profile by adding a photo, price, and description.',
+            'redirect_url': '/practitioner-profile/'  # URL for completing the profile
+        })
+
+
+    
+     
+
+    today = date.today()
+    today_start = datetime.combine(today, datetime.min.time())  # Start of today
+    today_end = datetime.combine(today, datetime.max.time())  # End of today
+
+    # Filter appointments based on the practitioner's ID
+    upcoming_appointments = Appointment.objects.filter(
+        slot__start_time__gt=today_end,
+        status='Pending',
+        practitioner_id=practitioner_id
+    )
+
+    today_appointments = Appointment.objects.filter(
+        slot__start_time__range=(today_start, today_end),
+        status='Pending',
+        practitioner_id=practitioner_id
+    )
+
+    return render(request, 'practitionerdashboard/dashboard.html', {
+        'upcoming_appointments': upcoming_appointments,
+        'today_appointments': today_appointments,
+        "total_patients": total_patients,
+        "completed_appointments": completed_appointments,
+        "pending_appointments": pending_appointments,
+    })
+    
+    
+    
+    
+def accept_appointment(request, appointment_id):
+    # Get the appointment object
+    appointment = get_object_or_404(Appointment, id=appointment_id)
+    
+    
+
+    # Check if the form is submitted (POST request)
+        
+        
+    # Update the appointment status to "Accepted"
+    appointment.status = "Accepted"
+    
+    appointment.save()  
+
+    # Redirect to the appointments list after the action
+    return redirect('practitioner_dashboard:dashboard')  # Adjust with your URL name
+
+
+
+
+
+
+
+
+
+
+def cancel_appointment(request, appointment_id):
+    # Get the appointment object
+    appointment = get_object_or_404(Appointment, id=appointment_id)
+
+    # Delete the appointment (Cancel action)
+    appointment.delete()
+
+    # Redirect to the appointments list after the action
+    return redirect('practitioner_dashboard:dashboard')  # Adjust with your URL name
+
+    
+def get_patient_details(request, appointment_id):
+    # Get the appointment object
+    appointment = get_object_or_404(Appointment, id=appointment_id)
+    
+    # Fetch the associated patient
+    patient = appointment.patient
+    
+    # Return the patient details as a JSON response
+    patient_data = {
+        'greeting': patient.greeting,
+        'first_name': patient.first_name,
+        'last_name': patient.last_name,
+        'gender': patient.get_gender_display(),  # To display the human-readable gender
+        'mobile_phone': patient.mobile_phone,
+        'date_of_birth': patient.date_of_birth,
+        'email': patient.email,
+        'profile_photo': patient.profile_photo.url if patient.profile_photo else None,  # Return photo URL
+    }
+
+    return JsonResponse({'patient': patient_data})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+def telemedicine(request):
+    return render(request, 'practitionerdashboard/telemedicine.html')
+
+def appointment(request):
+    return render(request, 'practitionerdashboard/appointment.html')
+
+
+
+
+
+def chat(request):
+    return render(request, 'practitionerdashboard/chat.html')
+
+def reviews(request):
+    return render(request, 'practitionerdashboard/reviews.html')
+
+def schedule_timming(request):
+    # Check if practitioner is logged in
+    practitioner_id = request.session.get('practitioner_id')
+    if not practitioner_id:
+        return redirect('frontend:practitioner_login')  # Redirect to login if not authenticated
+
+    # Get the logged-in practitioner
+    practitioner = get_object_or_404(Practitioner, id=practitioner_id)
+    slots = practitioner.available_slots.all()
+    return render(request, 'practitionerdashboard/schedule_time.html', {'slots': slots})
+
+import json
+
+def add_slot(request):
+    # Check if the practitioner is logged in
+    practitioner_id = request.session.get('practitioner_id')
+    if not practitioner_id:
+        return JsonResponse({'success': False, 'error': 'You must be logged in to add a slot.'}, status=403)
+
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)  # Parse JSON data from the request
+            practitioner = get_object_or_404(Practitioner, id=practitioner_id)  # Get practitioner by session ID
+            day_of_week = data.get('day_of_week')
+            start_time = data.get('start_time')
+            end_time = data.get('end_time')
+
+            # Validate required fields
+            if not day_of_week or not start_time or not end_time:
+                return JsonResponse({'success': False, 'error': 'All fields are required.'}, status=400)
+
+            # Create the slot
+            slot = AvailableSlot.objects.create(
+                practitioner=practitioner,
+                day_of_week=day_of_week,
+                start_time=start_time,
+                end_time=end_time,
+            )
+            return JsonResponse({'success': True, 'slot_id': slot.id})
+        except json.JSONDecodeError:
+            return JsonResponse({'success': False, 'error': 'Invalid JSON data.'}, status=400)
+    else:
+        return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=405)
+
+def remove_slot(request, slot_id):
+    if request.method == "POST":
+        slot = get_object_or_404(AvailableSlot, id=slot_id)
+        slot.delete()
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
+
+
+def mypatient(request):
+    practitioner_id = request.session.get('practitioner_id')
+
+    if practitioner_id:
+        # Fetch patients related to this practitioner
+        appointments = Appointment.objects.filter(practitioner_id=practitioner_id)
+        patients = [appointment.patient for appointment in appointments]
+    else:
+        patients = []  # Handle case when no practitioner session exists
+
+    return render(request, 'practitionerdashboard/mypatient.html', {'patients': patients})
+
+
+
+
+
+
+
+
+def CompleteProfile(request):
+    context = {}
+
+    # Retrieve practitioner ID from session
+    practitioner_id = request.session.get('practitioner_id')
+
+    if not practitioner_id:
+        context['error_message'] = "No practitioner ID found in the session. Please log in."
+        return render(request, 'practitionerdashboard/profile.html', context)
+
+    # Fetch the practitioner instance or return a 404 error
+    practitioner = get_object_or_404(Practitioner, id=practitioner_id)
+    context['practitioner'] = practitioner  # Pass the practitioner object to the template
+
+    if request.method == 'POST':
+        # Retrieve form data
+        photo = request.FILES.get('photo')
+        price = request.POST.get('price')
+        description = request.POST.get('description')
+
+        # Validate input and update practitioner fields
+        if photo:
+            practitioner.photo = photo
+        if price:
+            try:
+                practitioner.price = float(price)
+            except ValueError:
+                context['error_message'] = "Invalid price. Please enter a valid number."
+                return render(request, 'practitionerdashboard/profile.html', context)
+        if description:
+            practitioner.description = description
+
+        # Save the changes
+        practitioner.save()
+        context['success_message'] = "Practitioner details updated successfully!"
+
+    return render(request, 'practitionerdashboard/profile.html', context)
+
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
+def start_video_call(request, patient_id):
+    practitioner_id = request.session.get('practitioner_id')
+
+    if not practitioner_id:
+        return JsonResponse({"error": "Practitioner is not logged in. Please log in again."}, status=401)
+
+    if request.method == "POST":
+        try:
+            # Get practitioner and patient
+            practitioner = get_object_or_404(Practitioner, id=practitioner_id)
+            patient = get_object_or_404(Patient, id=patient_id)
+
+            # Get the latest appointment (or the first if multiple exist)
+            appointment = Appointment.objects.filter(patient=patient, practitioner=practitioner).order_by('-created_at').first()
+
+            if not appointment:
+                return JsonResponse({"error": "No appointment found for this patient."}, status=404)
+
+            # Generate a unique Jitsi Meet link
+            meeting_id = f"{uuid.uuid4()}-{patient.id}-{practitioner.id}"
+            jitsi_link = f"https://meet.jit.si/{meeting_id}"
+
+            # Save the video call link in the most recent appointment
+            appointment.video_call_link = jitsi_link
+            appointment.save()
+
+            # Send a notification to the patient
+            Notification.objects.create(
+                recipient=patient,
+                message=f"Your doctor has started a video call. Click here to join: {jitsi_link}",
+                url=jitsi_link
+            )
+
+            return JsonResponse({"success": True, "message": "Video call started!", "jitsi_link": jitsi_link}, status=200)
+
+        except Exception as e:
+            return JsonResponse({"error": f"An error occurred: {str(e)}"}, status=500)
+
+    return JsonResponse({"error": "Invalid request"}, status=400)
+
+
+
+
+
+    
+
+
+
+
+

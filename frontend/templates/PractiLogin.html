@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practitioner Portal | Login</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.3.1/mdb.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
+    <style>
+        :root {
+            --primary-blue: #e0f4ff;
+            --secondary-pink: #ffd6e6;
+            --accent-blue: #a5d8ff;
+            --accent-pink: #ffb6d9;
+            --text-color: #4a5568;
+            --background-color: #f8fbff;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-pink) 100%);
+            font-family: 'Roboto', sans-serif;
+            min-height: 100vh;
+        }
+
+        .page-wrapper {
+            min-height: 100vh;
+            padding: 2rem 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.2'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .container {
+            max-width: 1000px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(165, 216, 255, 0.2);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .left-image {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .left-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(165, 216, 255, 0.9), rgba(255, 182, 217, 0.9));
+            z-index: 1;
+        }
+
+        .left-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scale(1.1);
+            transition: transform 0.3s ease;
+        }
+
+        .overlay-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            z-index: 2;
+            text-align: center;
+            width: 80%;
+        }
+
+        .form-container {
+            padding: 3rem;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.9));
+        }
+
+        .form-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--text-color);
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .form-outline {
+            background: white;
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(165, 216, 255, 0.3);
+        }
+
+        .form-outline input {
+            border-radius: 15px;
+        }
+
+        .form-outline.focused {
+            box-shadow: 0 0 0 2px var(--accent-blue);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-pink));
+            padding: 1rem;
+            border-radius: 15px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(165, 216, 255, 0.4);
+            background: linear-gradient(135deg, var(--accent-pink), var(--accent-blue));
+        }
+
+        .home-redirect {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            z-index: 1000;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-pink));
+            color: white;
+            padding: 1rem;
+            border-radius: 50%;
+            box-shadow: 0 4px 15px rgba(165, 216, 255, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+        }
+
+        .home-redirect:hover {
+            transform: translateX(5px);
+            background: linear-gradient(135deg, var(--accent-pink), var(--accent-blue));
+            color: white;
+        }
+
+        .home-redirect i {
+            font-size: 1.5rem;
+        }
+
+        .logo {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            z-index: 1000;
+        }
+
+        .logo img {
+            height: 60px;
+            filter: brightness(0) invert(1);
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover img {
+            transform: scale(1.05);
+        }
+
+        a {
+            color: var(--accent-blue);
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: var(--accent-pink);
+        }
+
+        @media (max-width: 768px) {
+            .form-container {
+                padding: 2rem;
+            }
+
+            .left-image {
+                height: 200px;
+            }
+
+            .form-title {
+                font-size: 1.8rem;
+            }
+
+            .home-redirect {
+                top: 1rem;
+                right: 1rem;
+                width: 40px;
+                height: 40px;
+            }
+
+            .home-redirect i {
+                font-size: 1.2rem;
+            }
+
+            .logo {
+                top: 1rem;
+                left: 1rem;
+            }
+
+            .logo img {
+                height: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Logo -->
+    
+
+    <!-- Home Redirect Button -->
+    <a href="/" class="home-redirect" title="Back to Home">
+        <i class="fas fa-home"></i>
+    </a>
+
+    <div class="page-wrapper d-flex justify-content-center align-items-center">
+        <div class="container">
+            <div class="card d-flex flex-md-row">
+                <div class="col-md-6 left-image">
+                    <img src="{% static 'logo.png' %}" alt="Medical Care">
+                    <div class="overlay-text">
+                        <h2 class="h3 mb-3">Welcome to Practitioner Portal</h2>
+                        <p class="mb-0">Access your dashboard, manage appointments, and provide exceptional care.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-6 form-container">
+                    <h3 class="form-title">Practitioner Login</h3>
+                    <p class="text-muted mb-4">Access your professional healthcare dashboard</p>
+
+                    <form method="post" action="{% url 'frontend:practitioner_login' %}" id="loginForm">
+                        {% csrf_token %}
+                        
+                        <div class="form-outline">
+                            <input type="email" id="email" name="email" class="form-control" required>
+                            <label class="form-label" for="email">Professional Email</label>
+                        </div>
+
+                        <div class="form-outline">
+                            <input type="password" id="password" name="password" class="form-control" required>
+                            <label class="form-label" for="password">Password</label>
+                        </div>
+
+                        <div class="d-flex justify-content-end mb-4">
+                            <a href="{% url 'frontend:practitioner_forgot_password' %}">Forgot Password?</a>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-block">
+                            <i class="fas fa-sign-in-alt me-2"></i>Login to Dashboard
+                        </button>
+                    </form>
+
+                    <p class="text-center text-muted mt-4">
+                        New practitioner? <a href="{% url 'frontend:practitioner_signup' %}">Register here</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.3.1/mdb.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            if (!email || !password) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Required Fields Missing',
+                    text: 'Please fill in all required fields.',
+                    confirmButtonColor: '#a5d8ff'
+                });
+            }
+        });
+
+        {% if error_message %}
+            Swal.fire({
+                icon: 'error',
+                title: 'Login Failed',
+                text: '{{ error_message }}',
+                confirmButtonText: 'Try Again',
+                confirmButtonColor: '#a5d8ff'
+            });
+        {% endif %}
+
+        {% if success_message %}
+            Swal.fire({
+                icon: 'success',
+                title: 'Welcome Back!',
+                text: '{{ success_message }}',
+                confirmButtonText: 'Continue',
+                confirmButtonColor: '#a5d8ff'
+            });
+        {% endif %}
+    </script>
+</body>
+</html>

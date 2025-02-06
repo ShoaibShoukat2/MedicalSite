@@ -1,0 +1,272 @@
+{% extends "practitionerdashboard/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="content">
+    <div class="row justify-content-center mx-3">
+        <!-- Patients Widget -->
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
+            <div class="dash-widget text-center p-3 d-flex flex-column justify-content-center" style="min-height: 150px;">
+                <div class="dash-widget-bg2 d-flex justify-content-center align-items-center rounded-circle mx-auto mb-2" style="width: 60px; height: 60px;">
+                    <i class="fa fa-user text-white"></i>
+                </div>
+                <h3 class="mb-1">{{ total_patients }}</h3>
+                <span class="widget-title2 badge bg-success text-white p-2 rounded">Total Patients <i class="fa fa-check"></i></span>
+            </div>
+        </div>
+    
+        <!-- Completed Appointments Widget -->
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
+            <div class="dash-widget text-center p-3 d-flex flex-column justify-content-center" style="min-height: 150px;">
+                <div class="dash-widget-bg3 d-flex justify-content-center align-items-center rounded-circle mx-auto mb-2" style="width: 60px; height: 60px;">
+                    <i class="fa fa-calendar-check text-white"></i>
+                </div>
+                <h3 class="mb-1">{{ completed_appointments }}</h3>
+                <span class="widget-title3 badge bg-primary text-white p-2 rounded">Accepted Appointments <i class="fa fa-check"></i></span>
+            </div>
+        </div>
+
+
+        
+        <!-- Pending Appointments Widget -->
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
+            <div class="dash-widget text-center p-3 d-flex flex-column justify-content-center" style="min-height: 150px;">
+                <div class="dash-widget-bg4 d-flex justify-content-center align-items-center rounded-circle mx-auto mb-2" style="width: 60px; height: 60px;">
+                    <i class="fa fa-hourglass-half text-white"></i>
+                </div>
+                <h3 class="mb-1">{{ pending_appointments }}</h3>
+                <span class="widget-title4 badge bg-warning text-white p-2 rounded">Pending Appointments <i class="fa fa-exclamation-circle"></i></span>
+            </div>
+        </div>
+    </div>
+    
+
+
+
+    
+
+    <div class="container mt-4">
+        <ul class="nav nav-tabs" id="appointmentTabs">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#upcoming">Upcoming</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#today">Today's</a>
+            </li>
+        </ul>
+        
+        <div class="tab-content mt-3">
+            <div class="tab-pane fade show active" id="upcoming">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Patient</th>
+                            <th>Date</th>
+                            <th>Purpose</th>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="upcomingAppointments">
+                        {% for appointment in upcoming_appointments %}
+                        <tr data-id="{{ appointment.id }}">
+                            <td>{{ appointment.patient.name }}</td>
+                            <td>{{ appointment.slot.start_time|date:"d M Y" }}<br><small>{{ appointment.slot.start_time|time:"h:i A" }}</small></td>
+                            <td>{{ appointment.purpose }}</td>
+                            <td>{{ appointment.type }}</td>
+                            <td>${{ appointment.paid_amount }}</td>
+
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+
+
+
+            </div>
+            
+            <div class="tab-pane fade" id="today">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Patient</th>
+                            <th>Date</th>
+                            <th>Purpose</th>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            <th>Actions</th>
+
+
+                        </tr>
+                    </thead>
+                    <tbody id="todayAppointments">
+                        {% for appointment in today_appointments %}
+                        <tr data-id="{{ appointment.id }}">
+                            <td>{{ appointment.patient.first_name }}</td>
+                            <td>{{ appointment.slot.start_time|date:"d M Y" }}<br><small>{{ appointment.slot.start_time|time:"h:i A" }}</small></td>
+                            <td>{{ appointment.purpose }}</td>
+                            <td>{{ appointment.type }}</td>
+                            <td>${{ appointment.paid_amount }}</td>
+
+                            <td>
+                                <button class="btn btn-sm btn-primary view-btn">View</button>
+                                <button class="btn btn-sm btn-success accept-btn">Accept</button>
+                                <button class="btn btn-sm btn-danger cancel-btn">Cancel</button>
+                            </td>
+
+
+
+
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Patient Details Modal -->
+<!-- Patient Details Modal -->
+<div class="modal fade" id="patientModal" tabindex="-1" role="dialog" aria-labelledby="patientModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content rounded-3 shadow-lg">
+            <div class="modal-header border-0">
+                <h5 class="modal-title" id="patientModalLabel">Patient Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-4 text-center">
+                        <img id="patientPhoto" src="" alt="Profile Photo" class="img-fluid rounded-circle mb-3" style="max-width: 150px;" />
+                    </div>
+                    <div class="col-md-8">
+                        <p><strong>Greeting:</strong> <span id="patientGreeting"></span></p>
+                        <p><strong>Name:</strong> <span id="patientName"></span></p>
+                        <p><strong>Gender:</strong> <span id="patientGender"></span></p>
+                        <p><strong>Mobile Phone:</strong> <span id="patientPhone"></span></p>
+                        <p><strong>Date of Birth:</strong> <span id="patientDob"></span></p>
+                        <p><strong>Email:</strong> <span id="patientEmail"></span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+    </div>
+    <!-- Include jQuery and Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+
+
+$(document).ready(function () {
+    // Handle Accept and Cancel buttons
+    $(".accept-btn, .cancel-btn").on("click", function () {
+        var appointmentRow = $(this).closest("tr");
+        var appointmentId = appointmentRow.data("id");
+        var status = $(this).hasClass("accept-btn") ? "Accepted" : "Cancelled";
+
+        // Determine the correct URL based on the status
+        var url = status === "Accepted" ? `/practitioner-dashboard/appointments/${appointmentId}/Accepted/` : `/practitioner-dashboard/appointments/${appointmentId}/Cancelled/`;
+
+        // Make the AJAX request to update the appointment status
+        $.ajax({
+            url: url,
+            type: "GET",
+            success: function (response) {
+                if (status === "Cancelled") {
+                    alert("Successfully Cancelled the appointment");
+                    location.reload();  // Reload the page to reflect changes
+                } else if (status === "Accepted") {
+                    alert("Successfully Accepted the appointment");
+                    location.reload();  
+                }
+            },
+            error: function (xhr, status, error) {
+                alert("Something went wrong. Please try again.");
+            }
+        });
+    });
+
+    // Handle View button to show patient details
+    $(".view-btn").on("click", function () {
+        var appointmentRow = $(this).closest("tr");
+        var appointmentId = appointmentRow.data("id"); // Get the appointment ID
+
+        // Make an AJAX request to fetch the patient data
+        $.ajax({
+            url: `/practitioner-dashboard/patient/${appointmentId}/`,  // Your URL to get patient details
+            type: "GET",
+            success: function (response) {
+                var patient = response.patient;
+
+                // Update the modal with patient details
+                $("#patientGreeting").text(patient.greeting);
+                $("#patientName").text(patient.first_name + " " + patient.last_name);
+                $("#patientGender").text(patient.gender);
+                $("#patientPhone").text(patient.mobile_phone);
+                $("#patientDob").text(patient.date_of_birth);
+                $("#patientEmail").text(patient.email);
+                if (patient.profile_photo) {
+                    $("#patientPhoto").attr("src", patient.profile_photo);
+                } else {
+                    $("#patientPhoto").attr("src", '/path/to/default/photo');  // Set a default photo if not present
+                }
+
+                // Show the modal with patient details
+                $('#patientModal').modal('show');
+            },
+            error: function (xhr, status, error) {
+                alert("Failed to load patient details.");
+            }
+        });
+
+         // Manually trigger modal close if necessary
+    $(".close, .btn-secondary").on("click", function() {
+        $('#patientModal').modal('hide');  // Close the modal
+    });
+    });
+});
+
+
+
+
+
+</script>
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+    {% if error %}
+    <script type="text/javascript">
+      // Display JavaScript alert with the error message
+      alert("{{ error }}");
+  
+      // Redirect to the profile completion page after the alert is closed
+      window.location.href = "/practitioner-dashboard{{ redirect_url }}";
+    </script>
+  {% endif %}
+
+
+  
+    
+</div>
+{% endblock content %}
