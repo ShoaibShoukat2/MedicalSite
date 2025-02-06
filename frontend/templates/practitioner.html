@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Registration Form</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/5.0.0/mdb.min.css" rel="stylesheet" id="mdb-css">
+    <style>
+        .form-outline .form-control {
+            border-radius: 10px;
+        }
+        .form-check-label {
+            font-weight: bold;
+        }
+        .btn-danger {
+            width: 100%;
+            border-radius: 20px;
+        }
+
+        /* Password Strength Bar */
+        .strength-bar {
+            height: 10px;
+            border-radius: 5px;
+            background-color: #e0e0e0;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .strength-bar span {
+            display: block;
+            height: 100%;
+            width: 0%;
+            border-radius: 5px;
+        }
+
+        .strength-weak {
+            background-color: #dc3545; /* Red */
+        }
+
+        .strength-medium {
+            background-color: #ffc107; /* Yellow */
+        }
+
+        .strength-strong {
+            background-color: #28a745; /* Green */
+        }
+
+        .password-requirements {
+            font-size: 12px;
+            color: #6c757d;
+        }
+    </style>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css" rel="stylesheet">
+</head>
+<body>
+<section class="py-5">
+    <div class="container">
+        <!-- Logo and Header Section -->
+        <div class="logo-container">
+            <a href="/">
+                <img src="{% static 'logo.png' %}" alt="Medical Company Logo" style="max-width: 150px; max-height: 150px; width: auto; height: auto;">
+            </a>
+        </div>
+
+        <!-- Form Section -->
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <div class="form-container">
+                    <h4 class="pb-4 text-center">Practitioner Registration</h4>
+                    <form method="post" id="registration-form">
+                        {% csrf_token %}
+
+                        <!-- Personal Information -->
+                        <div class="mb-4">
+                            <label class="form-label" for="civility-dropdown">Civility</label>
+                            <select class="form-select" id="civility-dropdown" name="civility">
+                                {% for value, label in civilities %}
+                                <option value="{{ value }}">{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="form-outline">
+                                    <input type="text" name="first_name" class="form-control" placeholder="First Name" required />
+                                    <label class="form-label">First Name</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-outline">
+                                    <input type="text" name="last_name" class="form-control" placeholder="Last Name" required />
+                                    <label class="form-label">Last Name</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Professional Information -->
+                        <div class="mb-4">
+                            <label class="form-label">Doctor Type</label>
+                            <select class="form-select" name="doctor_type" required>
+                                <option value="" selected disabled>Select Doctor Type</option>
+                                {% for value, label in doctor_types %}
+                                <option value="{{ value }}">{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Specialty</label>
+                            <select class="form-select" name="specialty" required>
+                                <option value="" selected disabled>Select Specialty</option>
+                                {% for value, label in specialties %}
+                                <option value="{{ value }}">{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- License Information -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="form-outline">
+                                    <input type="text" name="license_number" class="form-control" placeholder="License Number" required />
+                                    <label class="form-label">License Number</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-outline">
+                                    <input type="date" name="license_expiry" class="form-control" required />
+                                    <label class="form-label">License Expiry Date</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Practice Information -->
+                        <div class="mb-4">
+                            <div class="form-outline">
+                                <input type="text" name="practice_name" class="form-control" placeholder="Practice/Clinic Name" required />
+                                <label class="form-label">Practice/Clinic Name</label>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="form-outline">
+                                    <input type="tel" name="practice_phone" class="form-control" placeholder="Practice Phone" required />
+                                    <label class="form-label">Practice Phone</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-outline">
+                                    <input type="tel" name="practice_fax" class="form-control" placeholder="Practice Fax" />
+                                    <label class="form-label">Practice Fax (Optional)</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Address Information -->
+                        <div class="mb-4">
+                            <div class="form-outline">
+                                <input type="text" name="street_address" class="form-control" placeholder="Street Address" required />
+                                <label class="form-label">Street Address</label>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <div class="form-outline">
+                                    <input type="text" name="city" class="form-control" placeholder="City" required />
+                                    <label class="form-label">City</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-outline">
+                                    <input type="text" name="state" class="form-control" placeholder="State/Province" required />
+                                    <label class="form-label">State/Province</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-outline">
+                                    <input type="text" name="postal_code" class="form-control" placeholder="Postal Code" required />
+                                    <label class="form-label">Postal Code</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Contact Information -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="form-outline">
+                                    <input type="email" name="email" class="form-control" placeholder="Email" required />
+                                    <label class="form-label">Email</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-outline position-relative">
+                                    <input type="password" id="password" name="password" class="form-control" placeholder="Password" required />
+                                    <label class="form-label">Password</label>
+                                    <div class="strength-bar">
+                                        <span id="strength-bar" class="strength-weak"></span>
+                                    </div>
+                                    <div class="password-requirements">
+                                        <ul>
+                                            <li id="length-check" class="text-danger">Minimum 8 characters</li>
+                                            <li id="uppercase-check" class="text-danger">At least one uppercase letter</li>
+                                            <li id="number-check" class="text-danger">At least one number</li>
+                                            <li id="special-check" class="text-danger">At least one special character</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Terms and Conditions -->
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" type="checkbox" name="terms" required />
+                            <label class="form-check-label">
+                                I accept the terms and conditions
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn btn-danger" id="submit-btn" disabled>Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/5.0.0/mdb.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+
+<script>
+    const passwordField = document.getElementById('password');
+    const strengthBar = document.getElementById('strength-bar');
+    const submitButton = document.getElementById('submit-btn');
+
+    const lengthCheck = document.getElementById('length-check');
+    const uppercaseCheck = document.getElementById('uppercase-check');
+    const numberCheck = document.getElementById('number-check');
+    const specialCheck = document.getElementById('special-check');
+
+    passwordField.addEventListener('input', function () {
+        const password = passwordField.value;
+        let strength = 0;
+
+        // Check password length
+        if (password.length >= 8) {
+            lengthCheck.classList.replace('text-danger', 'text-success');
+            strength += 1;
+        } else {
+            lengthCheck.classList.replace('text-success', 'text-danger');
+        }
+
+        // Check for uppercase letter
+        const uppercasePattern = /[A-Z]/;
+        if (uppercasePattern.test(password)) {
+            uppercaseCheck.classList.replace('text-danger', 'text-success');
+            strength += 1;
+        } else {
+            uppercaseCheck.classList.replace('text-success', 'text-danger');
+        }
+
+        // Check for number
+        const numberPattern = /\d/;
+        if (numberPattern.test(password)) {
+            numberCheck.classList.replace('text-danger', 'text-success');
+            strength += 1;
+        } else {
+            numberCheck.classList.replace('text-success', 'text-danger');
+        }
+
+        // Check for special character
+        const specialPattern = /[!@#$%^&*(),.?":{}|<>]/;
+        if (specialPattern.test(password)) {
+            specialCheck.classList.replace('text-danger', 'text-success');
+            strength += 1;
+        } else {
+            specialCheck.classList.replace('text-success', 'text-danger');
+        }
+
+        // Update strength bar
+        if (strength === 0) {
+            strengthBar.style.width = '0%';
+            strengthBar.className = 'strength-weak';
+        } else if (strength === 1) {
+            strengthBar.style.width = '25%';
+            strengthBar.className = 'strength-weak';
+        } else if (strength === 2) {
+            strengthBar.style.width = '50%';
+            strengthBar.className = 'strength-medium';
+        } else if (strength === 3) {
+            strengthBar.style.width = '75%';
+            strengthBar.className = 'strength-medium';
+        } else if (strength === 4) {
+            strengthBar.style.width = '100%';
+            strengthBar.className = 'strength-strong';
+        }
+
+        submitButton.disabled = strength !== 4;
+    });
+</script>
+
+<script>
+    {% if messages %}
+        {% for message in messages %}
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: '{{ message }}',
+                confirmButtonText: 'Close'
+            });
+        {% endfor %}
+    {% endif %}
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
