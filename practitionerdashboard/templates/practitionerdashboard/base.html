@@ -508,6 +508,7 @@
             </div>
         </li>
 
+<<<<<<< HEAD
 
 
         <!-- Chat Button -->
@@ -518,6 +519,15 @@
 
 
 
+=======
+        <!-- Chat Button -->
+        <li class="nav-item">
+            <a href="{% url 'chat:chat_list' %}" class="nav-link">
+                <i class="fa fa-comments" style="color: white;"></i>
+                <span class="badge badge-pill bg-primary float-right">5</span>
+            </a>
+        </li>
+>>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
 
         <!-- Profile Picture -->
         <li class="nav-item dropdown has-arrow">
@@ -532,8 +542,11 @@
                 <a class="dropdown-item" href="{% url 'frontend:logout' %}">Logout</a>
             </div>
         </li>
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
     </ul>
 </div>
 
@@ -743,6 +756,30 @@
             updateSidebarHeight();
         });
     </script>
+<<<<<<< HEAD
+=======
+    <script>
+        function startVideoCall(patientId) {
+            fetch(`/practitioner-dashboard/start-video-call/${patientId}/`, {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}",
+                    "Content-Type": "application/json"
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Video call started! Opening session...");
+                    window.open(data.jitsi_link, "_blank");  // Open Jitsi Meet in a new tab
+                } else {
+                    alert("Error: " + data.error);
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        }
+    </script>
+>>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
