@@ -12,9 +12,18 @@ urlpatterns = [
     path('schedule-timming/', views.schedule_timming, name='schedule_timming'),
     path('add-slot/', views.add_slot, name='add_slot'),
     path('remove-slot/<int:slot_id>/', views.remove_slot, name='remove_slot'),  # Add this line
+<<<<<<< HEAD
 
     path('reviews/', views.reviews, name='reviews'),
     path('chat/', views.chat, name='chat'),
+=======
+    path("prescription/add/<int:patient_id>/", views.add_prescription, name="add_prescription"),
+
+    path('reviews/', views.reviews, name='reviews'),
+    path('chat/', views.chat, name='chat'),
+    path('start-video-call/<int:patient_id>/', views.start_video_call, name='start_video_call'),
+
+>>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
     
     
     
@@ -26,9 +35,12 @@ urlpatterns = [
     path('appointments/<int:appointment_id>/Cancelled/', views.cancel_appointment, name='cancel_appointment'),
     
     path('patient/<int:appointment_id>/', views.get_patient_details, name='get_patient_details'),
+<<<<<<< HEAD
     path("prescription/add/<int:patient_id>/", views.add_prescription, name="add_prescription"),
     
 
+=======
+>>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
     
 ]
 

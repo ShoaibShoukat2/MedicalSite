@@ -505,6 +505,7 @@
             <!-- Notifications -->
             <li class="nav-item dropdown d-none d-lg-block">
                 <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+<<<<<<< HEAD
                     <i class="fa fa-bell"style="color: white;"></i>
                     <span class="badge badge-pill bg-danger">3</span>
                 </a>
@@ -542,6 +543,32 @@
             <!-- Chat -->
             <li class="nav-item" >
                 <a href="{% url 'patientdashboard:chat' %}" class="nav-link">
+=======
+                    <i class="fa fa-bell" style="color: white;"></i>
+                    <span class="badge badge-pill bg-danger">{{ notifications.count }}</span>
+                </a>
+        
+                <!-- ✅ Fixed Notification Dropdown -->
+                <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="notificationDropdown">
+                    <li class="dropdown-header text-center bg-warning text-white">Notifications</li>
+                    
+                    {% for notification in notifications %}
+                        <li class="dropdown-item d-flex justify-content-between align-items-center">
+                            <a href="{{ notification.url }}" target="_blank" class="btn btn-sm btn-primary">
+                                Join <i class="fa fa-video-camera"></i>
+                            </a>
+                        </li>
+                    {% empty %}
+                        <li class="dropdown-item text-muted text-center">No new notifications</li>
+                    {% endfor %}
+                </ul>
+            </li>
+        
+    
+            <!-- Chat -->
+            <li class="nav-item" >
+                <a href="{% url 'chat:chat_list' %}" class="nav-link">
+>>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
                     <i class="fa fa-comments" style="color: white;"></i>
                     <span class="badge badge-pill bg-primary">5</span>
                 </a>
@@ -560,6 +587,7 @@
                             <i class="fas fa-user-circle" style="font-size: 30px;"></i>
                         {% endif %}
                     </span>
+<<<<<<< HEAD
 
                 </a>
                 <div class="dropdown-menu">
@@ -568,11 +596,20 @@
 =======
                     <a class="dropdown-item" href="">My Profile</a>
 >>>>>>> 7518d9fe8faa6cbfdf2a9d28cf1c22a489c6f810
+=======
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="{% url 'patientdashboard:profile' %}">My Profile</a>
+>>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
                     <a class="dropdown-item" href="#">Settings</a>
                     <a class="dropdown-item" href="{% url 'frontend:logout' %}">Logout</a>
                 </div>
             </li>
             
+<<<<<<< HEAD
+=======
+            
+>>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
         </ul>
     </div>
     
@@ -823,6 +860,9 @@
     </script>
     <script></script>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
     <!-- jQuery (required for Bootstrap) -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -832,8 +872,11 @@
 <!-- Bootstrap JS -->
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
+<<<<<<< HEAD
 =======
 >>>>>>> 7518d9fe8faa6cbfdf2a9d28cf1c22a489c6f810
+=======
+>>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
      <script src="{% static 'assets3/js/jquery.min.js' %}"></script>
      <script src="{% static 'assets3/js/popper.js' %}"></script>
      <script src="{% static 'assets3/js/bootstrap.min.js' %}"></script>

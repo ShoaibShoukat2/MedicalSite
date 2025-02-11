@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment</title>
+    <link rel="stylesheet" href="path_to_your_css_file.css">
+</head>
+<body>
+
+    <div class="payment-section">
+        <h2>Payment Details</h2>
+        
+        <!-- Payment Details, you can add the specifics here like amount, invoice, etc. -->
+        <p>Amount: $100</p>
+        <p>Invoice: #12345</p>
+
+        <!-- Mark as Paid button -->
+        <form method="POST">
+            {% csrf_token %}
+            <button type="submit" class="mark-paid-btn">Mark as Paid</button>
+        </form>
+    </div>
+
+</body>
+</html>

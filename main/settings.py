@@ -26,12 +26,21 @@ SECRET_KEY = 'django-insecure-(5u713&##9%w+=l*ugfn+e^w3hlqusrj&9m2q0g=w%_6fd&m%+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+<<<<<<< HEAD
 ALLOWED_HOSTS = ['127.0.0.1','Aqdas30.pythonanywhere.com']
+=======
+ALLOWED_HOSTS = ['127.0.0.1','Aqdas30.pythonanywhere.com', 'localhost']
+>>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
 
 
 # Application definition
 
 INSTALLED_APPS = [
+<<<<<<< HEAD
+=======
+    'corsheaders',
+    'daphne',
+>>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -41,12 +50,27 @@ INSTALLED_APPS = [
     'frontend',
     'user_account',
     'patientdashboard',
+<<<<<<< HEAD
     'practitionerdashboard'
     
 
 ]
 
 MIDDLEWARE = [
+=======
+    'practitionerdashboard',
+    'channels',  # Django Channels
+    'chat',
+      # Your chat app
+    
+
+]
+CORS_ALLOW_ALL_ORIGINS = True
+
+MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # Add this line
+
+>>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -56,6 +80,13 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+<<<<<<< HEAD
+=======
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000']
+CORS_ALLOWED_ORIGINS = ['http://127.0.0.1:8000']
+
+
+>>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
 ROOT_URLCONF = 'main.urls'
 
 TEMPLATES = [
@@ -75,7 +106,17 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'main.wsgi.application'
+<<<<<<< HEAD
 
+=======
+ASGI_APPLICATION = "main.asgi.application"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",  # Change to Redis in production
+    },
+}
+>>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
