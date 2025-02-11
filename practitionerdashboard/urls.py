@@ -12,6 +12,7 @@ urlpatterns = [
     path('schedule-timming/', views.schedule_timming, name='schedule_timming'),
     path('add-slot/', views.add_slot, name='add_slot'),
     path('remove-slot/<int:slot_id>/', views.remove_slot, name='remove_slot'),  # Add this line
+    path("prescription/add/<int:patient_id>/", views.add_prescription, name="add_prescription"),
 
     path('reviews/', views.reviews, name='reviews'),
     path('chat/', views.chat, name='chat'),

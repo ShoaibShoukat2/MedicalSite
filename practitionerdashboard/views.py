@@ -16,7 +16,8 @@ from django.shortcuts import get_object_or_404
 from patientdashboard.models import Appointment, Notification
 from django.http import JsonResponse
 from datetime import date
-
+from practitionerdashboard.models import Prescription
+from django.contrib import messages
 # Create your views here.
 
 def dashboard_view(request):
@@ -339,7 +340,49 @@ def start_video_call(request, patient_id):
 
     
 
+def add_prescription(request, patient_id):
+    patient = get_object_or_404(Patient, id=patient_id)
+    # Get the practitioner ID from the session
+    practitioner_id = request.session.get("practitioner_id")
 
+    if not practitioner_id:
+        messages.error(request, "Unauthorized access! Practitioner ID is missing.")
+        return redirect("practitioner_dashboard:mypatient")  
+
+    # Get the practitioner instance
+    practitioner = get_object_or_404(Practitioner, id=practitioner_id)
+
+    
+    # Check if a prescription already exists for this patient and practitioner
+    prescription = Prescription.objects.filter(practitioner=practitioner, patient=patient).first()
+
+    if request.method == "POST":
+        text = request.POST.get("text", "").strip()
+        prescription_file = request.FILES.get("prescription_file")
+        if not text and not prescription_file:
+            messages.error(request, "Please enter a prescription or upload a file.")
+            return redirect("practitioner_dashboard:practitioner_profile")  
+        # If prescription exists, update it
+        if prescription:
+            prescription.text = text or prescription.text
+            if prescription_file:
+                prescription.prescription_file = prescription_file
+            prescription.save()
+            messages.success(request, "Prescription updated successfully!")
+        else:
+            # Create a new prescription
+            Prescription.objects.create(
+                practitioner=practitioner,
+                patient=patient,
+                text=text,
+                prescription_file=prescription_file
+            )
+            messages.success(request, "Prescription added successfully!")
+
+        return redirect("practitioner_dashboard:mypatient")  
+
+    messages.info(request, "Invalid request method.")
+    return redirect("practitioner_dashboard:mypatient")
 
 
 

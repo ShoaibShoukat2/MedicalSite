@@ -36,7 +36,7 @@ def patient_dashboard(request):
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from user_account.models import Patient
-from practitionerdashboard.models import AvailableSlot
+from practitionerdashboard.models import AvailableSlot, Prescription
 # patientdashboard/views.py
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
@@ -229,11 +229,15 @@ def appointments_patients(request):
 
         # Fetch all booked appointments for this patient
         appointments = Appointment.objects.filter(patient=patient).select_related('practitioner', 'slot')
+        prescriptions = Prescription.objects.filter(patient=patient).order_by('-created_at')
+
 
         return render(request, 'patientdashboard/appointments_patients.html', {
             'patient': patient,
             'notifications': notifications,  # Pass notifications to the template
-            'appointments': appointments  # Pass appointments to the template
+            'appointments': appointments,
+            'prescriptions': prescriptions,
+  # Pass appointments to the template
         })
     else:
         # Redirect to login page if the session is not valid

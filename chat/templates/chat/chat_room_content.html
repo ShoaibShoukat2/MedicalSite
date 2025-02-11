@@ -160,7 +160,6 @@
     </style>
 </head>
 <body>
-    <!-- Chat Room Header -->
     <div class="room-header">
         <div class="user-info">
             {% if chat_room.other_user.photo %}
@@ -173,24 +172,6 @@
                 <div class="user-status">online</div>
             </div>
         </div>
-        
-        {% if user_type == 'practitioner' %}
-        <div class="header-actions">
-            <button id="ai-toggle" class="action-button" data-room-id="{{ chat_room.id }}">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 2a10 10 0 0 1 10 10c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2z"/>
-                    <path d="M12 6v6l4 2"/>
-                </svg>
-                <span id="ai-status">AI: {{ chat_room.ai_enabled|yesno:"On,Off" }}</span>
-            </button>
-            <button class="action-button">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M23 7l-7 5 7 5V7z"></path>
-                    <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
-                </svg>
-            </button>
-        </div>
-        {% endif %}
     </div>
     
     <!-- Messages Container -->
@@ -218,40 +199,81 @@
             </svg>
         </button>
     </form>
+    <!-- Previous template code remains the same, continuing with the script -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const chatForm = document.getElementById('chat-form');
+        const messageInput = document.getElementById('chat-message-input');
+        const messagesContainer = document.getElementById('messages-container');
+        const roomId = '{{ chat_room.id }}';
+        let chatSocket = null;
     
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const chatForm = document.getElementById('chat-form');
-            const messageInput = document.getElementById('chat-message-input');
-            const messagesContainer = document.getElementById('messages-container');
-            const roomId = '{{ chat_room.id }}';
-        
-            // Create WebSocket connection with error logging
+        function connectWebSocket() {
+            if (chatSocket) {
+                chatSocket.close();
+            }
+    
             const wsScheme = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-            const websocketUrl = wsScheme + window.location.host + '/ws/chat/' + roomId + '/';
-            console.log('Connecting to WebSocket:', websocketUrl);
+            const websocketUrl = `${wsScheme}${window.location.host}/ws/chat/${roomId}/`;
             
-            const chatSocket = new WebSocket(websocketUrl);
-        
+            chatSocket = new WebSocket(websocketUrl);
+    
             chatSocket.onopen = function(e) {
-                console.log('WebSocket connection established');
+                if (chatForm) {
+                    chatForm.removeAttribute('disabled');
+                }
             };
-        
+    
             chatSocket.onerror = function(error) {
                 console.error('WebSocket Error:', error);
             };
-        
+    
             chatSocket.onclose = function(e) {
-                console.log('WebSocket connection closed. Code:', e.code, 'Reason:', e.reason);
+                console.log('WebSocket connection closed');
+                // Try to reconnect after 5 seconds
+                setTimeout(connectWebSocket, 5000);
             };
-        
-            // Handle form submission
+    
+            chatSocket.onmessage = function(e) {
+                try {
+                    const data = JSON.parse(e.data);
+                    
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = `message ${data.sender_id == '{{ user_id }}' ? 'sent' : 'received'}`;
+                    
+                    const currentTime = new Date(data.timestamp).toLocaleString('en-US', { 
+                        hour: 'numeric', 
+                        minute: 'numeric', 
+                        hour12: true 
+                    });
+    
+                    messageDiv.innerHTML = `
+                        <div class="message-bubble">${data.message}</div>
+                        <div class="message-time">${currentTime}</div>
+                    `;
+                    
+                    if (messagesContainer) {
+                        messagesContainer.appendChild(messageDiv);
+                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                    }
+                } catch (error) {
+                    console.error('Error handling message:', error);
+                }
+            };
+        }
+    
+        // Initialize WebSocket connection
+        connectWebSocket();
+    
+        // Handle form submission
+        if (chatForm) {
             chatForm.addEventListener('submit', function(e) {
                 e.preventDefault();
+                if (!messageInput || !chatSocket) return;
+    
                 const message = messageInput.value.trim();
                 
-                if (message) {
-                    console.log('Sending message:', message);
+                if (message && chatSocket.readyState === WebSocket.OPEN) {
                     chatSocket.send(JSON.stringify({
                         'message': message,
                         'room_id': roomId,
@@ -260,51 +282,68 @@
                     messageInput.value = '';
                 }
             });
-        
-            // Handle incoming messages
-            chatSocket.onmessage = function(e) {
-                console.log('Received message:', e.data);
-                const data = JSON.parse(e.data);
+        }
+    
+        // Handle chat list functionality
+        const chatItems = document.querySelectorAll('.chat-item');
+        const chatContainer = document.getElementById('chat-room-container');
+        const searchInput = document.querySelector('.search-input');
+    
+        // Handle chat item clicks
+        chatItems.forEach(item => {
+            item.addEventListener('click', async (e) => {
+                e.preventDefault();
+                chatItems.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
                 
-                // Create message element
-                const messageDiv = document.createElement('div');
-                messageDiv.className = `message ${data.sender_id == '{{ user_id }}' ? 'sent' : 'received'}`;
-                
-                const currentTime = new Date().toLocaleString('en-US', { 
-                    hour: 'numeric', 
-                    minute: 'numeric', 
-                    hour12: true 
-                });
-        
-                messageDiv.innerHTML = `
-                    <div class="message-bubble">${data.message}</div>
-                    <div class="message-time">${currentTime}</div>
-                `;
-                
-                messagesContainer.appendChild(messageDiv);
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            };
+                try {
+                    const response = await fetch(item.href, {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+                    const html = await response.text();
+                    chatContainer.innerHTML = html;
+                    window.history.pushState({}, '', item.href);
+                    
+                    // Reconnect WebSocket for new chat room
+                    connectWebSocket();
+                } catch (error) {
+                    console.error('Error loading chat room:', error);
+                }
+            });
         });
-    </script>
-    <script>
-        // AI Toggle Functionality
-        document.getElementById('ai-toggle').addEventListener('click', async function() {
-            const roomId = this.dataset.roomId;
-            try {
-                const response = await fetch(`/chat/room/${roomId}/toggle-ai/`, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': getCookie('csrftoken')
+    
+        // Handle search functionality
+        if (searchInput) {
+            searchInput.addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+                chatItems.forEach(item => {
+                    const name = item.querySelector('.chat-name').textContent.toLowerCase();
+                    const message = item.querySelector('.chat-message').textContent.toLowerCase();
+                    item.style.display = (name.includes(searchTerm) || message.includes(searchTerm)) ? 'flex' : 'none';
+                });
+            });
+        }
+    
+        // Helper function to get CSRF token for POST requests
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
                     }
-                });
-                const data = await response.json();
-                document.getElementById('ai-status').textContent = 
-                    `AI: ${data.ai_enabled ? 'On' : 'Off'}`;
-            } catch (error) {
-                console.error('Error toggling AI:', error);
+                }
             }
-        });
-        
-            </script>
+            return cookieValue;
+        }
+    });
+</script>
 </body>
+</html>
+
 </html>

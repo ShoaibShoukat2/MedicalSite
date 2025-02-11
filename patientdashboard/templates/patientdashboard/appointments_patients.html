@@ -88,7 +88,55 @@
             </div>
         </div>
         <div class="tab-pane fade" id="prescriptions" role="tabpanel" aria-labelledby="prescriptions-tab">
-            <p>Prescriptions content goes here...</p>
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered align-middle text-center">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="align-middle" style="background-color: rgb(132, 189, 218); color: white;">Doctor</th>
+                            <th class="align-middle" style="background-color: rgb(132, 189, 218); color: white;">Date</th>
+                            <th class="align-middle" style="background-color: rgb(132, 189, 218); color: white;">Prescription</th>
+                            <th class="align-middle" style="background-color: rgb(132, 189, 218); color: white;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for prescription in prescriptions %}
+                        <tr>
+                            <td class="text-start d-flex align-items-center">
+                                <img src="{% static 'img/doctor-thumb-01.jpg' %}" alt="Doctor" class="rounded-circle me-2" style="width: 50px; height: 50px;">
+                                <div>
+                                    <strong>Dr. {{ prescription.practitioner.first_name }} {{ prescription.practitioner.user.last_name }}</strong><br>
+                                    <small>{{ prescription.practitioner.specialization }}</small>
+                                </div>
+                            </td>
+                            <td>{{ prescription.created_at|date:"d M Y" }}<br>
+                                <small>{{ prescription.created_at|time:"h:i A" }}</small>
+                            </td>
+                            <td class="text-start">
+                                {% if prescription.text %}
+                                    {{ prescription.text|linebreaks }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="d-flex justify-content-center">
+                                    {% if prescription.prescription_file %}
+                                        <a href="{{ prescription.prescription_file.url }}" 
+                                           class="btn btn-sm btn-outline-primary me-2" 
+                                           target="_blank">
+                                            View File
+                                        </a>
+                                    {% endif %}
+                                    <button class="btn btn-sm btn-outline-secondary">Print</button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center">No Prescriptions Found</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
         <div class="tab-pane fade" id="records" role="tabpanel" aria-labelledby="records-tab">
             <p>Medical records content goes here...</p>
