@@ -4,7 +4,7 @@ from datetime import date, datetime
 
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
-from user_account.models import Practitioner
+from user_account.models import Practitioner, Patient
 from .models import AvailableSlot
 import json
 from django.shortcuts import render, get_object_or_404, redirect
@@ -17,6 +17,7 @@ from django.http import JsonResponse
 from datetime import date
 from practitionerdashboard.models import Prescription
 from django.contrib import messages
+from patientdashboard.models import Appointment
 # Create your views here.
 
 def dashboard_view(request):
@@ -239,15 +240,13 @@ def mypatient(request):
     if practitioner_id:
         # Fetch patients related to this practitioner with 'Accepted' status
         appointments = Appointment.objects.filter(practitioner_id=practitioner_id, status='Accepted')
+        # Fetch patients related to this practitioner
+        appointments = Appointment.objects.filter(practitioner_id=practitioner_id)
         patients = [appointment.patient for appointment in appointments]
     else:
         patients = []  # Handle case when no practitioner session exists
 
     return render(request, 'practitionerdashboard/mypatient.html', {'patients': patients})
-
-
-
-
 
 
 
