@@ -2,17 +2,6 @@
 import datetime
 import json
 from django.db.models import Q
-<<<<<<< HEAD
-from patientdashboard.models import Appointment
-from user_account.models import Practitioner ,Patient # Assuming Practitioner is the model for doctors/practitioners
-
-from django.shortcuts import render, get_object_or_404, redirect
-
-from django.core.paginator import Paginator
-
-def patient_base(request):
-    return render(request, 'patientdashboard/patient_base.html')
-=======
 from patientdashboard.models import Appointment, Notification
 from user_account.models import Practitioner ,Patient # Assuming Practitioner is the model for doctors/practitioners
 
@@ -41,18 +30,13 @@ def patient_dashboard(request):
     return render(request, "patientdashboard/dashboard.html", {"notifications": notifications})
 
     
->>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
 
 # patientdashboard/views.py
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from user_account.models import Patient
-<<<<<<< HEAD
-from practitionerdashboard.models import AvailableSlot
-=======
 from practitionerdashboard.models import AvailableSlot, Prescription
->>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
 # patientdashboard/views.py
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
@@ -90,25 +74,6 @@ def available_slots(request, practitioner_id):
     slots = AvailableSlot.objects.filter(practitioner=practitioner, status='available').order_by('day_of_week', 'start_time')
     return render(request, 'patientdashboard/available_slots.html', {'practitioner': practitioner, 'slots': slots})
 
-<<<<<<< HEAD
-def book_appointment(request):
-    if request.method == 'POST':
-        slot_id = request.POST.get('slot_id')
-        patient_id = request.session.get('patient_id')  # Assuming the patient is logged in
-        if not patient_id:
-            return JsonResponse({'success': False, 'error': 'You must be logged in to book an appointment.'}, status=403)
-
-        slot = get_object_or_404(AvailableSlot, id=slot_id, status='available')
-        patient = get_object_or_404(Patient, id=patient_id)
-
-        # Create an appointment and update slot status
-        appointment = Appointment.objects.create(patient=patient, slot=slot)
-        slot.status = 'booked'
-        slot.save()
-
-        return redirect('patientdashboard:booking_success')
-    return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=405)
-=======
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from patientdashboard.models import Appointment
@@ -191,7 +156,6 @@ def book_appointment(request):
                   {'error': 'Invalid request method.'})
 
 
->>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
 from user_account.models import Practitioner
 
 def booking(request):
@@ -244,10 +208,6 @@ def search_practitioners(request):
 
 def chat(request):
     return render(request, 'patientdashboard/chat.html')
-<<<<<<< HEAD
-from django.shortcuts import render, get_object_or_404, redirect
-from user_account.models import Patient  # Adjust the import based on your app structure
-=======
 
 from django.shortcuts import render, get_object_or_404, redirect
 from user_account.models import Patient  # Adjust the import based on your app structure
@@ -255,17 +215,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from user_account.models import Patient
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Appointment, Patient, Notification
->>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
 
 def appointments_patients(request):
     # Check if the session contains patient_id
     patient_id = request.session.get('patient_id')
-<<<<<<< HEAD
-    if patient_id:
-        # Retrieve the Patient object using the session ID
-        patient = get_object_or_404(Patient, id=patient_id)
-        return render(request, 'patientdashboard/appointments_patients.html', {'patient': patient})
-=======
 
     if patient_id:
         # Retrieve the Patient object using the session ID
@@ -286,18 +239,11 @@ def appointments_patients(request):
             'prescriptions': prescriptions,
   # Pass appointments to the template
         })
->>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
     else:
         # Redirect to login page if the session is not valid
         return redirect('frontend:patient_login')
 
 
-<<<<<<< HEAD
-def payment(request):
-    return render(request, 'patientdashboard/payment.html')
-
-
-=======
 from django.shortcuts import render, redirect
 
 def payment(request):
@@ -310,7 +256,6 @@ def payment(request):
         # Redirect to booking success page after payment is marked as successful
         return redirect('patientdashboard:booking_success')
     return render(request, 'patientdashboard/pay.html')
->>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
 
 
 def telemedicine(request):
@@ -325,17 +270,11 @@ def practitioner_profile(request, pk):
 def booking_success(request):
     # Fetch the appointment details
     return render(request, 'patientdashboard/booking_success.html')
-<<<<<<< HEAD
-=======
-
->>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
 def view_invoice(request):
     return render(request, 'patientdashboard/view_invoice.html')
 
 
 
-<<<<<<< HEAD
-=======
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .forms import PatientProfileForm, PatientPasswordForm
@@ -371,4 +310,3 @@ def patient_profile(request):
     }
     
     return render(request, 'patientdashboard/profile.html', context)
->>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329

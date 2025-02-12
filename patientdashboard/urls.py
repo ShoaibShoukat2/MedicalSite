@@ -22,15 +22,11 @@ urlpatterns = [
     path('view_invoice/', views.view_invoice, name='view_invoice'),
     path('practitioner/<int:pk>/', views.practitioner_profile, name='practitioner_profile'),
     path('telemedicine/', views.telemedicine, name='telemedicine'),
-<<<<<<< HEAD
-   
-=======
     path('profile/', views.patient_profile, name='profile'),
 # Example of how the URL pattern for 'edit_patient_profile' might look in your Django app
 
 
 
->>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
     path('appointments_patients/', views.appointments_patients, name='appointments_patients'),
 
     path('chat/', views.chat, name='chat'),
@@ -38,14 +34,5 @@ urlpatterns = [
 
 
 
-<<<<<<< HEAD
-
-
-
-
-
-
-=======
->>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
 ]
 

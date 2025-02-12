@@ -25,14 +25,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('frontend.urls')),
     path('patient-dashboard/', include('patientdashboard.urls', namespace='patientdashboard')),
-<<<<<<< HEAD
-    path('practitioner-dashboard/', include('practitionerdashboard.urls', namespace='practitionerdashboard')),
-=======
     
     path('practitioner-dashboard/', include('practitionerdashboard.urls', namespace='practitionerdashboard')),
     path('chat/', include('chat.urls')),
 
->>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
 
     
 
