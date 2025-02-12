@@ -1,19 +1,13 @@
 # patientdashboard/models.py
 
-<<<<<<< HEAD
-=======
 import uuid
->>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
 from django.db import models
 from practitionerdashboard.models import AvailableSlot
 from user_account.models import Patient, Practitioner
 from django.utils.timezone import now
-<<<<<<< HEAD
-=======
 import uuid
 from django.db import models
 from django.core.exceptions import ValidationError
->>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
 
 class Appointment(models.Model):
     STATUS_CHOICES = [
@@ -22,38 +16,16 @@ class Appointment(models.Model):
         ('Cancelled', 'Cancelled'),
     ]
 
-<<<<<<< HEAD
-=======
     PAYMENT_STATUS_CHOICES = [
         ('Pending', 'Pending'),
         ('Completed', 'Completed'),
         ('Failed', 'Failed'),
     ]
 
->>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name="appointments")
     slot = models.OneToOneField(AvailableSlot, on_delete=models.CASCADE)
     practitioner = models.ForeignKey(Practitioner, on_delete=models.CASCADE, related_name="appointments", default=1)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
-<<<<<<< HEAD
-    patient = models.ForeignKey(
-        Patient,
-        on_delete=models.CASCADE,
-        related_name="appointments"
-    )
-    slot = models.OneToOneField(
-        AvailableSlot,
-        on_delete=models.CASCADE
-    )
-    practitioner = models.ForeignKey(
-        Practitioner,
-        on_delete=models.CASCADE,
-        related_name="appointments",
-        default=1  # Ensure there is a Practitioner with ID=1 in the database
-    )
-    created_at = models.DateTimeField(auto_now_add=True)
-
-=======
     payment_status = models.CharField(max_length=10, choices=PAYMENT_STATUS_CHOICES, default='Pending')  # New field
 
     video_call_link = models.URLField(null=True, blank=True)
@@ -73,15 +45,12 @@ class Appointment(models.Model):
         
         super().save(*args, **kwargs)
 
->>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
     def __str__(self):
         return f"Appointment with {self.practitioner} at {self.slot.start_time} - {self.slot.end_time}"
 
 
 
 
-<<<<<<< HEAD
-=======
 
 class Notification(models.Model):
     recipient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name="notifications")
@@ -96,4 +65,3 @@ class Notification(models.Model):
 
 
 
->>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329

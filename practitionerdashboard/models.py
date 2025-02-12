@@ -1,13 +1,7 @@
 from django.db import models
 from django.utils.timezone import now
-<<<<<<< HEAD
-from user_account.models import Patient, Practitioner
-
-from user_account.models import Practitioner
-=======
 
 from user_account.models import Practitioner,Patient
->>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
 class AvailableSlot(models.Model):
     STATUS_CHOICES = [
         ('available', 'Available'),
@@ -32,27 +26,12 @@ class AvailableSlot(models.Model):
         return f"{self.get_day_of_week_display()}: {self.start_time} - {self.end_time} ({self.practitioner})"
 
 
-<<<<<<< HEAD
-
-
-
-
-=======
->>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
 class Prescription(models.Model):
     practitioner = models.ForeignKey(Practitioner, on_delete=models.CASCADE)  # Assuming User is a practitioner
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     text = models.TextField(blank=True, null=True)
     prescription_file = models.FileField(upload_to="prescriptions/", blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
-<<<<<<< HEAD
-
     def __str__(self):
         return f"Prescription for {self.patient.first_name} by {self.practitioner.first_name}"
     
-    
-=======
-    def __str__(self):
-        return f"Prescription for {self.patient.first_name} by {self.practitioner.first_name}"
-    
->>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329

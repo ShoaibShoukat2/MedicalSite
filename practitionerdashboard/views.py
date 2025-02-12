@@ -1,20 +1,11 @@
-<<<<<<< HEAD
-from django.shortcuts import render, redirect,get_object_or_404
-from user_account.models import Practitioner, Patient
-=======
 import uuid
 from django.shortcuts import render, redirect,get_object_or_404
 from user_account.models import Patient, Practitioner
->>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
 from datetime import date, datetime
 
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
-<<<<<<< HEAD
-from user_account.models import Practitioner, Patient
-=======
 from user_account.models import Practitioner
->>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
 from .models import AvailableSlot
 import json
 from django.shortcuts import render, get_object_or_404, redirect
@@ -22,19 +13,11 @@ from user_account.models import Practitioner
 
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
-<<<<<<< HEAD
-from patientdashboard.models import Appointment
-=======
 from patientdashboard.models import Appointment, Notification
->>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
 from django.http import JsonResponse
 from datetime import date
 from practitionerdashboard.models import Prescription
 from django.contrib import messages
-<<<<<<< HEAD
-from patientdashboard.models import Appointment
-=======
->>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
 # Create your views here.
 
 def dashboard_view(request):
@@ -255,11 +238,6 @@ def mypatient(request):
     practitioner_id = request.session.get('practitioner_id')
 
     if practitioner_id:
-<<<<<<< HEAD
-        # Fetch patients related to this practitioner with 'Accepted' status
-        appointments = Appointment.objects.filter(practitioner_id=practitioner_id, status='Accepted')
-=======
->>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
         # Fetch patients related to this practitioner
         appointments = Appointment.objects.filter(practitioner_id=practitioner_id)
         patients = [appointment.patient for appointment in appointments]
@@ -273,11 +251,6 @@ def mypatient(request):
 
 
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
 def CompleteProfile(request):
     context = {}
 
@@ -316,14 +289,6 @@ def CompleteProfile(request):
 
     return render(request, 'practitionerdashboard/profile.html', context)
 
-<<<<<<< HEAD
-
-
-
-def add_prescription(request, patient_id):
-    patient = get_object_or_404(Patient, id=patient_id)
-
-=======
 from django.views.decorators.csrf import csrf_exempt
 
 @csrf_exempt
@@ -375,7 +340,6 @@ def start_video_call(request, patient_id):
 
 def add_prescription(request, patient_id):
     patient = get_object_or_404(Patient, id=patient_id)
->>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
     # Get the practitioner ID from the session
     practitioner_id = request.session.get("practitioner_id")
 
@@ -386,27 +350,16 @@ def add_prescription(request, patient_id):
     # Get the practitioner instance
     practitioner = get_object_or_404(Practitioner, id=practitioner_id)
 
-<<<<<<< HEAD
-=======
     
->>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
     # Check if a prescription already exists for this patient and practitioner
     prescription = Prescription.objects.filter(practitioner=practitioner, patient=patient).first()
 
     if request.method == "POST":
         text = request.POST.get("text", "").strip()
         prescription_file = request.FILES.get("prescription_file")
-<<<<<<< HEAD
-
         if not text and not prescription_file:
             messages.error(request, "Please enter a prescription or upload a file.")
             return redirect("practitioner_dashboard:practitioner_profile")  
-
-=======
-        if not text and not prescription_file:
-            messages.error(request, "Please enter a prescription or upload a file.")
-            return redirect("practitioner_dashboard:practitioner_profile")  
->>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
         # If prescription exists, update it
         if prescription:
             prescription.text = text or prescription.text
@@ -427,11 +380,7 @@ def add_prescription(request, patient_id):
         return redirect("practitioner_dashboard:mypatient")  
 
     messages.info(request, "Invalid request method.")
-<<<<<<< HEAD
-    return redirect("practitioner_dashboard:mypatient")  
-=======
     return redirect("practitioner_dashboard:mypatient")
 
->>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
 
 
