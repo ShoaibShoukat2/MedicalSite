@@ -44,11 +44,19 @@ class Appointment(models.Model):
             self.video_call_link = f"https://meet.jit.si/{meeting_id}"
         
         super().save(*args, **kwargs)
+        
+          # Schedule email reminder 1 hour before appointment
+        reminder_time = self.slot.start_time - timedelta(hours=1)
+        countdown = (reminder_time - now()).total_seconds()
+
+        if countdown > 0:
+            send_reminder_email.apply_async((self.id,), countdown=countdown)
+            
+        
 
     def __str__(self):
         return f"Appointment with {self.practitioner} at {self.slot.start_time} - {self.slot.end_time}"
-
-
+    
 
 
 
@@ -61,7 +69,6 @@ class Notification(models.Model):
 
     def __str__(self):
         return f"Notification for {self.recipient.first_name} {self.recipient.last_name}"
-
 
 
 

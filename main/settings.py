@@ -177,6 +177,11 @@ DEFAULT_FROM_EMAIL = 'shoaibahmadbhatti6252@gmail.com'
 
 
 
+CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Redis URL
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+
+
 
 
 

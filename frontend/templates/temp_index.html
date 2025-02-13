@@ -65,15 +65,12 @@
         <h2 class="text-center mb-4 font-weight-bold text-primary" style="animation: fadeInUp 2s ease;">Meet Our Renowned Doctors</h2>
         <div class="row">
             {% for practitioner in practitioners %}
+            {% if practitioner.photo %}
                 <div class="col-md-4 mb-4 d-flex">
                     <div class="card shadow-lg border-light rounded w-100 h-100 hover-animate">
                         <div class="card-body text-center d-flex flex-column justify-content-between p-4">
                             <div class="mx-auto mb-3" style="width: 160px; height: 160px; overflow: hidden; border-radius: 50%; border: 5px solid #007bff;">
-                                {% if practitioner.photo %}
-                                    <img src="{{ practitioner.photo.url }}" class="img-fluid" alt="{{ practitioner.first_name }} {{ practitioner.last_name }}" style="object-fit: cover;">
-                                {% else %}
-                                    <img src="/static/images/default_profile.png" class="img-fluid" alt="Default Profile" style="object-fit: cover;">
-                                {% endif %}
+                                <img src="{{ practitioner.photo.url }}" class="img-fluid" alt="{{ practitioner.first_name }} {{ practitioner.last_name }}" style="object-fit: cover;">
                             </div>
                             <h5 class="card-title font-weight-bold">{{ practitioner.first_name }} {{ practitioner.last_name }}</h5>
                             <p class="card-text text-muted">{{ practitioner.get_specialty_display }}</p>
@@ -81,11 +78,12 @@
                         </div>
                     </div>
                 </div>
-            {% endfor %}
+            {% endif %}
+        {% endfor %}        
         </div>
     </div>
-    
-    
+
+
 </div>
 
 {% endblock temp_index %}
