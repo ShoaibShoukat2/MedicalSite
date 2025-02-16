@@ -450,7 +450,130 @@
             padding-top: 20px;
             margin-top: 20px;
         }
-        
+        /* Chatbot Button */
+#chatbot-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 12px 15px;
+    border-radius: 50px;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#chatbot-btn i {
+    font-size: 18px;
+}
+
+/* Chatbot Window */
+/* Chatbot Window - Increase height */
+#chatbot-window {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    width: 380px; /* Increase width slightly for better UI */
+    height: 500px; /* Increase height */
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    display: none;
+    flex-direction: column;
+}
+
+/* Chat Body - Expandable */
+.chat-body {
+    padding: 10px;
+    height: 400px; /* Increase chat content area */
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* Chat Header */
+.chat-header {
+    background: #007bff;
+    color: white;
+    padding: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.chat-header button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+/* Chat Body */
+
+
+/* Chat Messages */
+.bot-message {
+    background: #f1f1f1;
+    padding: 8px;
+    border-radius: 5px;
+    margin: 5px 0;
+    align-self: flex-start;
+}
+
+.user-message {
+    background: #007bff;
+    color: white;
+    padding: 8px;
+    border-radius: 5px;
+    margin: 5px 0;
+    align-self: flex-end;
+}
+
+/* Chat Footer */
+.chat-footer {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+}
+
+.chat-footer input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.chat-footer button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 10px;
+    margin-left: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.video-container {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    height: 100vh; /* Full height */
+    width: 100%; /* Full width */
+}
+
+#avatar-video {
+    max-width: 80%; /* Adjust size as needed */
+    height: auto;
+}
+
     </style>
     
     
@@ -620,6 +743,30 @@
             {% endblock content %}
         </div>
     </div>
+<!-- Chatbot Button -->
+<div class="video-container">
+    <video id="avatar-video" controls autoplay></video>
+</div>
+<button id="chatbot-btn" onclick="toggleChatbot()">
+    <i class="fa fa-comment"></i> Chat with AI
+</button>
+
+<!-- Chatbot Window -->
+<div id="chatbot-window">
+    <div class="chat-header">
+        <span>AI Chatbot</span>
+        <button onclick="toggleChatbot()">&times;</button>
+    </div>
+    <div class="chat-body" id="chat-messages">
+        <div class="bot-message">Hello! How can I assist you today?</div>
+    </div>
+    <div class="chat-footer">
+        <input type="text" id="chat-input" placeholder="Type a message..." onkeypress="handleKeyPress(event)">
+        <button onclick="sendMessage()"><i class="fa fa-paper-plane"></i></button>
+    </div>
+</div>
+
+
 
     <footer class="footer">
         <div class="container">
@@ -691,6 +838,68 @@
 </div>
 </div>
 </footer>
+<script>
+    let chatSocket;
+
+    function toggleChatbot() {
+        let chatbotWindow = document.getElementById("chatbot-window");
+        chatbotWindow.style.display = chatbotWindow.style.display === "none" ? "flex" : "none";
+    }
+
+    function connectWebSocket() {
+        chatSocket = new WebSocket("ws://" + window.location.host + "/ws/ai-chat/");
+
+        chatSocket.onopen = function () {
+            console.log("AI Chatbot WebSocket connected.");
+        };
+
+        chatSocket.onmessage = function(event) {
+            let data = JSON.parse(event.data);
+            let botMessage = data.message;
+            displayMessage(botMessage, "bot");
+        };
+
+        chatSocket.onerror = function (error) {
+            console.error("WebSocket Error:", error);
+        };
+
+        chatSocket.onclose = function(event) {
+            console.log("WebSocket closed. Reconnecting in 3 seconds...");
+            setTimeout(connectWebSocket, 3000);
+        };
+    }
+
+    function sendMessage() {
+        let userInput = document.getElementById("chat-input").value;
+        if (userInput.trim() === "") return;
+
+        displayMessage(userInput, "user");
+
+        chatSocket.send(JSON.stringify({ 
+            "message": userInput,
+            "patient_id": "{{ request.session.patient_id|default:'' }}"  // Send patient ID
+        }));
+
+        document.getElementById("chat-input").value = "";
+    }
+
+    function handleKeyPress(event) {
+        if (event.key === "Enter") {
+            sendMessage();
+        }
+    }
+
+    function displayMessage(message, sender) {
+        let chatMessages = document.getElementById("chat-messages");
+        let messageDiv = document.createElement("div");
+        messageDiv.classList.add(sender === "bot" ? "bot-message" : "user-message");
+        messageDiv.textContent = message;
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;  // Auto-scroll
+    }
+
+    connectWebSocket();
+</script>
 
     <!-- Scripts -->
     <script src="{% static 'assets/js/jquery-3.2.1.min.js' %}"></script>
@@ -810,7 +1019,13 @@
 
 <!-- Popper.js (required for Bootstrap dropdowns) -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
-
+<script>
+    async function playAvatar(talkId) {
+        const response = await fetch(`https://api.d-id.com/talks/${talkId}`);
+        const data = await response.json();
+        document.getElementById("avatar-video").src = data.video_url;
+    }
+    </script>
 <!-- Bootstrap JS -->
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
