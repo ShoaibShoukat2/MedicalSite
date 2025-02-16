@@ -44,16 +44,101 @@
                             <th class="align-middle" style="background-color: rgb(132, 189, 218); color: white;">Appt Date</th>
                             <th class="align-middle" style="background-color: rgb(132, 189, 218); color: white;">Booking Date</th>
                             <th class="align-middle" style="background-color: rgb(132, 189, 218); color: white;">Amount</th>
+<<<<<<< HEAD
+                            <th class="align-middle" style="background-color: rgb(132, 189, 218); color: white;">Follow Up</th>
+=======
+>>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
                             <th class="align-middle" style="background-color: rgb(132, 189, 218); color: white;">Status</th>
                             <th class="align-middle" style="background-color: rgb(132, 189, 218); color: white;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
+<<<<<<< HEAD
+=======
                         {% for appointment in appointments %}
+>>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
                         <tr>
                             <td class="text-start d-flex align-items-center">
                                 <img src="{% static 'img/doctor-thumb-01.jpg' %}" alt="Doctor" class="rounded-circle me-2" style="width: 50px; height: 50px;">
                                 <div>
+<<<<<<< HEAD
+                                    <strong>Dr. Ruby Perrin</strong><br>
+                                    <small>Dental</small>
+                                </div>
+                            </td>
+                            <td>14 Nov 2019<br><small>10:00 AM</small></td>
+                            <td>12 Nov 2019</td>
+                            <td>$160</td>
+                            <td>16 Nov 2019</td>
+                            <td><span class="badge bg-success">Confirm</span></td>
+                            <td>
+                                <div class="d-flex justify-content-center">
+                                    <button class="btn btn-sm btn-outline-primary me-2">Print</button>
+                                    <button class="btn btn-sm btn-outline-info">View</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-start d-flex align-items-center">
+                                <img src="{% static 'img/doctor-thumb-01.jpg' %}" alt="Doctor" class="rounded-circle me-2" style="width: 50px; height: 50px;">
+                                <div>
+                                    <strong>Dr. Darren Elder</strong><br>
+                                    <small>Dental</small>
+                                </div>
+                            </td>
+                            <td>12 Nov 2019<br><small>8:00 PM</small></td>
+                            <td>12 Nov 2019</td>
+                            <td>$250</td>
+                            <td>14 Nov 2019</td>
+                            <td><span class="badge bg-success">Confirm</span></td>
+                            <td>
+                                <div class="d-flex justify-content-center">
+                                    <button class="btn btn-sm btn-outline-primary me-2">Print</button>
+                                    <button class="btn btn-sm btn-outline-info">View</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-start d-flex align-items-center">
+                                <img src="{% static 'img/doctor-thumb-01.jpg' %}" alt="Doctor" class="rounded-circle me-2" style="width: 50px; height: 50px;">
+                                <div>
+                                    <strong>Dr. Deborah Angel</strong><br>
+                                    <small>Cardiology</small>
+                                </div>
+                            </td>
+                            <td>11 Nov 2019<br><small>11:00 AM</small></td>
+                            <td>10 Nov 2019</td>
+                            <td>$400</td>
+                            <td>13 Nov 2019</td>
+                            <td><span class="badge bg-danger">Cancelled</span></td>
+                            <td>
+                                <div class="d-flex justify-content-center">
+                                    <button class="btn btn-sm btn-outline-primary me-2">Print</button>
+                                    <button class="btn btn-sm btn-outline-info">View</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-start d-flex align-items-center">
+                                <img src="{% static 'img/doctor-thumb-01.jpg' %}" alt="Doctor" class="rounded-circle me-2" style="width: 50px; height: 50px;">
+                                <div>
+                                    <strong>Dr. Sofia Brient</strong><br>
+                                    <small>Urology</small>
+                                </div>
+                            </td>
+                            <td>10 Nov 2019<br><small>3:00 PM</small></td>
+                            <td>10 Nov 2019</td>
+                            <td>$350</td>
+                            <td>12 Nov 2019</td>
+                            <td><span class="badge bg-warning text-dark">Pending</span></td>
+                            <td>
+                                <div class="d-flex justify-content-center">
+                                    <button class="btn btn-sm btn-outline-primary me-2">Print</button>
+                                    <button class="btn btn-sm btn-outline-info">View</button>
+                                </div>
+                            </td>
+                        </tr>
+=======
                                     <strong>Dr. {{ appointment.practitioner.first_name }} {{ appointment.practitioner.user.last_name }}</strong><br>
                                     <small>{{ appointment.practitioner.specialization }}</small>
                                 </div>
@@ -82,12 +167,16 @@
                             <td colspan="6" class="text-center">No Appointments Found</td>
                         </tr>
                         {% endfor %}
+>>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
                     </tbody>
                     
                 </table>
             </div>
         </div>
         <div class="tab-pane fade" id="prescriptions" role="tabpanel" aria-labelledby="prescriptions-tab">
+<<<<<<< HEAD
+            <p>Prescriptions content goes here...</p>
+=======
             <div class="table-responsive">
                 <table class="table table-hover table-bordered align-middle text-center">
                     <thead class="table-light">
@@ -137,6 +226,7 @@
                     </tbody>
                 </table>
             </div>
+>>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
         </div>
         <div class="tab-pane fade" id="records" role="tabpanel" aria-labelledby="records-tab">
             <p>Medical records content goes here...</p>

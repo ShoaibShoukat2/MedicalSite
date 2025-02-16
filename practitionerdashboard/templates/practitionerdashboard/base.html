@@ -508,6 +508,16 @@
             </div>
         </li>
 
+
+
+        <!-- Chat Button -->
+
+
+        
+
+
+
+
         <!-- Chat Button -->
         <li class="nav-item">
             <a href="{% url 'chat:chat_list' %}" class="nav-link">
@@ -529,6 +539,8 @@
                 <a class="dropdown-item" href="{% url 'frontend:logout' %}">Logout</a>
             </div>
         </li>
+
+
     </ul>
 </div>
 
@@ -738,6 +750,8 @@
             updateSidebarHeight();
         });
     </script>
+<<<<<<< HEAD
+=======
     <script>
         function startVideoCall(patientId) {
             fetch(`/practitioner-dashboard/start-video-call/${patientId}/`, {

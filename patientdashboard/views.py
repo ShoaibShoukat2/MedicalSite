@@ -270,7 +270,6 @@ def practitioner_profile(request, pk):
 def booking_success(request):
     # Fetch the appointment details
     return render(request, 'patientdashboard/booking_success.html')
-
 def view_invoice(request):
     return render(request, 'patientdashboard/view_invoice.html')
 

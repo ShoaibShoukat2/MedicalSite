@@ -628,6 +628,45 @@
             <!-- Notifications -->
             <li class="nav-item dropdown d-none d-lg-block">
                 <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+<<<<<<< HEAD
+                    <i class="fa fa-bell"style="color: white;"></i>
+                    <span class="badge badge-pill bg-danger">3</span>
+                </a>
+                <div class="dropdown-menu notifications">
+                    <div class="topnav-dropdown-header">
+                        <span>Notifications</span>
+                    </div>
+                    <div class="drop-scroll">
+                        <ul class="notification-list">
+                            <li class="notification-message">
+                                <a href="#">
+                                    <div class="media">
+                                        <span class="avatar">
+                                            <img alt="User" src="{% static 'assets/img/user.jpg' %}" class="img-fluid">
+                                        </span>
+                                        <div class="media-body">
+                                            <p class="noti-details">
+                                                <span class="noti-title">Upcoming</span> Appointment
+                                            </p>
+                                            <p class="noti-time">
+                                                <span class="notification-time">Tomorrow at 10 AM.</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="topnav-dropdown-footer">
+                        <a href="#">View all Notifications</a>
+                    </div>
+                </div>
+            </li>
+    
+            <!-- Chat -->
+            <li class="nav-item" >
+                <a href="{% url 'patientdashboard:chat' %}" class="nav-link">
+=======
                     <i class="fa fa-bell" style="color: white;"></i>
                     <span class="badge badge-pill bg-danger">{{ notifications.count }}</span>
                 </a>
@@ -652,6 +691,7 @@
             <!-- Chat -->
             <li class="nav-item" >
                 <a href="{% url 'chat:chat_list' %}" class="nav-link">
+>>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
                     <i class="fa fa-comments" style="color: white;"></i>
                     <span class="badge badge-pill bg-primary">5</span>
                 </a>
@@ -670,15 +710,29 @@
                             <i class="fas fa-user-circle" style="font-size: 30px;"></i>
                         {% endif %}
                     </span>
+<<<<<<< HEAD
+
+                </a>
+                <div class="dropdown-menu">
+<<<<<<< HEAD
+                    <a class="dropdown-item" href="#">My Profile</a>
+=======
+                    <a class="dropdown-item" href="">My Profile</a>
+>>>>>>> 7518d9fe8faa6cbfdf2a9d28cf1c22a489c6f810
+=======
                 </a>
                 <div class="dropdown-menu">
                     <a class="dropdown-item" href="{% url 'patientdashboard:profile' %}">My Profile</a>
+>>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
                     <a class="dropdown-item" href="#">Settings</a>
                     <a class="dropdown-item" href="{% url 'frontend:logout' %}">Logout</a>
                 </div>
             </li>
             
+<<<<<<< HEAD
+=======
             
+>>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
         </ul>
     </div>
     
@@ -1014,6 +1068,10 @@
     });
     </script>
     <script></script>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
     <!-- jQuery (required for Bootstrap) -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -1029,6 +1087,11 @@
 <!-- Bootstrap JS -->
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
+<<<<<<< HEAD
+=======
+>>>>>>> 7518d9fe8faa6cbfdf2a9d28cf1c22a489c6f810
+=======
+>>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
      <script src="{% static 'assets3/js/jquery.min.js' %}"></script>
      <script src="{% static 'assets3/js/popper.js' %}"></script>
      <script src="{% static 'assets3/js/bootstrap.min.js' %}"></script>

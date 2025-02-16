@@ -251,8 +251,6 @@ def mypatient(request):
 
 
 
-
-
 def CompleteProfile(request):
     context = {}
 
