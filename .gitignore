@@ -3,3 +3,7 @@ docs/
 *.pyc
 __pycache__/
 db.sqlite3/
+<<<<<<< HEAD
+=======
+.env
+>>>>>>> e28321a5f458a1d052894cf21e4dbd4fa12ed6a5

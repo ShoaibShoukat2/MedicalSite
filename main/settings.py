@@ -26,8 +26,10 @@ SECRET_KEY = 'django-insecure-(5u713&##9%w+=l*ugfn+e^w3hlqusrj&9m2q0g=w%_6fd&m%+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1','Aqdas30.pythonanywhere.com', 'localhost']
-
+ALLOWED_HOSTS = ['127.0.0.1','Aqdas30.pythonanywhere.com', 'localhost','5d6e-39-46-153-171.ngrok-free.app']
+CSRF_TRUSTED_ORIGINS = [
+    "https://5d6e-39-46-153-171.ngrok-free.app",  # Allow Ngrok for CSRF
+]
 
 # Application definition
 
@@ -46,12 +48,16 @@ INSTALLED_APPS = [
     'practitionerdashboard',
     'channels',  # Django Channels
     'chat',
+    'ai_chatbot',
       # Your chat app
     
 
 ]
 CORS_ALLOW_ALL_ORIGINS = True
-
+# settings.py
+# SITE_URL = 'https://5d6e-39-46-153-171.ngrok-free.app' 
+#  # Replace with your actual domain
+SITE_URL = 'http://127.0.0.1:8000' 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',  # Add this line
 
@@ -64,8 +70,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000']
-CORS_ALLOWED_ORIGINS = ['http://127.0.0.1:8000']
 
 
 ROOT_URLCONF = 'main.urls'
@@ -152,6 +156,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
@@ -163,6 +168,7 @@ DEFAULT_UNKNOWN_PERSON_IMAGE_URL="https://upload.wikimedia.org/wikipedia/commons
 
 
 AUTH_USER_MODEL = 'user_account.User'
+
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

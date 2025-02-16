@@ -33,10 +33,6 @@
                     <p class="mb-1"><i class="fa fa-phone-alt"></i> <strong>Phone:</strong> {{ patient.mobile_phone }}</p>
                     <p class="mb-1"><i class="fa fa-calendar-alt"></i> <strong>Age:</strong> {{ patient.date_of_birth|date:"Y" }}</p>
                     <p class="mb-1"><i class="fa fa-venus-mars"></i> <strong>Gender:</strong> {{ patient.get_gender_display }}</p>
-                    <hr class="my-2">
-                    
-<<<<<<< HEAD
-<<<<<<< HEAD
                     <!-- Video Call Button -->
                     <a href="https://zoom.us/j/1234567890" class="btn btn-primary btn-sm w-100 mt-2" target="_blank">
                         <i class="fa fa-video-camera"></i> Start Video Call
@@ -45,7 +41,6 @@
                     <hr class="my-2">
                     
                     <!-- Appointment Slot Info -->
-=======
                     <!-- Video call button -->
                    <!-- Video Call Button -->
 <!-- Video Call Button -->
@@ -59,35 +54,28 @@
                     <hr class="my-2">
                     
                     <!-- Display the appointment slot information -->
->>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
                     <h6 class="mt-3 mb-2 text-primary"><i class="fa fa-clock"></i> Appointment Slot</h6>
                     {% for appointment in patient.appointments.all %}
                         <div class="mb-2">
                             <span class="badge bg-success text-white p-2">
-<<<<<<< HEAD
                                 <strong>Time:</strong> {{ appointment.slot.start_time|date:"h:i A" }} - {{ appointment.slot.end_time|date:"h:i A" }}
                             </span>
-=======
                                 <strong>Time:</strong> {{ appointment.slot.start_time|date:"h:i A" }} - {{ appointment.slot.end_time|date:"h:i A" }}                            </span>
->>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
                         </div>
                         <p class="mb-1"><strong>Day:</strong> {{ appointment.slot.get_day_of_week_display }}</p>
                     {% empty %}
                         <p class="text-muted">No appointments found for this patient.</p>
                     {% endfor %}
-<<<<<<< HEAD
                     
                     <hr class="my-2">
 
                     <!-- Prescription Section -->
                     <h6 class="mt-3 mb-2 text-primary"><i class="fa fa-file-medical"></i> Prescription</h6>
 
-=======
                                       
                     <hr class="my-2">
                     <!-- Prescription Section -->
                     <h6 class="mt-3 mb-2 text-primary"><i class="fa fa-file-medical"></i> Prescription</h6>
->>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
                     <!-- Display existing prescriptions -->
                     {% if patient.prescriptions.all %}
                         <ul class="list-group mb-2">
@@ -99,22 +87,10 @@
                         </ul>
                         <!-- <p class="text-muted">No prescriptions assigned yet.</p> -->
                     {% endif %}
-<<<<<<< HEAD
-
-
-                    
-
-=======
-                    
->>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
                     <!-- Prescription Button (Triggers Modal) -->
                     <button class="btn btn-success btn-sm w-100 mt-2" data-bs-toggle="modal" data-bs-target="#prescriptionModal{{ patient.id }}">
                         <i class="fa fa-plus"></i> Add Prescription
                     </button>
-<<<<<<< HEAD
-
-=======
->>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
                   <!-- Bootstrap Modal for Prescription -->
                     <div class="modal fade" id="prescriptionModal{{ patient.id }}" tabindex="-1" aria-labelledby="prescriptionModalLabel" aria-hidden="true">
                         <div class="modal-dialog">
@@ -145,9 +121,6 @@
                         </div>
                     </div>
                     <!-- End of Modal -->
-<<<<<<< HEAD
-
-=======
                     <!-- Video call button -->
                     <a href="https://zoom.us/j/1234567890" class="btn btn-primary btn-block mt-2" target="_blank">
                         <i class="fa fa-video-camera"></i> Start Video Call
@@ -169,9 +142,6 @@
                     {% empty %}
                         <p class="text-muted">No appointments found for this patient.</p>
                     {% endfor %}
->>>>>>> 0dbe4bce49ba7744fc9a7700b331e454397347d0
-=======
->>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
                 </div>
             </div>
         </div>
@@ -182,23 +152,18 @@
         {% endfor %}
     </div>
 </div>
-<<<<<<< HEAD
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 
-
-
 <!-- Include SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-=======
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Include SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
->>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         {% for message in messages %}
@@ -213,14 +178,8 @@
 </script>
 
 
-<<<<<<< HEAD
-
 
 
 
 {% endblock content %}
 
-
-=======
-{% endblock content %}
->>>>>>> 17ea03e8f340c1f1666283f9290a53227939a329

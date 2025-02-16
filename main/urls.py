@@ -28,6 +28,7 @@ urlpatterns = [
     
     path('practitioner-dashboard/', include('practitionerdashboard.urls', namespace='practitionerdashboard')),
     path('chat/', include('chat.urls')),
+    path('ai-chat/', include('ai_chatbot.urls')),
 
 
     

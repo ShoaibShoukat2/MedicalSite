@@ -384,3 +384,12 @@ def add_prescription(request, patient_id):
 
 
 
+
+
+def Cancel_Complete(request):
+    
+    return render(request,'practitionerdashboard/Cancel_Completeion.html')
+
+
+
+

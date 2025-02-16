@@ -30,6 +30,11 @@ urlpatterns = [
     
     path('patient/<int:appointment_id>/', views.get_patient_details, name='get_patient_details'),
     
+    path('cancellation-completion/', views.Cancel_Complete, name="cancellation_completion"),
+
+        
+    
+    
 ]
 
 
