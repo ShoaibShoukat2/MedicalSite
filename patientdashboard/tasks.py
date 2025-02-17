@@ -23,7 +23,7 @@ def send_reminder_email(appointment_id):
         Thank you!
         """
         
-        send_mail(subject, message, 'admin@example.com', [appointment.patient.email])
+        send_mail(subject, message, 'michdmg@outlook.fr', [appointment.patient.email])
         return f"Reminder sent to {appointment.patient.email}"
     except Appointment.DoesNotExist:
         return f"Appointment ID {appointment_id} not found"

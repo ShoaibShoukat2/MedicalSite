@@ -4,11 +4,20 @@ import json
 from django.db.models import Q
 from patientdashboard.models import Appointment, Notification
 from user_account.models import Practitioner ,Patient # Assuming Practitioner is the model for doctors/practitioners
-
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .forms import PatientProfileForm, PatientPasswordForm
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.hashers import make_password, check_password
 from django.shortcuts import render, get_object_or_404, redirect
+from django.core.paginator import Paginator
+
+
 import sys
 
-from django.core.paginator import Paginator
 def patient_dashboard(request):
     print("📌 patient_dashboard view is being executed!")  # Debugging print
     sys.stdout.flush()  # Force output to be written
@@ -156,7 +165,7 @@ def book_appointment(request):
                   {'error': 'Invalid request method.'})
 
 
-from user_account.models import Practitioner
+
 
 def booking(request):
     context = {
@@ -275,14 +284,7 @@ def view_invoice(request):
 
 
 
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from .forms import PatientProfileForm, PatientPasswordForm
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from django.contrib.auth import update_session_auth_hash
-from django.contrib.auth.hashers import make_password, check_password
+
 def patient_profile(request):
     # Get patient_id from session
     patient_id = request.session.get('patient_id')
@@ -310,3 +312,6 @@ def patient_profile(request):
     }
     
     return render(request, 'patientdashboard/profile.html', context)
+
+
+
