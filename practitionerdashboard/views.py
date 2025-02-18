@@ -18,7 +18,13 @@ from django.http import JsonResponse
 from datetime import date
 from practitionerdashboard.models import Prescription
 from django.contrib import messages
+from patientdashboard.models import Review, Reply
+from django.contrib.contenttypes.models import ContentType
 # Create your views here.
+
+
+
+
 
 def dashboard_view(request):
     
@@ -179,8 +185,7 @@ def appointment(request):
 def chat(request):
     return render(request, 'practitionerdashboard/chat.html')
 
-def reviews(request):
-    return render(request, 'practitionerdashboard/reviews.html')
+
 
 def schedule_timming(request):
     # Check if practitioner is logged in
@@ -389,6 +394,65 @@ def add_prescription(request, patient_id):
 def Cancel_Complete(request):
     
     return render(request,'practitionerdashboard/Cancel_Completeion.html')
+
+
+
+
+
+
+
+
+def practitioner_reviews(request):
+    # Get practitioner_id from session
+    practitioner_id = request.session.get('practitioner_id')
+
+    if not practitioner_id:
+        return JsonResponse({"error": "Practitioner not found in session"}, status=400)
+
+    # Fetch reviews related to the current practitioner
+    reviews = Review.objects.filter(practitioner=practitioner_id)
+
+    # Handle reply functionality
+    if request.method == 'POST':
+        review_id = request.POST.get('review_id')
+        message = request.POST.get('message')
+
+        print("Received POST data:", request.POST)  # Debugging
+
+        if not review_id or not message:
+            return JsonResponse({"error": "Missing review_id or message"}, status=400)
+
+        try:
+            # Get the review by its ID
+            review = Review.objects.get(id=review_id)
+
+            # If Reply model uses GenericForeignKey, you need ContentType
+            content_type = ContentType.objects.get_for_model(Review)
+
+            # Create a new reply object and save it
+            reply = Reply.objects.create(
+                review=review,
+                content_type=content_type,
+                object_id=practitioner_id,  # Assuming practitioner is the object for reply
+                message=message
+            )
+
+            # Return success response
+            return JsonResponse({"message": "Reply saved successfully"}, status=200)
+
+        except Review.DoesNotExist:
+            return JsonResponse({"error": "Review not found"}, status=404)
+
+        except Exception as e:
+            # Log the error if necessary
+            print("Error:", e)
+            return JsonResponse({"error": str(e)}, status=500)
+
+    # Return rendered template with reviews
+    return render(request, 'practitionerdashboard/reviews.html', {'reviews': reviews})
+
+
+
 
 
 

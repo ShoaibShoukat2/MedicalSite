@@ -14,7 +14,7 @@ urlpatterns = [
     path('remove-slot/<int:slot_id>/', views.remove_slot, name='remove_slot'),  # Add this line
     path("prescription/add/<int:patient_id>/", views.add_prescription, name="add_prescription"),
 
-    path('reviews/', views.reviews, name='reviews'),
+    path('reviews/', views.practitioner_reviews, name='reviews'),
     path('chat/', views.chat, name='chat'),
     path('start-video-call/<int:patient_id>/', views.start_video_call, name='start_video_call'),
 

@@ -1,5 +1,6 @@
 from django import template
 from user_account.models import Practitioner
+from patientdashboard.models import Review
 
 register = template.Library()
 
@@ -67,3 +68,23 @@ def get_patient_name(request):
 
 
 
+@register.filter
+def to(value):
+    return range(value)
+
+
+
+
+
+@register.simple_tag
+def review_count_from_session(request):
+    # Get practitioner_id from session
+    practitioner_id = request.session.get('practitioner_id')
+
+    if not practitioner_id:
+        return 0  # Or handle as needed if the practitioner_id is not found in the session
+
+    # Query the reviews for the practitioner and get the count
+    total_reviews = Review.objects.filter(practitioner_id=practitioner_id).count()
+    
+    return total_reviews

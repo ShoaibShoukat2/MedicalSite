@@ -594,11 +594,13 @@
                             <a href="{% url 'practitionerdashboard:reviews' %}">
                                 <i class="fa fa-comments" ></i>
                                 <span >Reviews</span>
-                                <span class="badge badge-pill bg-primary float-right">5</span>
+                                <span class="badge badge-pill bg-primary float-right">{% review_count_from_session request %}</span>
                             </a>
                         </li>
                     </ul>
                 </div>
+
+
                 
             </div>
         </div>
