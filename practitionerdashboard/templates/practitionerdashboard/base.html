@@ -508,6 +508,9 @@
             </div>
         </li>
 
+
+
+
         <!-- Chat Button -->
         <li class="nav-item">
             <a href="{% url 'chat:chat_list' %}" class="nav-link">
@@ -524,11 +527,14 @@
                 </span>
             </a>
             <div class="dropdown-menu">
-                <a class="dropdown-item" href="#">My Profile</a>
+                <a class="dropdown-item" href="{% url 'practitioner_dashboard:practitioner_profile' %}">My Profile</a>
                 <a class="dropdown-item" href="#">Settings</a>
                 <a class="dropdown-item" href="{% url 'frontend:logout' %}">Logout</a>
             </div>
         </li>
+
+
+
     </ul>
 </div>
 
@@ -575,25 +581,26 @@
                                 <i class="fa fa-calendar" ></i>
                                 <span >Appointments</span>
 
-
                             </a>
                         </li>
-                        <li class="{% if request.path == '/practitioner-dashboard/schedule_timming/' %}active{% endif %}">
-                            <a href="{% url 'practitionerdashboard:schedule_timming' %}">
-                                <i class="fa fa-calendar-check-o" ></i>
-                                <span >Schedule Timming</span>
+                        <li class="{% if request.path == '/practitioner-dashboard/cancellation-completion/' %}active{% endif %}">
+                            <a href="{% url 'practitionerdashboard:cancellation_completion' %}">
+                                <i class="fa fa-times-circle"></i>
+                                <span>Cancellation & Completion</span>
                             </a>
                         </li>
+                        
                         <li class="{% if request.path == '/practitioner-dashboard/reviews/' %}active{% endif %}">
                             <a href="{% url 'practitionerdashboard:reviews' %}">
                                 <i class="fa fa-comments" ></i>
                                 <span >Reviews</span>
-                                <span class="badge badge-pill bg-primary float-right">5</span>
+                                <span class="badge badge-pill bg-primary float-right">{% review_count_from_session request %}</span>
                             </a>
                         </li>
                     </ul>
                 </div>
-                
+
+  
             </div>
         </div>
 
@@ -738,6 +745,8 @@
             updateSidebarHeight();
         });
     </script>
+<<<<<<< HEAD
+=======
     <script>
         function startVideoCall(patientId) {
             fetch(`/practitioner-dashboard/start-video-call/${patientId}/`, {

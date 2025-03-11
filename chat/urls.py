@@ -6,4 +6,4 @@ app_name = 'chat'
 urlpatterns = [
      path('', views.chat_list, name='chat_list'),
     path('room/<int:room_id>/', views.chat_room, name='chat_room'),
-    path('room/<int:room_id>/toggle-ai/', views.toggle_ai, name='toggle_ai'),]
+]
