@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-(5u713&##9%w+=l*ugfn+e^w3hlqusrj&9m2q0g=w%_6fd&m%+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1','Aqdas30.pythonanywhere.com', 'localhost']
+ALLOWED_HOSTS = ['127.0.0.1','aqdas14.pythonanywhere.com', 'localhost']
 
 
 # Application definition
@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'practitionerdashboard',
     'channels',  # Django Channels
     'chat',
+    
       # Your chat app
     
 
@@ -178,6 +179,16 @@ DEFAULT_FROM_EMAIL = 'shoaibahmadbhatti6252@gmail.com'
 
 
 
+import os
+from dotenv import load_dotenv
+
+load_dotenv()  # Load variables from .env file
+
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 
 
 
+
+# API Keys
+DID_API_KEY = "YXFkYXMxNDIwMDNAZ21haWwuY29t:QHdOYwLZw7ZtEO75ubKsJ"
+ELEVENLABS_API_KEY ="sk_3a7b969a1dd74623c7d95f59d3d2110a232c9ccc8f1ba2fc"
