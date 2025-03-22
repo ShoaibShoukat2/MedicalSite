@@ -1,0 +1,102 @@
+{% extends 'patientdashboard/patient_base.html' %}
+{% load static %}
+{% block extra_css %}
+
+.nav-item button {
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+{% endblock %}
+{% block content %}
+<div class="container my-5">
+    <div class="overflow-auto">
+        <ul class="nav nav-tabs mb-3 d-flex flex-nowrap" id="appointments-tabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="appointments-tab" data-bs-toggle="tab" data-bs-target="#appointments" type="button" role="tab" aria-controls="appointments" aria-selected="true">
+                    Appointments
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="prescriptions-tab" data-bs-toggle="tab" data-bs-target="#prescriptions" type="button" role="tab" aria-controls="prescriptions" aria-selected="false">
+                    Prescriptions
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="records-tab" data-bs-toggle="tab" data-bs-target="#records" type="button" role="tab" aria-controls="records" aria-selected="false">
+                    Medical Records
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="billing-tab" data-bs-toggle="tab" data-bs-target="#billing" type="button" role="tab" aria-controls="billing" aria-selected="false">
+                    Billing
+                </button>
+            </li>
+        </ul>
+    </div>
+
+    <div class="tab-content" id="appointments-tabs-content">
+        <div class="tab-pane fade show active" id="appointments" role="tabpanel" aria-labelledby="appointments-tab">
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered align-middle text-center">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="align-middle" style="background-color: rgb(132, 189, 218); color: white;">Doctor</th>
+                            <th class="align-middle" style="background-color: rgb(132, 189, 218); color: white;">Appt Date</th>
+                            <th class="align-middle" style="background-color: rgb(132, 189, 218); color: white;">Booking Date</th>
+                            <th class="align-middle" style="background-color: rgb(132, 189, 218); color: white;">Amount</th>
+                            <th class="align-middle" style="background-color: rgb(132, 189, 218); color: white;">Status</th>
+                            <th class="align-middle" style="background-color: rgb(132, 189, 218); color: white;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for appointment in appointments %}
+                        <tr>
+                            <td class="text-start d-flex align-items-center">
+                                <img src="{% static 'img/doctor-thumb-01.jpg' %}" alt="Doctor" class="rounded-circle me-2" style="width: 50px; height: 50px;">
+                                <div>
+                                    <strong>Dr. {{ appointment.practitioner.first_name }} {{ appointment.practitioner.user.last_name }}</strong><br>
+                                    <small>{{ appointment.practitioner.specialization }}</small>
+                                </div>
+                            </td>
+                            <td>{{ appointment.slot.start_time|date:"d M Y" }}<br><small>{{ appointment.slot.start_time|time:"h:i A" }}</small></td>
+                            <td>{{ appointment.created_at|date:"d M Y" }}</td>
+                            <td>$160</td>  <!-- Update with actual pricing if available -->
+                            <td>
+                                {% if appointment.status == "Accepted" %}
+                                    <span class="badge bg-success">Confirmed</span>
+                                {% elif appointment.status == "Pending" %}
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                {% elif appointment.status == "Cancelled" %}
+                                    <span class="badge bg-danger">Cancelled</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="d-flex justify-content-center">
+                                    <button class="btn btn-sm btn-outline-primary me-2">Print</button>
+                                    <a href="{{ appointment.video_call_link }}" target="_blank" class="btn btn-sm btn-outline-info">Join Call</a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center">No Appointments Found</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    
+                </table>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="prescriptions" role="tabpanel" aria-labelledby="prescriptions-tab">
+            <p>Prescriptions content goes here...</p>
+        </div>
+        <div class="tab-pane fade" id="records" role="tabpanel" aria-labelledby="records-tab">
+            <p>Medical records content goes here...</p>
+        </div>
+        <div class="tab-pane fade" id="billing" role="tabpanel" aria-labelledby="billing-tab">
+            <p>Billing content goes here...</p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

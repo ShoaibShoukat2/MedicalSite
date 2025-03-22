@@ -1,0 +1,123 @@
+{% extends "practitionerdashboard/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Schedule Timings</h4>
+
+            <!-- Add Slot Form -->
+            <div class="mb-4">
+                <h5>Add New Slot</h5>
+                <form id="addSlotForm">
+                    {% csrf_token %}
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="dayOfWeek" class="form-label">Day</label>
+                            <select id="dayOfWeek" class="form-select" required>
+                                <option value="sunday">Sunday</option>
+                                <option value="monday">Monday</option>
+                                <option value="tuesday">Tuesday</option>
+                                <option value="wednesday">Wednesday</option>
+                                <option value="thursday">Thursday</option>
+                                <option value="friday">Friday</option>
+                                <option value="saturday">Saturday</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="startTime" class="form-label">Start Time</label>
+                            <input type="time" id="startTime" class="form-control" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="endTime" class="form-label">End Time</label>
+                            <input type="time" id="endTime" class="form-control" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Slot</button>
+                </form>
+            </div>
+
+            <!-- Slot List -->
+            <div class="mt-4">
+                <h5>Existing Slots</h5>
+                <div id="slotsContainer">
+                    {% for slot in slots %}
+                    <div class="d-flex justify-content-between align-items-center border p-2 mb-2">
+                        <div>
+                            <strong>{{ slot.get_day_of_week_display }}:</strong> 
+                            {{ slot.start_time }} - {{ slot.end_time }}
+                        </div>
+                        <button class="btn btn-danger btn-sm remove-slot" data-id="{{ slot.id }}">Remove</button>
+                    </div>
+                    {% empty %}
+                    <p class="text-muted">No slots available. Add a new slot above.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for Dynamic Slot Management -->
+<script>
+    // Add Slot
+    document.getElementById('addSlotForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+    
+        const dayOfWeek = document.getElementById('dayOfWeek').value;
+        const startTime = document.getElementById('startTime').value;
+        const endTime = document.getElementById('endTime').value;
+    
+        fetch("{% url 'practitionerdashboard:add_slot' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}',
+            },
+            body: JSON.stringify({
+                day_of_week: dayOfWeek,
+                start_time: startTime,
+                end_time: endTime,
+            }),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.success) {
+                    alert('Slot added successfully!');
+                    location.reload();
+                } else {
+                    alert(data.error || 'Failed to add slot.');
+                }
+            })
+            .catch((error) => console.error('Error:', error));
+    });
+    
+
+    // Remove Slot
+    document.querySelectorAll('.remove-slot').forEach(button => {
+        button.addEventListener('click', function() {
+            const slotId = this.dataset.id;
+    
+            fetch(`/practitioner-dashboard/remove-slot/${slotId}/`, {  // Ensure the prefix matches 'practitioner-dashboard'
+            method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Slot removed successfully!');
+                    location.reload();
+                } else {
+                    alert(data.error || 'Failed to remove slot.');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    });
+    
+</script>
+{% endblock %}

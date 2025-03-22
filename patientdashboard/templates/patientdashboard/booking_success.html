@@ -1,0 +1,72 @@
+{% extends 'patientdashboard/patient_base.html' %}
+{% load static %}
+
+{% block title %}Appointment Booked{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Success Page Styling */
+    .container {
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .icon-circle {
+        background-color: #28a745;
+        color: white;
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 40px; /* Adjust size of the tick */
+        margin: 0 auto; /* Ensures it stays in the center horizontally */
+    }
+
+    h3 {
+        color: #333333;
+    }
+
+    p {
+        color: #555555;
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+    }
+
+    .btn-success:hover {
+        background-color: #218838;
+    }
+</style>
+{% endblock extra_css %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+            <!-- Success Icon -->
+            <div class="icon-circle mb-4">
+                <i class="bi bi-check"></i>
+            </div>
+
+            <!-- Success Message -->
+            <h3 class="font-weight-bold mb-3">Appointment booked Successfully!</h3>
+            <p class="mb-4">
+                Appointment booked with <strong>Dr. Darren Elder</strong><br>
+                on <strong>12 Nov 2019 5:00PM to 6:00PM</strong>
+            </p>
+
+            <!-- View Invoice Button -->
+            <a href="{% url 'patientdashboard:view_invoice' %}" class="btn btn-success btn-lg">View Invoice</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
