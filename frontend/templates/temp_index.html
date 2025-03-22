@@ -1,0 +1,91 @@
+{% extends 'temp.html' %}
+{% load static %}
+{% block temp_content %}
+        <!-- Main content goes here -->
+       
+        <section class="hero-section">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>Find a Practitioner & Book Appointment</h1>
+                    <p>Our teaming has been focused on building a high-qualities medicals service by Reeducaive.</p>
+                    
+                    <!-- Search Container -->
+                    <div class="search-container">
+                        <input type="text" class="search-input" placeholder="Name of your practitioner" />
+                        <button class="search-button">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        
+
+{% endblock temp_content %}
+
+
+{% block temp_index %}
+<!-- Main content goes here -->
+<div class="container-fluid" style="background-color: #f4f9fd; padding-top: 60px; width: 100%;">
+    <h2 class="text-center mb-4 font-weight-bold text-primary" style="animation: fadeInUp 1.5s ease;">
+        Our Premium Services
+    </h2>
+    <div class="row justify-content-center">
+        <!-- Service Cards with Hover Effects -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-lg border-light rounded w-100 h-100 d-flex flex-column hover-animate">
+                <div class="card-body text-center flex-grow-1 d-flex flex-column align-items-center p-5">
+                    <i class="fas fa-stethoscope fa-4x mb-3" style="color:rgb(14, 82, 116);"></i>
+                    <h5 class="card-title font-weight-bold">Health Care</h5>
+                    <p class="card-text text-muted">World-class medical services for a healthy, active life.</p>
+                    <a href="#" class="btn btn-lg mt-3" style="color: rgb(14, 82, 116);">
+                        Learn More <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-lg border-light rounded w-100 h-100 d-flex flex-column hover-animate">
+                <div class="card-body text-center flex-grow-1 d-flex flex-column align-items-center p-5">
+                    <i class="fas fa-running fa-4x mb-3" style="color:rgb(14, 82, 116);"></i>
+                    <h5 class="card-title font-weight-bold">Physical Therapy</h5>
+                    <p class="card-text text-muted">Restoring strength and mobility through personalized care.</p>
+                    <a href="#" class="btn btn-lg mt-3" style="color: rgb(14, 82, 116);">
+                        Learn More <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container my-5">
+        <h2 class="text-center mb-4 font-weight-bold text-primary" style="animation: fadeInUp 2s ease;">Meet Our Renowned Doctors</h2>
+        <div class="row">
+            {% for practitioner in practitioners %}
+                <div class="col-md-4 mb-4 d-flex">
+                    <div class="card shadow-lg border-light rounded w-100 h-100 hover-animate">
+                        <div class="card-body text-center d-flex flex-column justify-content-between p-4">
+                            <div class="mx-auto mb-3" style="width: 160px; height: 160px; overflow: hidden; border-radius: 50%; border: 5px solid #007bff;">
+                                {% if practitioner.photo %}
+                                    <img src="{{ practitioner.photo.url }}" class="img-fluid" alt="{{ practitioner.first_name }} {{ practitioner.last_name }}" style="object-fit: cover;">
+                                {% else %}
+                                    <img src="/static/images/default_profile.png" class="img-fluid" alt="Default Profile" style="object-fit: cover;">
+                                {% endif %}
+                            </div>
+                            <h5 class="card-title font-weight-bold">{{ practitioner.first_name }} {{ practitioner.last_name }}</h5>
+                            <p class="card-text text-muted">{{ practitioner.get_specialty_display }}</p>
+                            <h6 class="text-primary mb-3">{{ practitioner.description|default:"No description available" }}</h6>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    
+</div>
+
+{% endblock temp_index %}

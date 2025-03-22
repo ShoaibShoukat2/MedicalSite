@@ -1,0 +1,106 @@
+{% extends 'patientdashboard/patient_base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    .success-container {
+        max-width: 600px;
+        margin: 50px auto;
+        text-align: center;
+        padding: 30px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    .success-icon {
+        font-size: 60px;
+        color: #28a745;
+        margin-bottom: 20px;
+    }
+    
+    .success-title {
+        font-size: 24px;
+        margin-bottom: 20px;
+        color: #28a745;
+    }
+    
+    .appointment-details {
+        background-color: white;
+        padding: 15px;
+        border-radius: 5px;
+        margin: 25px 0;
+        text-align: left;
+    }
+    
+    .detail-item {
+        padding: 8px 0;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        justify-content: space-between;
+    }
+    
+    .detail-item:last-child {
+        border-bottom: none;
+    }
+    
+    .btn-dashboard {
+        background-color: #4682B4;
+        color: white;
+        padding: 12px 30px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        margin-top: 20px;
+        text-decoration: none;
+        display: inline-block;
+        transition: background-color 0.3s;
+    }
+    
+    .btn-dashboard:hover {
+        background-color: #3a6d96;
+        color: white;
+        text-decoration: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="success-container">
+    <div class="success-icon">
+        <i class="fas fa-check-circle"></i>
+    </div>
+    
+    <h2 class="success-title">Payment Successful!</h2>
+    
+    <p>Your appointment has been booked and confirmed. Thank you for your payment.</p>
+    
+    <div class="appointment-details">
+        <div class="detail-item">
+            <span>Practitioner:</span>
+            <span>{{ appointment.practitioner.first_name }} {{ appointment.practitioner.last_name }}</span>
+        </div>
+        
+        <div class="detail-item">
+            <span>Date:</span>
+            <span>{{ appointment.slot.start_time|date:"F d, Y" }}</span>
+        </div>
+        
+        <div class="detail-item">
+            <span>Time:</span>
+            <span>{{ appointment.slot.start_time|date:"g:i A" }} - {{ appointment.slot.end_time|date:"g:i A" }}</span>
+        </div>
+        
+        <div class="detail-item">
+            <span>Amount Paid:</span>
+            <span>${{ appointment.practitioner.price }}</span>
+        </div>
+    </div>
+    
+    <p>An email confirmation has been sent to your registered email address.</p>
+    
+    <a href="{% url 'patientdashboard:dashboard' %}" class="btn-dashboard">
+        Go to Dashboard
+    </a>
+</div>
+{% endblock %}

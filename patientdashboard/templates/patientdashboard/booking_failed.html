@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Failed</title>
+</head>
+<body>
+
+    <div class="booking-failed">
+        <h2>Booking Failed</h2>
+        <p class="error-message">{{ error }}</p>
+
+        <a href="{% url 'patientdashboard:appointments_patients' %}">Go Back to Dashboard</a>
+        <a href="{% url 'frontend:patient_login' %}">Login</a> <!-- In case they need to log in again -->
+    </div>
+
+</body>
+</html>

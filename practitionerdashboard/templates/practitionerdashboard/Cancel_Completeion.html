@@ -1,0 +1,219 @@
+{% extends "practitionerdashboard/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col">
+            <h2 class="h2">Appointment History</h2>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <ul class="nav nav-tabs mb-4" id="appointmentTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="completed-tab" data-mdb-toggle="tab" data-mdb-target="#completed" type="button" role="tab" aria-controls="completed" aria-selected="true">
+                Completed Appointments
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="cancelled-tab" data-mdb-toggle="tab" data-mdb-target="#cancelled" type="button" role="tab" aria-controls="cancelled" aria-selected="false">
+                Cancelled Appointments
+            </button>
+        </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content" id="appointmentTabContent">
+        <!-- Completed Appointments Tab -->
+        <div class="tab-pane fade show active" id="completed" role="tabpanel" aria-labelledby="completed-tab">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th>Patient Name</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Service</th>
+                                    <th>Duration</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>John Smith</td>
+                                    <td>Feb 13, 2025</td>
+                                    <td>10:00 AM</td>
+                                    <td>General Checkup</td>
+                                    <td>30 mins</td>
+                                    <td>
+                                        <span class="badge badge-success rounded-pill">Completed</span>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-link btn-sm" data-mdb-toggle="modal" data-mdb-target="#viewDetailsModal1">
+                                            View Details
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Sarah Johnson</td>
+                                    <td>Feb 12, 2025</td>
+                                    <td>2:30 PM</td>
+                                    <td>Dental Cleaning</td>
+                                    <td>45 mins</td>
+                                    <td>
+                                        <span class="badge badge-success rounded-pill">Completed</span>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-link btn-sm" data-mdb-toggle="modal" data-mdb-target="#viewDetailsModal2">
+                                            View Details
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Michael Brown</td>
+                                    <td>Feb 11, 2025</td>
+                                    <td>11:15 AM</td>
+                                    <td>Consultation</td>
+                                    <td>60 mins</td>
+                                    <td>
+                                        <span class="badge badge-success rounded-pill">Completed</span>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-link btn-sm" data-mdb-toggle="modal" data-mdb-target="#viewDetailsModal3">
+                                            View Details
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cancelled Appointments Tab -->
+        <div class="tab-pane fade" id="cancelled" role="tabpanel" aria-labelledby="cancelled-tab">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th>Patient Name</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Service</th>
+                                    <th>Cancellation Reason</th>
+                                    <th>Cancelled By</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Emma Wilson</td>
+                                    <td>Feb 13, 2025</td>
+                                    <td>3:00 PM</td>
+                                    <td>Dental Filling</td>
+                                    <td>Patient Schedule Conflict</td>
+                                    <td>Patient</td>
+                                    <td>
+                                        <button class="btn btn-link btn-sm" data-mdb-toggle="modal" data-mdb-target="#viewDetailsModal4">
+                                            View Details
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>David Lee</td>
+                                    <td>Feb 12, 2025</td>
+                                    <td>9:00 AM</td>
+                                    <td>Root Canal</td>
+                                    <td>Emergency Reschedule</td>
+                                    <td>Doctor</td>
+                                    <td>
+                                        <button class="btn btn-link btn-sm" data-mdb-toggle="modal" data-mdb-target="#viewDetailsModal5">
+                                            View Details
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sample Modal for Completed Appointment -->
+    <div class="modal fade" id="viewDetailsModal1" tabindex="-1" aria-labelledby="viewDetailsModalLabel1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="viewDetailsModalLabel1">Appointment Details</h5>
+                    <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <h6>Patient Information</h6>
+                        <p>Name: John Smith</p>
+                        <p>Email: john.smith@email.com</p>
+                        <p>Phone: (555) 123-4567</p>
+                    </div>
+                    <div class="mb-3">
+                        <h6>Appointment Information</h6>
+                        <p>Date: Feb 13, 2025</p>
+                        <p>Time: 10:00 AM</p>
+                        <p>Service: General Checkup</p>
+                        <p>Duration: 30 mins</p>
+                        <p>Status: Completed</p>
+                    </div>
+                    <div class="mb-3">
+                        <h6>Notes</h6>
+                        <p>Regular checkup completed. Patient in good health. Follow-up in 6 months recommended.</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sample Modal for Cancelled Appointment -->
+    <div class="modal fade" id="viewDetailsModal4" tabindex="-1" aria-labelledby="viewDetailsModalLabel4" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="viewDetailsModalLabel4">Appointment Details</h5>
+                    <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <h6>Patient Information</h6>
+                        <p>Name: Emma Wilson</p>
+                        <p>Email: emma.wilson@email.com</p>
+                        <p>Phone: (555) 987-6543</p>
+                    </div>
+                    <div class="mb-3">
+                        <h6>Appointment Information</h6>
+                        <p>Date: Feb 13, 2025</p>
+                        <p>Time: 3:00 PM</p>
+                        <p>Service: Dental Filling</p>
+                        <p>Status: Cancelled</p>
+                        <p>Cancellation Reason: Patient Schedule Conflict</p>
+                        <p>Cancelled By: Patient</p>
+                        <p>Cancelled On: Feb 12, 2025 2:30 PM</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

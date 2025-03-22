@@ -1,0 +1,227 @@
+{% extends 'patientdashboard/patient_base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    .payment-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .payment-summary {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+    
+    .payment-detail {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .payment-detail:last-child {
+        border-bottom: none;
+    }
+    
+    .payment-buttons {
+        margin-top: 30px;
+        text-align: center;
+    }
+    
+    .btn-pay {
+        background-color: #4682B4;
+        color: white;
+        padding: 12px 30px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    
+    .btn-pay:hover {
+        background-color: #3a6d96;
+    }
+    
+    .btn-cancel {
+        background-color: transparent;
+        color: #dc3545;
+        border: 1px solid #dc3545;
+        padding: 12px 30px;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-left: 15px;
+        transition: background-color 0.3s;
+    }
+    
+    .btn-cancel:hover {
+        background-color: #f8d7da;
+    }
+    
+    .payment-status {
+        padding: 10px;
+        margin-top: 15px;
+        border-radius: 5px;
+        display: none;
+    }
+    
+    .payment-status.error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+    
+    .payment-status.info {
+        background-color: #d1ecf1;
+        color: #0c5460;
+        border: 1px solid #bee5eb;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="payment-container">
+        <h2 class="mb-4">Appointment Payment</h2>
+        
+        {% if messages %}
+        <div class="alert alert-danger">
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        <div class="payment-summary">
+            <h4 class="mb-3">Booking Details</h4>
+            
+            <div class="payment-detail">
+                <span>Practitioner:</span>
+                <span>{{ appointment.practitioner.first_name }} {{ appointment.practitioner.last_name }}</span>
+            </div>
+            
+            <div class="payment-detail">
+                <span>Specialty:</span>
+                <span>{{ appointment.practitioner.get_specialty_display }}</span>
+            </div>
+            
+            <div class="payment-detail">
+                <span>Date:</span>
+                <span>{{ appointment.slot.start_time|date:"F d, Y" }}</span>
+            </div>
+            
+            <div class="payment-detail">
+                <span>Time:</span>
+                <span>{{ appointment.slot.start_time|date:"g:i A" }} - {{ appointment.slot.end_time|date:"g:i A" }}</span>
+            </div>
+            
+            <div class="payment-detail">
+                <span>Duration:</span>
+                <span>{{ duration }} minutes</span>
+            </div>
+            
+            <div class="payment-detail">
+                <span><strong>Total Amount:</strong></span>
+                <span><strong>${{ appointment.practitioner.price }}</strong></span>
+            </div>
+        </div>
+        
+        <div id="payment-status" class="payment-status"></div>
+        
+        <div class="payment-buttons">
+            <button id="checkout-button" class="btn-pay">
+                <i class="fas fa-credit-card me-2"></i>Pay Now
+            </button>
+            
+            <a href="{% url 'patientdashboard:booking' %}" class="btn-cancel">
+                Cancel
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM fully loaded');
+    
+    // Get Stripe publishable key
+    const stripeKey = '{{ stripe_publishable_key }}';
+    const sessionId = '{{ checkout_session_id }}';
+    
+    console.log('Stripe key:', stripeKey);
+    console.log('Session ID:', sessionId);
+    
+    // Initialize Stripe
+    const stripe = Stripe(stripeKey);
+    
+    // Get checkout button and status element
+    const checkoutButton = document.getElementById('checkout-button');
+    const paymentStatus = document.getElementById('payment-status');
+    
+    // Show a status message
+    function showStatus(message, type) {
+        paymentStatus.textContent = message;
+        paymentStatus.className = 'payment-status ' + type;
+        paymentStatus.style.display = 'block';
+    }
+    
+    // Hide status message
+    function hideStatus() {
+        paymentStatus.style.display = 'none';
+    }
+    
+    // Make sure we have checkout button
+    if (checkoutButton) {
+        console.log('Checkout button found');
+        
+        // Add click event listener to the checkout button
+        checkoutButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('Checkout button clicked');
+            
+            // Disable the button to prevent multiple clicks
+            checkoutButton.disabled = true;
+            checkoutButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+            
+            // Show processing message
+            showStatus('Processing your payment...', 'info');
+            
+            // Redirect to Stripe Checkout
+            console.log('Redirecting to Stripe checkout with session ID:', sessionId);
+            
+            stripe.redirectToCheckout({
+                sessionId: sessionId
+            }).then(function(result) {
+                // If redirectToCheckout fails due to a browser or network error
+                if (result.error) {
+                    console.error('Stripe redirect error:', result.error.message);
+                    showStatus('Payment error: ' + result.error.message, 'error');
+                    
+                    // Re-enable the button
+                    checkoutButton.disabled = false;
+                    checkoutButton.innerHTML = '<i class="fas fa-credit-card me-2"></i>Pay Now';
+                }
+            }).catch(function(error) {
+                console.error('Unexpected error:', error);
+                showStatus('An unexpected error occurred: ' + error, 'error');
+                
+                // Re-enable the button
+                checkoutButton.disabled = false;
+                checkoutButton.innerHTML = '<i class="fas fa-credit-card me-2"></i>Pay Now';
+            });
+        });
+    } else {
+        console.error('Checkout button not found');
+        showStatus('Unable to initialize payment form. Please refresh the page or contact support.', 'error');
+    }
+});
+</script>
+{% endblock %}

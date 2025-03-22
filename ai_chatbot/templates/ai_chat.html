@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chatbot with Voice</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        #chatbox { width: 50%; margin: auto; border: 1px solid #ccc; padding: 10px; background: #f9f9f9; }
+        .message { padding: 5px; margin: 5px 0; }
+        .user { text-align: right; color: blue; }
+        .bot { text-align: left; color: green; }
+    </style>
+</head>
+<body>
+
+    <div id="chatbox">
+        <h2>AI Chatbot with Voice</h2>
+        <div id="messages"></div>
+        <input type="text" id="user-input" placeholder="Ask me anything...">
+        <button onclick="sendMessage()">Send</button>
+        <button onclick="startVoiceInput()">🎙️ Voice Input</button>
+        <button onclick="speakLastResponse()">🔊 Speak</button>
+    </div>
+
+    <script>
+        let chatSocket;
+        let reconnectInterval = 3000;  // 3 seconds retry interval
+        let patientId = "{{ patient_id|default:'' }}";  // Ensure patient_id is passed
+    
+        function connectWebSocket() {
+            chatSocket = new WebSocket("ws://" + window.location.host + "/ws/ai-chat/");
+    
+            chatSocket.onopen = function () {
+                console.log("AI Chatbot WebSocket connected.");
+            };
+    
+            chatSocket.onmessage = function(event) {
+                let data = JSON.parse(event.data);
+                let botMessage = data.message;
+                document.getElementById("messages").innerHTML += `<div class="message bot"><b>Bot:</b> ${botMessage}</div>`;
+            };
+    
+            chatSocket.onerror = function (error) {
+                console.error("WebSocket Error:", error);
+            };
+    
+            chatSocket.onclose = function(event) {
+                console.log("WebSocket closed. Reconnecting in 3 seconds...");
+                setTimeout(connectWebSocket, reconnectInterval);
+            };
+        }
+    
+        function sendMessage() {
+            let userInput = document.getElementById("user-input").value;
+    
+            if (userInput.trim() === "") return;
+    
+            // Ensure patientId is present
+            if (!patientId) {
+                alert("Error: Patient ID is missing. Please log in again.");
+                window.location.href = "/patient-login/";  // Redirect to login
+                return;
+            }
+    
+            document.getElementById("messages").innerHTML += `<div class="message user"><b>You:</b> ${userInput}</div>`;
+    
+            chatSocket.send(JSON.stringify({ 
+                "message": userInput,
+                "patient_id": patientId  // Send patient ID
+            }));
+    
+            document.getElementById("user-input").value = "";
+        }
+    
+        connectWebSocket();  // Initialize WebSocket connection
+    </script>
+    
+</body>
+</html>
