@@ -576,6 +576,12 @@
                                 <span >Patients</span>
                             </a>
                         </li>
+                        <li class="{% if request.path == '/practitioner-dashboard/mypatient/' %}active{% endif %}">
+                            <a href="{% url 'practitionerdashboard:schedule_timming' %}">
+                                <i class="fa fa-wheelchair" ></i>
+                                <span >Schedule Timmings</span>
+                            </a>
+                        </li>
                         <li class="{% if request.path == '/practitioner-dashboard/appointment/' %}active{% endif %}">
                             <a href="">
                                 <i class="fa fa-calendar" ></i>

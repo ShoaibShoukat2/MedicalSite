@@ -44,3 +44,16 @@ class PatientPasswordForm(forms.Form):
         if new_password1 and new_password2 and new_password1 != new_password2:
             raise forms.ValidationError("The two password fields didn't match.")
         return cleaned_data
+
+
+from django import forms
+from .models import Review
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ['rating', 'feedback']
+        widgets = {
+            'rating': forms.Select(attrs={'class': 'form-select'}),
+            'feedback': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Share your experience with this practitioner'}),
+        }

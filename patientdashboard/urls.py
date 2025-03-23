@@ -32,6 +32,16 @@ urlpatterns = [
     path('chat/', views.chat, name='chat'),
 
 
+    # New payment-related URLs
+    path('payment/<int:appointment_id>/', views.payment_view, name='payment'),
+    path('payment/success/', views.payment_success, name='payment_success'),
+    path('payment/cancel/', views.payment_cancel, name='payment_cancel'),
+    path('stripe-webhook/', views.stripe_webhook, name='stripe_webhook'),
+    path('exercises/', views.exercises_view, name='exercises'),
+    path('exercises/yoga/', views.yoga_tutorial, name='yoga_tutorial'),
+    path('exercises/leg-exercises/', views.leg_exercises_tutorial, name='leg_exercises_tutorial'),
+    path('exercises/arm-exercises/', views.arm_exercises_tutorial, name='arm_exercises_tutorial'),
+    path('exercises/update_progress/', views.update_progress, name='update_progress'),
 
 
 ]

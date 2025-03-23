@@ -1,0 +1,84 @@
+{% extends 'patientdashboard/patient_base.html' %}
+{% load static %}  <!-- Load static files -->
+
+{% block extra_css %}
+<style>
+    .container {
+        max-width: 1200px;  
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .exercises-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;  }
+
+    .exercise-item {
+        border: 1px solid #ddd;
+        padding: 20px;
+        border-radius: 10px;
+        width: 30%;  
+        text-align: center;
+        background: #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .exercise-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .exercise-item img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 10px;
+        margin-bottom: 15px;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn:hover {
+        background-color: #0056b3;
+    }
+
+    h1 {
+        text-align: center;
+        color: #343a40;
+        margin-bottom: 20px;
+    }
+
+    p {
+        text-align: center;
+        color: #6c757d;
+        margin-bottom: 30px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Interactive Exercises</h1>
+    <p>Engage in various exercises tailored to your rehabilitation needs.</p>
+    
+    <div class="exercises-list">
+        {% for exercise in exercises %}
+        <div class="exercise-item">
+            <h2>{{ exercise.name }}</h2>
+            <img src="{% static exercise.image %}" alt="{{ exercise.name }}" style="width:100%; max-width:400px;">
+            <a href="{% url exercise.url %}" class="btn btn-primary">Start Exercise</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
