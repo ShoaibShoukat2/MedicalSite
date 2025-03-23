@@ -1,6 +1,7 @@
 # patientdashboard/models.py
 
-from datetime import timedelta
+from datetime import timedelta,datetime
+from django.utils.timezone import make_aware, now
 import uuid
 from django.db import models
 from practitionerdashboard.models import AvailableSlot
@@ -37,29 +38,38 @@ class Appointment(models.Model):
     def save(self, *args, **kwargs):
         """Prevent patients from booking another appointment if payment is not cleared."""
         if self.payment_status == "Pending":
-            existing_unpaid = Appointment.objects.filter(patient=self.patient, payment_status="Pending").exclude(id=self.id).exists()
+            existing_unpaid = Appointment.objects.filter(
+                patient=self.patient, payment_status="Pending"
+            ).exclude(id=self.id).exists()
             if existing_unpaid:
-                raise ValidationError("You have an unpaid appointment. Please complete the payment before booking another one.")
+                raise ValidationError(
+                    "You have an unpaid appointment. Please complete the payment before booking another one."
+                )
 
         # Generate a unique video call link if it does not exist.
         if not self.video_call_link:
             meeting_id = f"{uuid.uuid4()}-{self.patient.id}-{self.practitioner.id}"
             self.video_call_link = f"https://meet.jit.si/{meeting_id}"
-        
+
         super().save(*args, **kwargs)
-        
-          # Schedule email reminder 1 hour before appointment
-        reminder_time = self.slot.start_time - timedelta(hours=1)
+
+        # ✅ Convert slot.start_time (time object) to a full datetime object
+        today = now().date()  # Get today's date with timezone
+        start_datetime = datetime.combine(today, self.slot.start_time)  # Merge date & time
+        start_datetime = make_aware(start_datetime)  # Convert to timezone-aware datetime
+
+        # ✅ Now subtract timedelta correctly
+        reminder_time = start_datetime - timedelta(hours=1)
         countdown = (reminder_time - now()).total_seconds()
 
-        if countdown > 0:
-            send_reminder_email.apply_async((self.id,), countdown=countdown)
+    
             
-        
 
     def __str__(self):
         return f"Appointment with {self.practitioner} at {self.slot.start_time} - {self.slot.end_time}"
     
+
+
 
 
 

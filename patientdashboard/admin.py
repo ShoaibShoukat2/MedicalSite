@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Appointment
+from .models import Appointment,Review
 # Register your models here.
 
 
@@ -11,3 +11,11 @@ class AppointmentAdmin(admin.ModelAdmin):
     list_filter = ('status', 'practitioner')  # Add filtering options
     search_fields = ('patient__name', 'practitioner__name')  # Enable search
     ordering = ('-created_at',)  # Order by newest first
+    
+    
+
+
+admin.site.register(Review)
+
+
+

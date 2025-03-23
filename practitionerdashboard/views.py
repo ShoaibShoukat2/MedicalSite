@@ -1,7 +1,7 @@
 import uuid
 from django.shortcuts import render, redirect,get_object_or_404
 from user_account.models import Patient, Practitioner
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
@@ -24,34 +24,16 @@ from django.contrib.contenttypes.models import ContentType
 
 
 
-
-
 def dashboard_view(request):
-    
-    
-    
     # Get the practitioner ID from the session
     practitioner_id = request.session.get('practitioner_id')
     
-    
-    total_patients = Appointment.objects.filter(practitioner_id=practitioner_id).count()
-
-    # Count completed appointments
-    completed_appointments = Appointment.objects.filter(practitioner_id=practitioner_id, status="Accepted").count()
-
-    # Count pending appointments
-    pending_appointments = Appointment.objects.filter(practitioner_id=practitioner_id, status="Pending").count()    
-    
-
-
     # Ensure practitioner_id exists in the session
     if not practitioner_id:
         # Handle the case where no practitioner is logged in
         return render(request, 'practitionerdashboard/dashboard.html', {
             'error': 'No practitioner found in session.'
         })
-    
-    
     
     # Check if the practitioner has photo, price, and description in their profile
     practitioner = Practitioner.objects.filter(id=practitioner_id).first()
@@ -63,35 +45,64 @@ def dashboard_view(request):
             'redirect_url': '/practitioner-profile/'  # URL for completing the profile
         })
 
+    # Count total patients
+    total_patients = Appointment.objects.filter(practitioner_id=practitioner_id).count()
 
-    
-     
+    # Count completed appointments
+    completed_appointments = Appointment.objects.filter(practitioner_id=practitioner_id, status="Accepted").count()
+
+    # Count pending appointments
+    pending_appointments = Appointment.objects.filter(practitioner_id=practitioner_id, status="Pending").count()
 
     today = date.today()
+    now_time = datetime.now()
     today_start = datetime.combine(today, datetime.min.time())  # Start of today
     today_end = datetime.combine(today, datetime.max.time())  # End of today
+    
+    # 24 hours from now timestamp
+    twenty_four_hours_later = now_time + timedelta(hours=24)
 
-    # Filter appointments based on the practitioner's ID
-    upcoming_appointments = Appointment.objects.filter(
-        slot__start_time__gt=today_end,
+    # Accepted appointments (status = Accepted)
+    accepted_appointments = Appointment.objects.filter(
+        practitioner_id=practitioner_id,
+        status='Accepted'
+    ).order_by('slot__start_time')
+    
+    # Waiting list (appointments >= 24 hours away with status = Pending)
+    waiting_list_appointments = Appointment.objects.filter(
+        slot__start_time__gte=twenty_four_hours_later,
         status='Pending',
         practitioner_id=practitioner_id
-    )
-
+    ).order_by('slot__start_time')
+    
+    # Pending appointments (< 24 hours away with status = Pending)
+    pending_appointments_list = Appointment.objects.filter(
+        slot__start_time__lt=twenty_four_hours_later,
+        status='Pending',
+        practitioner_id=practitioner_id
+    ).order_by('slot__start_time')
+    
+    # Today's appointments
     today_appointments = Appointment.objects.filter(
         slot__start_time__range=(today_start, today_end),
         status='Pending',
         practitioner_id=practitioner_id
-    )
+    ).order_by('slot__start_time')
 
     return render(request, 'practitionerdashboard/dashboard.html', {
-        'upcoming_appointments': upcoming_appointments,
         'today_appointments': today_appointments,
-        "total_patients": total_patients,
-        "completed_appointments": completed_appointments,
-        "pending_appointments": pending_appointments,
+        'waiting_list_appointments': waiting_list_appointments,
+        'accepted_appointments': accepted_appointments,
+        'pending_appointments_list': pending_appointments_list,
+        'total_patients': total_patients,
+        'completed_appointments': completed_appointments,
+        'pending_appointments': pending_appointments,
     })
     
+    
+    
+    
+
     
     
     
@@ -238,18 +249,23 @@ def remove_slot(request, slot_id):
         return JsonResponse({'success': True})
     return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
 
-
 def mypatient(request):
     practitioner_id = request.session.get('practitioner_id')
 
     if practitioner_id:
-        # Fetch patients related to this practitioner
-        appointments = Appointment.objects.filter(practitioner_id=practitioner_id)
-        patients = [appointment.patient for appointment in appointments]
+        appointments = Appointment.objects.filter(practitioner_id=practitioner_id).select_related('patient')
+        patients = list(set(appointment.patient for appointment in appointments))
+
+        # Fetch prescriptions for each patient
+        for patient in patients:
+            patient.prescriptions = Prescription.objects.filter(patient=patient)
+
     else:
-        patients = []  # Handle case when no practitioner session exists
+        patients = []
 
     return render(request, 'practitionerdashboard/mypatient.html', {'patients': patients})
+
+
 
 
 
@@ -425,6 +441,7 @@ def practitioner_reviews(request):
         try:
             # Get the review by its ID
             review = Review.objects.get(id=review_id)
+            
 
             # If Reply model uses GenericForeignKey, you need ContentType
             content_type = ContentType.objects.get_for_model(Review)
