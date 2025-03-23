@@ -12,6 +12,9 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from datetime import datetime, date, timedelta
+from django.utils.timezone import now
+from django.utils import timezone
 
 class Appointment(models.Model):
     STATUS_CHOICES = [
@@ -52,6 +55,7 @@ class Appointment(models.Model):
             self.video_call_link = f"https://meet.jit.si/{meeting_id}"
 
         super().save(*args, **kwargs)
+<<<<<<< HEAD
 
         # ✅ Convert slot.start_time (time object) to a full datetime object
         today = now().date()  # Get today's date with timezone
@@ -61,6 +65,16 @@ class Appointment(models.Model):
         # ✅ Now subtract timedelta correctly
         reminder_time = start_datetime - timedelta(hours=1)
         countdown = (reminder_time - now()).total_seconds()
+=======
+        
+          # Schedule email reminder 1 hour before appointment
+        # Combine and make timezone-aware
+        start_datetime = datetime.combine(date.today(), self.slot.start_time)
+        start_datetime = timezone.make_aware(start_datetime)
+
+        reminder_time = start_datetime - timedelta(hours=1)
+        countdown = (reminder_time - timezone.now()).total_seconds()
+>>>>>>> dd4521be162680e62a453d1cdc08030ae3e8ddd3
 
     
             

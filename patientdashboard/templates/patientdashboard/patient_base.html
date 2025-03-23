@@ -758,6 +758,12 @@
                                     <i class="fa fa-calendar-check-o" style="color: white;"></i> <span style="color: white;">Billing and Payments</span>
                                 </a>
                             </li>
+
+                            <li class="{% if request.path == '/patient-dashboard/exercises/' %}active{% endif %}">
+                                <a href="{% url 'patientdashboard:exercises' %}">
+                                    <i class="fa fa-heartbeat" style="color: white;"></i> <span style="color: white;">Exercises</span>
+                                </a>
+                            </li>
                             
                         </ul>
                     </div>
