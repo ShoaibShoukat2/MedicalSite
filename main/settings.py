@@ -48,9 +48,10 @@ INSTALLED_APPS = [
     'chat',
     
       # Your chat app
-    
 
 ]
+
+
 CORS_ALLOW_ALL_ORIGINS = True
 
 MIDDLEWARE = [
@@ -144,7 +145,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static')
+    os.path.join(BASE_DIR, "static"),
 ]
 
 MEDIA_URL = '/media/'
@@ -181,6 +182,12 @@ DEFAULT_FROM_EMAIL = 'shoaibahmadbhatti6252@gmail.com'
 
 import os
 from dotenv import load_dotenv
+import environ
+
+
+
+env = environ.Env()
+environ.Env.read_env()
 
 load_dotenv()  # Load variables from .env file
 
@@ -190,15 +197,21 @@ OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 
 
 # API Keys
-DID_API_KEY = "YXFkYXMxNDIwMDNAZ21haWwuY29t:QHdOYwLZw7ZtEO75ubKsJ"
-ELEVENLABS_API_KEY ="sk_3a7b969a1dd74623c7d95f59d3d2110a232c9ccc8f1ba2fc"
+DID_API_KEY = env('DID_API_KEY', default='your_default_did_key')
+ELEVENLABS_API_KEY = env('ELEVENLABS_API_KEY', default='your_default_elevenlabs_key')
 
-import environ
 
-env = environ.Env()
-environ.Env.read_env()
+
+
 
 # Stripe settings
 STRIPE_PUBLISHABLE_KEY = env('STRIPE_PUBLISHABLE_KEY')
 STRIPE_SECRET_KEY = env('STRIPE_SECRET_KEY')
 STRIPE_WEBHOOK_SECRET = env('STRIPE_WEBHOOK_SECRET')
+
+
+
+
+
+
+
