@@ -44,10 +44,12 @@ class Appointment(models.Model):
             existing_unpaid = Appointment.objects.filter(
                 patient=self.patient, payment_status="Pending"
             ).exclude(id=self.id).exists()
+            
             if existing_unpaid:
                 raise ValidationError(
                     "You have an unpaid appointment. Please complete the payment before booking another one."
                 )
+                
 
         # Generate a unique video call link if it does not exist.
         if not self.video_call_link:
@@ -55,17 +57,6 @@ class Appointment(models.Model):
             self.video_call_link = f"https://meet.jit.si/{meeting_id}"
 
         super().save(*args, **kwargs)
-<<<<<<< HEAD
-
-        # ✅ Convert slot.start_time (time object) to a full datetime object
-        today = now().date()  # Get today's date with timezone
-        start_datetime = datetime.combine(today, self.slot.start_time)  # Merge date & time
-        start_datetime = make_aware(start_datetime)  # Convert to timezone-aware datetime
-
-        # ✅ Now subtract timedelta correctly
-        reminder_time = start_datetime - timedelta(hours=1)
-        countdown = (reminder_time - now()).total_seconds()
-=======
         
           # Schedule email reminder 1 hour before appointment
         # Combine and make timezone-aware
@@ -74,7 +65,6 @@ class Appointment(models.Model):
 
         reminder_time = start_datetime - timedelta(hours=1)
         countdown = (reminder_time - timezone.now()).total_seconds()
->>>>>>> dd4521be162680e62a453d1cdc08030ae3e8ddd3
 
     
             
