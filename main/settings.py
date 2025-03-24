@@ -12,6 +12,15 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+import environ
+
+
+
+env = environ.Env()
+environ.Env.read_env()
+
+load_dotenv()  
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,17 +30,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-(5u713&##9%w+=l*ugfn+e^w3hlqusrj&9m2q0g=w%_6fd&m%+'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1','Aqdas30.pythonanywhere.com']
+ALLOWED_HOSTS = ['127.0.0.1','aqdas14.pythonanywhere.com', 'localhost']
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders',
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -41,12 +52,20 @@ INSTALLED_APPS = [
     'frontend',
     'user_account',
     'patientdashboard',
-    'practitionerdashboard'
+    'practitionerdashboard',
+    'channels',  # Django Channels
+    'chat',
     
+      # Your chat app
 
 ]
 
+
+CORS_ALLOW_ALL_ORIGINS = True
+
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # Add this line
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -55,6 +74,10 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000']
+CORS_ALLOWED_ORIGINS = ['http://127.0.0.1:8000']
+
 
 ROOT_URLCONF = 'main.urls'
 
@@ -75,7 +98,13 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'main.wsgi.application'
+ASGI_APPLICATION = "main.asgi.application"
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",  # Change to Redis in production
+    },
+}
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -125,7 +154,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static')
+    os.path.join(BASE_DIR, "static"),
 ]
 
 MEDIA_URL = '/media/'
@@ -156,6 +185,29 @@ EMAIL_HOST_USER = 'shoaibahmadbhatti6252@gmail.com'  # Your email address
 EMAIL_HOST_PASSWORD = 'sxcj icku hldv hufp'  # Replace with the App Password you copied
 DEFAULT_FROM_EMAIL = 'shoaibahmadbhatti6252@gmail.com'
 
+
+
+
+
+
+
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+
+
+
+
+# API Keys
+DID_API_KEY = env('DID_API_KEY', default='your_default_did_key')
+ELEVENLABS_API_KEY = env('ELEVENLABS_API_KEY', default='your_default_elevenlabs_key')
+
+
+
+
+
+# Stripe settings
+STRIPE_PUBLISHABLE_KEY = env('STRIPE_PUBLISHABLE_KEY')
+STRIPE_SECRET_KEY = env('STRIPE_SECRET_KEY')
+STRIPE_WEBHOOK_SECRET = env('STRIPE_WEBHOOK_SECRET')
 
 
 
