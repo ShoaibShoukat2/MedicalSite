@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-(5u713&##9%w+=l*ugfn+e^w3hlqusrj&9m2q0g=w%_6fd&m%+'
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -189,9 +189,6 @@ OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 
 
 
-# API Keys
-DID_API_KEY = "YXFkYXMxNDIwMDNAZ21haWwuY29t:QHdOYwLZw7ZtEO75ubKsJ"
-ELEVENLABS_API_KEY ="sk_3a7b969a1dd74623c7d95f59d3d2110a232c9ccc8f1ba2fc"
 
 import environ
 
