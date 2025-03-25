@@ -5,200 +5,58 @@
 <div class="container py-5">
   <div class="row justify-content-center">
     <div class="col-lg-10">
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold text-primary mb-0">Practitioner Profile</h2>
-       
-      </div>
-
       <div class="card shadow-lg border-0 rounded-3 overflow-hidden">
-        {% if practitioner.photo and practitioner.price and practitioner.description %}
-          <!-- Profile View if Data Exists -->
-          <div class="card-body p-0">
-
-            <div class="row g-0">
-              <!-- Left Column (Photo and Basic Info) -->
-              <div class="col-md-4 bg-light p-4 text-center d-flex flex-column align-items-center">
-                <div class="profile-image-container mb-3">
-                  {% if practitioner.photo %}
-                    <img src="{{ practitioner.photo.url }}" class="profile-image" alt="{{ practitioner.first_name }} {{ practitioner.last_name }}">
-                  {% else %}
-                    <img src="{% static 'images/default-avatar.png' %}" class="profile-image" alt="Default Avatar">
-                  {% endif %}
+        <div class="card-header bg-primary text-white p-4">
+          <h4 class="mb-0 fw-bold">Complete Your Profile</h4>
+          <p class="mb-0 mt-2 opacity-75">Please provide the following information to set up your practitioner profile</p>
+        </div>
+        
+        <div class="card-body p-4">
+          <form method="POST" enctype="multipart/form-data" action="" class="needs-validation" novalidate>
+            {% csrf_token %}
+            
+            <div class="row g-3">
+              <!-- Photo Upload -->
+              <div class="col-12 mb-3">
+                <label for="photo" class="form-label fw-semibold">
+                  <i class="fas fa-camera-retro text-primary me-2"></i>Profile Photo
+                </label>
+                <div class="input-group">
+                  <input type="file" class="form-control" id="photo" name="photo" accept="image/*">
+                  <label class="input-group-text" for="photo">Upload</label>
                 </div>
-                
-                <h4 class="fw-bold text-primary mb-1">{{ practitioner.first_name }} {{ practitioner.last_name }}</h4>
-                <div class="badge bg-primary mb-3">{{ practitioner.get_specialty_display }}</div>
-                
-                <div class="d-flex align-items-center mb-2">
-                  <i class="fas fa-star text-warning me-1"></i>
-                  <span class="fw-semibold">4.9</span>
-                  <span class="text-muted small ms-1">(64 reviews)</span>
-                </div>
-                
-                <div class="mt-auto pt-3 w-100">
-                  <div class="d-grid gap-2">
-                    <a href="{% url 'practitioner_dashboard:dashboard' %}" class="btn btn-sm btn-outline-primary">
-                      <i class="fas fa-calendar-alt me-2"></i>View Schedule
-                    </a>
-                 
-                  </div>
-                </div>
+                <div class="form-text">Upload a professional headshot (recommended size: 400x400px)</div>
               </div>
               
-              <!-- Right Column (Detailed Information) -->
-              <div class="col-md-8 p-4">
-                <h5 class="fw-bold mb-4">Professional Information</h5>
-                
-                <div class="row mb-4">
-                  <div class="col-md-6">
-                    <div class="mb-3">
-                      <label class="form-label text-muted small mb-1">
-                        <i class="fas fa-envelope text-primary me-2"></i>Email
-                      </label>
-                      <p class="mb-0 fw-semibold">{{ practitioner.email }}</p>
-                    </div>
-                  </div>
-                  
-                  <div class="col-md-6">
-                    <div class="mb-3">
-                      <label class="form-label text-muted small mb-1">
-                        <i class="fas fa-venus-mars text-primary me-2"></i>Gender
-                      </label>
-                      <p class="mb-0 fw-semibold">{{ practitioner.get_gender_display }}</p>
-                    </div>
-                  </div>
-                  
-                  <div class="col-md-6">
-                    <div class="mb-3">
-                      <label class="form-label text-muted small mb-1">
-                        <i class="fas fa-map-marker-alt text-primary me-2"></i>Location
-                      </label>
-                      <p class="mb-0 fw-semibold">{{ practitioner.location }}</p>
-                    </div>
-                  </div>
-                  
-                  <div class="col-md-6">
-                    <div class="mb-3">
-                      <label class="form-label text-muted small mb-1">
-                        <i class="fas fa-dollar-sign text-primary me-2"></i>Price
-                      </label>
-                      <p class="mb-0 fw-semibold">${{ practitioner.price }}</p>
-                    </div>
-                  </div>
+              <!-- Price -->
+              <div class="col-12 mb-3">
+                <label for="price" class="form-label fw-semibold">
+                  <i class="fas fa-dollar-sign text-primary me-2"></i>Session Price
+                </label>
+                <div class="input-group">
+                  <span class="input-group-text">$</span>
+                  <input type="number" step="0.01" class="form-control" id="price" name="price" placeholder="0.00">
                 </div>
-                
-                <h5 class="fw-bold mb-3">About Me</h5>
-                <div class="p-3 bg-light rounded-3">
-                  <p class="mb-0">{{ practitioner.description }}</p>
-                </div>
-                
-                <div class="mt-4">
-                 
-                </div>
+              </div>
+
+             
+              <!-- Description -->
+              <div class="col-12 mb-3">
+                <label for="description" class="form-label fw-semibold">
+                  <i class="fas fa-pen-fancy text-primary me-2"></i>Professional Bio
+                </label>
+                <textarea class="form-control" id="description" name="description" rows="5" placeholder="Provide a detailed description of your expertise, experience, and approach to patient care"></textarea>
               </div>
             </div>
-          </div>
-        {% else %}
-          <!-- Form to Update Profile if No Data Exists -->
-          <div class="card-header bg-primary text-white p-4">
-            <h4 class="mb-0 fw-bold">Complete Your Profile</h4>
-            <p class="mb-0 mt-2 opacity-75">Please provide the following information to set up your practitioner profile</p>
-          </div>
-          
-          <div class="card-body p-4">
-            <form method="POST" enctype="multipart/form-data" action="" class="needs-validation" novalidate>
-              {% csrf_token %}
-              
-              <div class="row g-3">
-                <!-- Photo -->
-                <div class="col-12 mb-3">
-                  <label for="photo" class="form-label fw-semibold">
-                    <i class="fas fa-camera-retro text-primary me-2"></i>Profile Photo
-                  </label>
-                  <div class="input-group">
-                    <input type="file" class="form-control" id="photo" name="photo" required>
-                    <label class="input-group-text" for="photo">Upload</label>
-                  </div>
-                  <div class="form-text">Upload a professional headshot (recommended size: 400x400px)</div>
-                </div>
-                
-                <!-- Specialty -->
-                <div class="col-md-6 mb-3">
-                  <label for="specialty" class="form-label fw-semibold">
-                    <i class="fas fa-stethoscope text-primary me-2"></i>Specialty
-                  </label>
-                  <select class="form-select" id="specialty" name="specialty" required>
-                    <option value="">Select specialty</option>
-                    {% for key, value in specialty_choices %}
-                      <option value="{{ key }}">{{ value }}</option>
-                    {% endfor %}
-                  </select>
-                </div>
-                
-                <!-- Price -->
-                <div class="col-md-6 mb-3">
-                  <label for="price" class="form-label fw-semibold">
-                    <i class="fas fa-dollar-sign text-primary me-2"></i>Session Price
-                  </label>
-                  <div class="input-group">
-                    <span class="input-group-text">$</span>
-                    <input type="number" step="0.01" class="form-control" id="price" name="price" placeholder="0.00" required>
-                  </div>
-                </div>
-                
-                <!-- Location -->
-                <div class="col-12 mb-3">
-                  <label for="location" class="form-label fw-semibold">
-                    <i class="fas fa-map-marker-alt text-primary me-2"></i>Location
-                  </label>
-                  <input type="text" class="form-control" id="location" name="location" placeholder="Enter your practice location" required>
-                </div>
-                
-                <!-- Description -->
-                <div class="col-12 mb-3">
-                  <label for="description" class="form-label fw-semibold">
-                    <i class="fas fa-pen-fancy text-primary me-2"></i>Professional Bio
-                  </label>
-                  <textarea class="form-control" id="description" name="description" rows="5" placeholder="Provide a detailed description of your expertise, experience, and approach to patient care" required></textarea>
-                </div>
-                
-                <!-- Qualifications -->
-                <div class="col-12 mb-3">
-                  <label class="form-label fw-semibold">
-                    <i class="fas fa-graduation-cap text-primary me-2"></i>Qualifications
-                  </label>
-                  <div id="qualifications-container">
-                    <div class="qualification-entry card mb-3">
-                      <div class="card-body p-3">
-                        <div class="row g-2">
-                          <div class="col-md-5">
-                            <input type="text" class="form-control" name="qualification_title[]" placeholder="Degree/Certification" required>
-                          </div>
-                          <div class="col-md-5">
-                            <input type="text" class="form-control" name="qualification_institution[]" placeholder="Institution" required>
-                          </div>
-                          <div class="col-md-2">
-                            <input type="number" class="form-control" name="qualification_year[]" placeholder="Year" required>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <button type="button" class="btn btn-sm btn-outline-primary" id="add-qualification">
-                    <i class="fas fa-plus me-1"></i>Add Qualification
-                  </button>
-                </div>
-              </div>
-              
-              <!-- Submit Button -->
-              <div class="d-grid gap-2 mt-4">
-                <button type="submit" class="btn btn-primary py-2">
-                  <i class="fas fa-save me-2"></i>Complete Profile
-                </button>
-              </div>
-            </form>
-          </div>
-        {% endif %}
+            
+            <!-- Submit Button -->
+            <div class="d-grid gap-2 mt-4">
+              <button type="submit" class="btn btn-primary py-2">
+                <i class="fas fa-save me-2"></i>Update Profile
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </div>
@@ -206,26 +64,6 @@
 
 <!-- CSS -->
 <style>
-  .profile-image-container {
-    width: 160px;
-    height: 160px;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 4px solid #ffffff;
-    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
-    background-color: #f8f9fa;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0 auto;
-  }
-  
-  .profile-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  
   .badge {
     font-weight: 500;
     padding: 0.5rem 1rem;
@@ -233,11 +71,6 @@
   
   .btn-outline-primary {
     border-width: 2px;
-  }
-  
-  .list-group-item {
-    padding-left: 0;
-    padding-right: 0;
   }
 </style>
 
@@ -265,36 +98,6 @@
         confirmButtonColor: '#0d6efd'
       });
     {% endif %}
-    
-    // Add Qualification Button
-    const addQualificationBtn = document.getElementById('add-qualification');
-    if (addQualificationBtn) {
-      addQualificationBtn.addEventListener('click', function() {
-        const container = document.getElementById('qualifications-container');
-        const entryTemplate = document.querySelector('.qualification-entry').cloneNode(true);
-        
-        // Clear input values
-        entryTemplate.querySelectorAll('input').forEach(input => {
-          input.value = '';
-        });
-        
-        // Add remove button if it's not the first entry
-        if (container.children.length > 0) {
-          const removeBtn = document.createElement('button');
-          removeBtn.type = 'button';
-          removeBtn.className = 'btn btn-sm btn-outline-danger position-absolute top-0 end-0 m-2';
-          removeBtn.innerHTML = '<i class="fas fa-times"></i>';
-          removeBtn.addEventListener('click', function() {
-            container.removeChild(entryTemplate);
-          });
-          
-          entryTemplate.style.position = 'relative';
-          entryTemplate.appendChild(removeBtn);
-        }
-        
-        container.appendChild(entryTemplate);
-      });
-    }
     
     // Form validation
     const forms = document.querySelectorAll('.needs-validation');
