@@ -20,8 +20,9 @@ from practitionerdashboard.models import Prescription
 from django.contrib import messages
 from patientdashboard.models import Review, Reply
 from django.contrib.contenttypes.models import ContentType
-# Create your views here.
+from django.views.decorators.csrf import csrf_exempt
 
+# Create your views here.
 
 
 def dashboard_view(request):
@@ -179,6 +180,7 @@ def get_patient_details(request, appointment_id):
 
 
 
+
     
 
 
@@ -310,7 +312,9 @@ def CompleteProfile(request):
 
     return render(request, 'practitionerdashboard/profile.html', context)
 
-from django.views.decorators.csrf import csrf_exempt
+
+
+
 
 @csrf_exempt
 def start_video_call(request, patient_id):

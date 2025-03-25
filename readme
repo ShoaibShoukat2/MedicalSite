@@ -1,0 +1,6 @@
+
+
+// for remove the .env history in the git
+
+// git filter-repo --path .env --invert-paths
+
