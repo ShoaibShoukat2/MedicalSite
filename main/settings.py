@@ -35,7 +35,8 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1','aqdas14.pythonanywhere.com', 'localhost']
+ALLOWED_HOSTS = ['127.0.0.1','aqdas14.pythonanywhere.com','michdmp.pythonanywhere.com','localhost']
+
 
 
 # Application definition
