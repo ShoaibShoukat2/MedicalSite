@@ -35,3 +35,4 @@ class Prescription(models.Model):
     def __str__(self):
         return f"Prescription for {self.patient.first_name} by {self.practitioner.first_name}"
     
+

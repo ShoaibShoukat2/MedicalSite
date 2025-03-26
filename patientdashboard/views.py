@@ -4,8 +4,28 @@ import json
 from django.db.models import Q
 from patientdashboard.models import Appointment, Notification
 from user_account.models import Practitioner ,Patient # Assuming Practitioner is the model for doctors/practitioners
-
 from django.shortcuts import render, get_object_or_404, redirect
+from user_account.models import Patient  # Adjust the import based on your app structure
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Appointment, Patient, Notification
+from django.http import JsonResponse
+from user_account.models import Patient
+from practitionerdashboard.models import AvailableSlot
+from django.shortcuts import render, get_object_or_404
+from user_account.models import Practitioner
+from practitionerdashboard.models import AvailableSlot
+from django.utils.timezone import now
+from django.http import JsonResponse
+from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .forms import PatientProfileForm, PatientPasswordForm
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.hashers import make_password, check_password
+from django.shortcuts import render
 import sys
 
 from django.core.paginator import Paginator
@@ -33,22 +53,6 @@ def patient_dashboard(request):
 
 # patientdashboard/views.py
 
-from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse
-from user_account.models import Patient
-from practitionerdashboard.models import AvailableSlot
-# patientdashboard/views.py
-from django.shortcuts import render, get_object_or_404
-from django.http import JsonResponse
-from user_account.models import Practitioner
-from practitionerdashboard.models import AvailableSlot
-from django.utils.timezone import now
-import json
-
-from django.http import JsonResponse
-from user_account.models import Practitioner
-from django.http import JsonResponse
-from user_account.models import Practitioner
 
 def get_practitioners_by_specialization(request):
     specialization = request.GET.get('specialization')
@@ -115,6 +119,8 @@ from .stripe_utils import create_checkout_session, handle_checkout_completed
 # Initialize Stripe
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
+
+
 def book_appointment(request):
     if request.method == 'POST':
         slot_id = request.POST.get('slot_id')
@@ -128,6 +134,8 @@ def book_appointment(request):
                           {'error': 'Invalid slot selection.'})  # Show error page
 
         # Ensure patient exists
+    
+        
         try:
             patient = Patient.objects.get(id=patient_id)
         except Patient.DoesNotExist:
@@ -179,6 +187,9 @@ def book_appointment(request):
 
     return render(request, 'patientdashboard/booking_failed.html', 
                   {'error': 'Invalid request method.'})
+
+
+
 
 
 def payment_view(request, appointment_id):
@@ -356,35 +367,33 @@ def search_practitioners(request):
 def chat(request):
     return render(request, 'patientdashboard/chat.html')
 
-from django.shortcuts import render, get_object_or_404, redirect
-from user_account.models import Patient  # Adjust the import based on your app structure
-from django.shortcuts import render, redirect, get_object_or_404
-from user_account.models import Patient
-from django.shortcuts import render, get_object_or_404, redirect
-from .models import Appointment, Patient, Notification
 
+
+from practitionerdashboard.models import Prescription
 def appointments_patients(request):
-    # Check if the session contains patient_id
     patient_id = request.session.get('patient_id')
 
     if patient_id:
-        # Retrieve the Patient object using the session ID
         patient = get_object_or_404(Patient, id=patient_id)
 
-        # Fetch unread notifications for this patient
         notifications = Notification.objects.filter(recipient=patient, is_read=False).order_by('-created_at')
 
-        # Fetch all booked appointments for this patient
         appointments = Appointment.objects.filter(patient=patient).select_related('practitioner', 'slot')
+
+        prescriptions = Prescription.objects.filter(patient=patient)
+
 
         return render(request, 'patientdashboard/appointments_patients.html', {
             'patient': patient,
-            'notifications': notifications,  # Pass notifications to the template
-            'appointments': appointments  # Pass appointments to the template
+            'notifications': notifications,
+            'appointments': appointments,
+            'prescriptions': prescriptions,
         })
     else:
-        # Redirect to login page if the session is not valid
         return redirect('frontend:patient_login')
+
+    
+   
 
 
 from django.shortcuts import render, redirect
@@ -487,14 +496,7 @@ def view_invoice(request):
 
 
 
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from .forms import PatientProfileForm, PatientPasswordForm
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from django.contrib.auth import update_session_auth_hash
-from django.contrib.auth.hashers import make_password, check_password
+
 def patient_profile(request):
     # Get patient_id from session
     patient_id = request.session.get('patient_id')
@@ -525,11 +527,7 @@ def patient_profile(request):
 
 
 
-    from django.shortcuts import render
-from django.shortcuts import render, redirect
-from django.http import JsonResponse
-import json
-from django.shortcuts import render
+
 
 def exercises_view(request):
     context = {
