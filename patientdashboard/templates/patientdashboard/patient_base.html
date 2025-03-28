@@ -568,10 +568,25 @@
     height: 100vh; /* Full height */
     width: 100%; /* Full width */
 }
+/* Avatar Video Container Styles */
+#avatar-video-container {
+    position: fixed;
+    bottom: 80px;
+    right: 420px; /* Position to the left of the chat window */
+    width: 380px; /* Same width as chat window */
+    height: 500px; /* Same height as chat window */
+    overflow: hidden;
+    display: none;
+    z-index: 1000;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 10px; /* Same rounded corners as chat */
+    background: #000; /* Black background for video container */
+}
 
 #avatar-video {
-    max-width: 80%; /* Adjust size as needed */
-    height: auto;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 /* AI Avatar Outside Chat Window */
 #ai-avatar-container {
@@ -601,7 +616,7 @@
 #ai-avatar-container:hover {
     transform: scale(1.1); /* Slightly enlarge when hovered */
 }
-
+/* Add this to your existing CSS */
 
     </style>
     
@@ -748,12 +763,12 @@
                                 </a>
                             </li>
                             <li class="{% if request.path == '/patient-dashboard/booking/' %}active{% endif %}">
-                                <a href="{% url 'patient_dashboard:booking' %}">
+                                <a href="{% url 'patient_dashboard:specialty_selection' %}">
                                     <i class="fa fa-calendar" style="color: white;"></i> <span style="color: white;">Book Appointments</span>
                                 </a>
                             </li>
                             <li class="{% if request.path == '/patient-dashboard/billing/' %}active{% endif %}">
-                                <a href="">
+                                <a href="{% url 'patient_dashboard:all_bills' %}">
                                     <i class="fa fa-calendar-check-o" style="color: white;"></i> <span style="color: white;">Billing and Payments</span>
                                 </a>
                             </li>
@@ -772,6 +787,8 @@
     
 
         <!-- Page wrapper -->
+
+        <!-- Page wrapper -->
         <div class="page-wrapper">
             {% block content %}
             {% endblock content %}
@@ -785,14 +802,19 @@
 
 <!-- AI Avatar (Outside the Chat Window) -->
 <div id="ai-avatar-container">
-    <img id="ai-avatar-img" src="{% static 'img/ai_avatar.gif' %}" alt="AI Agent">
 </div>
 
 <!-- Chatbot Button -->
 <button id="chatbot-btn" onclick="toggleChatbot()">
     <i class="fa fa-comment"></i> Chat with AI
 </button>
-
+<!-- Avatar Video Container -->
+<div id="avatar-video-container">
+    <video id="avatar-video" loop muted>
+        <source src="{% static 'video.mp4' %}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+</div>
 <!-- Chatbot Window -->
 <div id="chatbot-window">
     <div class="chat-header">
@@ -883,15 +905,69 @@
 </footer>
 <script>
     let chatSocket;
+    let selectedVoice = null;
+
     document.getElementById("ai-avatar-container").addEventListener("click", function() {
         toggleChatbot();
     });
+    function initializeVoice() {
+    // Common male voice names across different browsers/OS
+    const maleVoiceNames = [
+        "Google US English Male",
+        "Microsoft David Desktop",
+        "Alex", // macOS
+        "Daniel", // macOS
+        "Fred", // macOS
+        "Microsoft Mark", // Edge
+        "Microsoft Eric", // Edge
+        "English (America) - Male"
+    ];
+
+    // Wait for voices to be loaded
+    speechSynthesis.onvoiceschanged = function() {
+        const voices = speechSynthesis.getVoices();
+        
+        // Try to find a male voice
+        selectedVoice = voices.find(voice => 
+            maleVoiceNames.some(name => voice.name.includes(name)) ||
+            // Fallback: look for voices that sound male
+            voices.find(voice => 
+                voice.lang.includes('en') && 
+                (voice.name.toLowerCase().includes('male') || 
+                 voice.name.toLowerCase().includes('david') ||
+                 voice.name.toLowerCase().includes('mark'))
+        ));
+        
+        // Fallback to first available English voice
+        if (!selectedVoice) {
+            selectedVoice = voices.find(voice => voice.lang.includes('en')) || 
+                           voices[0];
+        }
+    };
     
-    function toggleChatbot() {
-        let chatbotWindow = document.getElementById("chatbot-window");
-        chatbotWindow.style.display = chatbotWindow.style.display === "none" ? "flex" : "none";
+    // Trigger voiceschanged event if voices are already loaded
+    if (speechSynthesis.getVoices().length > 0) {
+        speechSynthesis.onvoiceschanged();
     }
+}
+
+
+function toggleChatbot() {
+    let chatbotWindow = document.getElementById("chatbot-window");
+    let videoContainer = document.getElementById("avatar-video-container");
     
+    if (chatbotWindow.style.display === "none" || chatbotWindow.style.display === "") {
+        chatbotWindow.style.display = "flex";
+        videoContainer.style.display = "block";
+    } else {
+        chatbotWindow.style.display = "none";
+        videoContainer.style.display = "none";
+        // Pause video when closing chat
+        document.getElementById("avatar-video").pause();
+        // Stop any ongoing speech
+        speechSynthesis.cancel();
+    }
+}
 
 function connectWebSocket() {
     chatSocket = new WebSocket("ws://" + window.location.host + "/ws/ai-chat/");
@@ -946,24 +1022,42 @@ function displayMessage(message, sender) {
     chatMessages.appendChild(messageDiv);
     chatMessages.scrollTop = chatMessages.scrollHeight;  
 }
-
-// AI Speaks the Response
 function speakAIResponse(text) {
+    if (!selectedVoice) {
+        initializeVoice(); // Try to initialize if not done yet
+    }
+
     let speech = new SpeechSynthesisUtterance(text);
     speech.lang = "en-US";
-    speech.pitch = 1;
+    speech.pitch = 0.9; // Slightly lower pitch for more masculine sound
     speech.rate = 1;
-    speech.voice = speechSynthesis.getVoices().find(voice => voice.name.includes("Google US English")) || speechSynthesis.getVoices()[0];
+    
+    if (selectedVoice) {
+        speech.voice = selectedVoice;
+    }
 
-    // Animate AI Avatar
-    let avatarImg = document.getElementById("ai-avatar-img");
-    avatarImg.style.transform = "scale(1.1)"; // Slight zoom-in effect while speaking
-    setTimeout(() => {
-        avatarImg.style.transform = "scale(1)";
-    }, 1000);
+    // Get video element
+    let avatarVideo = document.getElementById("avatar-video");
+    
+    // Play video when speech starts
+    speech.onstart = function() {
+        avatarVideo.play();
+    };
+    
+    // Pause video when speech ends
+    speech.onend = function() {
+        avatarVideo.pause();
+        avatarVideo.currentTime = 0; // Reset to start
+    };
 
+    // Cancel any ongoing speech before starting new one
+    speechSynthesis.cancel();
     speechSynthesis.speak(speech);
 }
+document.addEventListener("DOMContentLoaded", function() {
+    initializeVoice();
+    document.getElementById("avatar-video-container").style.display = "none";
+});
 
 connectWebSocket();
 
@@ -1099,11 +1193,3 @@ connectWebSocket();
 </body>
 
 </html>
-
-
-
-
-
-
-
-

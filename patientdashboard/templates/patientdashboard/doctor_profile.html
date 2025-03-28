@@ -3,143 +3,150 @@
 
 {% block extra_css %}
 <style>
-    .doctor-widget {
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        background-color: #fff;
-        padding: 15px;
-        margin-bottom: 20px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    /* Keep your existing styles */
+    
+    /* Add these new styles for reviews */
+    .review-section {
+        margin-top: 30px;
     }
-
-    .doctor-img img {
-        border-radius: 5px;
-        width: 100px;
-        height: 100px;
-        object-fit: cover;
-        margin-bottom: 15px;
+    
+    .review-item {
+        border-bottom: 1px solid #eee;
+        padding: 15px 0;
     }
-
-    .doc-info-cont h4 {
-        font-size: 20px;
-        font-weight: bold;
+    
+    .review-item:last-child {
+        border-bottom: none;
+    }
+    
+    .review-header {
+        display: flex;
+        justify-content: space-between;
         margin-bottom: 10px;
     }
-
-    .rating i {
+    
+    .rating-stars {
         color: #ffc107;
     }
-
-    .doc-info-right {
-        text-align: left;
+    
+    .review-date {
+        color: #6c757d;
+        font-size: 0.85rem;
     }
-
-    @media (min-width: 768px) {
-        .doc-info-right {
-            text-align: right;
-        }
-        .doctor-img img {
-            margin-bottom: 0;
-        }
-    }
-
-    .clinic-booking .btn {
-        width: 100%;
-        margin: 10px 0;
-    }
-
-    @media (min-width: 768px) {
-        .clinic-booking .btn {
-            width: auto;
-        }
-    }
-
-    .nav-tabs {
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-    }
-
-    .nav-tabs::-webkit-scrollbar {
-        display: none;
-    }
-
-    .nav-tabs .nav-link {
-        white-space: nowrap;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        margin: 0 5px;
-        padding: 8px 15px;
-    }
-
-    .nav-tabs .nav-link.active {
-        background-color: #0d6efd;
-        color: #fff;
-    }
-
-    .location-images {
-        display: flex;
-        overflow-x: auto;
-        gap: 10px;
-        padding: 10px 0;
-    }
-
-    .location-images img {
-        width: 80px;
-        height: 60px;
-        object-fit: cover;
-        border-radius: 5px;
-    }
-
-    .review-card {
+    
+    .review-content {
         margin-bottom: 15px;
     }
-
-    .review-user-img {
-        width: 50px;
-        height: 50px;
-        object-fit: cover;
-    }
-
-    @media (max-width: 576px) {
-        .doctor-widget {
-            padding: 10px;
-        }
-
-        .doc-info-cont h4 {
-            font-size: 18px;
-        }
-
-        .badge {
-            font-size: 11px;
-        }
-
-        .clinic-booking {
-            margin-top: 15px;
-        }
-    }
-
-    .tab-content {
-        margin-top: 20px;
-        padding: 15px;
-        background: #fff;
+    
+    .review-form {
+        background-color: #f8f9fa;
+        padding: 20px;
         border-radius: 5px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        margin-top: 30px;
     }
-
-    .clinic-details img {
-        max-width: 100%;
-        height: auto;
-        margin: 5px;
+    
+    .stars-container {
+        margin-bottom: 15px;
+    }
+    
+    .star-rating > input { display: none; }
+    .star-rating > label:before { 
+        content: "\f005";
+        font-family: "Font Awesome 5 Free";
+        margin: 0 5px;
+        font-size: 1.5rem;
+        display: inline-block; 
+        cursor: pointer;
+    }
+    .star-rating > input:checked ~ label:before,
+    .star-rating > input:checked ~ label:hover ~ label:before,
+    .star-rating > label:hover ~ input:checked ~ label:before { 
+        color: #ffc107;
+        font-weight: 900;
+    }
+    .star-rating > label:hover:before,
+    .star-rating > label:hover ~ label:before {
+        color: #ffdb70;
+        font-weight: 900;
+    }
+    .review-section {
+        margin-top: 30px;
+    }
+    
+    .review-item {
+        border-bottom: 1px solid #eee;
+        padding: 15px 0;
+    }
+    
+    .review-item:last-child {
+        border-bottom: none;
+    }
+    
+    .review-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+    
+    .rating-stars {
+        color: #ffc107;
+    }
+    
+    .review-date {
+        color: #6c757d;
+        font-size: 0.85rem;
+    }
+    
+    .review-content {
+        margin-bottom: 15px;
+    }
+    
+    .review-form {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 5px;
+        margin-top: 30px;
+    }
+    
+    .star-rating {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: flex-end;
+        margin-bottom: 20px;
+    }
+    
+    .star-rating input {
+        display: none;
+    }
+    
+    .star-rating label {
+        cursor: pointer;
+        width: 30px;
+        height: 30px;
+        margin: 0 5px;
+        position: relative;
+    }
+    
+    .star-rating label:before {
+        content: '★';
+        position: absolute;
+        font-size: 30px;
+        color: #ddd;
+        top: 0;
+        left: 0;
+    }
+    
+    .star-rating input:checked ~ label:before,
+    .star-rating label:hover:before,
+    .star-rating label:hover ~ label:before {
+        color: #ffc107;
     }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="container mt-4">
-    <!-- Doctor Profile Widget -->
+    <!-- Doctor Profile Widget - Keep your existing code -->
     <div class="doctor-widget">
         <div class="row g-3 align-items-center">
             <div class="col-12 col-md-3 text-center">
@@ -153,16 +160,20 @@
                     <h4 class="mb-2">{{ practitioner.first_name }} {{ practitioner.last_name }}</h4>
                     <p class="doc-speciality mb-2">{{ practitioner.get_specialty_display }}</p>
                     <div class="rating mb-2">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="far fa-star"></i>
-                        <span class="ms-1">(35)</span>
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= average_rating|floatformat:"0" %}
+                                <i class="fas fa-star"></i>
+                            {% elif forloop.counter <= average_rating|add:"0.5"|floatformat:"0" %}
+                                <i class="fas fa-star-half-alt"></i>
+                            {% else %}
+                                <i class="far fa-star"></i>
+                            {% endif %}
+                        {% endfor %}
+                        <span class="ms-1">({{ total_reviews }})</span>
                     </div>
-                    <p class="mb-2"><i class="fas fa-map-marker-alt me-2"></i>Location Placeholder</p>
+                    <p class="mb-2"><i class="fas fa-map-marker-alt me-2"></i>{{ practitioner.location|default:"Location not specified" }}</p>
                     <div class="d-flex flex-wrap gap-2">
-                        <span class="badge bg-primary">{{ practitioner.description|default:"No additional information available" }}</span>
+                        <span class="badge bg-primary">{{ practitioner.get_specialty_display }}</span>
                     </div>
                 </div>
             </div>
@@ -172,27 +183,101 @@
                         <li class="mb-2"><i class="far fa-money-bill-alt me-2"></i>${{ practitioner.price|default:"-" }}</li>
                     </ul>
                     <div class="clinic-booking">
-                        <button class="btn btn-primary">Book Appointment</button>
+                        <a href="{% url 'patient_dashboard:specialty_selection' %}" class="btn btn-primary">Book Appointment</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Tabs Navigation -->
+    <!-- Tabs Navigation - Update to include Reviews tab -->
     <ul class="nav nav-tabs mb-3" id="profileTabs" role="tablist">
         <li class="nav-item">
-            <a class="nav-link active" id="overview-tab" data-bs-toggle="tab" href="#overview" role="tab">Overview</a>
+            <a class="nav-link" id="overview-tab" data-bs-toggle="tab" href="#overview" role="tab">OVERVIEW</a>
         </li>
-        <!-- Add more tabs if needed -->
+        <li class="nav-item">
+            <a class="nav-link active" id="reviews-tab" data-bs-toggle="tab" href="#reviews" role="tab">REVIEWS</a>
+        </li>
     </ul>
 
-    <!-- Tab Content -->
+    <!-- Tab Content - Update to include Reviews tab content -->
     <div class="tab-content">
-        <!-- Overview Tab -->
-        <div class="tab-pane fade show active" id="overview" role="tabpanel">
+        <!-- Overview Tab - Keep your existing code -->
+        <div class="tab-pane fade" id="overview" role="tabpanel">
             <h5 class="mb-3">About {{ practitioner.first_name }}</h5>
             <p>{{ practitioner.description|default:"No description available." }}</p>
+        </div>
+        
+        <!-- Reviews Tab -->
+        <div class="tab-pane fade show active" id="reviews" role="tabpanel">
+            <h3 class="mb-4">Patient Reviews</h3>
+            
+            {% if reviews %}
+                <div class="review-section">
+                    {% for review in reviews %}
+                        <div class="review-item">
+                            <div class="review-header">
+                                <div>
+                                    <h6>{{ review.patient.first_name }} {{ review.patient.last_name }}</h6>
+                                    <div class="rating-stars">
+                                        {% for i in "12345" %}
+                                            {% if forloop.counter <= review.rating %}
+                                                <i class="fas fa-star"></i>
+                                            {% else %}
+                                                <i class="far fa-star"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="review-date">
+                                    {{ review.created_at|date:"F d, Y" }}
+                                </div>
+                            </div>
+                            <div class="review-content">
+                                {{ review.feedback|default:"" }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    No reviews yet. Be the first to review this practitioner!
+                </div>
+            {% endif %}
+            
+            <!-- Review Form -->
+            {% if is_patient_logged_in %}
+                <div class="review-form">
+                    <h5 class="mb-3">Write a Review</h5>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Rating</label>
+                            <div class="star-rating">
+                                <input type="radio" id="star5" name="rating" value="5" />
+                                <label for="star5" title="5 stars"></label>
+                                <input type="radio" id="star4" name="rating" value="4" />
+                                <label for="star4" title="4 stars"></label>
+                                <input type="radio" id="star3" name="rating" value="3" />
+                                <label for="star3" title="3 stars"></label>
+                                <input type="radio" id="star2" name="rating" value="2" />
+                                <label for="star2" title="2 stars"></label>
+                                <input type="radio" id="star1" name="rating" value="1" />
+                                <label for="star1" title="1 star"></label>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Your Experience</label>
+                            <textarea name="feedback" class="form-control" rows="4" placeholder="Share your experience with this practitioner"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit Review</button>
+                    </form>
+                </div>
+            {% else %}
+                <div class="alert alert-warning">
+                    <a href="">Log in</a> to leave a review.
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>
@@ -200,6 +285,14 @@
 
 {% block extra_js %}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Initialize tabs based on URL hash or default to reviews tab
+    document.addEventListener('DOMContentLoaded', function() {
+        const hash = window.location.hash || '#reviews';
+        const tab = document.querySelector(`a[href="${hash}"]`);
+        if (tab) {
+            new bootstrap.Tab(tab).show();
+        }
+    });
+</script>
 {% endblock %}
-
-

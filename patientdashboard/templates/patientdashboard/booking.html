@@ -179,7 +179,6 @@
     </div>
 </div>
 
-
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const specializationDropdown = document.getElementById('specialization');
@@ -201,22 +200,12 @@
 
                         card.innerHTML = `
                             <div class="card h-100 text-center">
-<<<<<<< HEAD
-=======
-                            
-                            
-                            
->>>>>>> 24aa27978c50ddad8a7feb29765563e1b1dc6990
-                                <img src="${practitioner.photo || '{% static 'img/clinic.jpeg' %}'}" 
+                                <img src="${practitioner.photo || '/static/img/clinic.jpeg'}" 
                                      class="card-img-top rounded-circle mx-auto mt-3" 
                                      alt="${practitioner.first_name}" style="width: 100px; height: 100px; object-fit: cover;">
                                 <div class="card-body">
                                     <h5 class="card-title">${practitioner.first_name} ${practitioner.last_name}</h5>
                                     <p class="card-text text-muted">${practitioner.specialty}</p>
-<<<<<<< HEAD
-=======
-                                    {% comment %} <p class="text-muted">${practitioner.description || 'No description available'}</p> {% endcomment %}
->>>>>>> 24aa27978c50ddad8a7feb29765563e1b1dc6990
                                     <div class="d-flex justify-content-center gap-2">
                                         <button class="btn btn-primary btn-sm view-profile-btn" data-id="${practitioner.id}">
                                             View Profile
@@ -228,10 +217,6 @@
                                 </div>
                             </div>
                         `;
-<<<<<<< HEAD
-=======
-
->>>>>>> 24aa27978c50ddad8a7feb29765563e1b1dc6990
                         practitionersContainer.appendChild(card);
                     });
 
@@ -259,7 +244,6 @@
                     window.location.href = `/patient-dashboard/practitioner/${practitionerId}/`; // Redirect to the profile page
                 });
             });
-            
         }
     });
 </script>

@@ -1,0 +1,40 @@
+{% extends 'patientdashboard/patient_base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="card">
+        <div class="card-header">
+            <h3>Complete Your Payment</h3>
+        </div>
+        <div class="card-body">
+            <h5>Invoice: {{ billing.invoice_number }}</h5>
+            <p>Amount: ${{ billing.amount }}</p>
+            <p>Due: {{ billing.due_date|date:"M d, Y" }}</p>
+            
+            <form method="POST" id="payment-form">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary mt-3">
+                    Pay with Credit Card
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    const stripe = Stripe('{{ STRIPE_PUBLIC_KEY }}');
+    const form = document.getElementById('payment-form');
+    
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const {error} = await stripe.redirectToCheckout({
+            sessionId: '{{ session.id }}'
+        });
+        
+        if (error) {
+            alert(error.message);
+        }
+    });
+</script>
+{% endblock %}

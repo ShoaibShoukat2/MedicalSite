@@ -199,51 +199,50 @@ def chat(request):
     return render(request, 'practitionerdashboard/chat.html')
 
 
+from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
+from datetime import datetime
+from .models import AvailableSlot, Practitioner
 
 def schedule_timming(request):
-    # Check if practitioner is logged in
     practitioner_id = request.session.get('practitioner_id')
     if not practitioner_id:
-        return redirect('frontend:practitioner_login')  # Redirect to login if not authenticated
+        return redirect('frontend:practitioner_login')
 
-    # Get the logged-in practitioner
     practitioner = get_object_or_404(Practitioner, id=practitioner_id)
-    slots = practitioner.available_slots.all()
+    slots = practitioner.available_slots.all().order_by('date', 'start_time')
     return render(request, 'practitionerdashboard/schedule_time.html', {'slots': slots})
 
-import json
-
 def add_slot(request):
-    # Check if the practitioner is logged in
-    practitioner_id = request.session.get('practitioner_id')
-    if not practitioner_id:
-        return JsonResponse({'success': False, 'error': 'You must be logged in to add a slot.'}, status=403)
-
-    if request.method == "POST":
+    if request.method == 'POST':
         try:
-            data = json.loads(request.body)  # Parse JSON data from the request
-            practitioner = get_object_or_404(Practitioner, id=practitioner_id)  # Get practitioner by session ID
-            day_of_week = data.get('day_of_week')
-            start_time = data.get('start_time')
-            end_time = data.get('end_time')
+            practitioner_id = request.session.get('practitioner_id')
+            if not practitioner_id:
+                return JsonResponse({'success': False, 'error': 'Not authenticated'}, status=403)
 
-            # Validate required fields
-            if not day_of_week or not start_time or not end_time:
-                return JsonResponse({'success': False, 'error': 'All fields are required.'}, status=400)
+            practitioner = get_object_or_404(Practitioner, id=practitioner_id)
+            
+            # Parse JSON data
+            data = json.loads(request.body)
+            date = datetime.strptime(data['date'], '%Y-%m-%d').date()
+            start_time = datetime.strptime(data['start_time'], '%H:%M').time()
+            end_time = datetime.strptime(data['end_time'], '%H:%M').time()
 
             # Create the slot
             slot = AvailableSlot.objects.create(
                 practitioner=practitioner,
-                day_of_week=day_of_week,
+                date=date,
                 start_time=start_time,
-                end_time=end_time,
+                end_time=end_time
             )
-            return JsonResponse({'success': True, 'slot_id': slot.id})
-        except json.JSONDecodeError:
-            return JsonResponse({'success': False, 'error': 'Invalid JSON data.'}, status=400)
-    else:
-        return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=405)
 
+            return JsonResponse({'success': True})
+        
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=400)
+
+    return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=405)
+    
 def remove_slot(request, slot_id):
     if request.method == "POST":
         slot = get_object_or_404(AvailableSlot, id=slot_id)
