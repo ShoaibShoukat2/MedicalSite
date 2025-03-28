@@ -1,0 +1,29 @@
+{% extends 'patientdashboard/patient_base.html' %}
+{% load static %}
+
+{% block title %}Video Consultation Slots{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h2>Video Consultation with Dr. {{ practitioner.first_name }} {{ practitioner.last_name }}</h2>
+    
+    {% if availability_dates %}
+        {% for date in availability_dates %}
+        <div class="mb-4">
+            <h5>{{ date.day_name }}, {{ date.formatted_date }}</h5>
+            <div class="d-flex flex-wrap gap-2">
+                {% for slot in date.slots %}
+                <a href="{% url 'patientdashboard:book_video_consultation' slot.id %}" class="btn btn-primary">
+                    {{ slot.start_time|time:"H:i" }} - {{ slot.end_time|time:"H:i" }}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="alert alert-warning">
+            No available slots for video consultation at this time.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

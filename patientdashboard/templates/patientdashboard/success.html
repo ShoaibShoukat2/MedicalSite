@@ -1,0 +1,22 @@
+{% extends 'patientdashboard/patient_base.html' %}
+
+{% block content %}
+<div class="container text-center py-5">
+    <i class="fas fa-check-circle text-success" style="font-size: 5rem;"></i>
+    <h2 class="my-3">Payment Successful!</h2>
+    <p>Your appointment is now confirmed.</p>
+    
+    <div class="card mt-4 text-start">
+        <div class="card-body">
+            <h5>Receipt</h5>
+            <p>Invoice: {{ billing.invoice_number }}</p>
+            <p>Amount Paid: ${{ billing.amount }}</p>
+            <p>Payment ID: {{ appointment.payment_id }}</p>
+        </div>
+    </div>
+    
+    <a href="{% url 'patient_dashboard' %}" class="btn btn-primary mt-4">
+        Return to Dashboard
+    </a>
+</div>
+{% endblock %}

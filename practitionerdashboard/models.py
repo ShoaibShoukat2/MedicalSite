@@ -1,12 +1,20 @@
 from django.db import models
 from django.utils.timezone import now
+from django.utils import timezone
 
 from user_account.models import Practitioner,Patient
+from django.db import models
+from django.utils import timezone
+from django.db import models
+from django.utils import timezone
+from django.core.validators import MinValueValidator, MaxValueValidator
+
 class AvailableSlot(models.Model):
     STATUS_CHOICES = [
         ('available', 'Available'),
         ('booked', 'Booked'),
     ]
+    date = models.DateField()
 
     practitioner = models.ForeignKey(Practitioner, on_delete=models.CASCADE, related_name="available_slots")
     day_of_week = models.CharField(max_length=10, choices=[
@@ -24,6 +32,7 @@ class AvailableSlot(models.Model):
 
     def __str__(self):
         return f"{self.get_day_of_week_display()}: {self.start_time} - {self.end_time} ({self.practitioner})"
+
 
 
 class Prescription(models.Model):

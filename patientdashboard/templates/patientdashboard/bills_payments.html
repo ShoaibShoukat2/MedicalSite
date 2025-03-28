@@ -1,0 +1,50 @@
+{% extends 'patientdashboard/patient_base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Your Billing History</h2>
+    
+    {% if bills %}
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Invoice #</th>
+                        <th>Date</th>
+                        <th>Practitioner</th>
+                        <th>Appointment Time</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bill in bills %}
+                    <tr>
+                        <td>{{ bill.invoice_number }}</td>
+                        <td>{{ bill.issued_date|date:"M d, Y" }}</td>
+                        <td>Dr. {{ bill.appointment.practitioner.first_name }}</td>
+                        <td>{{ bill.appointment.created_at|date:"M d, Y" }} at {{ bill.appointment.slot.start_time|time:"g:i A" }}</td>
+                        <td>${{ bill.amount }}</td>
+                        <td>
+                            <span class="badge {% if bill.is_paid %}bg-success{% else %}bg-warning{% endif %}">
+                                {% if bill.is_paid %}Paid{% else %}Pending{% endif %}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="{% url 'patientdashboard:view_bill' bill.id %}" class="btn btn-sm btn-info">
+                                Details
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            No billing records found.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

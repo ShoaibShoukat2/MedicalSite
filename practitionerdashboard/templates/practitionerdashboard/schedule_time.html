@@ -15,16 +15,8 @@
 
                     <div class="row mb-3">
                         <div class="col-md-4">
-                            <label for="dayOfWeek" class="form-label">Day</label>
-                            <select id="dayOfWeek" class="form-select" required>
-                                <option value="sunday">Sunday</option>
-                                <option value="monday">Monday</option>
-                                <option value="tuesday">Tuesday</option>
-                                <option value="wednesday">Wednesday</option>
-                                <option value="thursday">Thursday</option>
-                                <option value="friday">Friday</option>
-                                <option value="saturday">Saturday</option>
-                            </select>
+                            <label for="slotDate" class="form-label">Date</label>
+                            <input type="date" id="slotDate" class="form-control" required>
                         </div>
                         <div class="col-md-4">
                             <label for="startTime" class="form-label">Start Time</label>
@@ -46,8 +38,8 @@
                     {% for slot in slots %}
                     <div class="d-flex justify-content-between align-items-center border p-2 mb-2">
                         <div>
-                            <strong>{{ slot.get_day_of_week_display }}:</strong> 
-                            {{ slot.start_time }} - {{ slot.end_time }}
+                            <strong>{{ slot.date|date:"M d, Y" }}:</strong> 
+                            {{ slot.start_time|time:"H:i" }} - {{ slot.end_time|time:"H:i" }}
                         </div>
                         <button class="btn btn-danger btn-sm remove-slot" data-id="{{ slot.id }}">Remove</button>
                     </div>
@@ -60,13 +52,12 @@
     </div>
 </div>
 
-<!-- JavaScript for Dynamic Slot Management -->
 <script>
     // Add Slot
     document.getElementById('addSlotForm').addEventListener('submit', function (e) {
         e.preventDefault();
     
-        const dayOfWeek = document.getElementById('dayOfWeek').value;
+        const slotDate = document.getElementById('slotDate').value;
         const startTime = document.getElementById('startTime').value;
         const endTime = document.getElementById('endTime').value;
     
@@ -77,31 +68,29 @@
                 'X-CSRFToken': '{{ csrf_token }}',
             },
             body: JSON.stringify({
-                day_of_week: dayOfWeek,
+                date: slotDate,
                 start_time: startTime,
                 end_time: endTime,
             }),
         })
-            .then((response) => response.json())
-            .then((data) => {
-                if (data.success) {
-                    alert('Slot added successfully!');
-                    location.reload();
-                } else {
-                    alert(data.error || 'Failed to add slot.');
-                }
-            })
-            .catch((error) => console.error('Error:', error));
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert(data.error || 'Failed to add slot.');
+            }
+        })
+        .catch((error) => console.error('Error:', error));
     });
-    
 
-    // Remove Slot
+    // Remove Slot (keep existing implementation)
     document.querySelectorAll('.remove-slot').forEach(button => {
         button.addEventListener('click', function() {
             const slotId = this.dataset.id;
     
-            fetch(`/practitioner-dashboard/remove-slot/${slotId}/`, {  // Ensure the prefix matches 'practitioner-dashboard'
-            method: 'POST',
+            fetch(`/practitioner-dashboard/remove-slot/${slotId}/`, {
+                method: 'POST',
                 headers: {
                     'X-CSRFToken': '{{ csrf_token }}',
                 },
@@ -109,7 +98,6 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    alert('Slot removed successfully!');
                     location.reload();
                 } else {
                     alert(data.error || 'Failed to remove slot.');
@@ -118,6 +106,5 @@
             .catch(error => console.error('Error:', error));
         });
     });
-    
 </script>
 {% endblock %}
