@@ -10,7 +10,6 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Appointment, Patient, Notification
 from django.http import JsonResponse
 from user_account.models import Patient
-from practitionerdashboard.models import AvailableSlot
 from django.shortcuts import render, get_object_or_404
 from user_account.models import Practitioner
 from practitionerdashboard.models import AvailableSlot
@@ -27,8 +26,14 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.hashers import make_password, check_password
 from django.shortcuts import render
 import sys
-
 from django.core.paginator import Paginator
+from django.conf import settings
+
+
+
+
+
+
 def patient_dashboard(request):
     print("📌 patient_dashboard view is being executed!")  # Debugging print
     sys.stdout.flush()  # Force output to be written
@@ -100,6 +105,8 @@ from calendar import monthrange
 from .models import Practitioner, AvailableSlot
 from calendar import month_name
 from datetime import datetime
+
+
 
 def available_slots(request, practitioner_id):
     practitioner = get_object_or_404(Practitioner, id=practitioner_id)
@@ -190,6 +197,14 @@ def available_slots(request, practitioner_id):
         'current_year': current_year,
     }
     return render(request, 'patientdashboard/available_slots.html', context)
+
+
+
+
+
+
+
+
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from patientdashboard.models import Appointment
@@ -227,8 +242,6 @@ from django.utils import timezone
 from .models import Appointment, AvailableSlot, Patient
 from .stripe_utils import create_checkout_session, handle_checkout_completed
 
-# Initialize Stripe
-stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
 
@@ -623,45 +636,99 @@ from django.contrib import messages
 from django.utils import timezone
 from .models import AvailableSlot, Appointment, Patient, Billing
 import sys
+
+
+stripe.api_key = settings.STRIPE_SECRET_KEY 
+
+
+
 def book_video_consultation(request, slot_id):
+    print(f"Received request to book slot {slot_id}")
+    
     if request.method == 'POST':
-        patient_id = request.session.get('patient_id')  # Ensure the patient is logged in
+        patient_id = request.session.get('patient_id')
+        print(f"Patient ID from session: {patient_id}")
 
         if not patient_id:
-            return redirect('frontend:patient_login')  # Redirect to login if not logged in
+            print("No patient ID found, redirecting to login")
+            return JsonResponse({'error': 'User not logged in', 'redirect_url': '/patient/login/'}, status=401)
 
+        try:
+            patient = Patient.objects.get(id=patient_id)
+            print(f"Patient found: {patient}")
+            
+            slot = get_object_or_404(AvailableSlot, pk=slot_id, status='available')
+            print(f"Slot details: {slot}")
 
+            if hasattr(slot, 'appointment'):
+                print("Slot is already booked")
+                return JsonResponse({'error': 'This time slot is already booked'}, status=400)
+
+            print("Creating Stripe checkout session...")
+            checkout_session = stripe.checkout.Session.create(
+                payment_method_types=['card'],
+                line_items=[{
+                    'price_data': {
+                        'currency': 'usd',
+                        'product_data': {
+                            'name': f'Consultation with {slot.practitioner.first_name}',
+                        },
+                        'unit_amount': int(slot.practitioner.price * 100),
+                    },
+                    'quantity': 1,
+                }],
+                mode='payment',
+                success_url=request.build_absolute_uri(f"/patient-dashboard/payment-success/{slot.id}/"),
+                cancel_url=request.build_absolute_uri(f"/patient-dashboard/cancel/{slot.id}/"),
+            )
+            
+            print(f"Stripe Checkout URL: {checkout_session.url}")
+            return JsonResponse({'redirect_url': checkout_session.url})
+
+        except Patient.DoesNotExist:
+            print("Patient profile not found")
+            return JsonResponse({'error': 'Patient profile not found'}, status=404)
+        
+        except Exception as e:
+            print(f"An error occurred: {str(e)}")
+            return JsonResponse({'error': f"An error occurred: {str(e)}"}, status=500)
+
+def payment_success(request, slot_id):
     try:
-        patient = Patient.objects.get(id=patient_id)
         slot = get_object_or_404(AvailableSlot, pk=slot_id, status='available')
+        patient_id = request.session.get('patient_id')
 
-        # Check if slot is already booked
-        if hasattr(slot, 'appointment'):
-            messages.error(request, "This time slot is already booked")
-            return redirect('patientdashboard:available_slots', practitioner_id=slot.practitioner.id)
+        if not patient_id:
+            return redirect('frontend:patient_login')
+
+        patient = Patient.objects.get(id=patient_id)
 
         # Create appointment
         appointment = Appointment.objects.create(
             patient=patient,
             slot=slot,
             practitioner=slot.practitioner,
-            status='Pending'
-        )
-         # Create billing record
-        billing = Billing.objects.create(
-            appointment=appointment,
-            amount=slot.practitioner.price
+            status='Pending',
+            amount=slot.practitioner.price,  # Assuming this is the price for the appointment
         )
 
-        # Redirect to success page with appointment ID
+        # Create billing record
+        Billing.objects.create(
+            appointment=appointment,
+            amount=slot.practitioner.price,
+            is_paid=True
+        )
+        
+
+        messages.success(request, "Payment successful! Appointment booked.")
         return redirect('patientdashboard:booking_success', appointment_id=appointment.id)
 
-    except Patient.DoesNotExist:
-        messages.error(request, "Patient profile not found")
-        return redirect('/patient/login/')
     except Exception as e:
-        messages.error(request, f"An error occurred: {str(e)}")
+        messages.error(request, f"Error: {str(e)}")
         return redirect('patientdashboard:available_slots', practitioner_id=slot.practitioner.id)
+
+
+    
 
 import sys
 from django.shortcuts import render, redirect
@@ -678,6 +745,10 @@ def list_all_bills(request):
 
         if not patient_id:
             return redirect('frontend:patient_login')  # Redirect to login if not logged in
+        
+        
+        
+        
 
     
     try:
@@ -736,3 +807,12 @@ def view_bill(request, bill_id):
         print(f"Unexpected error: {str(e)}")
         messages.error(request, "An unexpected error occurred.")
         return redirect('patientdashboard:all_bills')
+    
+
+
+
+
+
+
+
+

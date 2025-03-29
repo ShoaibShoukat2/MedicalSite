@@ -34,6 +34,7 @@ class Appointment(models.Model):
         ('Paid', 'Paid'),
         ('Failed', 'Failed'),
     ]
+    
 
     # ... existing fields ...
     payment_status = models.CharField(

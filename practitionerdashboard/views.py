@@ -66,28 +66,32 @@ def dashboard_view(request):
     # Accepted appointments (status = Accepted)
     accepted_appointments = Appointment.objects.filter(
         practitioner_id=practitioner_id,
-        status='Accepted'
+        status='Accepted',
+        amount=practitioner.price
     ).order_by('slot__start_time')
     
     # Waiting list (appointments >= 24 hours away with status = Pending)
     waiting_list_appointments = Appointment.objects.filter(
         slot__start_time__gte=twenty_four_hours_later,
         status='Pending',
-        practitioner_id=practitioner_id
+        practitioner_id=practitioner_id,
+        
     ).order_by('slot__start_time')
     
     # Pending appointments (< 24 hours away with status = Pending)
     pending_appointments_list = Appointment.objects.filter(
         slot__start_time__lt=twenty_four_hours_later,
         status='Pending',
-        practitioner_id=practitioner_id
+        practitioner_id=practitioner_id,
+        
     ).order_by('slot__start_time')
     
     # Today's appointments
     today_appointments = Appointment.objects.filter(
         slot__start_time__range=(today_start, today_end),
         status='Pending',
-        practitioner_id=practitioner_id
+        practitioner_id=practitioner_id,
+        
     ).order_by('slot__start_time')
 
     return render(request, 'practitionerdashboard/dashboard.html', {
@@ -99,13 +103,8 @@ def dashboard_view(request):
         'completed_appointments': completed_appointments,
         'pending_appointments': pending_appointments,
     })
-    
-    
-    
-    
 
-    
-    
+
     
 def accept_appointment(request, appointment_id):
     # Get the appointment object
@@ -250,11 +249,20 @@ def remove_slot(request, slot_id):
         return JsonResponse({'success': True})
     return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
 
+
+
+
+
+
 def mypatient(request):
     practitioner_id = request.session.get('practitioner_id')
 
     if practitioner_id:
-        appointments = Appointment.objects.filter(practitioner_id=practitioner_id).select_related('patient')
+        appointments = Appointment.objects.filter(
+            practitioner_id=practitioner_id, status='Accepted'
+        ).select_related('patient')
+       
+       
         patients = list(set(appointment.patient for appointment in appointments))
 
         # Fetch prescriptions for each patient
@@ -265,10 +273,6 @@ def mypatient(request):
         patients = []
 
     return render(request, 'practitionerdashboard/mypatient.html', {'patients': patients})
-
-
-
-
 
 
 

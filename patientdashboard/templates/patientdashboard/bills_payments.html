@@ -25,7 +25,7 @@
                         <td>{{ bill.issued_date|date:"M d, Y" }}</td>
                         <td>Dr. {{ bill.appointment.practitioner.first_name }}</td>
                         <td>{{ bill.appointment.created_at|date:"M d, Y" }} at {{ bill.appointment.slot.start_time|time:"g:i A" }}</td>
-                        <td>${{ bill.amount }}</td>
+                        <td>{{ bill.amount|floatformat:0 }} $</td>
                         <td>
                             <span class="badge {% if bill.is_paid %}bg-success{% else %}bg-warning{% endif %}">
                                 {% if bill.is_paid %}Paid{% else %}Pending{% endif %}

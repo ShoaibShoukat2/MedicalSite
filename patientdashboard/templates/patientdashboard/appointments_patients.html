@@ -58,10 +58,13 @@
                                     <strong>Dr. {{ appointment.practitioner.first_name }} {{ appointment.practitioner.user.last_name }}</strong><br>
                                     <small>{{ appointment.practitioner.specialization }}</small>
                                 </div>
-                            </td>
+                            </td>   
                             <td>{{ appointment.slot.start_time|date:"d M Y" }}<br><small>{{ appointment.slot.start_time|time:"h:i A" }}</small></td>
                             <td>{{ appointment.created_at|date:"d M Y" }}</td>
-                            <td>$160</td>  <!-- Update with actual pricing if available -->
+                            <td>{{ appointment.amount|floatformat:0 }} $</td>
+                            <!-- Update with actual pricing if available -->
+
+
                             <td>
                                 {% if appointment.status == "Accepted" %}
                                     <span class="badge bg-success">Confirmed</span>
@@ -69,8 +72,12 @@
                                     <span class="badge bg-warning text-dark">Pending</span>
                                 {% elif appointment.status == "Cancelled" %}
                                     <span class="badge bg-danger">Cancelled</span>
+
+
                                 {% endif %}
                             </td>
+
+
                             <td>
                                 <div class="d-flex justify-content-center">
                                     <a href="{{ appointment.video_call_link }}" target="_blank" class="btn btn-sm btn-outline-info">Join Call</a>
@@ -86,6 +93,7 @@
                 </table>
             </div>
         </div>
+
     
         <!-- Prescriptions Section -->
         <div class="tab-pane fade" id="prescriptions" role="tabpanel" aria-labelledby="prescriptions-tab">
@@ -124,6 +132,8 @@
                                         <i class="fas fa-times-circle text-danger me-1"></i>No file
                                     </span>
                                 {% endif %}
+
+
                             </td>
                         </tr>
                         {% empty %}

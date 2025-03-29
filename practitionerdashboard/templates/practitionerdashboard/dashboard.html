@@ -67,6 +67,7 @@
       </li>
       <li class="nav-item">
         <a class="nav-link" data-bs-toggle="tab" href="#pending">Pending</a>
+
       </li>
       <li class="nav-item">
         <a class="nav-link" data-bs-toggle="tab" href="#waiting">Waiting List</a>
@@ -127,8 +128,6 @@
                 <tr>
                   <th class="ps-3">Patient</th>
                   <th>Date & Time</th>
-                  <th>Purpose</th>
-                  <th>Type</th>
                   <th>Amount</th>
                   <th class="text-end pe-3">Actions</th>
                 </tr>
@@ -150,13 +149,11 @@
                       <small class="text-muted">{{ appointment.slot.start_time|time:"h:i A" }}</small>
                     </div>
                   </td>
-                  <td>{{ appointment.purpose }}</td>
-                  <td>
-                    <span class="badge bg-primary-subtle text-primary rounded-pill px-3 py-2">
-                      {{ appointment.type }}
-                    </span>
-                  </td>
-                  <td>${{ appointment.paid_amount }}</td>
+               
+
+                  <td>{{ appointment.practitioner.price|floatformat:0 }} $</td>
+
+
                   <td class="text-end pe-3">
                     <button class="btn btn-sm btn-outline-primary view-btn me-1">
                       <i class="bi bi-eye"></i> View
@@ -192,8 +189,6 @@
                 <tr>
                   <th class="ps-3">Patient</th>
                   <th>Date & Time</th>
-                  <th>Purpose</th>
-                  <th>Type</th>
                   <th>Amount</th>
                   <th class="text-end pe-3">Actions</th>
                 </tr>
@@ -215,13 +210,8 @@
                       <small class="text-muted">{{ appointment.slot.start_time|time:"h:i A" }}</small>
                     </div>
                   </td>
-                  <td>{{ appointment.purpose }}</td>
-                  <td>
-                    <span class="badge bg-warning-subtle text-warning rounded-pill px-3 py-2">
-                      {{ appointment.type }}
-                    </span>
-                  </td>
-                  <td>${{ appointment.paid_amount }}</td>
+                 
+                  <td>{{ appointment.practitioner.price|floatformat:0 }} $</td>
                   <td class="text-end pe-3">
                     <button class="btn btn-sm btn-outline-primary view-btn me-1">
                       <i class="bi bi-eye"></i> View
@@ -257,8 +247,7 @@
                 <tr>
                   <th class="ps-3">Patient</th>
                   <th>Date & Time</th>
-                  <th>Purpose</th>
-                  <th>Type</th>
+                
                   <th>Amount</th>
                   <th class="text-end pe-3">Actions</th>
                 </tr>
@@ -280,13 +269,8 @@
                       <small class="text-muted">{{ appointment.slot.start_time|time:"h:i A" }}</small>
                     </div>
                   </td>
-                  <td>{{ appointment.purpose }}</td>
-                  <td>
-                    <span class="badge bg-info-subtle text-info rounded-pill px-3 py-2">
-                      {{ appointment.type }}
-                    </span>
-                  </td>
-                  <td>${{ appointment.paid_amount }}</td>
+                 
+                  <td>{{ appointment.practitioner.price|floatformat:0 }} $</td>
                   <td class="text-end pe-3">
                     <button class="btn btn-sm btn-outline-primary view-btn me-1">
                       <i class="bi bi-eye"></i> View
@@ -322,8 +306,7 @@
                 <tr>
                   <th class="ps-3">Patient</th>
                   <th>Date & Time</th>
-                  <th>Purpose</th>
-                  <th>Type</th>
+                 
                   <th>Amount</th>
                   <th class="text-end pe-3">Actions</th>
                 </tr>
@@ -345,13 +328,8 @@
                       <small class="text-muted">{{ appointment.slot.start_time|time:"h:i A" }}</small>
                     </div>
                   </td>
-                  <td>{{ appointment.purpose }}</td>
-                  <td>
-                    <span class="badge bg-success-subtle text-success rounded-pill px-3 py-2">
-                      {{ appointment.type }}
-                    </span>
-                  </td>
-                  <td>${{ appointment.paid_amount }}</td>
+               
+                  <td>{{ appointment.practitioner.price|floatformat:0 }} $</td>
                   <td class="text-end pe-3">
                     <button class="btn btn-sm btn-outline-primary view-btn me-1">
                       <i class="bi bi-eye"></i> View

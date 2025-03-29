@@ -16,6 +16,11 @@ urlpatterns = [
     path('api/practitioners/', views.get_practitioners_by_specialization, name='get_practitioners_by_specialization'),
     path('available-slots/<int:practitioner_id>/', views.available_slots, name='available_slots'),
     path('book-consultation/<int:slot_id>/', views.book_video_consultation, name='book_video_consultation'),
+    path('payment-success/<int:slot_id>/', views.payment_success, name='payment_success'),
+    
+    
+   
+    
     path('book-appointment/', views.book_appointment, name='book_appointment'),
     
     path('booking-success/<int:appointment_id>/', views.booking_success, name='booking_success'),
@@ -27,9 +32,12 @@ urlpatterns = [
     path('practitioner/<int:pk>/', views.practitioner_profile, name='practitioner_profile'),
     path('telemedicine/', views.telemedicine, name='telemedicine'),
     path('profile/', views.patient_profile, name='profile'),
-# Example of how the URL pattern for 'edit_patient_profile' might look in your Django app
+    
+    
 
-
+    
+    
+    
 
     path('appointments_patients/', views.appointments_patients, name='appointments_patients'),
 

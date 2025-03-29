@@ -35,6 +35,7 @@ class AvailableSlot(models.Model):
 
 
 
+
 class Prescription(models.Model):
     practitioner = models.ForeignKey(Practitioner, on_delete=models.CASCADE)  # Assuming User is a practitioner
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)

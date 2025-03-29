@@ -173,7 +173,11 @@
     }
     </script>
 <script>
-// Function to select a date and reload the page
+
+
+
+
+
 function bookSlot(element) {
     const slotId = element.getAttribute('data-slot-id');
     
@@ -187,14 +191,14 @@ function bookSlot(element) {
     })
     .then(response => {
         if (response.redirected) {
-            window.location.href = response.url;
-        } else {
-            return response.json();
+            window.location.href = response.url;  // 🔹 Immediate Redirect
+            return;
         }
+        return response.json();
     })
     .then(data => {
         if (data?.redirect_url) {
-            window.location.href = data.redirect_url;
+            window.location.href = data.redirect_url;  // 🔹 Redirect to Stripe URL
         } else if (data?.error) {
             alert(data.error);
             window.location.href = '{% url "frontend:patient_login" %}';
@@ -205,6 +209,14 @@ function bookSlot(element) {
         alert('Booking failed. Please try again.');
     });
 }
+
+
+
+
+
+
+
+
 function selectDate(date) {
     const url = new URL(window.location.href);
     url.searchParams.set('date', date);
