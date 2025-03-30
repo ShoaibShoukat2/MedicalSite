@@ -46,3 +46,4 @@ class Prescription(models.Model):
         return f"Prescription for {self.patient.first_name} by {self.practitioner.first_name}"
     
 
+

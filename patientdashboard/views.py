@@ -56,6 +56,7 @@ def patient_dashboard(request):
 
     
 
+
 # patientdashboard/views.py
 
 
@@ -372,6 +373,9 @@ def chat(request):
 
 
 from practitionerdashboard.models import Prescription
+from patientdashboard.models import Billing
+
+
 def appointments_patients(request):
     patient_id = request.session.get('patient_id')
 
@@ -383,6 +387,9 @@ def appointments_patients(request):
         appointments = Appointment.objects.filter(patient=patient).select_related('practitioner', 'slot')
 
         prescriptions = Prescription.objects.filter(patient=patient)
+        
+        billing_records = Billing.objects.filter(appointment__patient_id=patient_id)
+
 
 
         return render(request, 'patientdashboard/appointments_patients.html', {
@@ -390,11 +397,15 @@ def appointments_patients(request):
             'notifications': notifications,
             'appointments': appointments,
             'prescriptions': prescriptions,
+            'billing_records': billing_records
         })
     else:
         return redirect('frontend:patient_login')
 
-    
+
+
+
+
    
 
 

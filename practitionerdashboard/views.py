@@ -105,6 +105,17 @@ def dashboard_view(request):
     })
 
 
+
+
+
+
+
+
+
+
+
+
+
     
 def accept_appointment(request, appointment_id):
     # Get the appointment object
