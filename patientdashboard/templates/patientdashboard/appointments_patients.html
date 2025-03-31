@@ -7,6 +7,8 @@
     margin-bottom: 5px;
 }
 {% endblock %}
+
+
 {% block content %}
 <div class="container my-5">
     <div class="overflow-auto">
@@ -48,6 +50,8 @@
                             <th style="background-color: rgb(132, 189, 218); color: white;">Status</th>
                             <th style="background-color: rgb(132, 189, 218); color: white;">Actions</th>
                         </tr>
+
+
                     </thead>
                     <tbody>
                         {% for appointment in appointments %}
@@ -59,10 +63,14 @@
                                     <small>{{ appointment.practitioner.specialization }}</small>
                                 </div>
                             </td>   
-                            <td>{{ appointment.slot.start_time|date:"d M Y" }}<br><small>{{ appointment.slot.start_time|time:"h:i A" }}</small></td>
+                            <td>
+                                {{ appointment.slot.date|date:"d M Y" }}<br>
+                                <small>{{ appointment.slot.start_time|time:"h:i A" }} - {{ appointment.slot.end_time|time:"h:i A" }}</small>
+                            </td>
                             <td>{{ appointment.created_at|date:"d M Y" }}</td>
                             <td>{{ appointment.amount|floatformat:0 }} $</td>
                             <!-- Update with actual pricing if available -->
+
 
 
                             <td>
@@ -81,8 +89,16 @@
                             <td>
                                 <div class="d-flex justify-content-center">
                                     <a href="{{ appointment.video_call_link }}" target="_blank" class="btn btn-sm btn-outline-info">Join Call</a>
+                            
+                                    {% if appointment.status != "Cancelled" %}
+                                        <button class="btn btn-sm btn-outline-danger ms-2 cancel-btn" data-id="{{ appointment.id }}">
+                                            Cancel
+                                        </button>
+                                    {% endif %}
                                 </div>
                             </td>
+
+                            
                         </tr>
                         {% empty %}
                         <tr>
@@ -229,5 +245,30 @@
     </div>
     
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".cancel-btn").forEach(button => {
+            button.addEventListener("click", function () {
+                const appointmentId = this.getAttribute("data-id");
+
+                if (confirm("Are you sure you want to cancel this appointment?")) {
+                    fetch(`/patient-dashboard/cancel-appointment/${appointmentId}/`, {
+                        method: "GET",
+                        headers: { "X-Requested-With": "XMLHttpRequest" }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert(data.message);
+                            location.reload();  // Reload page to reflect changes
+                        }
+                    });
+                }
+            });
+        });
+    });
+</script>
+
 
 {% endblock %}

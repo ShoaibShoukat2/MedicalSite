@@ -827,3 +827,15 @@ def view_bill(request, bill_id):
 
 
 
+def cancel_appointment(request, appointment_id):
+    """Cancel the appointment by updating its status."""
+    appointment = get_object_or_404(Appointment, id=appointment_id)
+
+    if appointment.status != "Cancelled":  # Prevent duplicate cancellations
+        appointment.status = "Cancelled"
+        appointment.save()
+        messages.success(request, "Appointment has been cancelled.")
+    
+    return JsonResponse({"success": True, "message": "Appointment cancelled successfully"})
+
+

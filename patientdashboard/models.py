@@ -15,6 +15,9 @@ from django.contrib.contenttypes.models import ContentType
 from datetime import datetime, date, timedelta
 from django.utils.timezone import now
 from django.utils import timezone
+
+
+
 class Appointment(models.Model):
     STATUS_CHOICES = [
         ('Pending', 'Pending'),
@@ -34,6 +37,7 @@ class Appointment(models.Model):
         ('Paid', 'Paid'),
         ('Failed', 'Failed'),
     ]
+    
     
 
     # ... existing fields ...
@@ -70,6 +74,10 @@ class Appointment(models.Model):
         return f"Appointment with {self.practitioner} at {self.slot.start_time} - {self.slot.end_time}"
 
 
+
+
+
+
 class Notification(models.Model):
     recipient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name="notifications")
     message = models.TextField()
@@ -79,6 +87,7 @@ class Notification(models.Model):
 
     def __str__(self):
         return f"Notification for {self.recipient.first_name} {self.recipient.last_name}"
+
 
 
 class Review(models.Model):
@@ -103,10 +112,8 @@ class Reply(models.Model):
 
     def __str__(self):
         return f"Reply by {self.content_object} on {self.review}"
-    
-    
-    
-    
+
+
 
 class VideoConsultationSlot(models.Model):
     practitioner = models.ForeignKey(Practitioner, on_delete=models.CASCADE, related_name='video_slots')

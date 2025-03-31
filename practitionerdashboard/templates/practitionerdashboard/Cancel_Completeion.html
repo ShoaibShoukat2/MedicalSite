@@ -107,39 +107,63 @@
                                     <th>Patient Name</th>
                                     <th>Date</th>
                                     <th>Time</th>
-                                    <th>Service</th>
                                     <th>Cancellation Reason</th>
                                     <th>Cancelled By</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                {% for appointment in cancelled_appointments %}
                                 <tr>
-                                    <td>Emma Wilson</td>
-                                    <td>Feb 13, 2025</td>
-                                    <td>3:00 PM</td>
-                                    <td>Dental Filling</td>
-                                    <td>Patient Schedule Conflict</td>
-                                    <td>Patient</td>
+                                    <td>{{ appointment.patient.first_name }}</td>
+                                    <td>{{ appointment.get_formatted_date }}</td>
+                                    <td>{{ appointment.get_formatted_time }}</td>
+
+                                    <td>{{ appointment.cancellation_reason|default:"Patient Request" }}</td>
+                                    <td>{{ appointment.cancelled_by|default:"Patient" }}</td>
                                     <td>
-                                        <button class="btn btn-link btn-sm" data-mdb-toggle="modal" data-mdb-target="#viewDetailsModal4">
+                                        <button class="btn btn-link btn-sm" data-mdb-toggle="modal" data-mdb-target="#viewDetailsModal{{ appointment.id }}">
                                             View Details
                                         </button>
                                     </td>
                                 </tr>
+
+                                <!-- Modal for each cancelled appointment -->
+                                <div class="modal fade" id="viewDetailsModal{{ appointment.id }}" tabindex="-1" aria-labelledby="viewDetailsModalLabel{{ appointment.id }}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="viewDetailsModalLabel{{ appointment.id }}">Appointment Details</h5>
+                                                <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <h6>Patient Information</h6>
+                                                    <p>Name: {{ appointment.patient.first_name }}</p>
+                                                    <p>Email: {{ appointment.patient.email }}</p>
+                                                    <p>Phone: {{ appointment.patient.mobile_phone }}</p>
+
+                                                </div>
+                                                <div class="mb-3">
+                                                    <h6>Appointment Information</h6>
+                                                    <p>Date: {{ appointment.get_formatted_date }}</p>
+                                                    <p>Time: {{ appointment.get_formatted_time }}</p>
+                                                    <p>Status: Cancelled</p>
+                                                    <p>Cancellation Reason: {{ appointment.cancellation_reason|default:"Patient Request" }}</p>
+                                                    <p>Cancelled By: {{ appointment.cancelled_by|default:"Patient" }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% empty %}
                                 <tr>
-                                    <td>David Lee</td>
-                                    <td>Feb 12, 2025</td>
-                                    <td>9:00 AM</td>
-                                    <td>Root Canal</td>
-                                    <td>Emergency Reschedule</td>
-                                    <td>Doctor</td>
-                                    <td>
-                                        <button class="btn btn-link btn-sm" data-mdb-toggle="modal" data-mdb-target="#viewDetailsModal5">
-                                            View Details
-                                        </button>
-                                    </td>
+                                    <td colspan="7" class="text-center">No cancelled appointments found.</td>
                                 </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>
@@ -183,30 +207,66 @@
         </div>
     </div>
 
-    <!-- Sample Modal for Cancelled Appointment -->
-    <div class="modal fade" id="viewDetailsModal4" tabindex="-1" aria-labelledby="viewDetailsModalLabel4" aria-hidden="true">
+    <!-- More sample modals for the other completed appointments -->
+    <div class="modal fade" id="viewDetailsModal2" tabindex="-1" aria-labelledby="viewDetailsModalLabel2" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="viewDetailsModalLabel4">Appointment Details</h5>
+                    <h5 class="modal-title" id="viewDetailsModalLabel2">Appointment Details</h5>
                     <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
                         <h6>Patient Information</h6>
-                        <p>Name: Emma Wilson</p>
-                        <p>Email: emma.wilson@email.com</p>
-                        <p>Phone: (555) 987-6543</p>
+                        <p>Name: Sarah Johnson</p>
+                        <p>Email: sarah.johnson@email.com</p>
+                        <p>Phone: (555) 234-5678</p>
                     </div>
                     <div class="mb-3">
                         <h6>Appointment Information</h6>
-                        <p>Date: Feb 13, 2025</p>
-                        <p>Time: 3:00 PM</p>
-                        <p>Service: Dental Filling</p>
-                        <p>Status: Cancelled</p>
-                        <p>Cancellation Reason: Patient Schedule Conflict</p>
-                        <p>Cancelled By: Patient</p>
-                        <p>Cancelled On: Feb 12, 2025 2:30 PM</p>
+                        <p>Date: Feb 12, 2025</p>
+                        <p>Time: 2:30 PM</p>
+                        <p>Service: Dental Cleaning</p>
+                        <p>Duration: 45 mins</p>
+                        <p>Status: Completed</p>
+                    </div>
+                    <div class="mb-3">
+                        <h6>Notes</h6>
+                        <p>Routine cleaning completed. Recommended improved flossing technique.</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="viewDetailsModal3" tabindex="-1" aria-labelledby="viewDetailsModalLabel3" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="viewDetailsModalLabel3">Appointment Details</h5>
+                    <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <h6>Patient Information</h6>
+                        <p>Name: Michael Brown</p>
+                        <p>Email: michael.brown@email.com</p>
+                        <p>Phone: (555) 345-6789</p>
+                    </div>
+                    <div class="mb-3">
+                        <h6>Appointment Information</h6>
+                        <p>Date: Feb 11, 2025</p>
+                        <p>Time: 11:15 AM</p>
+                        <p>Service: Consultation</p>
+                        <p>Duration: 60 mins</p>
+                        <p>Status: Completed</p>
+                    </div>
+                    <div class="mb-3">
+                        <h6>Notes</h6>
+                        <p>Initial consultation completed. Treatment plan discussed and agreed upon.</p>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -217,5 +277,3 @@
     </div>
 </div>
 {% endblock content %}
-
-

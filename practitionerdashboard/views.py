@@ -47,7 +47,14 @@ def dashboard_view(request):
         })
 
     # Count total patients
-    total_patients = Appointment.objects.filter(practitioner_id=practitioner_id).count()
+    total_patients = Appointment.objects.filter(
+        practitioner_id=practitioner_id
+    ).exclude(status="Cancelled").count()
+        
+    
+    
+    
+    print("Total Patient:",total_patients)
 
     # Count completed appointments
     completed_appointments = Appointment.objects.filter(practitioner_id=practitioner_id, status="Accepted").count()
@@ -85,6 +92,8 @@ def dashboard_view(request):
         practitioner_id=practitioner_id,
         
     ).order_by('slot__start_time')
+    
+    
     
     # Today's appointments
     today_appointments = Appointment.objects.filter(
@@ -426,10 +435,19 @@ def add_prescription(request, patient_id):
 
 
 def Cancel_Complete(request):
+    practitioner_id = request.session.get("practitioner_id")  # Get practitioner_id from session
     
-    return render(request,'practitionerdashboard/Cancel_Completeion.html')
+    if not practitioner_id:
+        return render(request, "practitionerdashboard/Cancel_Completeion.html", {
+            "message": "Practitioner ID not found in session."
+        })
 
+    # Filter appointments for the logged-in practitioner where status is "Cancelled"
+    cancelled_appointments = Appointment.objects.filter(practitioner_id=practitioner_id, status="Cancelled")
 
+    return render(request, 'practitionerdashboard/Cancel_Completeion.html', {
+        "cancelled_appointments": cancelled_appointments
+    })
 
 
 
