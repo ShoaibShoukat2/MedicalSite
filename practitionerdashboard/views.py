@@ -107,6 +107,7 @@ def dashboard_view(request):
     ).order_by('slot__start_time')
 
     return render(request, 'practitionerdashboard/dashboard.html', {
+        'practitioner': practitioner,
         'today_appointments': today_appointments,
         'waiting_list_appointments': waiting_list_appointments,
         'accepted_appointments': accepted_appointments,

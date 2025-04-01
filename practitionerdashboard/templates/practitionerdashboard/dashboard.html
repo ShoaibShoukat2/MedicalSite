@@ -422,51 +422,53 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
   <script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Get practitioner details from Django template as JSON-safe strings
+    var practitionerPhoto = "{{ practitioner.photo.url|default:''|escapejs }}".trim();
+    var practitionerPrice = "{{ practitioner.price|default:''|escapejs }}".trim();
+    var practitionerDescription = "{{ practitioner.description|default:''|escapejs }}".trim();
 
-    document.addEventListener("DOMContentLoaded", function () {
-        // Get practitioner details from Django template
-        var practitionerPhoto = "{{ practitioner.photo.url|default:'' }}";
-        var practitionerPrice = "{{ practitioner.price|default:'' }}";
-        var practitionerDescription = "{{ practitioner.description|default:'' }}";
-
-        // Check if any required field is missing
-        if (!practitionerPhoto || !practitionerPrice || !practitionerDescription) {
-            alert("Please complete your profile. Some required details are missing.");
-        }
-    });
+    // Ensure values are valid and not empty or None
+    if (!practitionerPhoto || practitionerPhoto === "None" || practitionerPhoto === "" || 
+        !practitionerPrice || practitionerPrice === "None" || practitionerPrice === "" || 
+        !practitionerDescription || practitionerDescription === "None" || practitionerDescription === "") {
+        alert("Please complete your profile. Some required details are missing.");
+    }
+});
 
 
-    $(document).ready(function () {
-      // Handle Accept and Cancel buttons
-      $(".accept-btn, .cancel-btn").on("click", function () {
-        var appointmentRow = $(this).closest("tr");
-        var appointmentId = appointmentRow.data("id");
-        var status = $(this).hasClass("accept-btn") ? "Accepted" : "Cancelled";
 
-        // Determine the correct URL based on the status
-        var url =
-          status === "Accepted"
-            ? `/practitioner-dashboard/appointments/${appointmentId}/Accepted/`
-            : `/practitioner-dashboard/appointments/${appointmentId}/Cancelled/`;
+      $(document).ready(function () {
+        // Handle Accept and Cancel buttons
+        $(".accept-btn, .cancel-btn").on("click", function () {
+          var appointmentRow = $(this).closest("tr");
+          var appointmentId = appointmentRow.data("id");
+          var status = $(this).hasClass("accept-btn") ? "Accepted" : "Cancelled";
 
-        // Make the AJAX request to update the appointment status
-        $.ajax({
-          url: url,
-          type: "GET",
-          success: function (response) {
-            if (status === "Cancelled") {
-              alert("Successfully Cancelled the appointment");
-              location.reload(); // Reload the page to reflect changes
-            } else if (status === "Accepted") {
-              alert("Successfully Accepted the appointment");
-              location.reload();
-            }
-          },
-          error: function (xhr, status, error) {
-            alert("Something went wrong. Please try again.");
-          },
+          // Determine the correct URL based on the status
+          var url =
+            status === "Accepted"
+              ? `/practitioner-dashboard/appointments/${appointmentId}/Accepted/`
+              : `/practitioner-dashboard/appointments/${appointmentId}/Cancelled/`;
+
+          // Make the AJAX request to update the appointment status
+          $.ajax({
+            url: url,
+            type: "GET",
+            success: function (response) {
+              if (status === "Cancelled") {
+                alert("Successfully Cancelled the appointment");
+                location.reload(); // Reload the page to reflect changes
+              } else if (status === "Accepted") {
+                alert("Successfully Accepted the appointment");
+                location.reload();
+              }
+            },
+            error: function (xhr, status, error) {
+              alert("Something went wrong. Please try again.");
+            },
+          });
         });
-      });
 
       // Handle View button to show patient details
       $(".view-btn").on("click", function () {
