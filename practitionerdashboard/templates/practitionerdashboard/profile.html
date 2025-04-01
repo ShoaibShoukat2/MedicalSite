@@ -26,13 +26,20 @@
               <div class="row g-0">
                 <!-- Sidebar with photo -->
                 <div class="col-md-4 bg-light p-4 text-center d-flex flex-column justify-content-center align-items-center border-end">
-                  <div class="mb-3 position-relative">
+                  <div class="col-12 mb-3 text-center">
                     {% if practitioner.photo %}
-                      <img src="{{ practitioner.photo.url }}" alt="Profile Photo" class="rounded-circle img-thumbnail shadow" width="180" height="180">
+                      <img src="{{ practitioner.photo.url }}" 
+                           alt="Profile Photo" 
+                           class="rounded-circle img-thumbnail shadow"
+                           style="width: 180px; height: 180px; object-fit: cover; border-radius: 50%;">
                     {% else %}
-                      <img src="{% static 'images/default-profile.png' %}" alt="Default Profile" class="rounded-circle img-thumbnail shadow" width="180" height="180">
+                      <img src="{% static 'images/default-profile.png' %}" 
+                           alt="Default Profile" 
+                           class="rounded-circle img-thumbnail shadow"
+                           style="width: 180px; height: 180px; object-fit: cover; border-radius: 50%;">
                     {% endif %}
                   </div>
+                  
                   <h5 class="fw-bold mb-1">{{ practitioner.first_name }} {{ practitioner.last_name }}</h5>
                   <p class="text-primary mb-2">{{ practitioner.get_specialty_display }}</p>
                   
@@ -115,11 +122,18 @@
                   <!-- Current Photo Display -->
                   <div class="col-12 mb-3 text-center">
                     {% if practitioner.photo %}
-                      <img src="{{ practitioner.photo.url }}" alt="Current Profile Photo" class="rounded-circle img-thumbnail shadow mb-3" width="150" height="150">
+                      <img src="{{ practitioner.photo.url }}" 
+                           alt="Current Profile Photo" 
+                           class="rounded-circle img-thumbnail shadow mb-3"
+                           style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%;">
                     {% else %}
-                      <img src="{% static 'images/default-profile.png' %}" alt="Default Profile" class="rounded-circle img-thumbnail shadow mb-3" width="150" height="150">
+                      <img src="{% static 'images/default-profile.png' %}" 
+                           alt="Default Profile" 
+                           class="rounded-circle img-thumbnail shadow mb-3"
+                           style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%;">
                     {% endif %}
                   </div>
+                  
                 
                   <!-- Photo Upload -->
                   <div class="col-12 mb-3">
@@ -210,7 +224,6 @@
                     <small class="text-muted mt-1 d-block">Set a competitive rate based on your experience</small>
                   </div>
                   
-
                   <!-- Specialty (Read-only) -->
                   <div class="col-md-6 mb-3">
                     <label class="form-label fw-semibold text-primary">
