@@ -25,6 +25,8 @@ from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 
 
+
+
 def dashboard_view(request):
     # Get the practitioner ID from the session
     practitioner_id = request.session.get('practitioner_id')
@@ -50,7 +52,8 @@ def dashboard_view(request):
     total_patients = Appointment.objects.filter(
         practitioner_id=practitioner_id
     ).exclude(status="Cancelled").count()
-        
+
+
     
     
     
@@ -297,17 +300,20 @@ def mypatient(request):
 
 
 
+
 def CompleteProfile(request):
     context = {}
 
     # Retrieve practitioner ID from session
     practitioner_id = request.session.get('practitioner_id')
-
+    
+    print("Practitonar ID:",practitioner_id)
+    
     if not practitioner_id:
         context['error_message'] = "No practitioner ID found in the session. Please log in."
-        return render(request, 'practitionerdashboard/profile.html', context)
+        return redirect('login')  # Redirect to login if ID is missing
 
-    # Fetch the practitioner instance or return a 404 error
+    # Fetch practitioner instance or return a 404 error
     practitioner = get_object_or_404(Practitioner, id=practitioner_id)
     context['practitioner'] = practitioner  # Pass the practitioner object to the template
 
@@ -317,7 +323,7 @@ def CompleteProfile(request):
         price = request.POST.get('price')
         description = request.POST.get('description')
 
-        # Validate input and update practitioner fields
+        # Validate inputs
         if photo:
             practitioner.photo = photo
         if price:
@@ -326,14 +332,20 @@ def CompleteProfile(request):
             except ValueError:
                 context['error_message'] = "Invalid price. Please enter a valid number."
                 return render(request, 'practitionerdashboard/profile.html', context)
+
         if description:
             practitioner.description = description
 
         # Save the changes
         practitioner.save()
-        context['success_message'] = "Practitioner details updated successfully!"
+        context['success_message'] = "Profile updated successfully!"
+        return redirect('practitioner_dashboard:practitioner_profile')  # Redirect to prevent form resubmission
 
     return render(request, 'practitionerdashboard/profile.html', context)
+
+
+
+
 
 
 

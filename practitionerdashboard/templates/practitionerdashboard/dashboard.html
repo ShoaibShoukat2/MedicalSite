@@ -422,6 +422,20 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
   <script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Get practitioner details from Django template
+        var practitionerPhoto = "{{ practitioner.photo.url|default:'' }}";
+        var practitionerPrice = "{{ practitioner.price|default:'' }}";
+        var practitionerDescription = "{{ practitioner.description|default:'' }}";
+
+        // Check if any required field is missing
+        if (!practitionerPhoto || !practitionerPrice || !practitionerDescription) {
+            alert("Please complete your profile. Some required details are missing.");
+        }
+    });
+
+
     $(document).ready(function () {
       // Handle Accept and Cancel buttons
       $(".accept-btn, .cancel-btn").on("click", function () {

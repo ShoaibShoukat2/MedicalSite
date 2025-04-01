@@ -5,100 +5,255 @@
 <div class="container py-5">
   <div class="row justify-content-center">
     <div class="col-lg-10">
-      <div class="card shadow-lg border-0 rounded-3 overflow-hidden">
-        <div class="card-header bg-primary text-white p-4">
-          <h4 class="mb-0 fw-bold">Complete Your Profile</h4>
-          <p class="mb-0 mt-2 opacity-75">Please provide the following information to set up your practitioner profile</p>
+      <div class="card shadow-lg border-0 rounded-lg overflow-hidden">
+        <!-- Header with gradient background -->
+        <div class="card-header p-4 bg-gradient-primary text-white">
+          <div class="d-flex align-items-center">
+            <div>
+              <h4 class="mb-0 fw-bold">Practitioner Profile</h4>
+              <p class="mb-0 mt-1 opacity-75 small">Manage your professional information</p>
+            </div>
+            <div class="ms-auto">
+              <i class="fas fa-user-md fa-2x opacity-75"></i>
+            </div>
+          </div>
         </div>
-        
-        <div class="card-body p-4">
-          <form method="POST" enctype="multipart/form-data" action="" class="needs-validation" novalidate>
-            {% csrf_token %}
-            
-            <div class="row g-3">
-              <!-- Photo Upload -->
-              <div class="col-12 mb-3">
-                <label for="photo" class="form-label fw-semibold">
-                  <i class="fas fa-camera-retro text-primary me-2"></i>Profile Photo
-                </label>
-                <div class="input-group">
-                  <input type="file" class="form-control" id="photo" name="photo" accept="image/*">
-                  <label class="input-group-text" for="photo">Upload</label>
+
+        <div class="card-body p-0">
+          {% if practitioner.photo or practitioner.price or practitioner.description %}
+            <!-- Display Profile with Edit Mode Toggle -->
+            <div id="profile-view">
+              <div class="row g-0">
+                <!-- Sidebar with photo -->
+                <div class="col-md-4 bg-light p-4 text-center d-flex flex-column justify-content-center align-items-center border-end">
+                  <div class="mb-3 position-relative">
+                    {% if practitioner.photo %}
+                      <img src="{{ practitioner.photo.url }}" alt="Profile Photo" class="rounded-circle img-thumbnail shadow" width="180" height="180">
+                    {% else %}
+                      <img src="{% static 'images/default-profile.png' %}" alt="Default Profile" class="rounded-circle img-thumbnail shadow" width="180" height="180">
+                    {% endif %}
+                  </div>
+                  <h5 class="fw-bold mb-1">{{ practitioner.first_name }} {{ practitioner.last_name }}</h5>
+                  <p class="text-primary mb-2">{{ practitioner.get_specialty_display }}</p>
+                  
+                  {% if practitioner.price %}
+                    <div class="badge bg-success fs-6 mb-3 p-2">
+                      <i class="fas fa-tag me-1"></i>${{ practitioner.price }} per session
+                    </div>
+                  {% endif %}
+                  
+                  <button id="edit-profile-btn" class="btn btn-outline-primary btn-sm mt-2">
+                    <i class="fas fa-edit me-1"></i>Edit Profile
+                  </button>
                 </div>
-                <div class="form-text">Upload a professional headshot (recommended size: 400x400px)</div>
+                
+                <!-- Main content area -->
+                <div class="col-md-8 p-4">
+                  <h5 class="border-bottom pb-2 mb-3">
+                    <i class="fas fa-info-circle text-primary me-2"></i>Profile Information
+                  </h5>
+                  
+                  <div class="row mb-4">
+                    <div class="col-md-6 mb-3">
+                      <div class="card h-100 border-0 bg-light rounded-3">
+                        <div class="card-body">
+                          <h6 class="text-muted mb-2 small">Email Address</h6>
+                          <p class="mb-0 d-flex align-items-center">
+                            <i class="fas fa-envelope text-primary me-2"></i>
+                            {{ practitioner.email }}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <div class="card h-100 border-0 bg-light rounded-3">
+                        <div class="card-body">
+                          <h6 class="text-muted mb-2 small">Specialty</h6>
+                          <p class="mb-0 d-flex align-items-center">
+                            <i class="fas fa-stethoscope text-primary me-2"></i>
+                            {{ practitioner.get_specialty_display }}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {% if practitioner.description %}
+                    <h5 class="border-bottom pb-2 mb-3">
+                      <i class="fas fa-user-circle text-primary me-2"></i>Professional Bio
+                    </h5>
+                    <div class="p-3 bg-light rounded-3 mb-4">
+                      <p class="mb-0">{{ practitioner.description }}</p>
+                    </div>
+                  {% endif %}
+                  
+                  <div class="alert alert-info d-flex align-items-center mt-2 mb-0" role="alert">
+                    <i class="fas fa-lightbulb me-3 fs-4"></i>
+                    <div>
+                      <strong>Pro Tip:</strong> Keep your profile information up-to-date to attract more clients.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Edit Profile Form (Hidden by Default) -->
+            <div id="edit-profile-form" class="p-4" style="display: none;">
+              <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="mb-0">
+                  <i class="fas fa-edit text-primary me-2"></i>Edit Your Profile
+                </h5>
+                <button id="cancel-edit-btn" class="btn btn-outline-secondary btn-sm">
+                  <i class="fas fa-times me-1"></i>Cancel
+                </button>
               </div>
               
-              <!-- Price -->
-              <div class="col-12 mb-3">
-                <label for="price" class="form-label fw-semibold">
-                  <i class="fas fa-dollar-sign text-primary me-2"></i>Session Price
-                </label>
-                <div class="input-group">
-                  <span class="input-group-text">$</span>
-                  <input type="number" step="0.01" class="form-control" id="price" name="price" placeholder="0.00">
-                </div>
-              </div>
+              <form method="POST" enctype="multipart/form-data" action="" class="needs-validation" novalidate>
+                {% csrf_token %}
 
-             
-              <!-- Description -->
-              <div class="col-12 mb-3">
-                <label for="description" class="form-label fw-semibold">
-                  <i class="fas fa-pen-fancy text-primary me-2"></i>Professional Bio
-                </label>
-                <textarea class="form-control" id="description" name="description" rows="5" placeholder="Provide a detailed description of your expertise, experience, and approach to patient care"></textarea>
-              </div>
+                <div class="row g-4">
+                  <!-- Current Photo Display -->
+                  <div class="col-12 mb-3 text-center">
+                    {% if practitioner.photo %}
+                      <img src="{{ practitioner.photo.url }}" alt="Current Profile Photo" class="rounded-circle img-thumbnail shadow mb-3" width="150" height="150">
+                    {% else %}
+                      <img src="{% static 'images/default-profile.png' %}" alt="Default Profile" class="rounded-circle img-thumbnail shadow mb-3" width="150" height="150">
+                    {% endif %}
+                  </div>
+                
+                  <!-- Photo Upload -->
+                  <div class="col-12 mb-3">
+                    <label for="photo" class="form-label fw-semibold text-primary">
+                      <i class="fas fa-camera-retro me-2"></i>Update Profile Photo
+                    </label>
+                    <div class="input-group">
+                      <input type="file" class="form-control" id="photo" name="photo" accept="image/*">
+                      <label class="input-group-text bg-primary text-white" for="photo">
+                        <i class="fas fa-upload me-1"></i>Upload
+                      </label>
+                    </div>
+                    <small class="text-muted mt-1 d-block">Leave empty to keep current photo</small>
+                  </div>
+                  
+                  <!-- Price -->
+                  <div class="col-md-6 mb-3">
+                    <label for="price" class="form-label fw-semibold text-primary">
+                      <i class="fas fa-dollar-sign me-2"></i>Session Price
+                    </label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-light">$</span>
+                      <input type="number" step="0.01" class="form-control" id="price" name="price" placeholder="0.00" value="{{ practitioner.price|default_if_none:'' }}">
+                    </div>
+                  </div>
+                  
+                  <!-- Specialty (Read-only) -->
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label fw-semibold text-primary">
+                      <i class="fas fa-stethoscope me-2"></i>Your Specialty
+                    </label>
+                    <input type="text" class="form-control bg-light" value="{{ practitioner.get_specialty_display }}" readonly>
+                  </div>
+
+                  <!-- Description -->
+                  <div class="col-12 mb-3">
+                    <label for="description" class="form-label fw-semibold text-primary">
+                      <i class="fas fa-pen-fancy me-2"></i>Professional Bio
+                    </label>
+                    <textarea class="form-control" id="description" name="description" rows="5" placeholder="Describe your expertise, qualifications, and approach to treatment">{{ practitioner.description|default_if_none:'' }}</textarea>
+                  </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="d-grid gap-2 mt-4">
+                  <button type="submit" class="btn btn-primary py-2">
+                    <i class="fas fa-save me-2"></i>Update Profile
+                  </button>
+                </div>
+              </form>
             </div>
             
-            <!-- Submit Button -->
-            <div class="d-grid gap-2 mt-4">
-              <button type="submit" class="btn btn-primary py-2">
-                <i class="fas fa-save me-2"></i>Update Profile
-              </button>
+          {% else %}
+            <!-- Display Initial Form to Complete Profile -->
+            <div class="p-4">
+              <div class="alert alert-info mb-4">
+                <i class="fas fa-info-circle me-2"></i>
+                Complete your profile to be visible to potential clients
+              </div>
+              
+              <form method="POST" enctype="multipart/form-data" action="" class="needs-validation" novalidate>
+                {% csrf_token %}
+
+                <div class="row g-4">
+                  <!-- Photo Upload -->
+                  <div class="col-12 mb-3">
+                    <label for="photo" class="form-label fw-semibold text-primary">
+                      <i class="fas fa-camera-retro me-2"></i>Profile Photo
+                    </label>
+                    <div class="input-group">
+                      <input type="file" class="form-control" id="photo" name="photo" accept="image/*">
+                      <label class="input-group-text bg-primary text-white" for="photo">
+                        <i class="fas fa-upload me-1"></i>Upload
+                      </label>
+                    </div>
+                    <small class="text-muted mt-1 d-block">Recommended: Square image, at least 300x300 pixels</small>
+                  </div>
+                  
+                  <!-- Price -->
+                  <div class="col-md-6 mb-3">
+                    <label for="price" class="form-label fw-semibold text-primary">
+                      <i class="fas fa-dollar-sign me-2"></i>Session Price
+                    </label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-light">$</span>
+                      <input type="number" step="0.01" class="form-control" id="price" name="price" placeholder="0.00">
+                    </div>
+                    <small class="text-muted mt-1 d-block">Set a competitive rate based on your experience</small>
+                  </div>
+                  
+                  <!-- Specialty (Read-only) -->
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label fw-semibold text-primary">
+                      <i class="fas fa-stethoscope me-2"></i>Your Specialty
+                    </label>
+                    <input type="text" class="form-control bg-light" value="{{ practitioner.get_specialty_display }}" readonly>
+                  </div>
+
+                  <!-- Description -->
+                  <div class="col-12 mb-3">
+                    <label for="description" class="form-label fw-semibold text-primary">
+                      <i class="fas fa-pen-fancy me-2"></i>Professional Bio
+                    </label>
+                    <textarea class="form-control" id="description" name="description" rows="5" placeholder="Describe your expertise, qualifications, and approach to treatment"></textarea>
+                    <small class="text-muted mt-1 d-block">A compelling bio helps clients understand your practice style</small>
+                  </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="d-grid gap-2 mt-4">
+                  <button type="submit" class="btn btn-primary py-3 btn-lg">
+                    <i class="fas fa-save me-2"></i>Complete Your Profile
+                  </button>
+                </div>
+              </form>
             </div>
-          </form>
+          {% endif %}
+        </div>
+        
+        <!-- Footer -->
+        <div class="card-footer bg-light p-3 text-center">
+          <small class="text-muted">
+            Last updated: <span class="fw-semibold">{% now "F j, Y" %}</span>
+          </small>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- CSS -->
-<style>
-  .badge {
-    font-weight: 500;
-    padding: 0.5rem 1rem;
-  }
-  
-  .btn-outline-primary {
-    border-width: 2px;
-  }
-</style>
-
 <!-- JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    // SweetAlert Notifications
-    {% if error_message %}
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: '{{ error_message|escapejs }}',
-        confirmButtonText: 'Understand',
-        confirmButtonColor: '#0d6efd'
-      });
-    {% endif %}
-
-    {% if success_message %}
-      Swal.fire({
-        icon: 'success',
-        title: 'Success',
-        text: '{{ success_message|escapejs }}',
-        confirmButtonText: 'Great',
-        confirmButtonColor: '#0d6efd'
-      });
-    {% endif %}
-    
     // Form validation
     const forms = document.querySelectorAll('.needs-validation');
     Array.from(forms).forEach(form => {
@@ -110,6 +265,50 @@
         form.classList.add('was-validated');
       }, false);
     });
+    
+    // Edit profile toggle
+    const editProfileBtn = document.getElementById('edit-profile-btn');
+    const cancelEditBtn = document.getElementById('cancel-edit-btn');
+    const profileView = document.getElementById('profile-view');
+    const editProfileForm = document.getElementById('edit-profile-form');
+    
+    if (editProfileBtn && cancelEditBtn) {
+      editProfileBtn.addEventListener('click', function() {
+        profileView.style.display = 'none';
+        editProfileForm.style.display = 'block';
+      });
+      
+      cancelEditBtn.addEventListener('click', function() {
+        profileView.style.display = 'block';
+        editProfileForm.style.display = 'none';
+      });
+    }
+    
+    // SweetAlert notifications
+    {% if error_message %}
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: '{{ error_message|escapejs }}',
+        confirmButtonText: 'Okay',
+        confirmButtonColor: '#0d6efd'
+      });
+    {% endif %}
+
+    {% if success_message %}
+      Swal.fire({
+        icon: 'success',
+        title: 'Profile Updated!',
+        text: '{{ success_message|escapejs }}',
+        confirmButtonText: 'Great',
+        confirmButtonColor: '#0d6efd'
+      });
+    {% endif %}
   });
 </script>
 {% endblock content %}
+
+
+
+
+
