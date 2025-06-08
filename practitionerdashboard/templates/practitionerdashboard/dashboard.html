@@ -62,25 +62,25 @@
 
   <div class="container mt-4">
     <ul class="nav nav-tabs" id="appointmentTabs">
-      <li class="nav-item">
-        <a class="nav-link active" data-bs-toggle="tab" href="#today">Today's</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="tab" href="#pending">Pending</a>
-
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="tab" href="#waiting">Waiting List</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="tab" href="#accepted">Accepted</a>
-      </li>
+     
     </ul>
   
 
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+      {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
+
+
+
+    
+
 
     <!-- Main Dashboard Container -->
-<div class="container-fluid mt-4">
+  <div class="container-fluid mt-4">
   <!-- Dashboard Header -->
   <div class="row mb-4">
     <div class="col">
@@ -412,7 +412,14 @@
         </div>
       </div>
     </div>
+
   </div>
+
+
+
+
+
+
 
   <!-- Include jQuery and Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

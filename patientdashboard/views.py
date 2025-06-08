@@ -4,32 +4,72 @@ import json
 from django.db.models import Q
 from patientdashboard.models import Appointment, Notification
 from user_account.models import Practitioner ,Patient # Assuming Practitioner is the model for doctors/practitioners
-from django.shortcuts import render, get_object_or_404, redirect
 from user_account.models import Patient  # Adjust the import based on your app structure
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import Appointment, Patient, Notification
-from django.http import JsonResponse
 from user_account.models import Patient
-from django.shortcuts import render, get_object_or_404
-from user_account.models import Practitioner
-from practitionerdashboard.models import AvailableSlot
 from django.utils.timezone import now
-from django.http import JsonResponse
-from django.shortcuts import render, get_object_or_404, redirect
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
 from .forms import PatientProfileForm, PatientPasswordForm
-from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.hashers import make_password, check_password
-from django.shortcuts import render
 import sys
 from django.core.paginator import Paginator
 from django.conf import settings
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect
+from patientdashboard.models import Appointment
+from user_account.models import Patient
+from practitionerdashboard.models import AvailableSlot
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect
+from patientdashboard.models import Appointment
+from user_account.models import Patient
+from practitionerdashboard.models import AvailableSlot
+from django.shortcuts import render, redirect
+from django.core.exceptions import ValidationError
+from .models import Patient, AvailableSlot, Appointment
+from django.shortcuts import render, redirect
+from .models import Patient, Appointment, AvailableSlot, Practitioner,Practitioner, Review, Patient
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
+from .stripe_utils import create_checkout_session, handle_checkout_completed
+import stripe
+from django.http import HttpResponse
+from datetime import datetime, timedelta, date
 
+# practitionerdashboard/views.py
+from django.utils import timezone
+from calendar import monthrange
+from calendar import month_name
+from django.contrib.auth.decorators import login_required
+from .forms import ReviewForm
+# views.py
 
+from .models import VideoConsultationSlot
+from .models import  VideoConsultationSlot, Appointment
+
+from django.contrib import messages
+from django.utils import timezone
+import sys
+from .models import AvailableSlot, Appointment, Patient
+from django.contrib import messages
+import uuid
+import sys
+from .models import AvailableSlot, Appointment, Patient, Billing
+import sys
+from practitionerdashboard.models import Prescription
+from patientdashboard.models import Billing
+import sys
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .models import Billing, Patient
+
+from django.shortcuts import render, get_object_or_404
+from django.utils import timezone
+from .models import Practitioner, VideoConsultationSlot
+stripe.api_key = settings.STRIPE_SECRET_KEY 
 
 
 
@@ -79,33 +119,6 @@ def get_practitioners_by_specialization(request):
     ]
     return JsonResponse(data, safe=False)
 
-from datetime import datetime, timedelta
-from datetime import datetime, timedelta
-from django.utils import timezone
-from django.shortcuts import render, get_object_or_404
-from datetime import datetime, timedelta
-from django.utils import timezone
-from django.shortcuts import render, get_object_or_404
-from calendar import monthrange
-from datetime import datetime, timedelta
-from django.utils import timezone
-from django.shortcuts import render, get_object_or_404
-from calendar import monthrange
-from .models import Practitioner, AvailableSlot
-
-# practitionerdashboard/views.py
-from django.shortcuts import render, get_object_or_404
-from django.utils import timezone
-from datetime import datetime, timedelta
-from calendar import monthrange
-from .models import Practitioner, AvailableSlot
-from datetime import datetime, timedelta
-from django.utils import timezone
-from django.shortcuts import render, get_object_or_404
-from calendar import monthrange
-from .models import Practitioner, AvailableSlot
-from calendar import month_name
-from datetime import datetime
 
 
 
@@ -206,42 +219,7 @@ def available_slots(request, practitioner_id):
 
 
 
-from django.http import JsonResponse
-from django.shortcuts import get_object_or_404, redirect
-from patientdashboard.models import Appointment
-from user_account.models import Patient
-from practitionerdashboard.models import AvailableSlot
-from django.http import JsonResponse
-from django.shortcuts import get_object_or_404, redirect
-from patientdashboard.models import Appointment
-from user_account.models import Patient
-from practitionerdashboard.models import AvailableSlot
-from django.shortcuts import render, redirect
-from django.core.exceptions import ValidationError
-from .models import Patient, AvailableSlot, Appointment
-from django.shortcuts import render, redirect
-from .models import Patient, Appointment, AvailableSlot
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib import messages
-from django.http import HttpResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.conf import settings
-import stripe
-from datetime import datetime, timedelta
 
-from .models import Patient, Practitioner, Appointment, AvailableSlot
-from .stripe_utils import create_checkout_session, handle_checkout_completed
-
-import stripe
-from django.conf import settings
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.contrib import messages
-from datetime import datetime, date, timedelta
-from django.utils import timezone
-from .models import Appointment, AvailableSlot, Patient
-from .stripe_utils import create_checkout_session, handle_checkout_completed
 
 
 
@@ -317,8 +295,7 @@ def book_appointment(request):
 
 
 
-from django.shortcuts import render
-from user_account.models import Practitioner
+
 
 def booking(request):
     context = {
@@ -372,8 +349,7 @@ def chat(request):
 
 
 
-from practitionerdashboard.models import Prescription
-from patientdashboard.models import Billing
+
 
 
 def appointments_patients(request):
@@ -414,16 +390,7 @@ from django.shortcuts import render, redirect
 
 def telemedicine(request):
     return render(request, 'patientdashboard/telemedicine.html')
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from .models import Practitioner, Review
-from .forms import ReviewForm
-# views.py
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib import messages
-from .models import Practitioner, Review, Patient
-from .models import Practitioner, Review, Patient
+
 def practitioner_profile(request, pk):
     practitioner = get_object_or_404(Practitioner, pk=pk)
     reviews = Review.objects.filter(practitioner=practitioner).order_by('-created_at')
@@ -604,9 +571,6 @@ def update_progress(request):
 
 
 
-from django.shortcuts import render, get_object_or_404
-from django.utils import timezone
-from .models import Practitioner, VideoConsultationSlot
 
 def specialty_selection(request):
     specialties = Practitioner.SPECIALTY_CHOICES
@@ -623,33 +587,6 @@ def practitioners_list(request, specialty):
         'specialty': specialty
     })
 
-from django.shortcuts import render, get_object_or_404  # Make sure this import exists
-from django.utils import timezone
-from .models import VideoConsultationSlot
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib import messages
-from django.utils import timezone
-from .models import  VideoConsultationSlot, Appointment
-
-from django.shortcuts import get_object_or_404, redirect
-from django.contrib import messages
-from django.utils import timezone
-import sys
-from .models import AvailableSlot, Appointment, Patient
-from django.shortcuts import get_object_or_404, redirect
-from django.contrib import messages
-import uuid
-from django.utils import timezone
-from .models import AvailableSlot, Appointment, Patient
-import sys
-from django.shortcuts import get_object_or_404, redirect
-from django.contrib import messages
-from django.utils import timezone
-from .models import AvailableSlot, Appointment, Patient, Billing
-import sys
-
-
-stripe.api_key = settings.STRIPE_SECRET_KEY 
 
 
 
@@ -741,10 +678,7 @@ def payment_success(request, slot_id):
 
     
 
-import sys
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from .models import Billing, Patient
+
 
 def list_all_bills(request):
     print("📌 list_all_bills view is being executed!")  # Debugging print

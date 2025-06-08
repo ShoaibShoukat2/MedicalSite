@@ -122,49 +122,69 @@ def dashboard_view(request):
 
 
 
+from django.core.mail import send_mail
+from django.contrib import messages
 
 
 
 
 
-
-
-    
 def accept_appointment(request, appointment_id):
-    # Get the appointment object
     appointment = get_object_or_404(Appointment, id=appointment_id)
-    
-    
-
-    # Check if the form is submitted (POST request)
-        
-        
-    # Update the appointment status to "Accepted"
     appointment.status = "Accepted"
-    
-    appointment.save()  
+    appointment.save()
 
-    # Redirect to the appointments list after the action
-    return redirect('practitioner_dashboard:dashboard')  # Adjust with your URL name
+    # Send email
+    subject = 'Your Appointment Has Been Accepted'
+    message = f"""
+    Dear {appointment.patient.first_name},
 
+    Your appointment has been accepted.
 
+    Appointment Details:
+    - Date: {appointment.get_formatted_date()}
+    - Time: {appointment.get_formatted_time()}
+    - Practitioner: {appointment.practitioner.first_name}
+    - Video Call Link: {appointment.video_call_link}
+    """
+    recipient_email = appointment.patient.email
+    send_mail(subject, message, 'your_email@example.com', [recipient_email])
 
+    # Add frontend notification
+    messages.success(request, "Appointment accepted and email sent successfully.")
 
-
-
-
+    return redirect('practitioner_dashboard:dashboard')
 
 
 
 def cancel_appointment(request, appointment_id):
-    # Get the appointment object
     appointment = get_object_or_404(Appointment, id=appointment_id)
 
-    # Delete the appointment (Cancel action)
+    patient_name = appointment.patient.first_name
+    recipient_email = appointment.patient.email
+    date = appointment.get_formatted_date()
+    time = appointment.get_formatted_time()
+    practitioner_name = appointment.practitioner.first_name
+
     appointment.delete()
 
-    # Redirect to the appointments list after the action
-    return redirect('practitioner_dashboard:dashboard')  # Adjust with your URL name
+    subject = 'Your Appointment Has Been Cancelled'
+    message = f"""
+    Dear {patient_name},
+
+    Your appointment has been cancelled.
+
+    - Date: {date}
+    - Time: {time}
+    - Practitioner: {practitioner_name}
+    """
+    send_mail(subject, message, 'shoaibahmadbhatti6252@gmail.com', [recipient_email])
+
+    messages.info(request, "Appointment cancelled and email sent successfully.")
+
+    return redirect('practitioner_dashboard:dashboard')
+
+
 
     
 def get_patient_details(request, appointment_id):
@@ -191,23 +211,6 @@ def get_patient_details(request, appointment_id):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
 def telemedicine(request):
     return render(request, 'practitionerdashboard/telemedicine.html')
 
@@ -215,11 +218,9 @@ def appointment(request):
     return render(request, 'practitionerdashboard/appointment.html')
 
 
-
-
-
 def chat(request):
     return render(request, 'practitionerdashboard/chat.html')
+
 
 
 from django.shortcuts import get_object_or_404
@@ -259,6 +260,9 @@ def add_slot(request):
                 end_time=end_time
             )
 
+
+
+
             return JsonResponse({'success': True})
         
         except Exception as e:
@@ -272,7 +276,6 @@ def remove_slot(request, slot_id):
         slot.delete()
         return JsonResponse({'success': True})
     return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
-
 
 
 

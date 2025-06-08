@@ -582,11 +582,14 @@
                             </a>
                         </li>
                         <li class="{% if request.path == '/practitioner-dashboard/appointment/' %}active{% endif %}">
-                            <a href="">
+                            <a href="{% url 'practitionerdashboard:dashboard' %}">
                                 <i class="fa fa-calendar" ></i>
                                 <span >Appointments</span>
 
                             </a>
+                            
+
+
                         </li>
                         <li class="{% if request.path == '/practitioner-dashboard/cancellation-completion/' %}active{% endif %}">
                             <a href="{% url 'practitionerdashboard:cancellation_completion' %}">

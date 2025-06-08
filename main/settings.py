@@ -192,6 +192,7 @@ DEFAULT_FROM_EMAIL = 'shoaibahmadbhatti6252@gmail.com'
 
 
 
+
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 
 

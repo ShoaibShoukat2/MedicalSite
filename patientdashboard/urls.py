@@ -41,6 +41,7 @@ urlpatterns = [
     path('cancel-appointment/<int:appointment_id>/', views.cancel_appointment, name='cancel_appointment'),
     path('appointments_patients/', views.appointments_patients, name='appointments_patients'),
 
+
     path('chat/', views.chat, name='chat'),
 
 
@@ -54,4 +55,7 @@ urlpatterns = [
     path('bills/', views.list_all_bills, name='all_bills'),
     path('bills/<int:bill_id>/', views.view_bill, name='view_bill'),
 ]
+
+
+
 
