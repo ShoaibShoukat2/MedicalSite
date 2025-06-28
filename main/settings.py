@@ -196,16 +196,12 @@ DEFAULT_FROM_EMAIL = 'shoaibahmadbhatti6252@gmail.com'
 
 
 
-OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 
-
-
-
-# API Keys
-DID_API_KEY = env('DID_API_KEY', default='your_default_did_key')
 ELEVENLABS_API_KEY = env('ELEVENLABS_API_KEY', default='your_default_elevenlabs_key')
 
-
+# Access the variables
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+DID_API_KEY = os.getenv("DID_API_KEY")
 
 
 
