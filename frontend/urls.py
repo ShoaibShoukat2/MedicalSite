@@ -34,12 +34,12 @@ urlpatterns = [
     path('practitioner/forgot-password/', practitioner_forgot_password, name='practitioner_forgot_password'),
     path('practitioner/reset-password/', practitioner_reset_password, name='practitioner_reset_password'),
     
-    path('temp_index',temp_index, name="temp-page")
+    path('temp_index',temp_index, name="temp-page"),
+
+    path('ask-avatar/', ask_avatar, name='ask_avatar'),
    
    
 ]
-
-
 
 
 

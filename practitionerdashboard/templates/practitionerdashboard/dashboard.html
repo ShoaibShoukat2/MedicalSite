@@ -1,434 +1,605 @@
 {% extends "practitionerdashboard/base.html" %} {% load static %}
 {% block content %}
 <div class="content">
-  <div class="row justify-content-center mx-3">
-    <!-- Patients Widget -->
-    <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
-      <div
-        class="dash-widget text-center p-3 d-flex flex-column justify-content-center"
-        style="min-height: 150px"
-      >
-        <div
-          class="dash-widget-bg2 d-flex justify-content-center align-items-center rounded-circle mx-auto mb-2"
-          style="width: 60px; height: 60px"
-        >
-          <i class="fa fa-user text-white"></i>
-        </div>
-        <h3 class="mb-1">{{ total_patients }}</h3>
-        <span class="widget-title2 badge bg-success text-white p-2 rounded"
-          >Total Patients <i class="fa fa-check"></i
-        ></span>
-      </div>
-    </div>
-
-    <!-- Completed Appointments Widget -->
-    <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
-      <div
-        class="dash-widget text-center p-3 d-flex flex-column justify-content-center"
-        style="min-height: 150px"
-      >
-        <div
-          class="dash-widget-bg3 d-flex justify-content-center align-items-center rounded-circle mx-auto mb-2"
-          style="width: 60px; height: 60px"
-        >
-          <i class="fa fa-calendar-check text-white"></i>
-        </div>
-        <h3 class="mb-1">{{ completed_appointments }}</h3>
-        <span class="widget-title3 badge bg-primary text-white p-2 rounded"
-          >Accepted Appointments <i class="fa fa-check"></i
-        ></span>
-      </div>
-    </div>
-
-    <!-- Pending Appointments Widget -->
-    <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
-      <div
-        class="dash-widget text-center p-3 d-flex flex-column justify-content-center"
-        style="min-height: 150px"
-      >
-        <div
-          class="dash-widget-bg4 d-flex justify-content-center align-items-center rounded-circle mx-auto mb-2"
-          style="width: 60px; height: 60px"
-        >
-          <i class="fa fa-hourglass-half text-white"></i>
-        </div>
-        <h3 class="mb-1">{{ pending_appointments }}</h3>
-        <span class="widget-title4 badge bg-warning text-white p-2 rounded"
-          >Pending Appointments <i class="fa fa-exclamation-circle"></i
-        ></span>
+  <!-- Header Section -->
+  <div class="container-fluid mb-4">
+    <div class="row align-items-center">
+      <div class="col">
+        <h2 class="fw-bold text-dark mb-1">Dashboard Overview</h2>
+        <p class="text-muted mb-0">Welcome back! Here's what's happening with your practice today.</p>
       </div>
     </div>
   </div>
 
-  <div class="container mt-4">
-    <ul class="nav nav-tabs" id="appointmentTabs">
-     
-    </ul>
-  
-
-{% if messages %}
-  {% for message in messages %}
-    <div class="alert alert-{{ message.tags }}">
-      {{ message }}
-    </div>
-  {% endfor %}
-{% endif %}
-
-
-
-    
-
-
-    <!-- Main Dashboard Container -->
-  <div class="container-fluid mt-4">
-  <!-- Dashboard Header -->
-  <div class="row mb-4">
-    <div class="col">
-      <h4 class="text-primary fw-bold">Appointments Dashboard</h4>
-      <p class="text-muted">Manage your patient appointments efficiently</p>
-    </div>
-  </div>
-
-  <!-- Appointment Tabs -->
-  <div class="card shadow-sm border-0 mb-4">
-    <div class="card-header bg-white border-bottom-0 pb-0">
-      <ul class="nav nav-tabs card-header-tabs" id="appointmentTabs">
-        <li class="nav-item">
-          <a class="nav-link active fw-medium" data-bs-toggle="tab" href="#today">
-            <i class="bi bi-calendar-check me-1"></i> Today's
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link fw-medium" data-bs-toggle="tab" href="#pending">
-            <i class="bi bi-hourglass-split me-1"></i> Pending
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link fw-medium" data-bs-toggle="tab" href="#waiting">
-            <i class="bi bi-clock-history me-1"></i> Waiting List
-          </a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link fw-medium" data-bs-toggle="tab" href="#accepted">
-            <i class="bi bi-check-circle me-1"></i> Accepted
-          </a>
-        </li>
-      </ul>
-    </div>
-
-
-    <div class="card-body">
-      <div class="tab-content">
-        <!-- Today's Appointments Tab -->
-        <div class="tab-pane fade show active" id="today">
-          <div class="table-responsive">
-            <table class="table table-hover align-middle">
-              <thead class="table-light">
-                <tr>
-                  <th class="ps-3">Patient</th>
-                  <th>Date & Time</th>
-                  <th>Amount</th>
-                  <th class="text-end pe-3">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for appointment in today_appointments %}
-                <tr data-id="{{ appointment.id }}" class="border-bottom">
-                  <td class="ps-3">
-                    <div class="d-flex align-items-center">
-                      <div class="avatar-sm bg-light rounded-circle me-2 d-flex align-items-center justify-content-center">
-                        <span class="text-primary fw-bold">{{ appointment.patient.first_name|slice:":1" }}</span>
-                      </div>
-                      <span class="fw-medium">{{ appointment.patient.first_name }}</span>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="d-flex flex-column">
-                      <span class="fw-medium">{{ appointment.slot.start_time|date:"d M Y" }}</span>
-                      <small class="text-muted">{{ appointment.slot.start_time|time:"h:i A" }}</small>
-                    </div>
-                  </td>
-               
-
-                  <td>{{ appointment.practitioner.price|floatformat:0 }} $</td>
-
-
-                  <td class="text-end pe-3">
-                    <button class="btn btn-sm btn-outline-primary view-btn me-1">
-                      <i class="bi bi-eye"></i> View
-                    </button>
-                    <button class="btn btn-sm btn-success accept-btn me-1">
-                      <i class="bi bi-check2"></i> Accept
-                    </button>
-                    <button class="btn btn-sm btn-outline-danger cancel-btn">
-                      <i class="bi bi-x"></i> Cancel
-                    </button>
-                  </td>
-                </tr>
-                {% empty %}
-                <tr>
-                  <td colspan="6" class="text-center py-4">
-                    <div class="empty-state">
-                      <i class="bi bi-calendar-x fs-1 text-muted"></i>
-                      <p class="mt-2 mb-0">No appointments scheduled for today</p>
-                    </div>
-                  </td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Pending Appointments Tab -->
-        <div class="tab-pane fade" id="pending">
-          <div class="table-responsive">
-            <table class="table table-hover align-middle">
-              <thead class="table-light">
-                <tr>
-                  <th class="ps-3">Patient</th>
-                  <th>Date & Time</th>
-                  <th>Amount</th>
-                  <th class="text-end pe-3">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for appointment in pending_appointments_list %}
-                <tr data-id="{{ appointment.id }}" class="border-bottom">
-                  <td class="ps-3">
-                    <div class="d-flex align-items-center">
-                      <div class="avatar-sm bg-light rounded-circle me-2 d-flex align-items-center justify-content-center">
-                        <span class="text-primary fw-bold">{{ appointment.patient.first_name|slice:":1" }}</span>
-                      </div>
-                      <span class="fw-medium">{{ appointment.patient.first_name }}</span>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="d-flex flex-column">
-                      <span class="fw-medium">{{ appointment.slot.start_time|date:"d M Y" }}</span>
-                      <small class="text-muted">{{ appointment.slot.start_time|time:"h:i A" }}</small>
-                    </div>
-                  </td>
-                 
-                  <td>{{ appointment.practitioner.price|floatformat:0 }} $</td>
-                  <td class="text-end pe-3">
-                    <button class="btn btn-sm btn-outline-primary view-btn me-1">
-                      <i class="bi bi-eye"></i> View
-                    </button>
-                    <button class="btn btn-sm btn-success accept-btn me-1">
-                      <i class="bi bi-check2"></i> Accept
-                    </button>
-                    <button class="btn btn-sm btn-outline-danger cancel-btn">
-                      <i class="bi bi-x"></i> Cancel
-                    </button>
-                  </td>
-                </tr>
-                {% empty %}
-                <tr>
-                  <td colspan="6" class="text-center py-4">
-                    <div class="empty-state">
-                      <i class="bi bi-hourglass fs-1 text-muted"></i>
-                      <p class="mt-2 mb-0">No pending appointments</p>
-                    </div>
-                  </td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Waiting List Tab -->
-        <div class="tab-pane fade" id="waiting">
-          <div class="table-responsive">
-            <table class="table table-hover align-middle">
-              <thead class="table-light">
-                <tr>
-                  <th class="ps-3">Patient</th>
-                  <th>Date & Time</th>
-                
-                  <th>Amount</th>
-                  <th class="text-end pe-3">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for appointment in waiting_list_appointments %}
-                <tr data-id="{{ appointment.id }}" class="border-bottom">
-                  <td class="ps-3">
-                    <div class="d-flex align-items-center">
-                      <div class="avatar-sm bg-light rounded-circle me-2 d-flex align-items-center justify-content-center">
-                        <span class="text-primary fw-bold">{{ appointment.patient.first_name|slice:":1" }}</span>
-                      </div>
-                      <span class="fw-medium">{{ appointment.patient.first_name }}</span>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="d-flex flex-column">
-                      <span class="fw-medium">{{ appointment.slot.start_time|date:"d M Y" }}</span>
-                      <small class="text-muted">{{ appointment.slot.start_time|time:"h:i A" }}</small>
-                    </div>
-                  </td>
-                 
-                  <td>{{ appointment.practitioner.price|floatformat:0 }} $</td>
-                  <td class="text-end pe-3">
-                    <button class="btn btn-sm btn-outline-primary view-btn me-1">
-                      <i class="bi bi-eye"></i> View
-                    </button>
-                    <button class="btn btn-sm btn-success accept-btn me-1">
-                      <i class="bi bi-check2"></i> Accept
-                    </button>
-                    <button class="btn btn-sm btn-outline-danger cancel-btn">
-                      <i class="bi bi-x"></i> Cancel
-                    </button>
-                  </td>
-                </tr>
-                {% empty %}
-                <tr>
-                  <td colspan="6" class="text-center py-4">
-                    <div class="empty-state">
-                      <i class="bi bi-clock-history fs-1 text-muted"></i>
-                      <p class="mt-2 mb-0">No appointments in waiting list</p>
-                    </div>
-                  </td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Accepted Appointments Tab -->
-        <div class="tab-pane fade" id="accepted">
-          <div class="table-responsive">
-            <table class="table table-hover align-middle">
-              <thead class="table-light">
-                <tr>
-                  <th class="ps-3">Patient</th>
-                  <th>Date & Time</th>
-                 
-                  <th>Amount</th>
-                  <th class="text-end pe-3">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for appointment in accepted_appointments %}
-                <tr data-id="{{ appointment.id }}" class="border-bottom">
-                  <td class="ps-3">
-                    <div class="d-flex align-items-center">
-                      <div class="avatar-sm bg-light rounded-circle me-2 d-flex align-items-center justify-content-center">
-                        <span class="text-primary fw-bold">{{ appointment.patient.first_name|slice:":1" }}</span>
-                      </div>
-                      <span class="fw-medium">{{ appointment.patient.first_name }}</span>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="d-flex flex-column">
-                      <span class="fw-medium">{{ appointment.slot.start_time|date:"d M Y" }}</span>
-                      <small class="text-muted">{{ appointment.slot.start_time|time:"h:i A" }}</small>
-                    </div>
-                  </td>
-               
-                  <td>{{ appointment.practitioner.price|floatformat:0 }} $</td>
-                  <td class="text-end pe-3">
-                    <button class="btn btn-sm btn-outline-primary view-btn me-1">
-                      <i class="bi bi-eye"></i> View
-                    </button>
-                    <button class="btn btn-sm btn-outline-danger cancel-btn">
-                      <i class="bi bi-x"></i> Cancel
-                    </button>
-                  </td>
-                </tr>
-                {% empty %}
-                <tr>
-                  <td colspan="6" class="text-center py-4">
-                    <div class="empty-state">
-                      <i class="bi bi-check-circle fs-1 text-muted"></i>
-                      <p class="mt-2 mb-0">No accepted appointments</p>
-                    </div>
-                  </td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-    <!-- Patient Details Modal -->
-    <div
-      class="modal fade"
-      id="patientModal"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="patientModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content rounded-3 shadow-lg">
-          <div class="modal-header border-0">
-            <h5 class="modal-title" id="patientModalLabel">Patient Details</h5>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <div class="row">
-              <div class="col-md-4 text-center">
-                <img
-                  id="patientPhoto"
-                  src=""
-                  alt="Profile Photo"
-                  class="img-fluid rounded-circle mb-3"
-                  style="max-width: 150px"
-                />
+  <!-- Stats Cards -->
+  <div class="container-fluid mb-5">
+    <div class="row g-4">
+      <!-- Total Patients Card -->
+      <div class="col-12 col-sm-6 col-lg-3">
+        <div class="card border-0 shadow-sm h-100 position-relative overflow-hidden">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-center justify-content-between">
+              <div>
+                <div class="d-flex align-items-center mb-2">
+                  <div class="bg-success bg-gradient rounded-circle p-2 me-3">
+                    <i class="fa fa-user text-white fs-5"></i>
+                  </div>
+                  <span class="badge bg-success-subtle text-success fw-medium px-3 py-2">
+                    <i class="fa fa-check me-1"></i>Total Patients
+                  </span>
+                </div>
+                <h3 class="display-6 fw-bold text-dark mb-0">{{ total_patients }}</h3>
               </div>
-              <div class="col-md-8">
-                <p><strong>Greeting:</strong> <span id="patientGreeting"></span></p>
-                <p><strong>Name:</strong> <span id="patientName"></span></p>
-                <p><strong>Gender:</strong> <span id="patientGender"></span></p>
-                <p><strong>Mobile Phone:</strong> <span id="patientPhone"></span></p>
-                <p><strong>Date of Birth:</strong> <span id="patientDob"></span></p>
-                <p><strong>Email:</strong> <span id="patientEmail"></span></p>
+            </div>
+            <div class="position-absolute top-0 end-0 p-3 opacity-10">
+              <i class="fa fa-user" style="font-size: 3rem;"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Accepted Appointments Card -->
+      <div class="col-12 col-sm-6 col-lg-3">
+        <div class="card border-0 shadow-sm h-100 position-relative overflow-hidden">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-center justify-content-between">
+              <div>
+                <div class="d-flex align-items-center mb-2">
+                  <div class="bg-primary bg-gradient rounded-circle p-2 me-3">
+                    <i class="fa fa-calendar-check text-white fs-5"></i>
+                  </div>
+                  <span class="badge bg-primary-subtle text-primary fw-medium px-3 py-2">
+                    <i class="fa fa-check me-1"></i>Accepted
+                  </span>
+                </div>
+                <h3 class="display-6 fw-bold text-dark mb-0">{{ completed_appointments }}</h3>
+              </div>
+            </div>
+            <div class="position-absolute top-0 end-0 p-3 opacity-10">
+              <i class="fa fa-calendar-check" style="font-size: 3rem;"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pending Appointments Card -->
+      <div class="col-12 col-sm-6 col-lg-3">
+        <div class="card border-0 shadow-sm h-100 position-relative overflow-hidden">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-center justify-content-between">
+              <div>
+                <div class="d-flex align-items-center mb-2">
+                  <div class="bg-warning bg-gradient rounded-circle p-2 me-3">
+                    <i class="fa fa-hourglass-half text-white fs-5"></i>
+                  </div>
+                  <span class="badge bg-warning-subtle text-warning fw-medium px-3 py-2">
+                    <i class="fa fa-exclamation-circle me-1"></i>Pending
+                  </span>
+                </div>
+                <h3 class="display-6 fw-bold text-dark mb-0">{{ pending_appointments }}</h3>
+              </div>
+            </div>
+            <div class="position-absolute top-0 end-0 p-3 opacity-10">
+              <i class="fa fa-hourglass-half" style="font-size: 3rem;"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+   
+    </div>
+  </div>
+
+  {% if messages %}
+    <div class="container-fluid mb-4">
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- Appointments Management Section -->
+  <div class="container-fluid">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white border-bottom py-4">
+        <div class="d-flex align-items-center justify-content-between">
+          <div>
+            <h4 class="fw-bold text-primary mb-1">
+              <i class="bi bi-calendar3 me-2"></i>Appointments Management
+            </h4>
+            <p class="text-muted mb-0">Manage and track all your patient appointments</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-body p-0">
+        <!-- Enhanced Tab Navigation -->
+        <div class="border-bottom bg-light">
+          <ul class="nav nav-tabs border-0 px-4" id="appointmentTabs">
+            <li class="nav-item">
+              <a class="nav-link active fw-medium py-3 px-4 border-0 position-relative" data-bs-toggle="tab" href="#today">
+                <i class="bi bi-calendar-check me-2"></i>Today's Appointments
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">
+                  {{ today_appointments|length }}
+                </span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link fw-medium py-3 px-4 border-0 position-relative" data-bs-toggle="tab" href="#pending">
+                <i class="bi bi-hourglass-split me-2"></i>Pending
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning">
+                  {{ pending_appointments_list|length }}
+                </span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link fw-medium py-3 px-4 border-0 position-relative" data-bs-toggle="tab" href="#waiting">
+                <i class="bi bi-clock-history me-2"></i>Waiting List
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-info">
+                  {{ waiting_list_appointments|length }}
+                </span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link fw-medium py-3 px-4 border-0 position-relative" data-bs-toggle="tab" href="#accepted">
+                <i class="bi bi-check-circle me-2"></i>Accepted
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success">
+                  {{ accepted_appointments|length }}
+                </span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="tab-content p-4">
+          <!-- Today's Appointments Tab -->
+          <div class="tab-pane fade show active" id="today">
+            <div class="row">
+              <div class="col-12">
+                {% if today_appointments %}
+                  <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                      <thead class="table-light">
+                        <tr>
+                          <th class="ps-4 border-0 fw-semibold">Patient</th>
+                          <th class="border-0 fw-semibold">Appointment Time</th>
+                          <th class="border-0 fw-semibold">Amount</th>
+                          <th class="text-center border-0 fw-semibold">Status</th>
+                          <th class="text-end pe-4 border-0 fw-semibold">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for appointment in today_appointments %}
+                        <tr data-id="{{ appointment.id }}" class="border-bottom appointment-row">
+                          <td class="ps-4 py-3">
+                            <div class="d-flex align-items-center">
+                              <div class="avatar-circle bg-primary bg-gradient me-3">
+                                <span class="text-white fw-bold">{{ appointment.patient.first_name|slice:":1" }}</span>
+                              </div>
+                              <div>
+                                <h6 class="mb-0 fw-medium">{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</h6>
+                                <small class="text-muted">{{ appointment.patient.email }}</small>
+                              </div>
+                            </div>
+                          </td>
+                          <td class="py-3">
+                            <div class="d-flex flex-column">
+                              <span class="fw-medium text-dark">{{ appointment.slot.start_time|date:"M d, Y" }}</span>
+                              <small class="text-primary fw-medium">{{ appointment.slot.start_time|time:"h:i A" }}</small>
+                            </div>
+                          </td>
+                          <td class="py-3">
+                            <span class="badge bg-light text-dark fw-medium px-3 py-2">${{ appointment.practitioner.price|floatformat:0 }}</span>
+                          </td>
+                          <td class="text-center py-3">
+                            <span class="badge bg-warning text-dark px-3 py-2">Pending</span>
+                          </td>
+                          <td class="text-end pe-4 py-3">
+                            <div class="btn-group" role="group">
+                              <button class="btn btn-sm btn-outline-primary view-btn">
+                                <i class="bi bi-eye"></i>
+                              </button>
+                              <button class="btn btn-sm btn-success accept-btn">
+                                <i class="bi bi-check2"></i>
+                              </button>
+                              <button class="btn btn-sm btn-outline-danger cancel-btn">
+                                <i class="bi bi-x"></i>
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                {% else %}
+                  <div class="text-center py-5">
+                    <div class="mb-4">
+                      <i class="bi bi-calendar-x text-muted" style="font-size: 4rem;"></i>
+                    </div>
+                    <h5 class="text-muted mb-2">No appointments for today</h5>
+                    <p class="text-muted">Your schedule is clear for today!</p>
+                  </div>
+                {% endif %}
               </div>
             </div>
           </div>
-          <div class="modal-footer border-0">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-dismiss="modal"
-            >
-              Close
-            </button>
+
+          <!-- Pending Appointments Tab -->
+          <div class="tab-pane fade" id="pending">
+            <div class="row">
+              <div class="col-12">
+                {% if pending_appointments_list %}
+                  <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                      <thead class="table-light">
+                        <tr>
+                          <th class="ps-4 border-0 fw-semibold">Patient</th>
+                          <th class="border-0 fw-semibold">Appointment Time</th>
+                          <th class="border-0 fw-semibold">Amount</th>
+                          <th class="text-center border-0 fw-semibold">Status</th>
+                          <th class="text-end pe-4 border-0 fw-semibold">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for appointment in pending_appointments_list %}
+                        <tr data-id="{{ appointment.id }}" class="border-bottom appointment-row">
+                          <td class="ps-4 py-3">
+                            <div class="d-flex align-items-center">
+                              <div class="avatar-circle bg-warning bg-gradient me-3">
+                                <span class="text-white fw-bold">{{ appointment.patient.first_name|slice:":1" }}</span>
+                              </div>
+                              <div>
+                                <h6 class="mb-0 fw-medium">{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</h6>
+                                <small class="text-muted">{{ appointment.patient.email }}</small>
+                              </div>
+                            </div>
+                          </td>
+                          <td class="py-3">
+                            <div class="d-flex flex-column">
+                              <span class="fw-medium text-dark">{{ appointment.slot.start_time|date:"M d, Y" }}</span>
+                              <small class="text-primary fw-medium">{{ appointment.slot.start_time|time:"h:i A" }}</small>
+                            </div>
+                          </td>
+                          <td class="py-3">
+                            <span class="badge bg-light text-dark fw-medium px-3 py-2">${{ appointment.practitioner.price|floatformat:0 }}</span>
+                          </td>
+                          <td class="text-center py-3">
+                            <span class="badge bg-warning text-dark px-3 py-2">Pending</span>
+                          </td>
+                          <td class="text-end pe-4 py-3">
+                            <div class="btn-group" role="group">
+                              <button class="btn btn-sm btn-outline-primary view-btn">
+                                <i class="bi bi-eye"></i>
+                              </button>
+                              <button class="btn btn-sm btn-success accept-btn">
+                                <i class="bi bi-check2"></i>
+                              </button>
+                              <button class="btn btn-sm btn-outline-danger cancel-btn">
+                                <i class="bi bi-x"></i>
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                {% else %}
+                  <div class="text-center py-5">
+                    <div class="mb-4">
+                      <i class="bi bi-hourglass text-muted" style="font-size: 4rem;"></i>
+                    </div>
+                    <h5 class="text-muted mb-2">No pending appointments</h5>
+                    <p class="text-muted">All caught up! No appointments awaiting your response.</p>
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <!-- Waiting List Tab -->
+          <div class="tab-pane fade" id="waiting">
+            <div class="row">
+              <div class="col-12">
+                {% if waiting_list_appointments %}
+                  <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                      <thead class="table-light">
+                        <tr>
+                          <th class="ps-4 border-0 fw-semibold">Patient</th>
+                          <th class="border-0 fw-semibold">Appointment Time</th>
+                          <th class="border-0 fw-semibold">Amount</th>
+                          <th class="text-center border-0 fw-semibold">Status</th>
+                          <th class="text-end pe-4 border-0 fw-semibold">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for appointment in waiting_list_appointments %}
+                        <tr data-id="{{ appointment.id }}" class="border-bottom appointment-row">
+                          <td class="ps-4 py-3">
+                            <div class="d-flex align-items-center">
+                              <div class="avatar-circle bg-info bg-gradient me-3">
+                                <span class="text-white fw-bold">{{ appointment.patient.first_name|slice:":1" }}</span>
+                              </div>
+                              <div>
+                                <h6 class="mb-0 fw-medium">{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</h6>
+                                <small class="text-muted">{{ appointment.patient.email }}</small>
+                              </div>
+                            </div>
+                          </td>
+                          <td class="py-3">
+                            <div class="d-flex flex-column">
+                              <span class="fw-medium text-dark">{{ appointment.slot.start_time|date:"M d, Y" }}</span>
+                              <small class="text-primary fw-medium">{{ appointment.slot.start_time|time:"h:i A" }}</small>
+                            </div>
+                          </td>
+                          <td class="py-3">
+                            <span class="badge bg-light text-dark fw-medium px-3 py-2">${{ appointment.practitioner.price|floatformat:0 }}</span>
+                          </td>
+                          <td class="text-center py-3">
+                            <span class="badge bg-info text-white px-3 py-2">Waiting</span>
+                          </td>
+                          <td class="text-end pe-4 py-3">
+                            <div class="btn-group" role="group">
+                              <button class="btn btn-sm btn-outline-primary view-btn">
+                                <i class="bi bi-eye"></i>
+                              </button>
+                              <button class="btn btn-sm btn-success accept-btn">
+                                <i class="bi bi-check2"></i>
+                              </button>
+                              <button class="btn btn-sm btn-outline-danger cancel-btn">
+                                <i class="bi bi-x"></i>
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                {% else %}
+                  <div class="text-center py-5">
+                    <div class="mb-4">
+                      <i class="bi bi-clock-history text-muted" style="font-size: 4rem;"></i>
+                    </div>
+                    <h5 class="text-muted mb-2">No appointments in waiting list</h5>
+                    <p class="text-muted">Your waiting list is empty.</p>
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <!-- Accepted Appointments Tab -->
+          <div class="tab-pane fade" id="accepted">
+            <div class="row">
+              <div class="col-12">
+                {% if accepted_appointments %}
+                  <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                      <thead class="table-light">
+                        <tr>
+                          <th class="ps-4 border-0 fw-semibold">Patient</th>
+                          <th class="border-0 fw-semibold">Appointment Time</th>
+                          <th class="border-0 fw-semibold">Amount</th>
+                          <th class="text-center border-0 fw-semibold">Status</th>
+                          <th class="text-end pe-4 border-0 fw-semibold">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for appointment in accepted_appointments %}
+                        <tr data-id="{{ appointment.id }}" class="border-bottom appointment-row">
+                          <td class="ps-4 py-3">
+                            <div class="d-flex align-items-center">
+                              <div class="avatar-circle bg-success bg-gradient me-3">
+                                <span class="text-white fw-bold">{{ appointment.patient.first_name|slice:":1" }}</span>
+                              </div>
+                              <div>
+                                <h6 class="mb-0 fw-medium">{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</h6>
+                                <small class="text-muted">{{ appointment.patient.email }}</small>
+                              </div>
+                            </div>
+                          </td>
+                          <td class="py-3">
+                            <div class="d-flex flex-column">
+                              <span class="fw-medium text-dark">{{ appointment.slot.start_time|date:"M d, Y" }}</span>
+                              <small class="text-primary fw-medium">{{ appointment.slot.start_time|time:"h:i A" }}</small>
+                            </div>
+                          </td>
+                          <td class="py-3">
+                            <span class="badge bg-light text-dark fw-medium px-3 py-2">${{ appointment.practitioner.price|floatformat:0 }}</span>
+                          </td>
+                          <td class="text-center py-3">
+                            <span class="badge bg-success text-white px-3 py-2">Accepted</span>
+                          </td>
+                          <td class="text-end pe-4 py-3">
+                            <div class="btn-group" role="group">
+                              <button class="btn btn-sm btn-outline-primary view-btn">
+                                <i class="bi bi-eye"></i>
+                              </button>
+                              <button class="btn btn-sm btn-outline-danger cancel-btn">
+                                <i class="bi bi-x"></i>
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                {% else %}
+                  <div class="text-center py-5">
+                    <div class="mb-4">
+                      <i class="bi bi-check-circle text-muted" style="font-size: 4rem;"></i>
+                    </div>
+                    <h5 class="text-muted mb-2">No accepted appointments</h5>
+                    <p class="text-muted">No appointments have been accepted yet.</p>
+                  </div>
+                {% endif %}
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-
   </div>
 
+  <!-- Enhanced Patient Details Modal -->
+  <div class="modal fade" id="patientModal" tabindex="-1" aria-labelledby="patientModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold text-primary" id="patientModalLabel">
+            <i class="bi bi-person-circle me-2"></i>Patient Information
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div class="row">
+            <div class="col-md-4 text-center">
+              <div class="patient-photo-container mb-3">
+                <img id="patientPhoto" src="" alt="Profile Photo" class="img-fluid rounded-circle shadow-sm" style="max-width: 150px; max-height: 150px; object-fit: cover;"/>
+              </div>
+            </div>
+            <div class="col-md-8">
+              <div class="patient-details">
+                <div class="row g-3">
+                  <div class="col-12">
+                    <div class="info-item">
+                      <label class="fw-semibold text-muted small">GREETING</label>
+                      <p class="mb-0" id="patientGreeting"></p>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="info-item">
+                      <label class="fw-semibold text-muted small">FULL NAME</label>
+                      <p class="mb-0 fw-medium" id="patientName"></p>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="info-item">
+                      <label class="fw-semibold text-muted small">GENDER</label>
+                      <p class="mb-0" id="patientGender"></p>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="info-item">
+                      <label class="fw-semibold text-muted small">PHONE</label>
+                      <p class="mb-0" id="patientPhone"></p>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="info-item">
+                      <label class="fw-semibold text-muted small">DATE OF BIRTH</label>
+                      <p class="mb-0" id="patientDob"></p>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <div class="info-item">
+                      <label class="fw-semibold text-muted small">EMAIL</label>
+                      <p class="mb-0" id="patientEmail"></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-0 pt-0">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+            <i class="bi bi-x-circle me-1"></i>Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
+<!-- Custom Styles -->
+<style>
+  .avatar-circle {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+  }
 
+  .appointment-row {
+    transition: all 0.2s ease;
+  }
 
+  .appointment-row:hover {
+    background-color: #f8f9fa;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
 
+  .nav-tabs .nav-link.active {
+    background-color: #fff;
+    border-bottom: 3px solid #0d6efd;
+    color: #0d6efd;
+  }
 
+  .nav-tabs .nav-link:hover {
+    border-color: transparent;
+    color: #0d6efd;
+  }
 
-  <!-- Include jQuery and Bootstrap JS -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  .info-item {
+    padding: 0.75rem;
+    background-color: #f8f9fa;
+    border-radius: 0.5rem;
+    border-left: 3px solid #0d6efd;
+  }
 
-  <script>
+  .info-item label {
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+  }
+
+  .card {
+    transition: all 0.2s ease;
+  }
+
+  .btn-group .btn {
+    border-radius: 0.375rem;
+    margin-right: 0.25rem;
+  }
+
+  .btn-group .btn:last-child {
+    margin-right: 0;
+  }
+
+  .opacity-10 {
+    opacity: 0.1;
+  }
+
+  .bg-success-subtle {
+    background-color: rgba(25, 135, 84, 0.1);
+  }
+
+  .bg-primary-subtle {
+    background-color: rgba(13, 110, 253, 0.1);
+  }
+
+  .bg-warning-subtle {
+    background-color: rgba(255, 193, 7, 0.1);
+  }
+</style>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
 document.addEventListener("DOMContentLoaded", function () {
     // Get practitioner details from Django template as JSON-safe strings
     var practitionerPhoto = "{{ practitioner.photo.url|default:''|escapejs }}".trim();
@@ -443,91 +614,89 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+$(document).ready(function () {
+    // Handle Accept and Cancel buttons
+    $(".accept-btn, .cancel-btn").on("click", function () {
+        var appointmentRow = $(this).closest("tr");
+        var appointmentId = appointmentRow.data("id");
+        var status = $(this).hasClass("accept-btn") ? "Accepted" : "Cancelled";
 
+        // Determine the correct URL based on the status
+        var url = status === "Accepted" 
+            ? `/practitioner-dashboard/appointments/${appointmentId}/Accepted/`
+            : `/practitioner-dashboard/appointments/${appointmentId}/Cancelled/`;
 
-      $(document).ready(function () {
-        // Handle Accept and Cancel buttons
-        $(".accept-btn, .cancel-btn").on("click", function () {
-          var appointmentRow = $(this).closest("tr");
-          var appointmentId = appointmentRow.data("id");
-          var status = $(this).hasClass("accept-btn") ? "Accepted" : "Cancelled";
-
-          // Determine the correct URL based on the status
-          var url =
-            status === "Accepted"
-              ? `/practitioner-dashboard/appointments/${appointmentId}/Accepted/`
-              : `/practitioner-dashboard/appointments/${appointmentId}/Cancelled/`;
-
-          // Make the AJAX request to update the appointment status
-          $.ajax({
+        // Make the AJAX request to update the appointment status
+        $.ajax({
             url: url,
             type: "GET",
             success: function (response) {
-              if (status === "Cancelled") {
-                alert("Successfully Cancelled the appointment");
-                location.reload(); // Reload the page to reflect changes
-              } else if (status === "Accepted") {
-                alert("Successfully Accepted the appointment");
-                location.reload();
-              }
+                if (status === "Cancelled") {
+                    alert("Successfully Cancelled the appointment");
+                    location.reload(); // Reload the page to reflect changes
+                } else if (status === "Accepted") {
+                    alert("Successfully Accepted the appointment");
+                    location.reload();
+                }
             },
             error: function (xhr, status, error) {
-              alert("Something went wrong. Please try again.");
+                alert("Something went wrong. Please try again.");
             },
-          });
         });
+    });
 
-      // Handle View button to show patient details
-      $(".view-btn").on("click", function () {
+    // Handle View button to show patient details
+    $(".view-btn").on("click", function () {
         var appointmentRow = $(this).closest("tr");
         var appointmentId = appointmentRow.data("id"); // Get the appointment ID
 
         // Make an AJAX request to fetch the patient data
         $.ajax({
-          url: `/practitioner-dashboard/patient/${appointmentId}/`, // Your URL to get patient details
-          type: "GET",
-          success: function (response) {
-            var patient = response.patient;
+            url: `/practitioner-dashboard/patient/${appointmentId}/`, // Your URL to get patient details
+            type: "GET",
+            success: function (response) {
+                var patient = response.patient;
 
-            // Update the modal with patient details
-            $("#patientGreeting").text(patient.greeting);
-            $("#patientName").text(
-              patient.first_name + " " + patient.last_name
-            );
-            $("#patientGender").text(patient.gender);
-            $("#patientPhone").text(patient.mobile_phone);
-            $("#patientDob").text(patient.date_of_birth);
-            $("#patientEmail").text(patient.email);
-            if (patient.profile_photo) {
-              $("#patientPhoto").attr("src", patient.profile_photo);
-            } else {
-              $("#patientPhoto").attr("src", "/path/to/default/photo"); // Set a default photo if not present
-            }
+                // Update the modal with patient details
+                $("#patientGreeting").text(patient.greeting);
+                $("#patientName").text(patient.first_name + " " + patient.last_name);
+                $("#patientGender").text(patient.gender);
+                $("#patientPhone").text(patient.mobile_phone);
+                $("#patientDob").text(patient.date_of_birth);
+                $("#patientEmail").text(patient.email);
+                
+                if (patient.profile_photo) {
+                    $("#patientPhoto").attr("src", patient.profile_photo);
+                } else {
+                    $("#patientPhoto").attr("src", "/path/to/default/photo"); // Set a default photo if not present
+                }
 
-            // Show the modal with patient details
-            $("#patientModal").modal("show");
-          },
-          error: function (xhr, status, error) {
-            alert("Failed to load patient details.");
-          },
+                // Show the modal with patient details
+                $("#patientModal").modal("show");
+            },
+            error: function (xhr, status, error) {
+                alert("Failed to load patient details.");
+            },
         });
-
-        // Manually trigger modal close if necessary
-        $(".close, .btn-secondary").on("click", function () {
-          $("#patientModal").modal("hide"); // Close the modal
-        });
-      });
     });
-  </script>
 
-  {% if error %}
-  <script type="text/javascript">
+    // Add smooth scrolling to tabs
+    $('.nav-link[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+        $(e.target.getAttribute('href')).find('.table-responsive').animate({
+            scrollTop: 0
+        }, 300);
+    });
+});
+</script>
+
+{% if error %}
+<script type="text/javascript">
     // Display JavaScript alert with the error message
     alert("{{ error }}");
 
     // Redirect to the profile completion page after the alert is closed
     window.location.href = "/practitioner-dashboard{{ redirect_url }}";
-  </script>
-  {% endif %}
-</div>
+</script>
+{% endif %}
+
 {% endblock content %}

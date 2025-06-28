@@ -88,4 +88,98 @@
     
 </div>
 
+
+
+<!-- Female Avatar (bottom-right corner) -->
+<style>
+#avatar-box {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    cursor: pointer;
+}
+
+#chat-window {
+    display: none;
+    position: fixed;
+    bottom: 100px;
+    right: 30px;
+    width: 360px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px rgba(0,0,0,0.2);
+    z-index: 9999;
+    padding: 20px;
+}
+
+#chat-window video {
+    width: 100%;
+    border-radius: 10px;
+}
+</style>
+
+<!-- Avatar Icon -->
+<div id="avatar-box" onclick="toggleChat()">
+    <img src="data:image/jpeg;base64,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" width="80" style="border-radius: 50%; border: 3px solid #007bff;" />
+</div>
+
+
+<!-- Chat Popup -->
+<div id="chat-window">
+    <input type="text" id="user-question" class="form-control mb-2" placeholder="Ask me anything...">
+    <button class="btn btn-primary w-100" onclick="askAvatar()">Ask</button>
+    <div id="avatar-video-box" class="mt-3 text-center">
+        <!-- Video will be inserted here -->
+    </div>
+</div>
+
+<script>
+function toggleChat() {
+    const chat = document.getElementById("chat-window");
+    chat.style.display = (chat.style.display === "none" || chat.style.display === "") ? "block" : "none";
+}
+
+function askAvatar() {
+    const userQuestion = document.getElementById("user-question").value;
+    const videoBox = document.getElementById("avatar-video-box");
+
+    if (!userQuestion.trim()) {
+        alert("Please enter a question.");
+        return;
+    }
+
+    fetch("/ask-avatar/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}"
+        },
+        body: JSON.stringify({ message: userQuestion })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.video_url) {
+            videoBox.innerHTML = `
+                <video src="${data.video_url}" autoplay controls></video>
+            `;
+        } else {
+            videoBox.innerHTML = "<p>Sorry, no response.</p>";
+        }
+    })
+    .catch(error => {
+        videoBox.innerHTML = "<p>Error connecting to assistant.</p>";
+        console.error(error);
+    });
+}
+</script>
+
+
+
 {% endblock temp_index %}
+
+
+
+
+
+

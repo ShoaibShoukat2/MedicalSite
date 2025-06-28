@@ -519,22 +519,34 @@
             </a>
         </li>
 
+
         <!-- Profile Picture -->
         <li class="nav-item dropdown has-arrow">
-            <a href="#" class="dropdown-toggle nav-link user-link d-flex align-items-center" data-toggle="dropdown">
-                <span class="user-img d-inline-block">
-                    <img src="{% get_practitioner_image request %}" class="rounded-circle" width="30" height="30" style="object-fit: cover;" alt="Profile Picture">
+          <a href="#" class="dropdown-toggle nav-link user-link d-flex align-items-center" data-toggle="dropdown">
+                <span class="user-img d-inline-block position-relative">
+                    <img src="{% get_practitioner_image request %}" 
+                        alt="Profile Picture" 
+                        class="rounded-circle border border-light shadow-sm" 
+                        width="36" height="36" 
+                        style="object-fit: cover;">
                 </span>
-                <span class="ml-2">Profile</span> <!-- Optional: Add text for better alignment -->
+                <span class="ml-2 font-weight-medium text-dark">Profile</span>
             </a>
-        
+
+
+
             <div class="dropdown-menu">
                 <a class="dropdown-item" href="{% url 'practitioner_dashboard:practitioner_profile' %}">My Profile</a>
                 <a class="dropdown-item" href="{% url 'frontend:logout' %}">Logout</a>
             </div>
+
+
+
         </li>
 
     </ul>
+
+
 </div>
 
 
@@ -621,10 +633,13 @@
     <footer class="footer">
         <div class="container">
             <div class="row">
+
+
                 <!-- Logo Section -->
+
                 <div class="col-lg-3 col-md-6 mb-4">
                     <a href="/">
-                    <img src="{% static 'ReeDuvie.jpg' %}" alt="Logo" class="img-fluid mb-3" style="max-width: 150px;">
+                    <img src="{% static 'MedicalSiteLogo.svg' %}" alt="Logo" class="img-fluid mb-3" style="max-width: 150px;">
 
                     </a>
                     <div class="social-icons">
