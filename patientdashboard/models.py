@@ -54,7 +54,7 @@ class Appointment(models.Model):
         """Generate video call link if it doesn't exist"""
         if not self.video_call_link:
             meeting_id = f"{uuid.uuid4()}-{self.patient.id}-{self.practitioner.id}"
-            self.video_call_link = f"https://meet.jit.si/{meeting_id}"
+            self.video_call_link = f"https://meet.google.com/lookup/{meeting_id}"
         
         # Mark the slot as booked when appointment is created
         if not self.pk:  # Only for new appointments

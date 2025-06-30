@@ -12,8 +12,9 @@ from django.conf import settings
 from django.contrib.auth.hashers import make_password
 from django.views.decorators.csrf import csrf_protect
 
-
 # Create your views here.
+
+
 
 from django.shortcuts import render
 
@@ -23,8 +24,6 @@ def index(request):
         'practitioners': practitioners,
     }
     return render(request, 'temp_index.html', context)
-
-
 
 
 

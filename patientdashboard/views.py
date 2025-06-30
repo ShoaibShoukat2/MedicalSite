@@ -94,7 +94,7 @@ def patient_dashboard(request):
 
     return render(request, "patientdashboard/dashboard.html", {"notifications": notifications})
 
-    
+
 
 
 # patientdashboard/views.py
@@ -391,6 +391,8 @@ from django.shortcuts import render, redirect
 def telemedicine(request):
     return render(request, 'patientdashboard/telemedicine.html')
 
+
+
 def practitioner_profile(request, pk):
     practitioner = get_object_or_404(Practitioner, pk=pk)
     reviews = Review.objects.filter(practitioner=practitioner).order_by('-created_at')
@@ -457,9 +459,15 @@ def practitioner_profile(request, pk):
     }
     
     return render(request, 'patientdashboard/doctor_profile.html', context)
+
+
+
+
 def booking_success(request, appointment_id):
     appointment = get_object_or_404(Appointment, id=appointment_id, patient_id=request.session.get('patient_id'))
     return render(request, 'patientdashboard/booking_success.html', {'appointment': appointment})
+
+
 def view_invoice(request):
     return render(request, 'patientdashboard/view_invoice.html')
 
