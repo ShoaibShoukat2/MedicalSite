@@ -238,6 +238,7 @@ def book_appointment(request):
 
         # Ensure patient exists
     
+
         
         try:
             patient = Patient.objects.get(id=patient_id)
@@ -648,6 +649,9 @@ def book_video_consultation(request, slot_id):
         except Exception as e:
             print(f"An error occurred: {str(e)}")
             return JsonResponse({'error': f"An error occurred: {str(e)}"}, status=500)
+        
+
+
 
 def payment_success(request, slot_id):
     try:
@@ -674,7 +678,8 @@ def payment_success(request, slot_id):
             amount=slot.practitioner.price,
             is_paid=True
         )
-        
+
+
 
         messages.success(request, "Payment successful! Appointment booked.")
         return redirect('patientdashboard:booking_success', appointment_id=appointment.id)
@@ -721,6 +726,11 @@ def list_all_bills(request):
         print(f"❌ Error: {str(e)}")
         messages.error(request, f"An error occurred: {str(e)}")
         return redirect('patientdashboard:appointments_patients')
+    
+from xhtml2pdf import pisa 
+
+
+
 def view_bill(request, bill_id):
     print(f"\n\n=== ENTERING view_bill ===")
     print(f"Requested bill_id: {bill_id}")
@@ -762,6 +772,54 @@ def view_bill(request, bill_id):
         return redirect('patientdashboard:all_bills')
     
 
+
+from django.http import HttpResponse
+from django.template.loader import get_template
+
+
+def download_bill_pdf(request, bill_id):
+    print(f"\n\n=== ENTERING download_bill_pdf ===")
+    
+    patient_id = request.session.get('patient_id')
+
+    if not patient_id:
+        return redirect('frontend:patient_login')
+
+    
+    try:
+        bill = Billing.objects.get(id=bill_id, appointment__patient_id=patient_id)
+        template_path = 'patientdashboard/bill_pdf_template.html'
+
+
+        
+
+
+        context = {
+            'bill': bill,
+            'appointment': bill.appointment,
+            'practitioner': bill.appointment.practitioner,
+        }
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="bill_{bill.invoice_number}.pdf"'
+        
+        template = get_template(template_path)
+        html = template.render(context)
+
+        pisa_status = pisa.CreatePDF(html, dest=response)
+        if pisa_status.err:
+            print("PDF generation error")
+            messages.error(request, "Error generating PDF.")
+            return redirect('patientdashboard:all_bills')
+        return response
+
+    except Billing.DoesNotExist:
+        print("Bill not found or doesn't belong to patient")
+        messages.error(request, "Bill not found or access denied.")
+        return redirect('patientdashboard:all_bills')
+    except Exception as e:
+        print(f"Unexpected error: {str(e)}")
+        messages.error(request, "An unexpected error occurred.")
+        return redirect('patientdashboard:all_bills')
 
 
 

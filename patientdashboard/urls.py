@@ -54,6 +54,10 @@ urlpatterns = [
     path('exercises/update_progress/', views.update_progress, name='update_progress'),
     path('bills/', views.list_all_bills, name='all_bills'),
     path('bills/<int:bill_id>/', views.view_bill, name='view_bill'),
+
+    path('bills/<int:bill_id>/download/', views.download_bill_pdf, name='download_bill_pdf'),
+
+    
 ]
 
 

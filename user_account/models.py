@@ -146,3 +146,6 @@ class Practitioner(models.Model):
 
     def __str__(self):
         return f"{self.get_civility_display()} {self.first_name} {self.last_name} ({self.get_specialty_display()})"
+
+
+

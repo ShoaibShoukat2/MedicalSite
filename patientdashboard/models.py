@@ -89,7 +89,6 @@ class Notification(models.Model):
 
 
 
-
 class Review(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='reviews')
     practitioner = models.ForeignKey(Practitioner, on_delete=models.CASCADE, related_name='reviews')

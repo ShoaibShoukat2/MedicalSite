@@ -9,6 +9,7 @@ from django.db import models
 from django.utils import timezone
 from django.core.validators import MinValueValidator, MaxValueValidator
 
+
 class AvailableSlot(models.Model):
     STATUS_CHOICES = [
         ('available', 'Available'),
@@ -32,6 +33,7 @@ class AvailableSlot(models.Model):
 
     def __str__(self):
         return f"{self.get_day_of_week_display()}: {self.start_time} - {self.end_time} ({self.practitioner})"
+
 
 
 

@@ -40,7 +40,11 @@
             </div>
             
             <a href="{% url 'patientdashboard:all_bills' %}" class="btn btn-secondary">Back to Bills</a>
+            <a href="{% url 'patientdashboard:download_bill_pdf' bill.id %}" class="btn btn-secondary">Download PDF</a>
+
+            
         </div>
+        
     </div>
 </div>
 {% endblock %}

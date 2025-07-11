@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Bill - {{ bill.invoice_number }}</title>
+</head>
+<body>
+    <h2 style="text-align: center;">Medical Bill</h2>
+    <p><strong>Invoice Number:</strong> {{ bill.invoice_number }}</p>
+    <p><strong>Date Issued:</strong> {{ bill.issued_date }}</p>
+
+    <table border="1" cellspacing="0" cellpadding="5" width="100%">
+        <tr>
+            <th>Patient Name</th>
+            <td>{{ appointment.patient.first_name }}</td>
+        </tr>
+        <tr>
+            <th>Practitioner</th>
+            <td>{{ practitioner.first_name }}</td>
+        </tr>
+        
+        <tr>
+            <th>Service Description</th>
+            <td>{{ bill.service_description }}</td>
+        </tr>
+        <tr>
+            <th>Amount</th>
+            <td>{{ bill.amount }}</td>
+        </tr>
+        <tr>
+            <th>Payment Status</th>
+            <td>{% if bill.is_paid %}Paid{% else %}Unpaid{% endif %}</td>
+        </tr>
+        <tr>
+            <th>Due Date</th>
+            <td>{{ bill.due_date }}</td>
+        </tr>
+    </table>
+
+    <p style="text-align: center; margin-top: 30px;">Thank you for choosing our services.</p>
+</body>
+</html>
+
