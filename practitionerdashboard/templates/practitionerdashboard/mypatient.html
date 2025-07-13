@@ -20,6 +20,8 @@
     <div class="row g-4">
         {% for patient in patients %}
         <div class="col-sm-6 col-md-4 col-lg-3">
+
+
             <div class="card h-100 shadow-lg border-0 rounded-4 hover-elevate">
                 <!-- Card Header with Patient Photo -->
                 <div class="card-header bg-light text-center p-3 border-0">
@@ -42,7 +44,6 @@
                         <span class="badge bg-light text-dark border">ID: {{ patient.id }}</span>
                     </p>
                 </div>
-                
                 <!-- Card Body -->
                 <div class="card-body p-4">
                     <!-- Patient Details -->
@@ -81,7 +82,10 @@
                                 </div>
                                 <div>
                                     <small class="text-muted">{{ appointment.slot.get_day_of_week_display }}</small>
+
+
                                 </div>
+
                             </div>
                         {% empty %}
                             <p class="text-muted fst-italic small">No appointments scheduled</p>
@@ -116,19 +120,35 @@
                     </div>
                 </div>
                 
-                <!-- Card Footer with Actions -->
+
+
+                <!-- Card Footer with Actions -->   
                 <div class="card-footer bg-white border-0 p-3">
                     <div class="d-grid gap-2">
-                        <a href="https://zoom.us/j/1234567890" class="btn btn-primary rounded-pill" target="_blank">
-                            <i class="fa fa-video me-1"></i> Start Video Call
-                        </a>
+                      {% with appointment=patient.appointments.all.0 %}
+                            {% if appointment.video_call_link %}
+                                <a href="{{ appointment.video_call_link }}" class="btn btn-primary rounded-pill" target="_blank">
+                                    <i class="fa fa-video me-1"></i> Start Video Call
+                                </a>
+                            {% else %}
+                                <button class="btn btn-secondary rounded-pill disabled">
+                                    <i class="fa fa-video-slash me-1"></i> No Video Link
+                                </button>
+                            {% endif %}
+                        {% endwith %}
+
+
+
                         <button class="btn btn-success rounded-pill" data-bs-toggle="modal" data-bs-target="#prescriptionModal{{ patient.id }}">
                             <i class="fa fa-plus me-1"></i> Add Prescription
                         </button>
                     </div>
+
                 </div>
             </div>
         </div>
+
+
         {% empty %}
         <div class="col-12">
             <div class="alert alert-info text-center py-5">

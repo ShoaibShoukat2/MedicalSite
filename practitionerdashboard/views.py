@@ -305,6 +305,7 @@ def mypatient(request):
 
 
 
+
 def CompleteProfile(request):
     context = {}
 
@@ -371,15 +372,20 @@ def start_video_call(request, patient_id):
             # Get the latest appointment (or the first if multiple exist)
             appointment = Appointment.objects.filter(patient=patient, practitioner=practitioner).order_by('-created_at').first()
 
+
             if not appointment:
                 return JsonResponse({"error": "No appointment found for this patient."}, status=404)
 
             # Generate a unique Jitsi Meet link
             meeting_id = f"{uuid.uuid4()}-{patient.id}-{practitioner.id}"
             jitsi_link = f"https://meet.jit.si/{meeting_id}"
+            
+
 
             # Save the video call link in the most recent appointment
             appointment.video_call_link = jitsi_link
+
+
             appointment.save()
 
             # Send a notification to the patient
@@ -395,6 +401,7 @@ def start_video_call(request, patient_id):
             return JsonResponse({"error": f"An error occurred: {str(e)}"}, status=500)
 
     return JsonResponse({"error": "Invalid request"}, status=400)
+
 
 
 
