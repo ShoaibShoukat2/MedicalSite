@@ -10,16 +10,17 @@
                     <p>Our teaming has been focused on building a high-qualities medicals service by Reeducaive.</p>
                     
                     <!-- Search Container -->
-                    <div class="search-container">
-                        <input type="text" class="search-input" placeholder="Name of your practitioner" />
-                        <button class="search-button">
+                   <!-- Updated Search Container -->
+                    <form method="GET" action="{% url 'frontend:index' %}" class="search-container">
+                        <input type="text" name="q" class="search-input" placeholder="Name of your practitioner" value="{{ request.GET.q }}">
+                        <button type="submit" class="search-button">
                             <i class="fas fa-search"></i> Search
                         </button>
-                    </div>
+                    </form>
+
                 </div>
             </div>
         </section>
-
 
         
 
@@ -61,7 +62,37 @@
     </div>
 
 
-    <div class="container my-5">
+<div class="container my-5">
+    
+
+    {% if query %}
+        <h2 class="text-center mb-4 font-weight-bold text-success">Search Results for "{{ query }}"</h2>
+
+        {% if practitioners %}
+            <div class="row">
+                {% for practitioner in practitioners %}
+                    <div class="col-md-4 mb-4 d-flex">
+                        <div class="card shadow-lg border-light rounded w-100 h-100 hover-animate">
+                            <div class="card-body text-center d-flex flex-column justify-content-between p-4">
+                                <div class="mx-auto mb-3" style="width: 160px; height: 160px; overflow: hidden; border-radius: 50%; border: 5px solid #007bff;">
+                                    {% if practitioner.photo %}
+                                        <img src="{{ practitioner.photo.url }}" class="img-fluid" alt="{{ practitioner.first_name }} {{ practitioner.last_name }}" style="object-fit: cover;">
+                                    {% else %}
+                                        <img src="/static/images/default_profile.png" class="img-fluid" alt="Default Profile" style="object-fit: cover;">
+                                    {% endif %}
+                                </div>
+                                <h5 class="card-title font-weight-bold">{{ practitioner.first_name }} {{ practitioner.last_name }}</h5>
+                                <p class="card-text text-muted">{{ practitioner.get_specialty_display }}</p>
+                                <h6 class="text-primary mb-3">{{ practitioner.description|default:"No description available" }}</h6>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-center text-danger">No doctors found for "{{ query }}".</p>
+        {% endif %}
+    {% else %}
         <h2 class="text-center mb-4 font-weight-bold text-primary" style="animation: fadeInUp 2s ease;">Meet Our Renowned Doctors</h2>
         <div class="row">
             {% for practitioner in practitioners %}
@@ -83,8 +114,10 @@
                 </div>
             {% endfor %}
         </div>
-    </div>
-    
+    {% endif %}
+</div>
+
+
     
 </div>
 
@@ -140,6 +173,7 @@ function toggleChat() {
     chat.style.display = (chat.style.display === "none" || chat.style.display === "") ? "block" : "none";
 }
 
+
 function askAvatar() {
     const userQuestion = document.getElementById("user-question").value;
     const videoBox = document.getElementById("avatar-video-box");
@@ -148,6 +182,13 @@ function askAvatar() {
         alert("Please enter a question.");
         return;
     }
+
+    videoBox.innerHTML = `
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p>Assistant is thinking...</p>
+    `;
 
     fetch("/ask-avatar/", {
         method: "POST",
@@ -161,7 +202,8 @@ function askAvatar() {
     .then(data => {
         if (data.video_url) {
             videoBox.innerHTML = `
-                <video src="${data.video_url}" autoplay controls></video>
+                <video src="${data.video_url}" autoplay controls style="width: 100%; border-radius: 10px;"></video>
+                <p class="mt-2 text-muted"><strong>Answer:</strong> ${data.answer}</p>
             `;
         } else {
             videoBox.innerHTML = "<p>Sorry, no response.</p>";
@@ -172,6 +214,8 @@ function askAvatar() {
         console.error(error);
     });
 }
+
+
 </script>
 
 

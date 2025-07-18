@@ -19,11 +19,30 @@ from django.views.decorators.csrf import csrf_protect
 from django.shortcuts import render
 
 def index(request):
-    practitioners = Practitioner.objects.all()[:3]  # Fetch top 3 practitioners
+
+    query = request.GET.get('q', '')
+
+    if query:
+        practitioners = Practitioner.objects.filter(
+            first_name__icontains=query
+        ) | Practitioner.objects.filter(
+            last_name__icontains=query
+        )
+
+    else:
+
+
+        practitioners = Practitioner.objects.all()[:3]
+
+        
     context = {
         'practitioners': practitioners,
     }
     return render(request, 'temp_index.html', context)
+
+
+
+
 
 
 
@@ -516,22 +535,17 @@ def clean_text(text):
     return re.sub(r'[^\x00-\x7F]+', '', text).strip()
 
 
+import time  # 👈 for delay
+
 @csrf_exempt
 def ask_avatar(request):
     try:
-        print("🔵 Step 1: Starting ask_avatar function")
-
-        # Step 1: Receive message
         data = json.loads(request.body)
-        print("🔹 Step 2: Data received from client:", data)
-
         user_message = data.get("message", "").strip()
         if not user_message:
-            print("❌ Step 2.1: Empty message received")
             return JsonResponse({"error": "Empty message received"}, status=400)
 
-        # Step 2: Query OpenAI
-        print("🔵 Step 3: Sending request to OpenAI")
+        # OpenAI Response
         prompt = f"You are a helpful assistant. User asked: {user_message}"
         openai_response = client.chat.completions.create(
             model="gpt-3.5-turbo",
@@ -541,25 +555,15 @@ def ask_avatar(request):
             ]
         )
         raw_answer = openai_response.choices[0].message.content.strip()
-        print("✅ Step 3.1: Raw OpenAI answer:", repr(raw_answer))
+        answer = clean_text(raw_answer)[:500] or "Hello, I am here to help you."
 
-        # Step 3: Clean and limit answer
-        answer = clean_text(raw_answer)
-        if len(answer) > 500:
-            answer = answer[:500]
-        if not answer:
-            answer = "Hello, I am here to help you."
-        print("✅ Step 3.2: Cleaned answer for D-ID:", repr(answer))
-
-        # Step 4: Prepare D-ID API headers
+        # D-ID API call
         encoded_auth = base64.b64encode(DID_API_KEY.encode()).decode()
         headers = {
             "Authorization": f"Basic {encoded_auth}",
             "Content-Type": "application/json"
         }
-        print("✅ Step 4: D-ID Headers created successfully")
 
-        # Step 5: Prepare D-ID Payload
         payload = {
             "script": {
                 "type": "text",
@@ -570,57 +574,35 @@ def ask_avatar(request):
                 "ssml": False,
                 "input": answer
             },
-            "source_url": "https://create-images-results.d-id.com/DefaultImages/steve.png"
+            "source_url": "https://res.cloudinary.com/dovwzsl4v/image/upload/v1752823658/avatar_zfdfcr.jpg"
         }
-        print("✅ Step 5: D-ID Payload prepared:\n", json.dumps(payload, indent=2))
 
-
-
-
-        # Step 6: Send POST request to D-ID
-        print("🔵 Step 6: Sending POST request to D-ID API")
         response = requests.post("https://api.d-id.com/talks", json=payload, headers=headers)
+        parsed_json = response.json()
 
-        print("✅ Step 6.1: D-ID response status code:", response.status_code)
-        print("📦 Step 6.2: D-ID Raw Response Text:", response.text)
+        # ✅ Poll for result_url
+        talk_id = parsed_json.get("id")
+        poll_url = f"https://api.d-id.com/talks/{talk_id}"
 
-        # Step 7: Try parsing JSON
-        try:
-            parsed_json = response.json()
-            print("✅ Step 7: Parsed D-ID JSON:", parsed_json)
-        except Exception as e:
-            print("❌ Step 7.1: Failed to parse D-ID response JSON:", str(e))
-            parsed_json = {}
+        for _ in range(10):  # try 10 times
+            poll_response = requests.get(poll_url, headers=headers)
+            poll_data = poll_response.json()
+            if poll_data.get("status") == "done":
+                video_url = poll_data.get("result_url")
+                return JsonResponse({"video_url": video_url, "answer": answer})
+            time.sleep(1)  # wait 1 second before checking again
 
-        # Step 8: Return successful or failed response
-        if response.status_code == 200:
-            video_url = parsed_json.get("result_url")
-            print("✅ Step 8: Returning video_url")
-            return JsonResponse({"video_url": video_url, "answer": answer})
-
-        print("❌ Step 8.1: D-ID API failed with code:", response.status_code)
-        return JsonResponse({
-            "error": "D-ID API failed",
-            "status_code": response.status_code,
-            "message": parsed_json.get("message", "Unknown error")
-        }, status=response.status_code)
-
-
+        return JsonResponse({"error": "Video not ready yet", "talk_id": talk_id}, status=202)
 
     except Exception as e:
-        print("❌ Step 9: Unhandled Exception:", str(e))
-        return JsonResponse({
-            "error": "Internal server error",
-            "exception": str(e)
-        }, status=500)
+        return JsonResponse({"error": "Internal server error", "exception": str(e)}, status=500)
+
+
+
 
 
 
 
 def login(request):
     return render(request, 'login.html')
-
-
-
-
 
