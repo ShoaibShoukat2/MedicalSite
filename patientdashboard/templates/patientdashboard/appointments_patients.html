@@ -86,17 +86,24 @@
                             </td>
 
 
-                            <td>
-                                <div class="d-flex justify-content-center">
-                                    <a href="{{ appointment.video_call_link }}" target="_blank" class="btn btn-sm btn-outline-info">Join Call</a>
-                            
-                                    {% if appointment.status != "Cancelled" %}
-                                        <button class="btn btn-sm btn-outline-danger ms-2 cancel-btn" data-id="{{ appointment.id }}">
-                                            Cancel
-                                        </button>
-                                    {% endif %}
-                                </div>
-                            </td>
+                          <td>
+                            <div class="d-flex justify-content-center">
+                                {% if appointment.status == "Cancelled" %}
+                                    <a href="{% url  'patient_dashboard:specialty_selection' %}" class="btn btn-sm btn-outline-primary">
+                                        Get Appointment Again
+                                    </a>
+
+
+                                {% else %}
+                                    <a href="{{ appointment.video_call_link }}" target="_blank" class="btn btn-sm btn-outline-info">
+                                        Join Call
+                                    </a>
+                                    <button class="btn btn-sm btn-outline-danger ms-2 cancel-btn" data-id="{{ appointment.id }}">
+                                        Cancel
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </td>
 
                             
                         </tr>

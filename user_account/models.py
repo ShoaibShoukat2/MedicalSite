@@ -72,21 +72,22 @@ class User(AbstractBaseUser, PermissionsMixin):
     def is_staff(self):
         return self.is_admin or self.is_user
     
-    
+
     
 
 class Patient(models.Model):
     GREETING_CHOICES = [
         ('Mr.', 'Mr.'),
-        ('Other', 'Other'),
+        ('Mrs', 'Mrs'),
     ]
+
 
     GENDER_CHOICES = [
         ('Men', 'Men'),
         ('Women', 'Women'),
     ]
 
-    greeting = models.CharField(max_length=5, choices=GREETING_CHOICES)
+    greeting = models.CharField(max_length=5, choices=GREETING_CHOICES,blank=True,null=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES)

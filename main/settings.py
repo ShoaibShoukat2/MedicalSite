@@ -59,10 +59,13 @@ INSTALLED_APPS = [
     'practitionerdashboard',
     'channels',  # Django Channels
     'chat',
+    'social_django',
     
       # Your chat app
 
 ]
+
+
 
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -210,6 +213,67 @@ DID_API_KEY = os.getenv("DID_API_KEY")
 STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
 STRIPE_PUBLISHABLE_KEY = os.getenv("STRIPE_PUBLISHABLE_KEY")
 STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET")
+
+
+
+
+
+
+
+
+
+
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.facebook.FacebookOAuth2',
+    'social_core.backends.google.GoogleOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+    
+)
+
+
+
+# Facebook Auth settings
+
+SOCIAL_AUTH_FACEBOOK_KEY = 'your-facebook-app-id'
+SOCIAL_AUTH_FACEBOOK_SECRET = 'your-facebook-app-secret'
+
+# Optional: Ask for email access
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
+SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
+    'fields': 'id, name, email'
+}
+
+
+
+
+
+# Google OAuth settings
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = 'your-client-id.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'your-client-secret'
+
+
+
+
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = '/'  # or your dashboard
+LOGOUT_REDIRECT_URL = '/'
+
+
+
+
+
+TEMPLATES[0]['OPTIONS']['context_processors'] += [
+    'social_django.context_processors.backends',
+    'social_django.context_processors.login_redirect',
+]
+
+
+
+
+
+
+
+
 
 
 

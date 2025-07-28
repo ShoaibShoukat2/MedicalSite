@@ -9,11 +9,25 @@ urlpatterns = [
     path('patient-dashboard/', include(('patientdashboard.urls', 'patientdashboard'), namespace='patientdashboard')),
     path('practitioner-dashboard/', include(('practitionerdashboard.urls', 'practitionerdashboard'), namespace='practitionerdashboard')),
     path('chat/', include('chat.urls')),
+    path('auth/', include('social_django.urls', namespace='social')),
+
 ]
+
+
 
 # Serve media files in development
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)  # ✅ corrected line
+
+
+
+
+
+
+
+
+
+
 
 
