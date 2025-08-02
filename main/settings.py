@@ -231,10 +231,14 @@ AUTHENTICATION_BACKENDS = (
 )
 
 
+from decouple import config
+from django.urls import reverse_lazy
+
 # Facebook Auth settings
 
-SOCIAL_AUTH_FACEBOOK_KEY = ''
-SOCIAL_AUTH_FACEBOOK_SECRET = ''
+SOCIAL_AUTH_FACEBOOK_KEY = os.getenv('SOCIAL_AUTH_FACEBOOK_KEY')
+SOCIAL_AUTH_FACEBOOK_SECRET = os.getenv('SOCIAL_AUTH_FACEBOOK_SECRET')
+
 
 # Optional: Ask for email access
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
@@ -248,8 +252,7 @@ SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
 
 
 # Google OAuth settings
-from decouple import config
-from django.urls import reverse_lazy
+
 
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = config('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
