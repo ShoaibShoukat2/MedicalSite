@@ -233,8 +233,8 @@ AUTHENTICATION_BACKENDS = (
 
 # Facebook Auth settings
 
-SOCIAL_AUTH_FACEBOOK_KEY = 'your-facebook-app-id'
-SOCIAL_AUTH_FACEBOOK_SECRET = 'your-facebook-app-secret'
+SOCIAL_AUTH_FACEBOOK_KEY = ''
+SOCIAL_AUTH_FACEBOOK_SECRET = ''
 
 # Optional: Ask for email access
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
