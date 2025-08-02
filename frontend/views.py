@@ -11,6 +11,11 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.conf import settings
 from django.contrib.auth.hashers import make_password
 from django.views.decorators.csrf import csrf_protect
+from langdetect import detect
+from django.views.decorators.csrf import csrf_exempt
+import json, time, requests, base64
+from django.http import JsonResponse
+
 
 # Create your views here.
 
@@ -52,6 +57,7 @@ def generate_otp():
     otp = ''.join(random.choices(string.digits, k=6))
     return otp
 
+    
 
 
 
@@ -360,6 +366,7 @@ def practitioner_login(request):
 
 
 
+
 def practitioner_forgot_password(request):
     if request.method == 'POST':
         email = request.POST.get('email')
@@ -535,7 +542,10 @@ def clean_text(text):
     return re.sub(r'[^\x00-\x7F]+', '', text).strip()
 
 
-import time  # 👈 for delay
+import time 
+
+
+
 
 @csrf_exempt
 def ask_avatar(request):
@@ -545,31 +555,50 @@ def ask_avatar(request):
         if not user_message:
             return JsonResponse({"error": "Empty message received"}, status=400)
 
-        # OpenAI Response
-        prompt = f"You are a helpful assistant. User asked: {user_message}"
+        # 🌐 Detect the language
+        detected_lang = detect(user_message)
+
+        # 🧠 Language-specific system prompt
+        system_prompt = f"You are a helpful assistant. Respond in {detected_lang}."
+
+        # 🌍 Set appropriate voice for D-ID
+        voice_map = {
+            "en": "en-US-AriaNeural",
+            "fr": "fr-FR-DeniseNeural",
+            "de": "de-DE-KatjaNeural",
+            "es": "es-ES-ElviraNeural",
+            "it": "it-IT-ElsaNeural",
+            "ur": "ur-PK-AsadNeural",  # Urdu support
+            "hi": "hi-IN-SwaraNeural",
+            # Add more if needed
+        }
+        voice_id = voice_map.get(detected_lang, "en-US-AriaNeural")
+
+        # 🔮 OpenAI GPT response
         openai_response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": prompt}
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_message}
             ]
         )
         raw_answer = openai_response.choices[0].message.content.strip()
-        answer = clean_text(raw_answer)[:500] or "Hello, I am here to help you."
+        answer = raw_answer[:500] or "Hello, I am here to help you."
 
-        # D-ID API call
+        # 🎙️ D-ID API call
         encoded_auth = base64.b64encode(DID_API_KEY.encode()).decode()
         headers = {
             "Authorization": f"Basic {encoded_auth}",
             "Content-Type": "application/json"
         }
 
+
         payload = {
             "script": {
                 "type": "text",
                 "provider": {
                     "type": "microsoft",
-                    "voice_id": "en-US-AriaNeural"
+                    "voice_id": voice_id
                 },
                 "ssml": False,
                 "input": answer
@@ -579,18 +608,16 @@ def ask_avatar(request):
 
         response = requests.post("https://api.d-id.com/talks", json=payload, headers=headers)
         parsed_json = response.json()
-
-        # ✅ Poll for result_url
         talk_id = parsed_json.get("id")
         poll_url = f"https://api.d-id.com/talks/{talk_id}"
 
-        for _ in range(10):  # try 10 times
+        for _ in range(10):
             poll_response = requests.get(poll_url, headers=headers)
             poll_data = poll_response.json()
             if poll_data.get("status") == "done":
                 video_url = poll_data.get("result_url")
                 return JsonResponse({"video_url": video_url, "answer": answer})
-            time.sleep(1)  # wait 1 second before checking again
+            time.sleep(1)
 
         return JsonResponse({"error": "Video not ready yet", "talk_id": talk_id}, status=202)
 
@@ -598,8 +625,7 @@ def ask_avatar(request):
         return JsonResponse({"error": "Internal server error", "exception": str(e)}, status=500)
 
 
-
-
+    
 
 
 

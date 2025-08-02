@@ -231,7 +231,6 @@ AUTHENTICATION_BACKENDS = (
 )
 
 
-
 # Facebook Auth settings
 
 SOCIAL_AUTH_FACEBOOK_KEY = 'your-facebook-app-id'
@@ -247,17 +246,20 @@ SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
 
 
 
+
 # Google OAuth settings
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = 'your-client-id.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'your-client-secret'
+from decouple import config
+from django.urls import reverse_lazy
 
 
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = config('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = config('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
 
 
 LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = '/'  # or your dashboard
-LOGOUT_REDIRECT_URL = '/'
 
+LOGIN_REDIRECT_URL = reverse_lazy('patient_dashboard:appointments_patients')
+LOGOUT_REDIRECT_URL = '/'
 
 
 
@@ -266,7 +268,6 @@ TEMPLATES[0]['OPTIONS']['context_processors'] += [
     'social_django.context_processors.backends',
     'social_django.context_processors.login_redirect',
 ]
-
 
 
 

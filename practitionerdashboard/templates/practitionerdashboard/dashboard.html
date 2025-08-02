@@ -155,79 +155,120 @@
           </ul>
         </div>
 
+        
+
+
         <div class="tab-content p-4">
           <!-- Today's Appointments Tab -->
-          <div class="tab-pane fade show active" id="today">
-            <div class="row">
-              <div class="col-12">
-                {% if today_appointments %}
-                  <div class="table-responsive">
-                    <table class="table table-hover align-middle">
-                      <thead class="table-light">
-                        <tr>
-                          <th class="ps-4 border-0 fw-semibold">Patient</th>
-                          <th class="border-0 fw-semibold">Appointment Time</th>
-                          <th class="border-0 fw-semibold">Amount</th>
-                          <th class="text-center border-0 fw-semibold">Status</th>
-                          <th class="text-end pe-4 border-0 fw-semibold">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {% for appointment in today_appointments %}
-                        <tr data-id="{{ appointment.id }}" class="border-bottom appointment-row">
-                          <td class="ps-4 py-3">
-                            <div class="d-flex align-items-center">
-                              <div class="avatar-circle bg-primary bg-gradient me-3">
-                                <span class="text-white fw-bold">{{ appointment.patient.first_name|slice:":1" }}</span>
-                              </div>
-                              <div>
-                                <h6 class="mb-0 fw-medium">{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</h6>
-                                <small class="text-muted">{{ appointment.patient.email }}</small>
-                              </div>
+         <div class="tab-pane fade show active" id="today">
+          <div class="row">
+            <div class="col-12">
+              {% if today_appointments %}
+                <div class="table-responsive">
+                  <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                      <tr>
+                        <th class="ps-4 border-0 fw-semibold">Patient</th>
+                        <th class="border-0 fw-semibold">Appointment Time</th>
+                        <th class="border-0 fw-semibold">Amount</th>
+                        <th class="text-center border-0 fw-semibold">Status</th>
+                        <th class="text-center border-0 fw-semibold">Symptoms</th>
+                        <th class="text-end pe-4 border-0 fw-semibold">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for appointment in today_appointments %}
+                      <tr data-id="{{ appointment.id }}" class="border-bottom appointment-row">
+                        <td class="ps-4 py-3">
+                          <div class="d-flex align-items-center">
+                            <div class="avatar-circle bg-primary bg-gradient me-3">
+                              <span class="text-white fw-bold">{{ appointment.patient.first_name|slice:":1" }}</span>
                             </div>
-                          </td>
-                          <td class="py-3">
-                            <div class="d-flex flex-column">
-                              <span class="fw-medium text-dark">{{ appointment.slot.start_time|date:"M d, Y" }}</span>
-                              <small class="text-primary fw-medium">{{ appointment.slot.start_time|time:"h:i A" }}</small>
+                            <div>
+                              <h6 class="mb-0 fw-medium">{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</h6>
+                              <small class="text-muted">{{ appointment.patient.email }}</small>
                             </div>
-                          </td>
-                          <td class="py-3">
-                            <span class="badge bg-light text-dark fw-medium px-3 py-2">${{ appointment.practitioner.price|floatformat:0 }}</span>
-                          </td>
-                          <td class="text-center py-3">
-                            <span class="badge bg-warning text-dark px-3 py-2">Pending</span>
-                          </td>
-                          <td class="text-end pe-4 py-3">
-                            <div class="btn-group" role="group">
-                              <button class="btn btn-sm btn-outline-primary view-btn">
-                                <i class="bi bi-eye"></i>
-                              </button>
-                              <button class="btn btn-sm btn-success accept-btn">
-                                <i class="bi bi-check2"></i>
-                              </button>
-                              <button class="btn btn-sm btn-outline-danger cancel-btn">
-                                <i class="bi bi-x"></i>
-                              </button>
+                          </div>
+                        </td>
+                        <td class="py-3">
+                          <div class="d-flex flex-column">
+                            <span class="fw-medium text-dark">{{ appointment.slot.start_time|date:"M d, Y" }}</span>
+                            <small class="text-primary fw-medium">{{ appointment.slot.start_time|time:"h:i A" }}</small>
+                          </div>
+                        </td>
+                        <td class="py-3">
+                          <span class="badge bg-light text-dark fw-medium px-3 py-2">
+                            ${{ appointment.practitioner.price|floatformat:0 }}
+                          </span>
+                        </td>
+                        <td class="text-center py-3">
+                          <span class="badge bg-warning text-dark px-3 py-2">Pending</span>
+                        </td>
+
+                        <!-- 🔍 Symptoms Icon Column -->
+                        <td class="text-center py-3">
+                          <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#symptomModal{{ appointment.id }}">
+                            <i class="bi bi-clipboard-heart-fill"></i>
+                          </button>
+                        </td>
+
+                        <!-- ✅ Actions -->
+                        <td class="text-end pe-4 py-3">
+                          <div class="btn-group" role="group">
+                            <button class="btn btn-sm btn-outline-primary view-btn">
+                              <i class="bi bi-eye"></i>
+                            </button>
+                            <button class="btn btn-sm btn-success accept-btn">
+                              <i class="bi bi-check2"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger cancel-btn">
+                              <i class="bi bi-x"></i>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+
+                      <!-- 🧾 Symptom Modal -->
+                      <div class="modal fade" id="symptomModal{{ appointment.id }}" tabindex="-1" aria-labelledby="symptomModalLabel{{ appointment.id }}" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                          <div class="modal-content">
+                            <div class="modal-header bg-info text-white">
+                              <h5 class="modal-title" id="symptomModalLabel{{ appointment.id }}">
+                                Submitted Symptoms - {{ appointment.patient.first_name }}
+                              </h5>
+                              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                          </td>
-                        </tr>
-                        {% endfor %}
-                      </tbody>
-                    </table>
+                            <div class="modal-body">
+                              {% if appointment.symptom_details %}
+                                <p class="text-dark">{{ appointment.symptom_details }}</p>
+                              {% else %}
+                                <p class="text-muted">No symptoms submitted.</p>
+                              {% endif %}
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              {% else %}
+                <div class="text-center py-5">
+                  <div class="mb-4">
+                    <i class="bi bi-calendar-x text-muted" style="font-size: 4rem;"></i>
                   </div>
-                {% else %}
-                  <div class="text-center py-5">
-                    <div class="mb-4">
-                      <i class="bi bi-calendar-x text-muted" style="font-size: 4rem;"></i>
-                    </div>
-                    <h5 class="text-muted mb-2">No appointments for today</h5>
-                    <p class="text-muted">Your schedule is clear for today!</p>
-                  </div>
-                {% endif %}
-              </div>
+                  <h5 class="text-muted mb-2">No appointments for today</h5>
+                  <p class="text-muted">Your schedule is clear for today!</p>
+                </div>
+              {% endif %}
             </div>
           </div>
+         </div>
+
 
           <!-- Pending Appointments Tab -->
           <div class="tab-pane fade" id="pending">
@@ -241,6 +282,7 @@
                           <th class="ps-4 border-0 fw-semibold">Patient</th>
                           <th class="border-0 fw-semibold">Appointment Time</th>
                           <th class="border-0 fw-semibold">Amount</th>
+                          <th class="text-center border-0 fw-semibold">Symptoms</th>
                           <th class="text-center border-0 fw-semibold">Status</th>
                           <th class="text-end pe-4 border-0 fw-semibold">Actions</th>
                         </tr>
@@ -269,6 +311,12 @@
                             <span class="badge bg-light text-dark fw-medium px-3 py-2">${{ appointment.practitioner.price|floatformat:0 }}</span>
                           </td>
                           <td class="text-center py-3">
+                            <!-- Symptom icon to open modal -->
+                            <button type="button" class="btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#symptomModalPending{{ appointment.id }}">
+                              <i class="bi bi-journal-medical"></i>
+                            </button>
+                          </td>
+                          <td class="text-center py-3">
                             <span class="badge bg-warning text-dark px-3 py-2">Pending</span>
                           </td>
                           <td class="text-end pe-4 py-3">
@@ -285,6 +333,39 @@
                             </div>
                           </td>
                         </tr>
+
+                        <!-- Symptom Modal -->
+                        <div class="modal fade" id="symptomModalPending{{ appointment.id }}" tabindex="-1" aria-labelledby="symptomModalLabelPending{{ appointment.id }}" aria-hidden="true">
+                          <div class="modal-dialog modal-dialog-scrollable">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="symptomModalLabelPending{{ appointment.id }}">
+                                  Symptoms for {{ appointment.patient.first_name }} {{ appointment.patient.last_name }}
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                              </div>
+                              <div class="modal-body">
+                                {% with symptoms=appointment.symptom_set.all %}
+                                  {% if symptoms %}
+                                    <ul class="list-group list-group-flush">
+                                      {% for symptom in symptoms %}
+                                        <li class="list-group-item">
+                                          <p class="mb-1">{{ symptom.details }}</p>
+                                          <small class="text-muted">Submitted on {{ symptom.created_at|date:"M d, Y H:i" }}</small>
+                                        </li>
+                                      {% endfor %}
+                                    </ul>
+                                  {% else %}
+                                    <p class="text-muted">No symptoms submitted for this appointment.</p>
+                                  {% endif %}
+                                {% endwith %}
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                         {% endfor %}
                       </tbody>
                     </table>
@@ -302,6 +383,8 @@
             </div>
           </div>
 
+
+
           <!-- Waiting List Tab -->
           <div class="tab-pane fade" id="waiting">
             <div class="row">
@@ -314,6 +397,7 @@
                           <th class="ps-4 border-0 fw-semibold">Patient</th>
                           <th class="border-0 fw-semibold">Appointment Time</th>
                           <th class="border-0 fw-semibold">Amount</th>
+                          <th class="text-center border-0 fw-semibold">Symptoms</th>
                           <th class="text-center border-0 fw-semibold">Status</th>
                           <th class="text-end pe-4 border-0 fw-semibold">Actions</th>
                         </tr>
@@ -342,6 +426,12 @@
                             <span class="badge bg-light text-dark fw-medium px-3 py-2">${{ appointment.practitioner.price|floatformat:0 }}</span>
                           </td>
                           <td class="text-center py-3">
+                            <!-- Symptom icon to open modal -->
+                            <button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#symptomModalWaiting{{ appointment.id }}">
+                              <i class="bi bi-journal-medical"></i>
+                            </button>
+                          </td>
+                          <td class="text-center py-3">
                             <span class="badge bg-info text-white px-3 py-2">Waiting</span>
                           </td>
                           <td class="text-end pe-4 py-3">
@@ -358,6 +448,39 @@
                             </div>
                           </td>
                         </tr>
+
+                        <!-- Symptom Modal -->
+                        <div class="modal fade" id="symptomModalWaiting{{ appointment.id }}" tabindex="-1" aria-labelledby="symptomModalLabelWaiting{{ appointment.id }}" aria-hidden="true">
+                          <div class="modal-dialog modal-dialog-scrollable">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="symptomModalLabelWaiting{{ appointment.id }}">
+                                  Symptoms for {{ appointment.patient.first_name }} {{ appointment.patient.last_name }}
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                              </div>
+                              <div class="modal-body">
+                                {% with symptoms=appointment.symptom_set.all %}
+                                  {% if symptoms %}
+                                    <ul class="list-group list-group-flush">
+                                      {% for symptom in symptoms %}
+                                        <li class="list-group-item">
+                                          <p class="mb-1">{{ symptom.details }}</p>
+                                          <small class="text-muted">Submitted on {{ symptom.created_at|date:"M d, Y H:i" }}</small>
+                                        </li>
+                                      {% endfor %}
+                                    </ul>
+                                  {% else %}
+                                    <p class="text-muted">No symptoms submitted for this appointment.</p>
+                                  {% endif %}
+                                {% endwith %}
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                         {% endfor %}
                       </tbody>
                     </table>
@@ -375,6 +498,11 @@
             </div>
           </div>
 
+
+
+
+
+
           <!-- Accepted Appointments Tab -->
           <div class="tab-pane fade" id="accepted">
             <div class="row">
@@ -387,6 +515,7 @@
                           <th class="ps-4 border-0 fw-semibold">Patient</th>
                           <th class="border-0 fw-semibold">Appointment Time</th>
                           <th class="border-0 fw-semibold">Amount</th>
+                          <th class="text-center border-0 fw-semibold">Symptoms</th>
                           <th class="text-center border-0 fw-semibold">Status</th>
                           <th class="text-end pe-4 border-0 fw-semibold">Actions</th>
                         </tr>
@@ -415,6 +544,12 @@
                             <span class="badge bg-light text-dark fw-medium px-3 py-2">${{ appointment.practitioner.price|floatformat:0 }}</span>
                           </td>
                           <td class="text-center py-3">
+                            <!-- Symptom icon to open modal -->
+                            <button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#symptomModal{{ appointment.id }}">
+                              <i class="bi bi-journal-medical"></i>
+                            </button>
+                          </td>
+                          <td class="text-center py-3">
                             <span class="badge bg-success text-white px-3 py-2">Accepted</span>
                           </td>
                           <td class="text-end pe-4 py-3">
@@ -428,6 +563,39 @@
                             </div>
                           </td>
                         </tr>
+
+                        <!-- Symptom Modal -->
+                        <div class="modal fade" id="symptomModal{{ appointment.id }}" tabindex="-1" aria-labelledby="symptomModalLabel{{ appointment.id }}" aria-hidden="true">
+                          <div class="modal-dialog modal-dialog-scrollable">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="symptomModalLabel{{ appointment.id }}">
+                                  Symptoms for {{ appointment.patient.first_name }} {{ appointment.patient.last_name }}
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                              </div>
+                              <div class="modal-body">
+                                {% with symptoms=appointment.symptom_set.all %}
+                                  {% if symptoms %}
+                                    <ul class="list-group list-group-flush">
+                                      {% for symptom in symptoms %}
+                                        <li class="list-group-item">
+                                          <p class="mb-1">{{ symptom.details }}</p>
+                                          <small class="text-muted">Submitted on {{ symptom.created_at|date:"M d, Y H:i" }}</small>
+                                        </li>
+                                      {% endfor %}
+                                    </ul>
+                                  {% else %}
+                                    <p class="text-muted">No symptoms submitted for this appointment.</p>
+                                  {% endif %}
+                                {% endwith %}
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                         {% endfor %}
                       </tbody>
                     </table>
@@ -444,6 +612,8 @@
               </div>
             </div>
           </div>
+
+
         </div>
       </div>
     </div>
@@ -518,6 +688,9 @@
       </div>
     </div>
   </div>
+
+
+
 </div>
 
 <!-- Custom Styles -->

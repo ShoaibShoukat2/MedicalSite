@@ -89,6 +89,13 @@ class Notification(models.Model):
 
 
 
+
+
+
+
+
+
+
 class Review(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='reviews')
     practitioner = models.ForeignKey(Practitioner, on_delete=models.CASCADE, related_name='reviews')
@@ -98,6 +105,8 @@ class Review(models.Model):
 
     def __str__(self):
         return f"Review by {self.patient.first_name} for {self.practitioner.first_name} - {self.rating} Stars"
+    
+
 
 
 class Reply(models.Model):
@@ -111,6 +120,16 @@ class Reply(models.Model):
 
     def __str__(self):
         return f"Reply by {self.content_object} on {self.review}"
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -142,3 +161,15 @@ class Billing(models.Model):
             self.invoice_number = f"INV-{uuid.uuid4().hex[:8].upper()}"
             self.due_date = timezone.now() + timezone.timedelta(days=3)
         super().save(*args, **kwargs)
+        
+        
+    
+class Symptom(models.Model):
+    appointment = models.ForeignKey(Appointment, on_delete=models.CASCADE)
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)  # ID of default patient
+    details = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Symptom by {self.patient.user.get_full_name()} on {self.created_at.date()}"
+

@@ -56,8 +56,20 @@ urlpatterns = [
     path('bills/<int:bill_id>/', views.view_bill, name='view_bill'),
 
     path('bills/<int:bill_id>/download/', views.download_bill_pdf, name='download_bill_pdf'),
-
     
+    
+    path('submit-symptoms/', views.submit_symptoms, name='submit_symptoms'),
+    
+    
+    path('symptoms/', views.symptoms_list, name='symptoms_list'),
+    path('symptoms/add/', views.add_symptom, name='add_symptom'),
+    path('symptoms/delete/<int:symptom_id>/', views.delete_symptom, name='delete_symptom'),
+    path('eligible/practitioners_for_review/', views.eligible_practitioners_for_review, name='eligible_practitioners_for_review'),
+    
+    # Review form for a specific practitioner
+    path('review/<int:practitioner_id>/', views.review_practitioner, name='review_practitioner'),
+    
+
 ]
 
 

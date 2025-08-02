@@ -477,6 +477,7 @@ def Cancel_Complete(request):
 
 
 
+
 def practitioner_reviews(request):
     # Get practitioner_id from session
     practitioner_id = request.session.get('practitioner_id')
@@ -526,6 +527,8 @@ def practitioner_reviews(request):
 
     # Return rendered template with reviews
     return render(request, 'practitionerdashboard/reviews.html', {'reviews': reviews})
+
+
 
 
 

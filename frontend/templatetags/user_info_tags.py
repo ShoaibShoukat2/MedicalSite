@@ -88,3 +88,9 @@ def review_count_from_session(request):
     total_reviews = Review.objects.filter(practitioner_id=practitioner_id).count()
     
     return total_reviews
+
+
+@register.filter
+def dict_get(d, key):
+    return d.get(key)
+

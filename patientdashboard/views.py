@@ -16,11 +16,12 @@ from django.core.paginator import Paginator
 from django.conf import settings
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect
-from patientdashboard.models import Appointment
+from patientdashboard.models import Appointment,Symptom
 from user_account.models import Patient
 from practitionerdashboard.models import AvailableSlot
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import render, redirect
 from patientdashboard.models import Appointment
 from user_account.models import Patient
 from practitionerdashboard.models import AvailableSlot
@@ -38,6 +39,8 @@ from .stripe_utils import create_checkout_session, handle_checkout_completed
 import stripe
 from django.http import HttpResponse
 from datetime import datetime, timedelta, date
+from django.http import HttpResponse
+from django.template.loader import get_template
 
 # practitionerdashboard/views.py
 from django.utils import timezone
@@ -73,7 +76,7 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
 
-
+@login_required
 def patient_dashboard(request):
     print("📌 patient_dashboard view is being executed!")  # Debugging print
     sys.stdout.flush()  # Force output to be written
@@ -298,11 +301,14 @@ def book_appointment(request):
 
 
 
+
 def booking(request):
     context = {
         'SPECIALTY_CHOICES': Practitioner.SPECIALTY_CHOICES,
     }
     return render(request, 'patientdashboard/booking.html', context)
+
+
 def search_practitioners(request):
     query = request.GET.get('query', '')  # Search query
     gender = request.GET.get('gender', '')  # Gender filter
@@ -319,6 +325,7 @@ def search_practitioners(request):
             Q(last_name__icontains=query) |
             Q(specialty__icontains=query)
         )
+        
 
     # Apply gender filter (case-sensitive check)
     if gender:
@@ -344,13 +351,12 @@ def search_practitioners(request):
         'location': location,
         'specialty': specialty,
     })
+    
+    
+    
 
 def chat(request):
     return render(request, 'patientdashboard/chat.html')
-
-
-
-
 
 
 def appointments_patients(request):
@@ -367,8 +373,6 @@ def appointments_patients(request):
         
         billing_records = Billing.objects.filter(appointment__patient_id=patient_id)
 
-
-
         return render(request, 'patientdashboard/appointments_patients.html', {
             'patient': patient,
             'notifications': notifications,
@@ -378,15 +382,90 @@ def appointments_patients(request):
         })
     else:
         return redirect('frontend:patient_login')
+    
+    
+    
+    
+def eligible_practitioners_for_review(request):
+    patient_id = request.session.get('patient_id')
+    if not patient_id:
+        return redirect('frontend:patient_login')
 
+    patient = get_object_or_404(Patient, id=patient_id)
 
+    # Get practitioners with confirmed appointments
+    confirmed_appointments = Appointment.objects.filter(
+        patient=patient,
+        status='Accepted' 
+    ).select_related('practitioner')
 
+    practitioners = [appt.practitioner for appt in confirmed_appointments]
+
+    # Fetch reviews and replies
+    practitioner_ids = [p.id for p in practitioners]
+    reviews = Review.objects.filter(patient=patient, practitioner_id__in=practitioner_ids)
+
+    # Build patient_reviews with replies
+    patient_reviews = {}
+    for review in reviews:
+        replies = review.replies.all()  # Related name in model
+        patient_reviews[review.practitioner_id] = {
+            'rating': review.rating,
+            'feedback': review.feedback,
+            'created_at': review.created_at,
+            'replies': replies,
+        }
+        
+        print("Replies:",replies)
+    return render(request, 'patientdashboard/eligible_reviews.html', {
+        'patient': patient,
+        'practitioners': practitioners,
+        'patient_reviews': patient_reviews,
+    })
 
 
    
+   
+ 
 
 
-from django.shortcuts import render, redirect
+
+
+def review_practitioner(request, practitioner_id):
+    patient_id = request.session.get('patient_id')
+    if not patient_id:
+        return redirect('frontend:patient_login')
+
+    practitioner = get_object_or_404(Practitioner, id=practitioner_id)
+    patient = get_object_or_404(Patient, id=patient_id)
+
+    # Check if the patient has already submitted a review
+    existing_review = Review.objects.filter(patient=patient, practitioner=practitioner).first()
+    if existing_review:
+        messages.error(request, "You have already submitted a review for this practitioner. You cannot submit it again.")
+        return redirect('patientdashboard:eligible_practitioners_for_review')
+
+    if request.method == 'POST':
+        rating = request.POST.get('rating')
+        feedback = request.POST.get('feedback')
+
+        Review.objects.create(
+            patient=patient,
+            practitioner=practitioner,
+            rating=rating,
+            feedback=feedback
+        )
+        messages.success(request, "Your review has been submitted successfully.")
+        return redirect('patientdashboard:eligible_practitioners_for_review')
+
+    return render(request, 'patientdashboard/review.html', {
+        'practitioner': practitioner
+    })
+    
+
+
+
+
 
 
 def telemedicine(request):
@@ -508,14 +587,25 @@ def patient_profile(request):
 
 
 def exercises_view(request):
+    
+    patient_id = request.session.get('patient_id')
+
+    if patient_id:
+        patient = get_object_or_404(Patient, id=patient_id)
+        
     context = {
         'exercises': [
             {'name': 'Basic Yoga', 'url': 'patientdashboard:yoga_tutorial', 'image': 'basic_yoga.jpg'},
             {'name': 'Leg Exercises', 'url': 'patientdashboard:leg_exercises_tutorial', 'image': 'legs.jpg'},
             {'name': 'Arm Exercises', 'url': 'patientdashboard:arm_exercises_tutorial', 'image': 'arms.jpg'},
-        ]
+        ],
+        'patient': patient,
     }
     return render(request, 'patientdashboard/exercises.html', context)
+
+
+
+
 def yoga_tutorial(request):
     context = {
         'exercise_name': 'Basic Yoga',
@@ -549,6 +639,9 @@ def yoga_tutorial(request):
         ]
     }
     return render(request, 'patientdashboard/exercise_tutorial.html', context)
+
+
+
 def leg_exercises_tutorial(request):
     context = {
         'exercise_name': 'Leg Exercises',
@@ -560,6 +653,9 @@ def leg_exercises_tutorial(request):
     }
     return render(request, 'patientdashboard/exercise_tutorial.html', context)
 
+
+
+
 def arm_exercises_tutorial(request):
     context = {
         'exercise_name': 'Arm Exercises',
@@ -570,6 +666,9 @@ def arm_exercises_tutorial(request):
         ]
     }
     return render(request, 'patientdashboard/exercise_tutorial.html', context)
+
+
+
 def update_progress(request):
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -583,9 +682,16 @@ def update_progress(request):
 
 def specialty_selection(request):
     specialties = Practitioner.SPECIALTY_CHOICES
+    patient_id = request.session.get('patient_id')
+
+    if patient_id:
+        patient = get_object_or_404(Patient, id=patient_id)
     return render(request, 'patientdashboard/specialty_selection.html', {
-        'specialties': specialties
+        'specialties': specialties,
+        'patient': patient,
     })
+    
+    
 
 def practitioners_list(request, specialty):
     practitioners = Practitioner.objects.filter(specialty=specialty)
@@ -697,6 +803,11 @@ def list_all_bills(request):
     print("📌 list_all_bills view is being executed!")  # Debugging print
     sys.stdout.flush()
     
+    patient_id = request.session.get('patient_id')
+
+    if patient_id:
+        patient = get_object_or_404(Patient, id=patient_id)
+    
     # Check if user is authenticated
     if request.method == 'GET':
         patient_id = request.session.get('patient_id')  # Ensure the patient is logged in
@@ -719,6 +830,7 @@ def list_all_bills(request):
         
         context = {
             'bills': bills,
+            'patient': patient,
         }
         return render(request, 'patientdashboard/bills_payments.html', context)
         
@@ -773,8 +885,7 @@ def view_bill(request, bill_id):
     
 
 
-from django.http import HttpResponse
-from django.template.loader import get_template
+
 
 
 def download_bill_pdf(request, bill_id):
@@ -837,5 +948,91 @@ def cancel_appointment(request, appointment_id):
         messages.success(request, "Appointment has been cancelled.")
     
     return JsonResponse({"success": True, "message": "Appointment cancelled successfully"})
+
+
+
+
+@csrf_exempt
+def submit_symptoms(request):
+    if request.method == 'POST':
+        appointment_id = request.POST.get('appointment_id')
+        symptoms = request.POST.get('symptoms')
+
+        # Get appointment and patient from IDs
+        appointment = get_object_or_404(Appointment, id=appointment_id)
+        patient_id = request.session.get('patient_id')
+
+
+
+        if not patient_id:
+            messages.error(request, 'Patient information not found. Please log in again.')
+            return redirect('patient_dashboard:appointments_patients')
+
+        patient = get_object_or_404(Patient, id=patient_id)
+
+        # Create symptom record
+        Symptom.objects.create(
+            appointment=appointment,
+            patient=patient,
+            details=symptoms
+        )
+
+        messages.success(request, 'Symptoms submitted successfully.')
+        return redirect('patient_dashboard:symptoms_list')
+
+
+
+
+
+def symptoms_list(request):
+    patient_id = request.session.get('patient_id')
+    if patient_id:
+        patient = get_object_or_404(Patient, id=patient_id)
+        
+    if not patient_id:
+        return redirect('patientdashboard:login')  # Or your login page
+
+    symptoms = Symptom.objects.filter(patient_id=patient_id).order_by('-created_at')
+    return render(request, 'patientdashboard/symptoms_list.html', 
+                  
+        {'symptoms': symptoms,'patient': patient,}
+        
+        )
+
+
+
+
+@csrf_exempt
+def add_symptom(request):
+    if request.method == 'POST':
+        appointment_id = request.POST.get('appointment_id')
+        details = request.POST.get('details')
+        patient_id = request.session.get('patient_id')
+
+        if appointment_id and details and patient_id:
+            appointment = get_object_or_404(Appointment, id=appointment_id)
+            patient = get_object_or_404(Patient, id=patient_id)
+            Symptom.objects.create(appointment=appointment, patient=patient, details=details)
+        return redirect('patientdashboard:symptoms_list')
+
+    appointments = Appointment.objects.all()  # optionally filter by patient
+    return render(request, 'patientdashboard/add_symptom.html', {'appointments': appointments})
+
+
+def delete_symptom(request, symptom_id):
+    symptom = get_object_or_404(Symptom, id=symptom_id)
+    if symptom.patient.id == request.session.get('patient_id'):
+        symptom.delete()
+    return redirect('patientdashboard:symptoms_list')
+
+
+
+
+
+
+
+
+
+
 
 

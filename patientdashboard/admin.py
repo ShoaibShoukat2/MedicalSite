@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Appointment,Review,Billing
+from .models import Appointment,Review,Billing, Symptom, Reply
 # Register your models here.
 
 
@@ -20,5 +20,11 @@ admin.site.register(Billing)
 
 
 
+@admin.register(Symptom)
+class SymptomAdmin(admin.ModelAdmin):
+    list_display = ('id', 'patient', 'appointment', 'created_at')
+    search_fields = ('details', 'patient__user__first_name', 'appointment__id')
+    list_filter = ('created_at',)
 
 
+admin.site.register(Reply)

@@ -1,0 +1,25 @@
+{% extends 'patientdashboard/patient_base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <h3>Add Symptom</h3>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="appointment">Appointment</label>
+            <select class="form-control" name="appointment_id" required>
+                {% for app in appointments %}
+                    <option value="{{ app.id }}">{{ app }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="details">Symptom Details</label>
+            <textarea class="form-control" name="details" rows="4" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-success">Submit</button>
+    </form>
+</div>
+{% endblock %}
+
