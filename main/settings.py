@@ -37,7 +37,7 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1','michdmp.pythonanywhere.com','localhost','69.62.108.86']
+ALLOWED_HOSTS = ['127.0.0.1','michdmp.pythonanywhere.com','localhost','69.62.108.86','reeducavie.com']
 
 
 
@@ -161,12 +161,13 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
+    os.path.join(BASE_DIR, "static"),  # Your local static folder for dev
 ]
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Where all static files will be collected to
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
 
 
 
