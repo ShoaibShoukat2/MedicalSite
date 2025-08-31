@@ -498,29 +498,70 @@
                     </div>
                 </div>
 
-                <!-- For Patients Section -->
+                  <!-- For Patients Section -->
                 <div class="col-lg-3 col-md-6 mb-4">
                     <h5 class="text-uppercase">For Patients</h5>
                     <ul class="list-unstyled">
-                        <li><a href="#">Search for Doctors</a></li>
-                        <li><a href="#">Login</a></li>
-                        <li><a href="#">Register</a></li>
-                        <li><a href="#">Booking</a></li>
-                        <li><a href="#">Patient Dashboard</a></li>
+                        <li><a href="/">Search for Doctors</a></li>
+                        <li><a href="{% url 'frontend:patient_login' %}">Login</a></li>
+                        <li><a href="{% url 'frontend:patient_signup' %}">Register</a></li>
+                        <li>
+                            {% if request.session.patient_id %}
+                                <a href="{% url 'patient_dashboard:appointments_patients' %}">Patient Dashboard</a>
+                            {% else %}
+                                <a href="{% url 'frontend:patient_login' %}">Patient Dashboard</a>
+                            {% endif %}
+                        </li>
+
+
                     </ul>
 
-
                 </div>
-
-                <!-- For Doctors Section -->
+                 <!-- For Doctors Section -->
                 <div class="col-lg-3 col-md-6 mb-4">
                     <h5 class="text-uppercase">For Doctors</h5>
                     <ul class="list-unstyled">
-                        <li><a href="#">Appointments</a></li>
-                        <li><a href="#">Chat</a></li>
-                        <li><a href="#">Login</a></li>
-                        <li><a href="#">Register</a></li>
-                        <li><a href="#">Doctor Dashboard</a></li>
+                        <li>
+                            <a href="{% if request.session.practitioner_id %}
+                                        {% url 'practitioner_dashboard:dashboard' %}
+                                    {% elif request.user.is_authenticated and request.user.is_practitioner %}
+                                        {% url 'practitioner_dashboard:dashboard' %}
+                                    {% else %}
+                                        {% url 'frontend:practitioner_login' %}
+                                    {% endif %}">
+                                Appointments
+                            </a>
+                        </li>
+
+
+                        <li>
+                            <a href="{% if request.session.practitioner_id %}
+                                        {% url 'practitioner_dashboard:chat' %}
+                                    {% elif request.user.is_authenticated and request.user.is_practitioner %}
+                                        {% url 'practitioner_dashboard:chat' %}
+                                    {% else %}
+                                        {% url 'frontend:practitioner_login' %}
+                                    {% endif %}">
+                                Chat
+                            </a>
+                        </li>
+
+                        <li><a href="{% url 'frontend:practitioner_login' %}">Login</a></li>
+                        <li><a href="{% url 'frontend:practitioner_signup' %}">Register</a></li>
+                        <li>
+                            <a href="{% if request.session.practitioner_id %}
+                                        {% url 'practitioner_dashboard:dashboard' %}
+                                    {% elif request.user.is_authenticated and request.user.is_practitioner %}
+                                        {% url 'practitioner_dashboard:dashboard' %}
+                                    {% else %}
+                                        {% url 'frontend:practitioner_login' %}
+                                    {% endif %}">
+                                Doctor Dashboard
+                            </a>
+                        </li>
+
+
+
                     </ul>
                 </div>
 

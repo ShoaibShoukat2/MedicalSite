@@ -19,6 +19,8 @@ urlpatterns = [
     path('payment-success/<int:slot_id>/', views.payment_success, name='payment_success'),
     
     
+    
+
    
     
     path('book-appointment/', views.book_appointment, name='book_appointment'),

@@ -472,41 +472,51 @@
     <a id="toggle_btn" href="javascript:void(0);"><i class="fa fa-bars" style="color: white;"></i></a>
     <ul class="nav user-menu float-right">
         <!-- Notifications Button -->
-        <li class="nav-item dropdown d-none d-sm-block">
-            <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
-                <i class="fa fa-bell" style="color: white;"></i>
-                <span class="badge badge-pill bg-danger float-right">3</span>
-            </a>
-            <div class="dropdown-menu notifications">
-                <div class="topnav-dropdown-header">
-                    <span>Notifications</span>
-                </div>
-                
+<!-- 
+<li class="nav-item dropdown d-none d-sm-block">
+    <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+        <i class="fa fa-bell" style="color: white;"></i>
+        {% if notifications %}
+       <span class="badge badge-pill bg-danger float-right">
+    {{ notifications.count|default:0 }}
+</span>
 
+        {% endif %}
+    </a>
+    <div class="dropdown-menu notifications">
+        <div class="topnav-dropdown-header">
+            <span>Notifications</span>
+        </div>
 
-                <div class="drop-scroll">
-                    <ul class="notification-list">
-                        <li class="notification-message">
-                            <a href="#">
-                                <div class="media">
-                                    <span class="avatar">
-                                        <img alt="User" src="{% static 'assets/img/user.jpg' %}" class="img-fluid">
-                                    </span>
-                                    <div class="media-body">
-                                        <p class="noti-details"><span class="noti-title">John Doe</span> added new task <span class="noti-title">Patient Appointment</span></p>
-                                        <p class="noti-time"><span class="notification-time">4 mins ago</span></p>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="topnav-dropdown-footer">
-                    <a href="#">View all Notifications</a>
-                    
-                </div>
-            </div>
-        </li>
+        <div class="drop-scroll">
+            <ul class="notification-list">
+                {% for notification in notifications %}
+                <li class="notification-message {% if not notification.is_read %}bg-light{% endif %}">
+                    <a href="{{ notification.url|default:'#' }}">
+                        <div class="media">
+                            <span class="avatar">
+                                <img alt="User" src="{% static 'assets/img/user.jpg' %}" class="img-fluid">
+                            </span>
+                            <div class="media-body">
+                                <p class="noti-details">
+                                    <span class="noti-title">{{ notification.recipient.first_name }} {{ notification.recipient.last_name }}</span> 
+                                    {{ notification.message }}
+                                </p>
+                                <p class="noti-time">
+                                    <span class="notification-time">{{ notification.created_at|timesince }} ago</span>
+                                </p>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                {% empty %}
+                <li class="notification-message text-center text-muted">No new notifications</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</li> -->
+    
 
 
 
@@ -522,15 +532,25 @@
 
         <!-- Profile Picture -->
      <li class="nav-item dropdown has-arrow">
-    <a href="#" class="dropdown-toggle nav-link user-link d-flex align-items-center" data-toggle="dropdown">
-        <span class="user-img d-inline-block position-relative">
-            <img src="{% get_practitioner_image request %}" 
-                 alt="Profile Picture" 
-                 class="img-fluid rounded-circle border border-light shadow-sm" 
-                 style="width: 36px; height: 36px; object-fit: cover;">
-        </span>
-        <span class="ml-2 font-weight-medium text-dark d-none d-md-inline">Profile</span>
-    </a>
+        <a href="#" class="dropdown-toggle nav-link user-link d-flex align-items-center" data-toggle="dropdown">
+            <span class="user-img d-inline-block position-relative">
+                <img src="{% get_practitioner_image request %}" 
+                    alt="Profile Picture" 
+                    class="img-fluid rounded-circle border border-light shadow-sm" 
+                    style="width: 36px; height: 36px; object-fit: cover;">
+            </span>
+            <span class="ml-2 font-weight-medium text-dark d-none d-md-inline">
+                {% if request.session.practitioner_name %}
+                    {{ request.session.practitioner_name }}
+                {% elif request.user.is_authenticated %}
+                    {{ request.user.name|default:request.user.email }}
+                {% else %}
+                    Guest
+                {% endif %}
+            </span>
+        </a>
+
+
 
     <div class="dropdown-menu">
         <a class="dropdown-item" href="{% url 'practitioner_dashboard:practitioner_profile' %}">My Profile</a>
@@ -550,74 +570,69 @@
     <!-- Main wrapper -->
     <div class="main-wrapper">
         <!-- Sidebar -->
-        <div class="sidebar" id="sidebar">
-            <button class="sidebar-close">
-                <i class="fa fa-times"></i>
-            </button>
-            <div class="sidebar-inner">
-               
-                <div id="sidebar-menu" class="sidebar-menu">
-                    <ul>
-                        <li class="{% if request.path == '/practitioner-dashboard/' %}active{% endif %}">
-                            <a href="{% url 'practitionerdashboard:dashboard' %}">
-                                <i class="fa fa-tachometer-alt" ></i>
-                                <span >Dashboard</span>
-                            </a>
-                        </li>
+      <div class="sidebar" id="sidebar">
+    <button class="sidebar-close">
+        <i class="fa fa-times"></i>
+    </button>
+    <div class="sidebar-inner">
+        <div id="sidebar-menu" class="sidebar-menu">
+            <ul>
+                <li class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                    <a href="{% url 'practitionerdashboard:dashboard' %}">
+                        <i class="fa fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
 
-                        <li class="{% if request.path == '/practitioner-profile/' %}active{% endif %}">
-                            <a href="{% url 'practitioner_dashboard:practitioner_profile' %}">
-                                <i class="fa fa-user"></i>
-                                <span>Profile</span>
-                            </a>
-                        </li>
-                        
+                <li class="{% if request.resolver_match.url_name == 'practitioner_profile' %}active{% endif %}">
+                    <a href="{% url 'practitioner_dashboard:practitioner_profile' %}">
+                        <i class="fa fa-user"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
 
+                <li class="{% if request.resolver_match.url_name == 'mypatient' %}active{% endif %}">
+                    <a href="{% url 'practitionerdashboard:mypatient' %}">
+                        <i class="fa fa-wheelchair"></i>
+                        <span>Patients</span>
+                    </a>
+                </li>
 
-                        <li class="{% if request.path == '/practitioner-dashboard/mypatient/' %}active{% endif %}">
-                            <a href="{% url 'practitionerdashboard:mypatient' %}">
-                                <i class="fa fa-wheelchair" ></i>
-                                <span >Patients</span>
-                            </a>
-                        </li>
-                        <li class="{% if request.path == '/practitioner-dashboard/mypatient/' %}active{% endif %}">
-                            <a href="{% url 'practitionerdashboard:schedule_timming' %}">
-                                <i class="fa fa-wheelchair" ></i>
-                                <span >Schedule Timmings</span>
-                            </a>
-                        </li>
-                        <li class="{% if request.path == '/practitioner-dashboard/appointment/' %}active{% endif %}">
-                            <a href="{% url 'practitionerdashboard:dashboard' %}">
-                                <i class="fa fa-calendar" ></i>
-                                <span >Appointments</span>
+                <li class="{% if request.resolver_match.url_name == 'schedule_timming' %}active{% endif %}">
+                    <a href="{% url 'practitionerdashboard:schedule_timming' %}">
+                        <i class="fa fa-clock"></i>
+                        <span>Schedule Timmings</span>
+                    </a>
+                </li>
 
-                            </a>
-                            
+                <li class="{% if request.resolver_match.url_name == 'appointment' %}active{% endif %}">
+                    <a href="{% url 'practitionerdashboard:dashboard' %}">
+                        <i class="fa fa-calendar"></i>
+                        <span>Appointments</span>
+                    </a>
+                </li>
 
+                <li class="{% if request.resolver_match.url_name == 'cancellation_completion' %}active{% endif %}">
+                    <a href="{% url 'practitionerdashboard:cancellation_completion' %}">
+                        <i class="fa fa-times-circle"></i>
+                        <span>Cancellation & Completion</span>
+                    </a>
+                </li>
 
-                        </li>
-                        <li class="{% if request.path == '/practitioner-dashboard/cancellation-completion/' %}active{% endif %}">
-                            <a href="{% url 'practitionerdashboard:cancellation_completion' %}">
-                                <i class="fa fa-times-circle"></i>
-                                <span>Cancellation & Completion</span>
-                            </a>
-                        </li>
-                        
-                        <li class="{% if request.path == '/practitioner-dashboard/reviews/' %}active{% endif %}">
-                            <a href="{% url 'practitionerdashboard:reviews' %}">
-                                <i class="fa fa-comments" ></i>
-                                <span >Reviews</span>
-                                <span class="badge badge-pill bg-primary float-right">{% review_count_from_session request %}</span>
-                            </a>
-                        </li>
-
-                    </ul>
-                </div>
-
-
-  
-            </div>
+                <li class="{% if request.resolver_match.url_name == 'reviews' %}active{% endif %}">
+                    <a href="{% url 'practitionerdashboard:reviews' %}">
+                        <i class="fa fa-comments"></i>
+                        <span>Reviews</span>
+                        <span class="badge badge-pill bg-primary float-right">
+                            {% review_count_from_session request %}
+                        </span>
+                    </a>
+                </li>
+            </ul>
         </div>
+    </div>
+</div>
+
 
         <!-- Page wrapper -->
         <div class="page-wrapper">
@@ -650,25 +665,67 @@
                 <div class="col-lg-3 col-md-6 mb-4">
                     <h5 class="text-uppercase">For Patients</h5>
                     <ul class="list-unstyled">
-                        <li><a href="#">Search for Doctors</a></li>
-                        <li><a href="#">Login</a></li>
-                        <li><a href="#">Register</a></li>
-                        <li><a href="#">Booking</a></li>
-                        <li><a href="#">Patient Dashboard</a></li>
+                        <li><a href="/">Search for Doctors</a></li>
+                        <li><a href="{% url 'frontend:patient_login' %}">Login</a></li>
+                        <li><a href="{% url 'frontend:patient_signup' %}">Register</a></li>
+                        <li>
+                            {% if request.session.patient_id %}
+                                <a href="{% url 'patient_dashboard:patient_dashboard' %}">Patient Dashboard</a>
+                            {% else %}
+                                <a href="{% url 'frontend:patient_login' %}">Patient Dashboard</a>
+                            {% endif %}
+                        </li>
+
+
                     </ul>
 
-
                 </div>
+
 
                 <!-- For Doctors Section -->
                 <div class="col-lg-3 col-md-6 mb-4">
                     <h5 class="text-uppercase">For Doctors</h5>
                     <ul class="list-unstyled">
-                        <li><a href="#">Appointments</a></li>
-                        <li><a href="#">Chat</a></li>
-                        <li><a href="#">Login</a></li>
-                        <li><a href="#">Register</a></li>
-                        <li><a href="#">Doctor Dashboard</a></li>
+                        <li>
+                            <a href="{% if request.session.practitioner_id %}
+                                        {% url 'practitioner_dashboard:dashboard' %}
+                                    {% elif request.user.is_authenticated and request.user.is_practitioner %}
+                                        {% url 'practitioner_dashboard:dashboard' %}
+                                    {% else %}
+                                        {% url 'practitioner_login' %}
+                                    {% endif %}">
+                                Appointments
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="{% if request.session.practitioner_id %}
+                                        {% url 'practitioner_dashboard:chat' %}
+                                    {% elif request.user.is_authenticated and request.user.is_practitioner %}
+                                        {% url 'practitioner_dashboard:chat' %}
+                                    {% else %}
+                                        {% url 'practitioner_login' %}
+                                    {% endif %}">
+                                Chat
+                            </a>
+                        </li>
+
+                        <li><a href="{% url 'frontend:practitioner_login' %}">Login</a></li>
+                        <li><a href="{% url 'frontend:practitioner_signup' %}">Register</a></li>
+                        <li>
+                            <a href="{% if request.session.practitioner_id %}
+                                        {% url 'practitioner_dashboard:dashboard' %}
+                                    {% elif request.user.is_authenticated and request.user.is_practitioner %}
+                                        {% url 'practitioner_dashboard:dashboard' %}
+                                    {% else %}
+                                        {% url 'practitioner_login' %}
+                                    {% endif %}">
+                                Doctor Dashboard
+                            </a>
+                        </li>
+
+
+
                     </ul>
                 </div>
 

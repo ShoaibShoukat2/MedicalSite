@@ -2,65 +2,1131 @@
 {% load static %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="card">
-        <div class="card-body">
-            <h4 class="card-title">Schedule Timings</h4>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    * {
+        font-family: 'Inter', sans-serif;
+    }
+    
+    .calendar-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        animation: fadeInUp 0.6s ease-out;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    
+    @keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.02);
+        }
+    }
+    
+    @keyframes shimmer {
+        0% {
+            background-position: -1000px 0;
+        }
+        100% {
+            background-position: 1000px 0;
+        }
+    }
+    
+    .main-card {
+        background: #ffffff;
+        border-radius: 24px;
+        box-shadow: 
+            0 20px 25px -5px rgba(0, 0, 0, 0.1),
+            0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .main-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 
+            0 32px 64px -12px rgba(0, 0, 0, 0.15),
+            0 25px 50px -12px rgba(0, 0, 0, 0.08);
+    }
+    
+    .calendar-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        position: relative;
+        overflow: hidden;
+        padding: 2rem;
+    }
+    
+    .calendar-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, 
+            transparent, 
+            rgba(255, 255, 255, 0.1), 
+            transparent
+        );
+        animation: shimmer 3s infinite;
+    }
+    
+    .calendar-header::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+        animation: pulse 4s infinite ease-in-out;
+    }
+    
+    .header-content {
+        position: relative;
+        z-index: 2;
+    }
+    
+    .calendar-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0;
+    }
+    
+    .calendar-title {
+        color: white;
+        font-size: 1.75rem;
+        font-weight: 600;
+        margin: 0;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        animation: slideIn 0.6s ease-out 0.2s both;
+    }
+    
+    .calendar-title i {
+        margin-right: 0.75rem;
+        font-size: 1.5rem;
+        opacity: 0.9;
+    }
+    
+    .month-nav {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        animation: slideIn 0.6s ease-out 0.4s both;
+    }
+    
+    .nav-btn {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 0.75rem 1rem;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        font-size: 0.9rem;
+        min-width: 45px;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .nav-btn:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    }
+    
+    .nav-btn:active {
+        transform: translateY(0) scale(0.95);
+    }
+    
+    .current-month {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: white;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        min-width: 180px;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+    
+    .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 1px;
+        background: #f1f5f9;
+        padding: 0;
+    }
+    
+    .calendar-day-header {
+        background: #475569;
+        color: white;
+        padding: 1.25rem 0.5rem;
+        text-align: center;
+        font-weight: 600;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .calendar-day-header::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    }
+    
+    .calendar-day {
+        background: white;
+        min-height: 140px;
+        padding: 0.75rem;
+        position: relative;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 2px solid transparent;
+        overflow: hidden;
+    }
+    
+    .calendar-day::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: 1;
+    }
+    
+    .calendar-day:hover::before {
+        opacity: 1;
+    }
+    
+    .calendar-day:hover {
+        transform: translateY(-3px);
+        border-color: #667eea;
+        box-shadow: 
+            0 10px 25px rgba(102, 126, 234, 0.15),
+            0 5px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .calendar-day.other-month {
+        background: #f8fafc;
+        color: #94a3b8;
+    }
+    
+    .calendar-day.other-month:hover {
+        background: #f1f5f9;
+        transform: translateY(-1px);
+    }
+    
+    .calendar-day.today {
+        background: linear-gradient(135deg, #e0f2fe, #f3e5f5);
+        border-color: #2196f3;
+        position: relative;
+        animation: pulse 2s infinite ease-in-out;
+    }
+    
+    .calendar-day.today::after {
+        content: 'Today';
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        background: #2196f3;
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 6px;
+        font-size: 0.65rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .day-number {
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 0.75rem;
+        position: relative;
+        z-index: 2;
+        color: #1e293b;
+        transition: color 0.3s ease;
+    }
+    
+    .calendar-day.other-month .day-number {
+        color: #94a3b8;
+    }
+    
+    .slot-item {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+        color: white;
+        padding: 0.4rem 0.6rem;
+        margin: 0.3rem 0;
+        border-radius: 8px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        z-index: 2;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
+        animation: slideIn 0.3s ease-out;
+    }
+    
+    .slot-item::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s ease;
+    }
+    
+    .slot-item:hover::before {
+        left: 100%;
+    }
+    
+    .slot-item:hover {
+        background: linear-gradient(135deg, #dc2626, #b91c1c);
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
+    }
+    
+    .slot-time {
+        font-weight: 600;
+        letter-spacing: 0.3px;
+    }
+    
+    .remove-slot-btn {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        padding: 0;
+        width: 22px;
+        height: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all 0.2s ease;
+        font-size: 0.7rem;
+    }
+    
+    .remove-slot-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.1);
+    }
+    
+    .selected-date {
+        background: linear-gradient(135deg, #fef3c7, #fde68a) !important;
+        border-color: #f59e0b !important;
+        transform: translateY(-3px);
+        box-shadow: 
+            0 10px 25px rgba(245, 158, 11, 0.2),
+            0 5px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .selected-date::after {
+        content: 'Selected';
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        background: #f59e0b;
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 6px;
+        font-size: 0.65rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        z-index: 3;
+    }
+    
+    .add-slot-section {
+        background: linear-gradient(135deg, #f8fafc, #ffffff);
+        padding: 2rem;
+        border-top: 1px solid #e2e8f0;
+        position: relative;
+    }
+    
+    .section-title {
+        color: #475569;
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        animation: slideIn 0.6s ease-out 0.6s both;
+    }
+    
+    .section-title i {
+        margin-right: 0.75rem;
+        font-size: 1.1rem;
+        color: #10b981;
+    }
+    
+    .quick-add-form {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr auto;
+        gap: 1.5rem;
+        align-items: end;
+        animation: slideIn 0.6s ease-out 0.8s both;
+    }
+    
+    .form-group {
+        position: relative;
+    }
+    
+    .form-label {
+        color: #374151;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .form-control {
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        background: white;
+        color: #1f2937;
+        font-weight: 500;
+    }
+    
+    .form-control:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 
+            0 0 0 3px rgba(102, 126, 234, 0.1),
+            0 4px 6px rgba(0, 0, 0, 0.05);
+        transform: translateY(-1px);
+    }
+    
+    .add-btn {
+        background: linear-gradient(135deg, #10b981, #059669);
+        border: none;
+        color: white;
+        padding: 0.875rem 2rem;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        font-weight: 600;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        position: relative;
+        overflow: hidden;
+        min-height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+    
+    .add-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s ease;
+    }
+    
+    .add-btn:hover::before {
+        left: 100%;
+    }
+    
+    .add-btn:hover {
+        background: linear-gradient(135deg, #059669, #047857);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+    }
+    
+    .add-btn:active {
+        transform: translateY(-1px);
+    }
+    
+    .existing-slots-section {
+        background: white;
+        padding: 2rem;
+        border-radius: 24px;
+        margin-top: 2rem;
+        box-shadow: 
+            0 10px 15px -3px rgba(0, 0, 0, 0.1),
+            0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        animation: fadeInUp 0.6s ease-out 1s both;
+    }
+    
+    .existing-slots-section:hover {
+        transform: translateY(-2px);
+        box-shadow: 
+            0 20px 25px -5px rgba(0, 0, 0, 0.1),
+            0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    
+    .slot-list-item {
+        background: linear-gradient(135deg, #ffffff, #f8fafc);
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 1.25rem;
+        margin-bottom: 1rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        animation: slideIn 0.3s ease-out;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .slot-list-item::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+        transition: width 0.3s ease;
+    }
+    
+    .slot-list-item:hover::before {
+        width: 8px;
+    }
+    
+    .slot-list-item:hover {
+        transform: translateX(8px) translateY(-2px);
+        border-color: #cbd5e1;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    .slot-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .slot-details {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+    
+    .slot-date {
+        font-weight: 600;
+        color: #1e293b;
+        font-size: 1.05rem;
+    }
+    
+    .slot-time-range {
+        color: #64748b;
+        font-size: 0.95rem;
+        font-weight: 500;
+    }
+    
+    .remove-btn {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+        color: white;
+        border: none;
+        padding: 0.625rem 1.25rem;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        font-weight: 600;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .remove-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s ease;
+    }
+    
+    .remove-btn:hover::before {
+        left: 100%;
+    }
+    
+    .remove-btn:hover {
+        background: linear-gradient(135deg, #dc2626, #b91c1c);
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 3rem 2rem;
+        color: #64748b;
+        font-style: italic;
+        background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+        border-radius: 16px;
+        border: 2px dashed #cbd5e1;
+        animation: pulse 2s infinite ease-in-out;
+    }
+    
+    /* Loading animations */
+    .loading {
+        position: relative;
+        pointer-events: none;
+    }
+    
+    .loading::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: inherit;
+    }
+    
+    /* Toast animations */
+    .toast {
+        background: white !important;
+        border-radius: 12px !important;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+        border-left: 4px solid #10b981 !important;
+        animation: slideIn 0.3s ease-out !important;
+    }
+    
+    .toast.text-bg-danger {
+        border-left-color: #ef4444 !important;
+    }
+    
+    /* Responsive design */
+    @media (max-width: 1024px) {
+        .quick-add-form {
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .add-btn {
+            grid-column: 1 / -1;
+            justify-self: center;
+            min-width: 200px;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .calendar-container {
+            margin: 0 1rem;
+        }
+        
+        .calendar-header {
+            padding: 1.5rem;
+        }
+        
+        .calendar-controls {
+            flex-direction: column;
+            gap: 1rem;
+            text-align: center;
+        }
+        
+        .calendar-title {
+            font-size: 1.5rem;
+        }
+        
+        .current-month {
+            font-size: 1.2rem;
+        }
+        
+        .calendar-day {
+            min-height: 100px;
+            padding: 0.5rem;
+        }
+        
+        .day-number {
+            font-size: 1rem;
+        }
+        
+        .slot-item {
+            font-size: 0.7rem;
+            padding: 0.3rem 0.5rem;
+        }
+        
+        .quick-add-form {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        
+        .add-slot-section,
+        .existing-slots-section {
+            padding: 1.5rem;
+        }
+        
+        .slot-info {
+            flex-direction: column;
+            gap: 1rem;
+            align-items: stretch;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .main-card {
+            border-radius: 16px;
+            margin: 0 0.5rem;
+        }
+        
+        .calendar-day {
+            min-height: 80px;
+            padding: 0.25rem;
+        }
+        
+        .slot-item {
+            font-size: 0.65rem;
+            padding: 0.2rem 0.4rem;
+        }
+        
+        .month-nav {
+            gap: 1rem;
+        }
+        
+        .nav-btn {
+            padding: 0.5rem;
+            min-width: 40px;
+            height: 40px;
+        }
+    }
+</style>
 
-            <!-- Add Slot Form -->
-            <div class="mb-4">
-                <h5>Add New Slot</h5>
-                <form id="addSlotForm">
-                    {% csrf_token %}
-
-                    <div class="row mb-3">
-                        <div class="col-md-4">
-                            <label for="slotDate" class="form-label">Date</label>
-                            <input type="date" id="slotDate" class="form-control" required>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="startTime" class="form-label">Start Time</label>
-                            <input type="time" id="startTime" class="form-control" required>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="endTime" class="form-label">End Time</label>
-                            <input type="time" id="endTime" class="form-control" required>
+<div class="container mt-5">
+    <div class="calendar-container">
+        <div class="main-card">
+            <div class="calendar-header">
+                <div class="header-content">
+                    <div class="calendar-controls">
+                        <h3 class="calendar-title">
+                            <i class="fa fa-calendar-alt"></i>Schedule Calendar
+                        </h3>
+                        <div class="month-nav">
+                            <button class="nav-btn" id="prevMonth">
+                                <i class="fa fa-chevron-left"></i>
+                            </button>
+                            <span class="current-month" id="currentMonth"></span>
+                            <button class="nav-btn" id="nextMonth">
+                                <i class="fa fa-chevron-right"></i>
+                            </button>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">Add Slot</button>
-                </form>
-            </div>
-
-            <!-- Slot List -->
-            <div class="mt-4">
-                <h5>Existing Slots</h5>
-                <div id="slotsContainer">
-                    {% for slot in slots %}
-                    <div class="d-flex justify-content-between align-items-center border p-2 mb-2">
-                        <div>
-                            <strong>{{ slot.date|date:"M d, Y" }}:</strong> 
-                            {{ slot.start_time|time:"H:i" }} - {{ slot.end_time|time:"H:i" }}
-                        </div>
-                        <button class="btn btn-danger btn-sm remove-slot" data-id="{{ slot.id }}">Remove</button>
-                    </div>
-                    {% empty %}
-                    <p class="text-muted">No slots available. Add a new slot above.</p>
-                    {% endfor %}
                 </div>
             </div>
+            
+            <div class="calendar-grid" id="calendarGrid">
+                <!-- Calendar will be generated here -->
+            </div>
+            
+            <div class="add-slot-section">
+                <h5 class="section-title">
+                    <i class="fa fa-plus-circle"></i>Add New Appointment
+                </h5>
+                <form class="quick-add-form" id="addSlotForm">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="form-label">Date</label>
+                        <input type="date" id="slotDate" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Start Time</label>
+                        <input type="time" id="startTime" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">End Time</label>
+                        <input type="time" id="endTime" class="form-control" required>
+                    </div>
+                    <button type="submit" class="add-btn">
+                        <i class="fa fa-plus"></i>Add Slot
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Existing Slots List -->
+    <div class="existing-slots-section">
+        <h5 class="section-title">
+            <i class="fa fa-list"></i>Your Appointments
+        </h5>
+        <div id="slotsContainer">
+            {% for slot in slots %}
+                <div class="slot-list-item">
+                    <div class="slot-info">
+                        <div class="slot-details">
+                            <div class="slot-date">{{ slot.date|date:"M d, Y" }}</div>
+                            <div class="slot-time-range">{{ slot.start_time|time:"H:i" }} - {{ slot.end_time|time:"H:i" }}</div>
+                        </div>
+                        <button class="remove-btn remove-slot" data-id="{{ slot.id }}">
+                            <i class="fa fa-trash me-1"></i>Remove
+                        </button>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="empty-state">
+                    <i class="fa fa-calendar-plus fa-3x mb-3 opacity-50"></i>
+                    <p class="mb-0">No appointments scheduled. Add your first slot above!</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Toast Notifications -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
+    <div id="toast" class="toast align-items-center text-bg-success border-0" role="alert">
+        <div class="d-flex">
+            <div class="toast-body"></div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
         </div>
     </div>
 </div>
 
 <script>
-    // Add Slot
+    // Convert Django slots data to JavaScript format
+    let slots = [
+        {% for slot in slots %}
+        {
+            id: {{ slot.id }},
+            date: '{{ slot.date|date:"Y-m-d" }}',
+            start_time: '{{ slot.start_time|time:"H:i" }}',
+            end_time: '{{ slot.end_time|time:"H:i" }}'
+        }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    ];
+    
+    let currentDate = new Date();
+    let selectedDate = null;
+    
+    // Helper: Show Toast Message with enhanced styling
+    function showToast(message, type = 'success') {
+        const toastEl = document.getElementById('toast');
+        toastEl.className = `toast align-items-center text-bg-${type} border-0`;
+        toastEl.querySelector('.toast-body').innerText = message;
+        const toast = new bootstrap.Toast(toastEl);
+        toast.show();
+        
+        // Add custom animation
+        setTimeout(() => {
+            toastEl.style.animation = 'slideIn 0.3s ease-out';
+        }, 100);
+    }
+    
+    // Initialize calendar with staggered animations
+    function init() {
+        setTimeout(() => generateCalendar(), 200);
+        setTimeout(() => updateCurrentMonth(), 300);
+        setTimeout(() => setupEventListeners(), 400);
+    }
+    
+    function generateCalendar() {
+        const grid = document.getElementById('calendarGrid');
+        grid.innerHTML = '';
+        
+        // Add day headers with animation delay
+        const dayHeaders = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        dayHeaders.forEach((day, index) => {
+            const header = document.createElement('div');
+            header.className = 'calendar-day-header';
+            header.textContent = day;
+            header.style.animationDelay = `${index * 0.05}s`;
+            grid.appendChild(header);
+        });
+        
+        // Get first day of month and total days
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        const totalDays = lastDay.getDate();
+        
+        // Calculate starting position (Monday = 0)
+        let startDay = firstDay.getDay() - 1;
+        if (startDay < 0) startDay = 6;
+        
+        // Add previous month's trailing days
+        const prevMonth = new Date(year, month - 1, 0);
+        for (let i = startDay - 1; i >= 0; i--) {
+            const dayNum = prevMonth.getDate() - i;
+            const dayElement = createDayElement(dayNum, true, new Date(year, month - 1, dayNum));
+            grid.appendChild(dayElement);
+        }
+        
+        // Add current month's days with staggered animation
+        for (let day = 1; day <= totalDays; day++) {
+            const dayElement = createDayElement(day, false, new Date(year, month, day));
+            dayElement.style.animationDelay = `${(startDay + day - 1) * 0.02}s`;
+            grid.appendChild(dayElement);
+        }
+        
+        // Add next month's leading days
+        const totalCells = 42; // 6 rows × 7 days
+        const remainingCells = totalCells - (startDay + totalDays);
+        for (let day = 1; day <= remainingCells; day++) {
+            const dayElement = createDayElement(day, true, new Date(year, month + 1, day));
+            grid.appendChild(dayElement);
+        }
+    }
+    
+    function createDayElement(dayNum, otherMonth, fullDate) {
+        const dayElement = document.createElement('div');
+        dayElement.className = 'calendar-day';
+        if (otherMonth) dayElement.classList.add('other-month');
+        
+        // Check if it's today
+        const today = new Date();
+        if (fullDate.toDateString() === today.toDateString()) {
+            dayElement.classList.add('today');
+        }
+        
+        dayElement.innerHTML = `<div class="day-number">${dayNum}</div>`;
+        
+        // Add slots for this day with staggered animations
+        if (!otherMonth) {
+            const dateStr = formatDate(fullDate);
+            const daySlots = slots.filter(slot => slot.date === dateStr);
+            
+            daySlots.forEach((slot, index) => {
+                const slotElement = document.createElement('div');
+                slotElement.className = 'slot-item';
+                slotElement.style.animationDelay = `${index * 0.1}s`;
+                slotElement.innerHTML = `
+                    <span class="slot-time">${slot.start_time}-${slot.end_time}</span>
+                    <button class="remove-slot-btn" onclick="removeSlotFromCalendar(${slot.id}, event)">
+                        <i class="fa fa-times"></i>
+                    </button>
+                `;
+                dayElement.appendChild(slotElement);
+            });
+        }
+        
+        // Add click event for date selection with ripple effect
+        dayElement.addEventListener('click', (e) => {
+            createRippleEffect(e, dayElement);
+            selectDate(fullDate, dayElement);
+        });
+        
+        return dayElement;
+    }
+    
+    function createRippleEffect(event, element) {
+        const ripple = document.createElement('div');
+        const rect = element.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        const x = event.clientX - rect.left - size / 2;
+        const y = event.clientY - rect.top - size / 2;
+        
+        ripple.style.cssText = `
+            position: absolute;
+            width: ${size}px;
+            height: ${size}px;
+            left: ${x}px;
+            top: ${y}px;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple 0.6s ease-out;
+            pointer-events: none;
+            z-index: 1;
+        `;
+        
+        element.appendChild(ripple);
+        
+        setTimeout(() => ripple.remove(), 600);
+    }
+    
+    // Add ripple animation to CSS
+    const rippleStyle = document.createElement('style');
+    rippleStyle.textContent = `
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(rippleStyle);
+    
+    function selectDate(date, element) {
+        // Remove previous selection with animation
+        document.querySelectorAll('.selected-date').forEach(el => {
+            el.style.animation = 'none';
+            el.classList.remove('selected-date');
+        });
+        
+        // Add selection to clicked date with animation
+        element.classList.add('selected-date');
+        element.style.animation = 'pulse 0.5s ease-out';
+        selectedDate = date;
+        
+        // Update date input with smooth transition
+        const dateInput = document.getElementById('slotDate');
+        dateInput.style.transform = 'scale(1.05)';
+        dateInput.value = formatDate(date);
+        setTimeout(() => {
+            dateInput.style.transform = 'scale(1)';
+        }, 200);
+    }
+    
+    function formatDate(date) {
+        return date.toISOString().split('T')[0];
+    }
+    
+    function updateCurrentMonth() {
+        const monthNames = [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
+        ];
+        const monthEl = document.getElementById('currentMonth');
+        monthEl.style.opacity = '0';
+        setTimeout(() => {
+            monthEl.textContent = `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+            monthEl.style.opacity = '1';
+        }, 150);
+    }
+    
+    function setupEventListeners() {
+        const prevBtn = document.getElementById('prevMonth');
+        const nextBtn = document.getElementById('nextMonth');
+        
+        prevBtn.addEventListener('click', () => {
+            prevBtn.style.animation = 'pulse 0.3s ease-out';
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            generateCalendar();
+            updateCurrentMonth();
+            setTimeout(() => prevBtn.style.animation = '', 300);
+        });
+        
+        nextBtn.addEventListener('click', () => {
+            nextBtn.style.animation = 'pulse 0.3s ease-out';
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            generateCalendar();
+            updateCurrentMonth();
+            setTimeout(() => nextBtn.style.animation = '', 300);
+        });
+    }
+    
+    // Remove slot from calendar view with enhanced animation
+    function removeSlotFromCalendar(slotId, event) {
+        event.stopPropagation();
+        
+        const slotElement = event.target.closest('.slot-item');
+        slotElement.style.animation = 'slideOut 0.3s ease-in forwards';
+        
+        setTimeout(() => {
+            fetch(`/practitioner-dashboard/remove-slot/${slotId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    slots = slots.filter(slot => slot.id !== slotId);
+                    generateCalendar();
+                    showToast('Appointment removed successfully!', 'success');
+                    setTimeout(() => location.reload(), 800);
+                } else {
+                    showToast(data.error || 'Failed to remove appointment', 'danger');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('An error occurred', 'danger');
+            });
+        }, 300);
+    }
+    
+    // Add slide out animation
+    const slideOutStyle = document.createElement('style');
+    slideOutStyle.textContent = `
+        @keyframes slideOut {
+            to {
+                transform: translateX(100px);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(slideOutStyle);
+    
+    // Enhanced Add Slot with loading animation
     document.getElementById('addSlotForm').addEventListener('submit', function (e) {
         e.preventDefault();
-    
+
         const slotDate = document.getElementById('slotDate').value;
         const startTime = document.getElementById('startTime').value;
         const endTime = document.getElementById('endTime').value;
-    
+        const submitBtn = this.querySelector('.add-btn');
+
+        if (!slotDate || !startTime || !endTime) {
+            showToast('Please fill all fields', 'danger');
+            return;
+        }
+        
+        if (startTime >= endTime) {
+            showToast('End time must be after start time', 'danger');
+            return;
+        }
+
+        // Add loading state
+        submitBtn.classList.add('loading');
+        submitBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i>Adding...';
+        submitBtn.disabled = true;
+
         fetch("{% url 'practitionerdashboard:add_slot' %}", {
             method: 'POST',
             headers: {
@@ -76,19 +1142,35 @@
         .then((response) => response.json())
         .then((data) => {
             if (data.success) {
-                location.reload();
+                showToast('Appointment added successfully!', 'success');
+                setTimeout(() => location.reload(), 800);
             } else {
-                alert(data.error || 'Failed to add slot.');
+                showToast(data.error || 'Failed to add appointment.', 'danger');
             }
         })
-        .catch((error) => console.error('Error:', error));
+        .catch((error) => {
+            console.error('Error:', error);
+            showToast('An error occurred', 'danger');
+        })
+        .finally(() => {
+            // Reset button state
+            submitBtn.classList.remove('loading');
+            submitBtn.innerHTML = '<i class="fa fa-plus"></i>Add Slot';
+            submitBtn.disabled = false;
+        });
     });
 
-    // Remove Slot (keep existing implementation)
+    // Enhanced Remove Slot for list view
     document.querySelectorAll('.remove-slot').forEach(button => {
         button.addEventListener('click', function() {
             const slotId = this.dataset.id;
-    
+            const slotItem = this.closest('.slot-list-item');
+            
+            // Add loading animation
+            this.innerHTML = '<i class="fa fa-spinner fa-spin me-1"></i>Removing...';
+            this.disabled = true;
+            slotItem.style.opacity = '0.6';
+
             fetch(`/practitioner-dashboard/remove-slot/${slotId}/`, {
                 method: 'POST',
                 headers: {
@@ -98,13 +1180,78 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    location.reload();
+                    slotItem.style.animation = 'slideOut 0.5s ease-in forwards';
+                    showToast('Appointment removed successfully!', 'success');
+                    setTimeout(() => location.reload(), 800);
                 } else {
-                    alert(data.error || 'Failed to remove slot.');
+                    showToast(data.error || 'Failed to remove appointment.', 'danger');
+                    // Reset button state on error
+                    this.innerHTML = '<i class="fa fa-trash me-1"></i>Remove';
+                    this.disabled = false;
+                    slotItem.style.opacity = '1';
                 }
             })
-            .catch(error => console.error('Error:', error));
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('An error occurred', 'danger');
+                // Reset button state on error
+                this.innerHTML = '<i class="fa fa-trash me-1"></i>Remove';
+                this.disabled = false;
+                slotItem.style.opacity = '1';
+            });
         });
     });
+    
+    // Initialize the calendar when page loads with smooth entry animation
+    document.addEventListener('DOMContentLoaded', function() {
+        document.body.style.opacity = '0';
+        setTimeout(() => {
+            document.body.style.transition = 'opacity 0.5s ease-in';
+            document.body.style.opacity = '1';
+            init();
+        }, 100);
+    });
+    
+    // Add smooth scrolling for better UX
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+    
+    // Enhanced keyboard navigation
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowLeft' && e.ctrlKey) {
+            document.getElementById('prevMonth').click();
+        } else if (e.key === 'ArrowRight' && e.ctrlKey) {
+            document.getElementById('nextMonth').click();
+        } else if (e.key === 'Escape') {
+            // Clear selection
+            document.querySelectorAll('.selected-date').forEach(el => {
+                el.classList.remove('selected-date');
+            });
+            document.getElementById('slotDate').value = '';
+        }
+    });
+    
+    // Add tooltip functionality for better UX
+    const addTooltip = (element, text) => {
+        element.setAttribute('title', text);
+        element.style.position = 'relative';
+    };
+    
+    // Add tooltips
+    setTimeout(() => {
+        addTooltip(document.getElementById('prevMonth'), 'Previous Month (Ctrl + ←)');
+        addTooltip(document.getElementById('nextMonth'), 'Next Month (Ctrl + →)');
+        document.querySelectorAll('.calendar-day:not(.other-month)').forEach(day => {
+            addTooltip(day, 'Click to select this date');
+        });
+    }, 1000);
 </script>
 {% endblock %}
+
+

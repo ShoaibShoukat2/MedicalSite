@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Appointment,Review,Billing, Symptom, Reply
+from .models import Appointment,Review,Billing, Symptom, Reply, Notification
 # Register your models here.
 
 
@@ -12,7 +12,7 @@ class AppointmentAdmin(admin.ModelAdmin):
     search_fields = ('patient__name', 'practitioner__name')  # Enable search
     ordering = ('-created_at',)  # Order by newest first
     
-    
+
 
 
 admin.site.register(Review)
@@ -28,3 +28,5 @@ class SymptomAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Reply)
+admin.site.register(Notification)
+
