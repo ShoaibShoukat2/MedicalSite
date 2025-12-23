@@ -1,204 +1,232 @@
-{% extends 'practitionerdashboard/base.html' %} {% load static %} 
+{% extends 'practitionerdashboard/base.html' %} 
+{% load static %} 
+
 {% block content %}
-<div class="container" style="margin-top: 100px">
-  <!-- Appointment Card 1 -->
-  <div class="card mb-4 shadow-sm">
-    <div class="card-body">
-      <div class="row align-items-center">
-        <!-- Image Column -->
-        <div class="col-12 col-lg-2 text-center">
-          <img
-            src="{% static 'img/doctor-thumb-11.jpg' %}"
-            alt="Richard Wilson"
-            class="rounded img-fluid"
-            style="max-width: 100px; object-fit: cover"
-          />
+<!-- Main Container -->
+<div class="min-h-screen bg-gradient-to-br from-doctor-gray via-white to-doctor-light-blue font-doctor">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-doctor-dark-blue mb-2 flex items-center">
+                <i class="fas fa-calendar-check mr-3 text-doctor-blue"></i>
+                Appointment Requests
+            </h1>
+            <p class="text-doctor-dark-gray">Review and manage incoming appointment requests</p>
         </div>
 
+        <!-- Appointment Cards -->
+        <div class="space-y-6">
+            <!-- Appointment Card 1 -->
+            <div class="bg-white rounded-2xl shadow-xl border border-gray-100 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 overflow-hidden">
+                <div class="p-6">
+                    <div class="flex flex-col lg:flex-row items-center lg:items-start gap-6">
+                        <!-- Patient Image -->
+                        <div class="flex-shrink-0 text-center">
+                            <div class="relative">
+                                <img src="{% static 'img/doctor-thumb-11.jpg' %}" alt="Richard Wilson" class="w-24 h-24 rounded-full object-cover border-4 border-doctor-light-blue shadow-lg">
+                                <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 border-2 border-white rounded-full"></div>
+                            </div>
+                        </div>
 
+                        <!-- Patient Details -->
+                        <div class="flex-1 text-center lg:text-left">
+                            <h3 class="text-xl font-bold text-doctor-dark-blue mb-3">Richard Wilson</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-doctor-dark-gray">
+                                <div class="flex items-center justify-center lg:justify-start">
+                                    <i class="far fa-clock mr-2 text-doctor-blue"></i>
+                                    <span>14 Nov 2019, 10:00 AM</span>
+                                </div>
+                                <div class="flex items-center justify-center lg:justify-start">
+                                    <i class="fas fa-map-marker-alt mr-2 text-doctor-blue"></i>
+                                    <span>Newyork, United States</span>
+                                </div>
+                                <div class="flex items-center justify-center lg:justify-start">
+                                    <i class="fas fa-envelope mr-2 text-doctor-blue"></i>
+                                    <span>richard@example.com</span>
+                                </div>
+                                <div class="flex items-center justify-center lg:justify-start">
+                                    <i class="fas fa-phone mr-2 text-doctor-blue"></i>
+                                    <span>+1 923 782 4575</span>
+                                </div>
+                            </div>
+                        </div>
 
-        <!-- Details Column -->
-        <div class="col-12 col-lg-8 text-center text-lg-start">
-          <h5 class="font-weight-bold mb-3">Richard Wilson</h5>
-          <p class="mb-2">
-            <i class="far fa-clock me-2"></i> 14 Nov 2019, 10.00 AM
-          </p>
-          <p class="mb-2">
-            <i class="fas fa-map-marker-alt me-2"></i> Newyork, United States
-          </p>
-          <p class="mb-2">
-            <i class="fas fa-envelope me-2"></i> richard@example.com
-          </p>
-          <p class="mb-2"><i class="fas fa-phone me-2"></i> +1 923 782 4575</p>
+                        <!-- Action Buttons -->
+                        <div class="flex flex-col sm:flex-row lg:flex-col gap-2 min-w-fit">
+                            <button class="bg-doctor-blue hover:bg-doctor-dark-blue text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg flex items-center justify-center">
+                                <i class="far fa-eye mr-2"></i>VIEW
+                            </button>
+                            <button class="bg-doctor-green hover:bg-emerald-600 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg flex items-center justify-center">
+                                <i class="fas fa-check mr-2"></i>ACCEPT
+                            </button>
+                            <button class="bg-doctor-red hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg flex items-center justify-center">
+                                <i class="fas fa-times mr-2"></i>CANCEL
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Appointment Card 2 -->
+            <div class="bg-white rounded-2xl shadow-xl border border-gray-100 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 overflow-hidden">
+                <div class="p-6">
+                    <div class="flex flex-col lg:flex-row items-center lg:items-start gap-6">
+                        <!-- Patient Image -->
+                        <div class="flex-shrink-0 text-center">
+                            <div class="relative">
+                                <img src="{% static 'img/doctor-thumb-02.jpg' %}" alt="Charlene Reed" class="w-24 h-24 rounded-full object-cover border-4 border-doctor-light-blue shadow-lg">
+                                <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 border-2 border-white rounded-full"></div>
+                            </div>
+                        </div>
+
+                        <!-- Patient Details -->
+                        <div class="flex-1 text-center lg:text-left">
+                            <h3 class="text-xl font-bold text-doctor-dark-blue mb-3">Charlene Reed</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-doctor-dark-gray">
+                                <div class="flex items-center justify-center lg:justify-start">
+                                    <i class="far fa-clock mr-2 text-doctor-blue"></i>
+                                    <span>12 Nov 2019, 5:00 PM</span>
+                                </div>
+                                <div class="flex items-center justify-center lg:justify-start">
+                                    <i class="fas fa-map-marker-alt mr-2 text-doctor-blue"></i>
+                                    <span>North Carolina, United States</span>
+                                </div>
+                                <div class="flex items-center justify-center lg:justify-start">
+                                    <i class="fas fa-envelope mr-2 text-doctor-blue"></i>
+                                    <span>charlenereed@example.com</span>
+                                </div>
+                                <div class="flex items-center justify-center lg:justify-start">
+                                    <i class="fas fa-phone mr-2 text-doctor-blue"></i>
+                                    <span>+1 828 632 9170</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex flex-col sm:flex-row lg:flex-col gap-2 min-w-fit">
+                            <button class="bg-doctor-blue hover:bg-doctor-dark-blue text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg flex items-center justify-center">
+                                <i class="far fa-eye mr-2"></i>VIEW
+                            </button>
+                            <button class="bg-doctor-green hover:bg-emerald-600 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg flex items-center justify-center">
+                                <i class="fas fa-check mr-2"></i>ACCEPT
+                            </button>
+                            <button class="bg-doctor-red hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg flex items-center justify-center">
+                                <i class="fas fa-times mr-2"></i>CANCEL
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Appointment Card 3 -->
+            <div class="bg-white rounded-2xl shadow-xl border border-gray-100 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 overflow-hidden">
+                <div class="p-6">
+                    <div class="flex flex-col lg:flex-row items-center lg:items-start gap-6">
+                        <!-- Patient Image -->
+                        <div class="flex-shrink-0 text-center">
+                            <div class="relative">
+                                <img src="{% static 'img/doctor-thumb-02.jpg' %}" alt="Charlene Reed" class="w-24 h-24 rounded-full object-cover border-4 border-doctor-light-blue shadow-lg">
+                                <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-yellow-500 border-2 border-white rounded-full"></div>
+                            </div>
+                        </div>
+
+                        <!-- Patient Details -->
+                        <div class="flex-1 text-center lg:text-left">
+                            <h3 class="text-xl font-bold text-doctor-dark-blue mb-3">Charlene Reed</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-doctor-dark-gray">
+                                <div class="flex items-center justify-center lg:justify-start">
+                                    <i class="far fa-clock mr-2 text-doctor-blue"></i>
+                                    <span>12 Nov 2019, 5:00 PM</span>
+                                </div>
+                                <div class="flex items-center justify-center lg:justify-start">
+                                    <i class="fas fa-map-marker-alt mr-2 text-doctor-blue"></i>
+                                    <span>North Carolina, United States</span>
+                                </div>
+                                <div class="flex items-center justify-center lg:justify-start">
+                                    <i class="fas fa-envelope mr-2 text-doctor-blue"></i>
+                                    <span>charlenereed@example.com</span>
+                                </div>
+                                <div class="flex items-center justify-center lg:justify-start">
+                                    <i class="fas fa-phone mr-2 text-doctor-blue"></i>
+                                    <span>+1 828 632 9170</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex flex-col sm:flex-row lg:flex-col gap-2 min-w-fit">
+                            <button class="bg-doctor-blue hover:bg-doctor-dark-blue text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg flex items-center justify-center">
+                                <i class="far fa-eye mr-2"></i>VIEW
+                            </button>
+                            <button class="bg-doctor-green hover:bg-emerald-600 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg flex items-center justify-center">
+                                <i class="fas fa-check mr-2"></i>ACCEPT
+                            </button>
+                            <button class="bg-doctor-red hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg flex items-center justify-center">
+                                <i class="fas fa-times mr-2"></i>CANCEL
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Appointment Card 4 -->
+            <div class="bg-white rounded-2xl shadow-xl border border-gray-100 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 overflow-hidden">
+                <div class="p-6">
+                    <div class="flex flex-col lg:flex-row items-center lg:items-start gap-6">
+                        <!-- Patient Image -->
+                        <div class="flex-shrink-0 text-center">
+                            <div class="relative">
+                                <img src="{% static 'img/doctor-thumb-02.jpg' %}" alt="Charlene Reed" class="w-24 h-24 rounded-full object-cover border-4 border-doctor-light-blue shadow-lg">
+                                <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-red-500 border-2 border-white rounded-full"></div>
+                            </div>
+                        </div>
+
+                        <!-- Patient Details -->
+                        <div class="flex-1 text-center lg:text-left">
+                            <h3 class="text-xl font-bold text-doctor-dark-blue mb-3">Charlene Reed</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-doctor-dark-gray">
+                                <div class="flex items-center justify-center lg:justify-start">
+                                    <i class="far fa-clock mr-2 text-doctor-blue"></i>
+                                    <span>12 Nov 2019, 5:00 PM</span>
+                                </div>
+                                <div class="flex items-center justify-center lg:justify-start">
+                                    <i class="fas fa-map-marker-alt mr-2 text-doctor-blue"></i>
+                                    <span>North Carolina, United States</span>
+                                </div>
+                                <div class="flex items-center justify-center lg:justify-start">
+                                    <i class="fas fa-envelope mr-2 text-doctor-blue"></i>
+                                    <span>charlenereed@example.com</span>
+                                </div>
+                                <div class="flex items-center justify-center lg:justify-start">
+                                    <i class="fas fa-phone mr-2 text-doctor-blue"></i>
+                                    <span>+1 828 632 9170</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex flex-col sm:flex-row lg:flex-col gap-2 min-w-fit">
+                            <button class="bg-doctor-blue hover:bg-doctor-dark-blue text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg flex items-center justify-center">
+                                <i class="far fa-eye mr-2"></i>VIEW
+                            </button>
+                            <button class="bg-doctor-green hover:bg-emerald-600 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg flex items-center justify-center">
+                                <i class="fas fa-check mr-2"></i>ACCEPT
+                            </button>
+                            <button class="bg-doctor-red hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg flex items-center justify-center">
+                                <i class="fas fa-times mr-2"></i>CANCEL
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- Buttons Column -->
-        <div class="col-12 col-lg-2 text-center text-lg-end">
-          <div
-            class="d-flex justify-content-center justify-content-lg-end gap-2"
-          >
-            <button class="btn btn-outline-success btn-sm">
-              <i class="far fa-eye me-1"></i> VIEW
-            </button>
-            <button class="btn btn-outline-primary btn-sm">
-              <i class="fas fa-check me-1"></i> ACCEPT
-            </button>
-            <button class="btn btn-outline-danger btn-sm">
-              <i class="fas fa-times me-1"></i> CANCEL
-            </button>
-          </div>
-        </div>
-      </div>
+        <!-- Empty State (if no appointments) -->
+        <!-- <div class="text-center py-16">
+            <i class="fas fa-calendar-times text-6xl text-gray-300 mb-4"></i>
+            <h3 class="text-xl font-semibold text-gray-500 mb-2">No Appointment Requests</h3>
+            <p class="text-gray-400">New appointment requests will appear here</p>
+        </div> -->
     </div>
-  </div>
-
-  <!-- Appointment Card 2 -->
-  <div class="card mb-4 shadow-sm">
-    <div class="card-body">
-      <div class="row align-items-center">
-        <!-- Image Column -->
-        <div class="col-12 col-lg-2 text-center">
-          <img
-            src="{% static 'img/doctor-thumb-02.jpg' %}"
-            alt="Charlene Reed"
-            class="rounded img-fluid"
-            style="max-width: 100px; object-fit: cover"
-          />
-        </div>
-
-        <!-- Details Column -->
-        <div class="col-12 col-lg-8 text-center text-lg-start">
-          <h5 class="font-weight-bold mb-3">Charlene Reed</h5>
-          <p class="mb-2">
-            <i class="far fa-clock me-2"></i> 12 Nov 2019, 5.00 PM
-          </p>
-          <p class="mb-2">
-            <i class="fas fa-map-marker-alt me-2"></i> North Carolina, United
-            States
-          </p>
-          <p class="mb-2">
-            <i class="fas fa-envelope me-2"></i> charlenereed@example.com
-          </p>
-          <p class="mb-2"><i class="fas fa-phone me-2"></i> +1 828 632 9170</p>
-        </div>
-
-        <!-- Buttons Column -->
-        <div class="col-12 col-lg-2 text-center text-lg-end">
-          <div
-            class="d-flex justify-content-center justify-content-lg-end gap-2"
-          >
-            <button class="btn btn-outline-success btn-sm">
-              <i class="far fa-eye me-1"></i> VIEW
-            </button>
-            <button class="btn btn-outline-primary btn-sm">
-              <i class="fas fa-check me-1"></i> ACCEPT
-            </button>
-            <button class="btn btn-outline-danger btn-sm">
-              <i class="fas fa-times me-1"></i> CANCEL
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Appointment Card 2 -->
-  <div class="card mb-4 shadow-sm">
-    <div class="card-body">
-      <div class="row align-items-center">
-        <!-- Image Column -->
-        <div class="col-12 col-lg-2 text-center">
-          <img
-            src="{% static 'img/doctor-thumb-02.jpg' %}"
-            alt="Charlene Reed"
-            class="rounded img-fluid"
-            style="max-width: 100px; object-fit: cover"
-          />
-        </div>
-
-        <!-- Details Column -->
-        <div class="col-12 col-lg-8 text-center text-lg-start">
-          <h5 class="font-weight-bold mb-3">Charlene Reed</h5>
-          <p class="mb-2">
-            <i class="far fa-clock me-2"></i> 12 Nov 2019, 5.00 PM
-          </p>
-          <p class="mb-2">
-            <i class="fas fa-map-marker-alt me-2"></i> North Carolina, United
-            States
-          </p>
-          <p class="mb-2">
-            <i class="fas fa-envelope me-2"></i> charlenereed@example.com
-          </p>
-          <p class="mb-2"><i class="fas fa-phone me-2"></i> +1 828 632 9170</p>
-        </div>
-
-        <!-- Buttons Column -->
-        <div class="col-12 col-lg-2 text-center text-lg-end">
-          <div
-            class="d-flex justify-content-center justify-content-lg-end gap-2"
-          >
-            <button class="btn btn-outline-success btn-sm">
-              <i class="far fa-eye me-1"></i> VIEW
-            </button>
-            <button class="btn btn-outline-primary btn-sm">
-              <i class="fas fa-check me-1"></i> ACCEPT
-            </button>
-            <button class="btn btn-outline-danger btn-sm">
-              <i class="fas fa-times me-1"></i> CANCEL
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- Appointment Card 2 -->
-  <div class="card mb-4 shadow-sm">
-    <div class="card-body">
-      <div class="row align-items-center">
-        <!-- Image Column -->
-        <div class="col-12 col-lg-2 text-center">
-          <img
-            src="{% static 'img/doctor-thumb-02.jpg' %}"
-            alt="Charlene Reed"
-            class="rounded img-fluid"
-            style="max-width: 100px; object-fit: cover"
-          />
-        </div>
-
-        <!-- Details Column -->
-        <div class="col-12 col-lg-8 text-center text-lg-start">
-          <h5 class="font-weight-bold mb-3">Charlene Reed</h5>
-          <p class="mb-2">
-            <i class="far fa-clock me-2"></i> 12 Nov 2019, 5.00 PM
-          </p>
-          <p class="mb-2">
-            <i class="fas fa-map-marker-alt me-2"></i> North Carolina, United
-            States
-          </p>
-          <p class="mb-2">
-            <i class="fas fa-envelope me-2"></i> charlenereed@example.com
-          </p>
-          <p class="mb-2"><i class="fas fa-phone me-2"></i> +1 828 632 9170</p>
-        </div>
-
-        <!-- Buttons Column -->
-        <div class="col-12 col-lg-2 text-center text-lg-end">
-          <div
-            class="d-flex justify-content-center justify-content-lg-end gap-2"
-          >
-            <button class="btn btn-outline-success btn-sm">
-              <i class="far fa-eye me-1"></i> VIEW
-            </button>
-            <button class="btn btn-outline-primary btn-sm">
-              <i class="fas fa-check me-1"></i> ACCEPT
-            </button>
-            <button class="btn btn-outline-danger btn-sm">
-              <i class="fas fa-times me-1"></i> CANCEL
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
 {% endblock content %}

@@ -5,338 +5,344 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Patient Portal | Login</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.3.1/mdb.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'medical-blue': '#0066CC',
+                        'medical-light-blue': '#E6F3FF',
+                        'medical-dark-blue': '#004499',
+                        'medical-green': '#00A86B',
+                        'medical-light-green': '#E8F5E8',
+                        'medical-gray': '#F8FAFC',
+                        'medical-dark-gray': '#64748B',
+                        'medical-purple': '#7C3AED',
+                        'medical-pink': '#EC4899'
+                    },
+                    fontFamily: {
+                        'medical': ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    animation: {
+                        'slide-in': 'slideIn 0.6s ease-out',
+                        'fade-in': 'fadeIn 0.8s ease-out',
+                        'bounce-gentle': 'bounceGentle 2s infinite',
+                        'pulse-gentle': 'pulseGentle 3s infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    
     <style>
-        :root {
-            --primary-blue: #a7d7f7;
-            --secondary-pink: #ffd1dc;
-            --accent-blue: #79c2ef;
-            --accent-pink: #ffb6c1;
-            --text-color: #5a6d7e;
-            --background-color: #f0f7ff;
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-
-        body {
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-pink) 100%);
-            font-family: 'Roboto', sans-serif;
-            min-height: 100vh;
-        }
-
         
-
-        .page-wrapper {
-            min-height: 100vh;
-            padding: 2rem 0;
-            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.2'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
         }
-
-        .container {
-            max-width: 1000px;
+        
+        @keyframes bounceGentle {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
         }
-
-        .card {
-            border: none;
-            border-radius: 30px;
-            overflow: hidden;
-            box-shadow: 0 15px 35px rgba(167, 215, 247, 0.2);
-            background: rgba(255, 255, 255, 0.95);
+        
+        @keyframes pulseGentle {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(0, 102, 204, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 0 20px rgba(0, 102, 204, 0);
+            }
+        }
+        
+        /* Custom input focus styles */
+        .input-focus:focus {
+            outline: none;
+            border-color: #0066CC;
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+        
+        /* Glassmorphism effect */
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.25);
             backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
         }
-
-        .left-image {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .left-image::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(167, 215, 247, 0.9), rgba(255, 209, 220, 0.9));
-            z-index: 1;
-        }
-
-        .left-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transform: scale(1.1);
-            transition: transform 0.3s ease;
-        }
-
-        .overlay-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-            z-index: 2;
-            text-align: center;
-            width: 80%;
-        }
-
-        .overlay-text h2 {
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .form-container {
-            padding: 3rem;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.9));
-        }
-
-        .form-title {
-            font-size: 2.2rem;
-            font-weight: 700;
-            color: var(--text-color);
-            margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, var(--accent-blue), var(--accent-pink));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .form-outline {
-            background: white;
-            border-radius: 15px;
-            margin-bottom: 1.5rem;
-            border: 1px solid rgba(167, 215, 247, 0.3);
-        }
-
-        .form-outline input {
-            border-radius: 15px;
-        }
-
-        .form-outline.focused {
-            box-shadow: 0 0 0 2px var(--accent-blue);
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--accent-blue), var(--accent-pink));
-            padding: 1rem;
-            border-radius: 15px;
-            font-weight: 500;
-            letter-spacing: 0.5px;
-            transition: all 0.3s ease;
-            border: none;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(167, 215, 247, 0.4);
-            background: linear-gradient(135deg, var(--accent-pink), var(--accent-blue));
-        }
-
-        .social-login {
-            margin-top: 2rem;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(167, 215, 247, 0.3);
-        }
-
-        .social-btn {
-            padding: 0.8rem 1.5rem;
-            border-radius: 15px;
-            border: 1px solid rgba(167, 215, 247, 0.3);
-            background: white;
-            color: var(--text-color);
-            transition: all 0.3s ease;
-            margin: 0 0.5rem;
-        }
-
-        .social-btn:hover {
-            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-pink));
-            color: white;
-            border-color: transparent;
-            transform: translateY(-2px);
-        }
-
-        .floating-support {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            background: linear-gradient(135deg, var(--accent-blue), var(--accent-pink));
-            color: white;
-            padding: 1rem;
-            border-radius: 50%;
-            box-shadow: 0 4px 15px rgba(167, 215, 247, 0.4);
-            cursor: pointer;
-            transition: transform 0.3s ease;
-        }
-
-        .floating-support:hover {
-            transform: scale(1.1) rotate(15deg);
-        }
-
-        .home-redirect {
-            position: fixed;
-            top: 2rem;
-            right: 2rem;
-            z-index: 1000;
-            background: linear-gradient(135deg, var(--accent-blue), var(--accent-pink));
-            color: white;
-            padding: 1rem;
-            border-radius: 50%;
-            box-shadow: 0 4px 15px rgba(167, 215, 247, 0.4);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 50px;
-            height: 50px;
-        }
-
-        .home-redirect:hover {
-            transform: translateX(5px);
-            background: linear-gradient(135deg, var(--accent-pink), var(--accent-blue));
-            color: white;
-        }
-
-        .home-redirect i {
-            font-size: 1.5rem;
-        }
-
-        a {
-            color: var(--accent-blue);
-            transition: color 0.3s ease;
-        }
-
-        a:hover {
-            color: var(--accent-pink);
-        }
-
-        .form-check-input:checked {
-            background-color: var(--accent-blue);
-            border-color: var(--accent-blue);
-        }
-
-        @media (max-width: 768px) {
-            .form-container {
-                padding: 2rem;
-            }
-
-            .left-image {
-                height: 200px;
-            }
-
-            .form-title {
-                font-size: 1.8rem;
-            }
-
-            .home-redirect {
-                top: 1rem;
-                right: 1rem;
-                width: 40px;
-                height: 40px;
-            }
-
-            .home-redirect i {
-                font-size: 1.2rem;
-            }
+        
+        /* Medical pattern background */
+        .medical-pattern {
+            background-image: 
+                radial-gradient(circle at 25px 25px, rgba(0, 102, 204, 0.1) 2px, transparent 2px),
+                radial-gradient(circle at 75px 75px, rgba(0, 168, 107, 0.1) 2px, transparent 2px);
+            background-size: 100px 100px;
         }
     </style>
 </head>
-<body>
-    <!-- Home Redirect Button -->
-    <a href="/" class="home-redirect" title="Back to Home">
-        <i class="fas fa-home"></i>
-    </a>
 
-    <div class="page-wrapper d-flex justify-content-center align-items-center">
-        <div class="container">
-            <div class="card d-flex flex-md-row">
-                <div class="col-md-6 left-image">
-                    <img src="{% static 'logo.png' %}" alt="Medical Care">
-                    <div class="overlay-text">
-                        <h2 class="h3 mb-3">Welcome to Your Health Journey</h2>
-                        <p class="mb-0">Your wellness, our priority. Login to begin your care journey.</p>
+<body class="min-h-screen bg-gradient-to-br from-medical-light-blue via-white to-medical-light-green font-medical medical-pattern">
+    <!-- Back Arrow Button -->
+    <div class="fixed top-4 left-4 sm:top-6 sm:left-6 z-50">
+        <a href="/" class="group flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 bg-white hover:bg-medical-blue text-medical-blue hover:text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+            <i class="fas fa-arrow-left text-lg sm:text-xl transition-transform duration-300 group-hover:-translate-x-1"></i>
+        </a>
+    </div>
+    
+    <!-- Support Button -->
+    <div class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50">
+        <button onclick="openSupport()" class="group flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 bg-medical-green hover:bg-medical-blue text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 animate-pulse-gentle">
+            <i class="fas fa-headset text-lg sm:text-xl transition-transform duration-300 group-hover:rotate-12"></i>
+        </button>
+    </div>
+
+    <!-- Main Container -->
+    <div class="min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8">
+        <div class="w-full max-w-6xl">
+            <!-- Login Card -->
+            <div class="bg-white rounded-3xl shadow-2xl overflow-hidden animate-slide-in">
+                <div class="flex flex-col lg:flex-row min-h-[600px]">
+                    
+                    <!-- Left Side - Image/Branding -->
+                    <div class="lg:w-1/2 bg-gradient-to-br from-medical-blue to-medical-purple relative overflow-hidden">
+                        <!-- Background Pattern -->
+                        <div class="absolute inset-0 opacity-10">
+                            <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%23ffffff\" fill-opacity=\"0.3\"%3E%3Cpath d=\"M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+                        </div>
+                        
+                        <!-- Content -->
+                        <div class="relative z-10 h-full flex flex-col justify-center items-center text-center p-8 sm:p-12">
+                            <!-- Logo -->
+                            <div class="mb-8 animate-bounce-gentle">
+                                <div class="w-20 h-20 sm:w-24 sm:h-24 bg-white rounded-full flex items-center justify-center shadow-lg">
+                                    <i class="fas fa-user-md text-3xl sm:text-4xl text-medical-blue"></i>
+                                </div>
+                            </div>
+                            
+                            <!-- Welcome Text -->
+                            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4 animate-fade-in">
+                                Welcome Back
+                            </h1>
+                            <p class="text-lg sm:text-xl text-white/90 mb-8 max-w-md animate-fade-in">
+                                Your health journey continues here. Access your personalized care dashboard.
+                            </p>
+                            
+                            <!-- Features -->
+                            <div class="space-y-4 text-white/80">
+                                <div class="flex items-center space-x-3">
+                                    <i class="fas fa-check-circle text-medical-light-green"></i>
+                                    <span class="text-sm sm:text-base">Secure & Private</span>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <i class="fas fa-check-circle text-medical-light-green"></i>
+                                    <span class="text-sm sm:text-base">24/7 Access</span>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <i class="fas fa-check-circle text-medical-light-green"></i>
+                                    <span class="text-sm sm:text-base">Expert Care Team</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Side - Login Form -->
+                    <div class="lg:w-1/2 p-6 sm:p-8 lg:p-12 flex flex-col justify-center">
+                        <!-- Header -->
+                        <div class="mb-8">
+                            <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">
+                                Patient Login
+                            </h2>
+                            <p class="text-gray-600">
+                                Enter your credentials to access your account
+                            </p>
+                        </div>
+                        
+                        <!-- Login Form -->
+                        <form method="post" action="{% url 'frontend:patient_login' %}" id="loginForm" class="space-y-6">
+                            {% csrf_token %}
+                            
+                            <!-- Email Field -->
+                            <div class="space-y-2">
+                                <label for="email" class="block text-sm font-medium text-gray-700">
+                                    Email Address
+                                </label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-envelope text-gray-400"></i>
+                                    </div>
+                                    <input 
+                                        type="email" 
+                                        id="email" 
+                                        name="email" 
+                                        required
+                                        class="input-focus block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-500 transition-all duration-200 hover:border-medical-blue"
+                                        placeholder="Enter your email address"
+                                    >
+                                </div>
+                            </div>
+                            
+                            <!-- Password Field -->
+                            <div class="space-y-2">
+                                <label for="password" class="block text-sm font-medium text-gray-700">
+                                    Password
+                                </label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-lock text-gray-400"></i>
+                                    </div>
+                                    <input 
+                                        type="password" 
+                                        id="password" 
+                                        name="password" 
+                                        required
+                                        class="input-focus block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-500 transition-all duration-200 hover:border-medical-blue"
+                                        placeholder="Enter your password"
+                                    >
+                                    <button 
+                                        type="button" 
+                                        onclick="togglePassword()"
+                                        class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-medical-blue transition-colors duration-200"
+                                    >
+                                        <i id="passwordToggle" class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Remember Me & Forgot Password -->
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <input 
+                                        id="remember" 
+                                        name="remember" 
+                                        type="checkbox" 
+                                        class="h-4 w-4 text-medical-blue focus:ring-medical-blue border-gray-300 rounded transition-colors duration-200"
+                                    >
+                                    <label for="remember" class="ml-2 block text-sm text-gray-700">
+                                        Remember me
+                                    </label>
+                                </div>
+                                <a href="{% url 'frontend:forgot_password' %}" class="text-sm text-medical-blue hover:text-medical-dark-blue transition-colors duration-200 font-medium">
+                                    Forgot password?
+                                </a>
+                            </div>
+                            
+                            <!-- Login Button -->
+                            <button 
+                                type="submit" 
+                                class="w-full bg-gradient-to-r from-medical-blue to-medical-purple text-white py-3 px-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-medical-blue/25"
+                            >
+                                <i class="fas fa-sign-in-alt mr-2"></i>
+                                Sign In to Your Account
+                            </button>
+                        </form>
+                        
+                        <!-- Divider -->
+                        <div class="my-8">
+                            <div class="relative">
+                                <div class="absolute inset-0 flex items-center">
+                                    <div class="w-full border-t border-gray-300"></div>
+                                </div>
+                                <div class="relative flex justify-center text-sm">
+                                    <span class="px-4 bg-white text-gray-500">New to our platform?</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Sign Up Link -->
+                        <div class="text-center">
+                            <a href="{% url 'frontend:patient_signup' %}" class="inline-flex items-center px-6 py-3 border-2 border-medical-blue text-medical-blue rounded-xl font-semibold hover:bg-medical-blue hover:text-white transition-all duration-300 transform hover:scale-[1.02]">
+                                <i class="fas fa-user-plus mr-2"></i>
+                                Create New Account
+                            </a>
+                        </div>
+                        
+                        <!-- Help Text -->
+                        <div class="mt-8 text-center">
+                            <p class="text-xs text-gray-500">
+                                Need help? Contact our support team at 
+                                <a href="tel:1-800-HEALTH" class="text-medical-blue hover:text-medical-dark-blue font-medium">1-800-HEALTH</a>
+                            </p>
+                        </div>
                     </div>
                 </div>
-
-                <div class="col-md-6 form-container">
-                    <h3 class="form-title">Welcome Back</h3>
-                    <p class="text-muted mb-4">We're happy to see you again!</p>
-
-                    <form method="post" action="{% url 'frontend:patient_login' %}" id="loginForm">
-                        {% csrf_token %}
-                        
-                        <div class="form-outline">
-                            <input type="email" id="email" name="email" class="form-control" required>
-                            <label class="form-label" for="email">Email Address</label>
-                        </div>
-
-                        <div class="form-outline">
-                            <input type="password" id="password" name="password" class="form-control" required>
-                            <label class="form-label" for="password">Password</label>
-                        </div>
-
-                        <div class="d-flex justify-content-between mb-4">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="remember" name="remember">
-                                <label class="form-check-label" for="remember">Remember me</label>
-                            </div>
-                            <a href="{% url 'frontend:forgot_password' %}">Forgot Password?</a>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary btn-block">
-                            <i class="fas fa-sign-in-alt me-2"></i>Sign In
-                        </button>
-
-                        <!-- <div class="social-login">
-                            <p class="text-center text-muted mb-3">Or continue with</p>
-                            <div class="d-flex justify-content-center">
-                               <a href="/auth/login/google-oauth2/" class="social-btn btn btn-outline-danger me-2">
-                                    <i class="fab fa-google me-2"></i>Google
-                                </a>
-
-                                 <a href="/auth/login/facebook/" class="social-btn btn btn-outline-primary">
-                                    <i class="fab fa-facebook-f me-2"></i>Facebook
-                                </a>
-
-
-
-                        </div>
-                        </div> -->
-
-                    </form>
-
-                    <p class="text-center text-muted mt-4">
-                        New to our platform? <a href="{% url 'frontend:patient_signup' %}">Create an account</a>
-                    </p>
-                </div>
-
-                
             </div>
         </div>
     </div>
 
-
-    <div class="floating-support" onclick="openSupport()">
-        <i class="fas fa-headset fa-lg"></i>
-    </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.3.1/mdb.min.js"></script>
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
-
+    
     <script>
+        // Password toggle functionality
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const passwordToggle = document.getElementById('passwordToggle');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                passwordToggle.classList.remove('fa-eye');
+                passwordToggle.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                passwordToggle.classList.remove('fa-eye-slash');
+                passwordToggle.classList.add('fa-eye');
+            }
+        }
+        
+        // Support function
         function openSupport() {
             Swal.fire({
                 title: 'We\'re Here to Help!',
                 html: `
-                    <p>Our caring team is ready to assist you</p>
-                    <p>Call us: <strong>1-800-HEALTH</strong></p>
-                    <p>Email: <strong>care@healthportal.com</strong></p>
+                    <div class="text-center">
+                        <div class="mb-4">
+                            <i class="fas fa-headset text-4xl text-blue-500 mb-3"></i>
+                        </div>
+                        <p class="mb-3">Our caring support team is ready to assist you</p>
+                        <div class="space-y-2">
+                            <p><strong>📞 Call:</strong> <a href="tel:1-800-HEALTH" class="text-blue-600">1-800-HEALTH</a></p>
+                            <p><strong>✉️ Email:</strong> <a href="mailto:support@healthportal.com" class="text-blue-600">support@healthportal.com</a></p>
+                            <p><strong>💬 Live Chat:</strong> Available 24/7</p>
+                        </div>
+                    </div>
                 `,
                 icon: 'info',
-                confirmButtonText: 'Close',
-                confirmButtonColor: '#79c2ef'
+                confirmButtonText: 'Got it!',
+                confirmButtonColor: '#0066CC',
+                customClass: {
+                    popup: 'rounded-2xl',
+                    confirmButton: 'rounded-xl px-6 py-2'
+                }
             });
         }
-
+        
+        // Form validation
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
@@ -345,20 +351,29 @@
                 e.preventDefault();
                 Swal.fire({
                     icon: 'error',
-                    title: 'Oops...',
+                    title: 'Missing Information',
                     text: 'Please fill in all required fields.',
-                    confirmButtonColor: '#79c2ef'
+                    confirmButtonColor: '#0066CC',
+                    customClass: {
+                        popup: 'rounded-2xl',
+                        confirmButton: 'rounded-xl px-6 py-2'
+                    }
                 });
             }
         });
 
+        // Handle Django messages
         {% if error %}
             Swal.fire({
                 icon: 'error',
                 title: 'Login Failed',
                 text: '{{ error }}',
                 confirmButtonText: 'Try Again',
-                confirmButtonColor: '#79c2ef'
+                confirmButtonColor: '#0066CC',
+                customClass: {
+                    popup: 'rounded-2xl',
+                    confirmButton: 'rounded-xl px-6 py-2'
+                }
             });
         {% endif %}
 
@@ -368,9 +383,20 @@
                 title: 'Welcome Back!',
                 text: '{{ success }}',
                 confirmButtonText: 'Continue',
-                confirmButtonColor: '#79c2ef'
+                confirmButtonColor: '#0066CC',
+                customClass: {
+                    popup: 'rounded-2xl',
+                    confirmButton: 'rounded-xl px-6 py-2'
+                }
             });
         {% endif %}
+        
+        // Add loading state to form submission
+        document.getElementById('loginForm').addEventListener('submit', function() {
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Signing In...';
+            submitBtn.disabled = true;
+        });
     </script>
 </body>
 </html>

@@ -1,35 +1,237 @@
 {% extends 'patientdashboard/patient_base.html' %}
 {% load static %}
 
+{% block title %}My Symptoms - Patient Dashboard{% endblock %}
+
 {% block content %}
-<div class="container mt-5">
-    <h3>My Symptoms</h3>
-    <a href="{% url 'patientdashboard:add_symptom' %}" class="btn btn-primary mb-3">Add New Symptom</a>
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Appointment</th>
-                <th>Details</th>
-                <th>Submitted At</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for symptom in symptoms %}
-            <tr>
-                <td>{{ symptom.appointment }}</td>
-                <td>{{ symptom.details }}</td>
-                <td>{{ symptom.created_at }}</td>
-                <td>
-                    <a href="{% url 'patientdashboard:delete_symptom' symptom.id %}" class="btn btn-sm btn-danger">Delete</a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr><td colspan="4">No symptoms submitted yet.</td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<!-- Modern Symptoms Header -->
+<div class="bg-gradient-to-r from-patient-orange to-orange-600 rounded-2xl p-6 mb-8 text-white">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+        <div>
+            <h1 class="text-2xl md:text-3xl font-bold mb-2" data-translate="My Symptoms">My Symptoms</h1>
+            <p class="text-white/90">Track and manage your health symptoms for better care</p>
+        </div>
+        <div class="mt-4 md:mt-0">
+            <a href="{% url 'patientdashboard:add_symptom' %}" class="inline-flex items-center px-6 py-3 bg-white text-patient-orange rounded-xl hover:bg-orange-50 transition-all duration-300 font-semibold shadow-lg">
+                <i class="fas fa-plus mr-2"></i>
+                <span data-translate="Add New Symptom">Add New Symptom</span>
+            </a>
+        </div>
+    </div>
 </div>
+
+<!-- Quick Stats -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+    <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 patient-card">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-patient-dark-gray text-sm font-medium">Total Symptoms</p>
+                <p class="text-2xl font-bold text-patient-orange">{{ symptoms.count }}</p>
+            </div>
+            <div class="w-12 h-12 bg-gradient-to-br from-patient-orange to-orange-600 rounded-xl flex items-center justify-center">
+                <i class="fas fa-notes-medical text-white text-lg"></i>
+            </div>
+        </div>
+    </div>
+    
+    <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 patient-card">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-patient-dark-gray text-sm font-medium">This Month</p>
+                <p class="text-2xl font-bold text-patient-blue">{{ month_symptoms|default:0 }}</p>
+            </div>
+            <div class="w-12 h-12 bg-gradient-to-br from-patient-blue to-patient-dark-blue rounded-xl flex items-center justify-center">
+                <i class="fas fa-calendar-alt text-white text-lg"></i>
+            </div>
+        </div>
+    </div>
+    
+    <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 patient-card">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-patient-dark-gray text-sm font-medium">Recent</p>
+                <p class="text-2xl font-bold text-patient-green">{{ recent_symptoms|default:0 }}</p>
+            </div>
+            <div class="w-12 h-12 bg-gradient-to-br from-patient-green to-green-600 rounded-xl flex items-center justify-center">
+                <i class="fas fa-clock text-white text-lg"></i>
+            </div>
+        </div>
+    </div>
+    
+    <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 patient-card">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-patient-dark-gray text-sm font-medium">Appointments</p>
+                <p class="text-2xl font-bold text-patient-purple">{{ appointment_symptoms|default:0 }}</p>
+            </div>
+            <div class="w-12 h-12 bg-gradient-to-br from-patient-purple to-purple-600 rounded-xl flex items-center justify-center">
+                <i class="fas fa-stethoscope text-white text-lg"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Symptoms List -->
+<div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+    <div class="p-6 border-b border-gray-200">
+        <h2 class="text-xl font-bold text-patient-dark-blue">Symptom History</h2>
+        <p class="text-patient-dark-gray mt-1">View and manage your submitted symptoms</p>
+    </div>
+    
+    <div class="overflow-x-auto">
+        {% if symptoms %}
+        <table class="w-full">
+            <thead class="bg-patient-gray">
+                <tr>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-patient-dark-blue">Appointment</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-patient-dark-blue">Symptoms</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-patient-dark-blue">Severity</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-patient-dark-blue">Date Submitted</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-patient-dark-blue">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+                {% for symptom in symptoms %}
+                <tr class="hover:bg-patient-light-blue/30 transition-colors">
+                    <td class="px-6 py-4">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-gradient-to-br from-patient-blue to-patient-dark-blue rounded-lg flex items-center justify-center mr-3">
+                                <i class="fas fa-calendar text-white text-sm"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium text-patient-dark-blue">
+                                    {% if symptom.appointment %}
+                                        Dr. {{ symptom.appointment.practitioner.first_name }} {{ symptom.appointment.practitioner.last_name }}
+                                    {% else %}
+                                        General Symptom
+                                    {% endif %}
+                                </div>
+                                <div class="text-sm text-patient-dark-gray">
+                                    {% if symptom.appointment %}
+                                        {{ symptom.appointment.slot.date|date:"M d, Y" }}
+                                    {% else %}
+                                        Self-reported
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="max-w-xs">
+                            <p class="text-patient-dark-blue font-medium line-clamp-2">{{ symptom.details|truncatewords:15 }}</p>
+                            {% if symptom.details|length > 100 %}
+                            <button onclick="showFullSymptom('{{ symptom.id }}')" class="text-patient-blue text-sm hover:underline mt-1">
+                                Read more...
+                            </button>
+                            {% endif %}
+                        </div>
+                    </td>
+                    <td class="px-6 py-4">
+                        {% if symptom.severity %}
+                        <span class="px-3 py-1 rounded-full text-sm font-medium
+                            {% if symptom.severity == 'High' %}bg-red-100 text-red-800
+                            {% elif symptom.severity == 'Medium' %}bg-yellow-100 text-yellow-800
+                            {% else %}bg-green-100 text-green-800{% endif %}">
+                            {{ symptom.severity }}
+                        </span>
+                        {% else %}
+                        <span class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm font-medium">Not specified</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="text-patient-dark-blue font-medium">{{ symptom.created_at|date:"M d, Y" }}</div>
+                        <div class="text-sm text-patient-dark-gray">{{ symptom.created_at|time:"h:i A" }}</div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="flex space-x-2">
+                            <button onclick="viewSymptom('{{ symptom.id }}')" class="px-3 py-2 bg-patient-blue text-white rounded-lg hover:bg-patient-dark-blue transition-colors text-sm">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <a href="{% url 'patientdashboard:delete_symptom' symptom.id %}" 
+                               onclick="return confirm('Are you sure you want to delete this symptom?')"
+                               class="px-3 py-2 bg-patient-red text-white rounded-lg hover:bg-red-700 transition-colors text-sm">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <!-- Empty State -->
+        <div class="text-center py-16">
+            <div class="w-24 h-24 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-notes-medical text-patient-orange text-4xl"></i>
+            </div>
+            <h3 class="text-2xl font-semibold text-patient-dark-blue mb-4">No Symptoms Recorded</h3>
+            <p class="text-patient-dark-gray mb-8 max-w-md mx-auto">Start tracking your symptoms to help your healthcare provider better understand your condition.</p>
+            <a href="{% url 'patientdashboard:add_symptom' %}" class="inline-flex items-center px-6 py-3 bg-patient-orange text-white rounded-xl hover:bg-orange-600 transition-colors font-semibold">
+                <i class="fas fa-plus mr-2"></i>Add Your First Symptom
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Symptom Detail Modal -->
+<div id="symptomModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+        <div class="p-6 border-b border-gray-200">
+            <div class="flex justify-between items-center">
+                <h3 class="text-xl font-bold text-patient-dark-blue">Symptom Details</h3>
+                <button onclick="closeSymptomModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+        </div>
+        <div class="p-6">
+            <div id="symptomModalContent">
+                <!-- Content will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Initialize cards animation
+document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('.patient-card');
+    cards.forEach((card, index) => {
+        setTimeout(() => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'all 0.5s ease';
+            
+            setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 100);
+        }, index * 100);
+    });
+});
+
+// Modal functions
+function viewSymptom(symptomId) {
+    // In a real implementation, you would fetch symptom details via AJAX
+    document.getElementById('symptomModal').classList.remove('hidden');
+}
+
+function closeSymptomModal() {
+    document.getElementById('symptomModal').classList.add('hidden');
+}
+
+function showFullSymptom(symptomId) {
+    viewSymptom(symptomId);
+}
+
+// Close modal when clicking outside
+document.getElementById('symptomModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeSymptomModal();
+    }
+});
+</script>
 {% endblock %}
 
 

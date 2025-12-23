@@ -1,388 +1,291 @@
 {% extends 'patientdashboard/patient_base.html' %}
 {% load static %}
-{% block extra_css %}
 
-.nav-item button {
-    margin-right: 5px;
-    margin-bottom: 5px;
-}
-{% endblock %}
-
+{% block title %}My Appointments - Patient Dashboard{% endblock %}
 
 {% block content %}
-<div class="container my-5">
-    <div class="overflow-auto">
-        <ul class="nav nav-tabs mb-3 d-flex flex-nowrap" id="appointments-tabs" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="appointments-tab" data-bs-toggle="tab" data-bs-target="#appointments" type="button" role="tab" aria-controls="appointments" aria-selected="true">
-                    Appointments
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="prescriptions-tab" data-bs-toggle="tab" data-bs-target="#prescriptions" type="button" role="tab" aria-controls="prescriptions" aria-selected="false">
-                    Prescriptions
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="records-tab" data-bs-toggle="tab" data-bs-target="#records" type="button" role="tab" aria-controls="records" aria-selected="false">
-                    Medical Records
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="billing-tab" data-bs-toggle="tab" data-bs-target="#billing" type="button" role="tab" aria-controls="billing" aria-selected="false">
-                    Billing
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="waiting-tab" data-bs-toggle="tab" data-bs-target="#waiting" type="button" role="tab" aria-controls="waiting" aria-selected="false">
-                    Waiting List
-                </button>
-            </li>
-
-        </ul>
+<!-- Modern Dashboard Header -->
+<div class="bg-gradient-to-r from-patient-blue to-patient-dark-blue rounded-2xl p-6 mb-8 text-white">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+        <div>
+            <h1 class="text-2xl md:text-3xl font-bold mb-2" data-translate="My Appointments">My Appointments</h1>
+            <p class="text-white/90">Manage your healthcare appointments and consultations</p>
+        </div>
+        <div class="mt-4 md:mt-0">
+            <a href="{% url 'patient_dashboard:specialty_selection' %}" class="inline-flex items-center px-6 py-3 bg-white text-patient-blue rounded-xl hover:bg-patient-light-blue transition-all duration-300 font-semibold shadow-lg">
+                <i class="fas fa-plus mr-2"></i>
+                <span data-translate="Book Appointment">Book New Appointment</span>
+            </a>
+        </div>
     </div>
+</div>
 
-    <div class="tab-content" id="appointments-tabs-content">
-        <!-- Appointments Section -->
-        <div class="tab-pane fade show active" id="appointments" role="tabpanel" aria-labelledby="appointments-tab">
-            <div class="table-responsive">
-                <table class="table table-hover table-bordered align-middle text-center">
-                    <thead class="table-light">
-                        <tr>
-                            <th style="background-color: rgb(132, 189, 218); color: white;">Doctor</th>
-                            <th style="background-color: rgb(132, 189, 218); color: white;">Appt Date</th>
-                            <th style="background-color: rgb(132, 189, 218); color: white;">Booking Date</th>
-                            <th style="background-color: rgb(132, 189, 218); color: white;">Amount</th>
-                            <th style="background-color: rgb(132, 189, 218); color: white;">Status</th>
-                            <th style="background-color: rgb(132, 189, 218); color: white;">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for appointment in appointments %}
-                            {% if appointment.status|lower != "pending" %}
-                            <tr>
-                                <td class="text-start d-flex align-items-center">
-                                    <img src="{% static 'img/doctor-thumb-01.jpg' %}" alt="Doctor" class="rounded-circle me-2" style="width: 50px; height: 50px;">
-                                    <div>
-                                        <strong>Dr. {{ appointment.practitioner.first_name }} {{ appointment.practitioner.user.last_name }}</strong><br>
-                                        <small>{{ appointment.practitioner.specialization }}</small>
-                                    </div>
-                                </td>   
-                                <td>
-                                    {{ appointment.slot.date|date:"d M Y" }}<br>
-                                    <small>{{ appointment.slot.start_time|time:"h:i A" }} - {{ appointment.slot.end_time|time:"h:i A" }}</small>
-                                </td>
-                                <td>{{ appointment.created_at|date:"d M Y" }}</td>
-                                <td>{{ appointment.amount|floatformat:0 }} $</td>
-                                <td>
-                                    {% if appointment.status|lower == "accepted" %}
-                                        <span class="badge bg-success">Confirmed</span>
-                                    {% elif appointment.status|lower == "cancelled" %}
-                                        <span class="badge bg-danger">Cancelled</span>
+<!-- Quick Stats -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+    <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 patient-card">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-patient-dark-gray text-sm font-medium">Total Appointments</p>
+                <p class="text-2xl font-bold text-patient-dark-blue">{{ appointments.count }}</p>
+            </div>
+            <div class="w-12 h-12 bg-gradient-to-br from-patient-blue to-patient-dark-blue rounded-xl flex items-center justify-center">
+                <i class="fas fa-calendar-alt text-white text-lg"></i>
+            </div>
+        </div>
+    </div>
+    
+    <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 patient-card">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-patient-dark-gray text-sm font-medium">Upcoming</p>
+                <p class="text-2xl font-bold text-patient-green">{{ upcoming_count|default:0 }}</p>
+            </div>
+            <div class="w-12 h-12 bg-gradient-to-br from-patient-green to-green-600 rounded-xl flex items-center justify-center">
+                <i class="fas fa-clock text-white text-lg"></i>
+            </div>
+        </div>
+    </div>
+    
+    <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 patient-card">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-patient-dark-gray text-sm font-medium">Completed</p>
+                <p class="text-2xl font-bold text-patient-teal">{{ completed_count|default:0 }}</p>
+            </div>
+            <div class="w-12 h-12 bg-gradient-to-br from-patient-teal to-teal-600 rounded-xl flex items-center justify-center">
+                <i class="fas fa-check-circle text-white text-lg"></i>
+            </div>
+        </div>
+    </div>
+    
+    <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 patient-card">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-patient-dark-gray text-sm font-medium">This Month</p>
+                <p class="text-2xl font-bold text-patient-purple">{{ month_count|default:0 }}</p>
+            </div>
+            <div class="w-12 h-12 bg-gradient-to-br from-patient-purple to-purple-600 rounded-xl flex items-center justify-center">
+                <i class="fas fa-calendar-week text-white text-lg"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modern Tabs -->
+<div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+    <div class="border-b border-gray-200">
+        <nav class="flex space-x-8 px-6" aria-label="Tabs">
+            <button onclick="showTab('upcoming')" id="upcoming-tab" class="tab-button active py-4 px-2 border-b-2 border-patient-blue font-medium text-sm text-patient-blue">
+                <i class="fas fa-clock mr-2"></i>Upcoming
+            </button>
+            <button onclick="showTab('completed')" id="completed-tab" class="tab-button py-4 px-2 border-b-2 border-transparent font-medium text-sm text-patient-dark-gray hover:text-patient-blue hover:border-patient-light-blue">
+                <i class="fas fa-check-circle mr-2"></i>Completed
+            </button>
+            <button onclick="showTab('cancelled')" id="cancelled-tab" class="tab-button py-4 px-2 border-b-2 border-transparent font-medium text-sm text-patient-dark-gray hover:text-patient-blue hover:border-patient-light-blue">
+                <i class="fas fa-times-circle mr-2"></i>Cancelled
+            </button>
+        </nav>
+    </div>
+    
+    <!-- Tab Content -->
+    <div class="p-6">
+        <!-- Upcoming Appointments -->
+        <div id="upcoming-content" class="tab-content">
+            {% if appointments %}
+                <div class="space-y-4">
+                    {% for appointment in appointments %}
+                    <div class="bg-gradient-to-r from-white to-patient-light-blue rounded-xl p-6 border border-gray-100 hover:shadow-lg transition-all duration-300">
+                        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center space-y-4 lg:space-y-0">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-16 h-16 bg-gradient-to-br from-patient-blue to-patient-dark-blue rounded-xl flex items-center justify-center">
+                                    {% if appointment.practitioner.profile_photo %}
+                                        <img src="{{ appointment.practitioner.profile_photo.url }}" alt="Doctor" class="w-16 h-16 rounded-xl object-cover">
+                                    {% else %}
+                                        <i class="fas fa-user-md text-white text-xl"></i>
                                     {% endif %}
-                                </td>
-                                <td>
-                                    <div class="d-flex justify-content-center">
-                                        {% if appointment.status|lower == "cancelled" %}
-                                            <a href="{% url 'patient_dashboard:specialty_selection' %}" class="btn btn-sm btn-outline-primary">
-                                                Get Appointment Again
-                                            </a>
-                                        {% else %}
-                                            <a href="{{ appointment.video_call_link }}" target="_blank" class="btn btn-sm btn-outline-info">
-                                                Join Call
-                                            </a>
-                                            <button class="btn btn-sm btn-outline-danger ms-2 cancel-btn" data-id="{{ appointment.id }}">
-                                                Cancel
-                                            </button>
-                                             <button class="btn btn-sm btn-outline-warning ms-2" data-bs-toggle="modal" data-bs-target="#symptomModal" data-appointment-id="{{ appointment.id }}">
-                                                Submit Symptoms
-                                            </button>
-                                        {% endif %}
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-lg text-patient-dark-blue">Dr. {{ appointment.practitioner.user.first_name }} {{ appointment.practitioner.user.last_name }}</h3>
+                                    <p class="text-patient-dark-gray">{{ appointment.practitioner.specialization|default:"General Practice" }}</p>
+                                    <div class="flex items-center space-x-4 mt-2 text-sm text-patient-dark-gray">
+                                        <span><i class="fas fa-calendar mr-1"></i>{{ appointment.date }}</span>
+                                        <span><i class="fas fa-clock mr-1"></i>{{ appointment.time }}</span>
                                     </div>
-                                </td>
-                            </tr>
-                            {% endif %}
-                        {% empty %}
-                        <tr>
-                            <td colspan="6" class="text-center">No Appointments Found</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-
-
-        <!-- Prescriptions Section -->
-        <div class="tab-pane fade" id="prescriptions" role="tabpanel" aria-labelledby="prescriptions-tab">
-            <div class="table-responsive">
-                <table class="table table-striped table-hover table-bordered align-middle text-center">
-                    <thead class="table-primary">
-                        <tr>
-                            <th><i class="fas fa-user-md me-2"></i>Doctor</th>
-                            <th><i class="fas fa-calendar-alt me-2"></i>Date</th>
-                            <th><i class="fas fa-file-medical me-2"></i>Prescription</th>
-                            <th><i class="fas fa-download me-2"></i>Download</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for prescription in prescriptions %}
-                        <tr>
-                            <td>
-                                <i class="fas fa-user-md text-primary me-2"></i>
-                                Dr. {{ prescription.practitioner.first_name }} {{ prescription.practitioner.last_name }}
-                            </td>
-                            <td>
-                                <i class="fas fa-calendar-check text-success me-2"></i>
-                                {{ prescription.created_at|date:"d M Y" }}
-                            </td>
-                            <td>
-                                <i class="fas fa-notes-medical text-info me-2"></i>
-                                {{ prescription.text|default:"No details available" }}
-                            </td>
-                            <td>
-                                {% if prescription.prescription_file %}
-                                    <a href="{{ prescription.prescription_file.url }}" class="btn btn-outline-primary btn-sm" download>
-                                        <i class="fas fa-file-download me-1"></i>Download
-                                    </a>
-                                {% else %}
-                                    <span class="text-muted">
-                                        <i class="fas fa-times-circle text-danger me-1"></i>No file
-                                    </span>
-                                {% endif %}
-
-
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="4" class="text-center">
-                                <i class="fas fa-folder-open text-muted me-2"></i>
-                                No Prescriptions Found
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Medical Records Section -->
-        <div class="tab-pane fade" id="records" role="tabpanel" aria-labelledby="records-tab">
-            <div class="table-responsive">
-                <table class="table table-hover table-bordered align-middle text-center">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Date</th>
-                            <th>Record Type</th>
-                            <th>Details</th>
-                            <th>Download</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for record in medical_records %}
-                        <tr>
-                            <td>{{ record.date|date:"d M Y" }}</td>
-                            <td>{{ record.record_type }}</td>
-                            <td>{{ record.details }}</td>
-                            <td>
-                                {% if record.file %}
-                                    <a href="{{ record.file.url }}" class="btn btn-primary btn-sm" download>Download</a>
-                                {% else %}
-                                    <span class="text-muted">No file available</span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="4" class="text-center">No Medical Records Found</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    
-        <!-- Billing Section -->
-        <div class="tab-pane fade" id="billing" role="tabpanel" aria-labelledby="billing-tab">
-            <div class="table-responsive">
-                <table class="table table-hover table-bordered align-middle text-center">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Invoice #</th>
-                            <th>Date Issued</th>
-                            <th>Due Date</th>
-                            <th>Amount</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for bill in billing_records %}
-                        <tr>
-                            <td>{{ bill.invoice_number }}</td>
-                            <td>{{ bill.issued_date|date:"d M Y" }}</td>
-                            <td>{{ bill.due_date|date:"d M Y" }}</td>
-                            <td>${{ bill.amount }}</td>
-                            <td>
-                                {% if bill.is_paid %}
-                                    <span class="badge bg-success">Paid</span>
-                                {% else %}
-                                    <span class="badge bg-danger">Unpaid</span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="5" class="text-center">No Billing Records Found</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-       
-   
-
-        <!-- Waiting List Tab -->
-        <div class="tab-pane fade" id="waiting" role="tabpanel" aria-labelledby="waiting-tab">
-            <div class="table-responsive">
-                <table class="table table-hover table-bordered align-middle text-center">
-                    <thead class="table-light">
-                        <tr>
-                            <th style="background-color: rgb(132, 189, 218); color: white;">Doctor</th>
-                            <th style="background-color: rgb(132, 189, 218); color: white;">Appt Date</th>
-                            <th style="background-color: rgb(132, 189, 218); color: white;">Booking Date</th>
-                            <th style="background-color: rgb(132, 189, 218); color: white;">Amount</th>
-                            <th style="background-color: rgb(132, 189, 218); color: white;">Status</th>
-                            <th style="background-color: rgb(132, 189, 218); color: white;">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for appointment in appointments %}
-                            {% if appointment.status == "Pending" %}
-                            <tr>
-                                <td class="text-start d-flex align-items-center">
-                                    <img src="{% static 'img/doctor-thumb-01.jpg' %}" alt="Doctor" class="rounded-circle me-2" style="width: 50px; height: 50px;">
-                                    <div>
-                                        <strong>Dr. {{ appointment.practitioner.first_name }} {{ appointment.practitioner.user.last_name }}</strong><br>
-                                        <small>{{ appointment.practitioner.specialization }}</small>
-                                    </div>
-                                </td>   
-                                <td>
-                                    {{ appointment.slot.date|date:"d M Y" }}<br>
-                                    <small>{{ appointment.slot.start_time|time:"h:i A" }} - {{ appointment.slot.end_time|time:"h:i A" }}</small>
-                                </td>
-                                <td>{{ appointment.created_at|date:"d M Y" }}</td>
-                                <td>{{ appointment.amount|floatformat:0 }} $</td>
-                                <td><span class="badge bg-warning text-dark">Pending</span></td>
-                               <td>
-                                    <div class="d-flex justify-content-center">
-                                        {% if appointment.status == "Accepted" %}
-                                            <a href="{{ appointment.video_call_link }}" target="_blank" class="btn btn-sm btn-outline-info">Join Call</a>
-                                        {% endif %}
-                                        <button class="btn btn-sm btn-outline-danger ms-2 cancel-btn" data-id="{{ appointment.id }}">Cancel</button>
-                                          <button class="btn btn-sm btn-outline-warning ms-2" data-bs-toggle="modal" data-bs-target="#symptomModal" data-appointment-id="{{ appointment.id }}">
-                                            Submit Symptoms
-                                        </button>
-                                    </div>
-                                </td>
-
-
-                            </tr>
-                            {% endif %}
-                        {% empty %}
-                        <tr>
-                            <td colspan="6" class="text-center">No Pending Appointments Found</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-
-        
-    </div>
-
-
-    <!-- Symptom Submission Modal -->
-<div class="modal fade" id="symptomModal" tabindex="-1" aria-labelledby="symptomModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <form method="post" action="{% url 'patient_dashboard:submit_symptoms' %}">
-        {% if messages %}
-    {% for message in messages %}
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    {% endfor %}
-{% endif %}
-
-
-
-        {% csrf_token %}
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="symptomModalLabel">Submit Symptoms</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <input type="hidden" name="appointment_id" id="modalAppointmentId">
-                <div class="mb-3">
-                    <label for="symptomDetails" class="form-label">Symptom Details</label>
-                    <textarea class="form-control" id="symptomDetails" name="symptoms" rows="5" required></textarea>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center space-x-3">
+                                <span class="px-3 py-1 bg-patient-green/10 text-patient-green rounded-full text-sm font-medium">
+                                    {{ appointment.status|title }}
+                                </span>
+                                <button class="px-4 py-2 bg-patient-blue text-white rounded-lg hover:bg-patient-dark-blue transition-colors">
+                                    <i class="fas fa-video mr-2"></i>Join Call
+                                </button>
+                                <button class="px-4 py-2 border border-patient-red text-patient-red rounded-lg hover:bg-patient-red hover:text-white transition-colors">
+                                    <i class="fas fa-times mr-2"></i>Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-primary">Submit</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            {% else %}
+                <div class="text-center py-12">
+                    <div class="w-24 h-24 bg-patient-light-blue rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-calendar-alt text-patient-blue text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-patient-dark-blue mb-2">No Appointments Yet</h3>
+                    <p class="text-patient-dark-gray mb-6">Book your first appointment to get started with your healthcare journey.</p>
+                    <a href="{% url 'patient_dashboard:specialty_selection' %}" class="inline-flex items-center px-6 py-3 bg-patient-blue text-white rounded-xl hover:bg-patient-dark-blue transition-colors font-semibold">
+                        <i class="fas fa-plus mr-2"></i>Book Your First Appointment
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Completed Appointments -->
+        <div id="completed-content" class="tab-content hidden">
+            <div class="text-center py-12">
+                <div class="w-24 h-24 bg-patient-light-green rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-check-circle text-patient-green text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-patient-dark-blue mb-2">Completed Appointments</h3>
+                <p class="text-patient-dark-gray">Your completed appointments will appear here.</p>
             </div>
         </div>
-    </form>
-  </div>
+        
+        <!-- Cancelled Appointments -->
+        <div id="cancelled-content" class="tab-content hidden">
+            <div class="text-center py-12">
+                <div class="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-times-circle text-patient-red text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-patient-dark-blue mb-2">Cancelled Appointments</h3>
+                <p class="text-patient-dark-gray">Your cancelled appointments will appear here.</p>
+            </div>
+        </div>
+    </div>
 </div>
 
-    
+<!-- Symptom Modal -->
+<div class="fixed inset-0 bg-black/50 z-50 hidden" id="symptomModal">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full">
+            <form method="post" action="{% url 'patient_dashboard:submit_symptoms' %}">
+                {% csrf_token %}
+                <div class="p-6 border-b border-gray-200">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xl font-bold text-patient-dark-blue">Submit Symptoms</h3>
+                        <button type="button" onclick="closeSymptomModal()" class="text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <input type="hidden" name="appointment_id" id="modalAppointmentId">
+                    <div class="mb-4">
+                        <label for="symptomDetails" class="block text-sm font-medium text-patient-dark-gray mb-2">Describe your symptoms</label>
+                        <textarea class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-patient-blue/50 focus:border-patient-blue" 
+                                  id="symptomDetails" 
+                                  name="symptoms" 
+                                  rows="5" 
+                                  placeholder="Please describe your symptoms in detail..." 
+                                  required></textarea>
+                    </div>
+                </div>
+                <div class="p-6 border-t border-gray-200 flex justify-end space-x-4">
+                    <button type="button" onclick="closeSymptomModal()" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors">
+                        Cancel
+                    </button>
+                    <button type="submit" class="px-6 py-3 bg-patient-blue text-white rounded-xl hover:bg-patient-dark-blue transition-colors">
+                        <i class="fas fa-paper-plane mr-2"></i>Submit
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        document.querySelectorAll(".cancel-btn").forEach(button => {
-            button.addEventListener("click", function () {
-                const appointmentId = this.getAttribute("data-id");
-
-                if (confirm("Are you sure you want to cancel this appointment?")) {
-                    fetch(`/patient-dashboard/cancel-appointment/${appointmentId}/`, {
-                        method: "GET",
-                        headers: { "X-Requested-With": "XMLHttpRequest" }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert(data.message);
-                            location.reload();  // Reload page to reflect changes
-                        }
-                    });
-                }
-            });
-        });
+// Tab functionality
+function showTab(tabName) {
+    // Hide all tab contents
+    document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.add('hidden');
     });
-</script>
+    
+    // Remove active class from all tabs
+    document.querySelectorAll('.tab-button').forEach(button => {
+        button.classList.remove('active', 'border-patient-blue', 'text-patient-blue');
+        button.classList.add('border-transparent', 'text-patient-dark-gray');
+    });
+    
+    // Show selected tab content
+    document.getElementById(tabName + '-content').classList.remove('hidden');
+    
+    // Add active class to selected tab
+    const activeTab = document.getElementById(tabName + '-tab');
+    activeTab.classList.add('active', 'border-patient-blue', 'text-patient-blue');
+    activeTab.classList.remove('border-transparent', 'text-patient-dark-gray');
+}
 
+// Modal functions
+function openSymptomModal(appointmentId) {
+    document.getElementById('modalAppointmentId').value = appointmentId;
+    document.getElementById('symptomModal').classList.remove('hidden');
+}
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    var symptomModal = document.getElementById('symptomModal');
-    symptomModal.addEventListener('show.bs.modal', function (event) {
-        var button = event.relatedTarget;
-        var appointmentId = button.getAttribute('data-appointment-id');
-        var modalInput = symptomModal.querySelector('#modalAppointmentId');
-        modalInput.value = appointmentId;
+function closeSymptomModal() {
+    document.getElementById('symptomModal').classList.add('hidden');
+}
+
+// Cancel Appointment
+document.querySelectorAll(".cancel-btn").forEach(button => {
+    button.addEventListener("click", function () {
+        const appointmentId = this.getAttribute("data-id");
+        
+        if (confirm("Are you sure you want to cancel this appointment?")) {
+            fetch(`/patient-dashboard/cancel-appointment/${appointmentId}/`, {
+                method: "GET",
+                headers: { "X-Requested-With": "XMLHttpRequest" }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    location.reload();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            });
+        }
     });
 });
+
+// Initialize cards animation
+document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('.patient-card');
+    cards.forEach((card, index) => {
+        setTimeout(() => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'all 0.5s ease';
+            
+            setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 100);
+        }, index * 100);
+    });
+});
+
+// Close modal when clicking outside
+document.getElementById('symptomModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeSymptomModal();
+    }
+});
 </script>
-
-
-
 {% endblock %}

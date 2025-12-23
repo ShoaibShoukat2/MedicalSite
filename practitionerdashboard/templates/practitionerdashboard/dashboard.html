@@ -1,873 +1,667 @@
 {% extends "practitionerdashboard/base.html" %} {% load static %}
 {% block content %}
-<div class="content">
+
+<!-- Modern Dashboard Content -->
+<div class="space-y-6">
   <!-- Header Section -->
-  <div class="container-fluid mb-4">
-    <div class="row align-items-center">
-      <div class="col">
-        <h2 class="fw-bold text-dark mb-1">Dashboard Overview</h2>
-        <p class="text-muted mb-0">Welcome back! Here's what's happening with your practice today.</p>
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-doctor-dark-blue mb-2" data-translate="Dashboard">Dashboard Overview</h1>
+        <p class="text-doctor-dark-gray">Welcome back! Here's what's happening with your practice today.</p>
+      </div>
+      <div class="hidden md:flex items-center space-x-4">
+        <div class="text-right">
+          <p class="text-sm text-doctor-dark-gray">Today's Date</p>
+          <p class="font-semibold text-doctor-blue">{{ today|date:"M d, Y" }}</p>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- Stats Cards -->
-  <div class="container-fluid mb-5">
-    <div class="row g-4">
-      <!-- Total Patients Card -->
-      <div class="col-12 col-sm-6 col-lg-3">
-        <div class="card border-0 shadow-sm h-100 position-relative overflow-hidden">
-          <div class="card-body p-4">
-            <div class="d-flex align-items-center justify-content-between">
-              <div>
-                <div class="d-flex align-items-center mb-2">
-                  <div class="bg-success bg-gradient rounded-circle p-2 me-3">
-                    <i class="fa fa-user text-white fs-5"></i>
-                  </div>
-                  <span class="badge bg-success-subtle text-success fw-medium px-3 py-2">
-                    <i class="fa fa-check me-1"></i>Total Patients
-                  </span>
-                </div>
-                <h3 class="display-6 fw-bold text-dark mb-0">{{ total_patients }}</h3>
-              </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <!-- Total Patients Card -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 doctor-card hover:shadow-lg transition-all duration-300">
+      <div class="flex items-center justify-between">
+        <div class="flex-1">
+          <div class="flex items-center space-x-3 mb-4">
+            <div class="w-12 h-12 bg-gradient-to-br from-doctor-green to-emerald-600 rounded-xl flex items-center justify-center">
+              <i class="fas fa-users text-white text-lg"></i>
             </div>
-            <div class="position-absolute top-0 end-0 p-3 opacity-10">
-              <i class="fa fa-user" style="font-size: 3rem;"></i>
-            </div>
+            <span class="px-3 py-1 bg-doctor-light-green text-doctor-green text-sm font-medium rounded-full">
+              Total Patients
+            </span>
           </div>
+          <h3 class="text-3xl font-bold text-doctor-dark-blue mb-1">{{ total_patients }}</h3>
+          <p class="text-sm text-doctor-dark-gray">Registered patients</p>
+        </div>
+        <div class="opacity-10">
+          <i class="fas fa-users text-6xl text-doctor-green"></i>
         </div>
       </div>
+    </div>
 
-      <!-- Accepted Appointments Card -->
-      <div class="col-12 col-sm-6 col-lg-3">
-        <div class="card border-0 shadow-sm h-100 position-relative overflow-hidden">
-          <div class="card-body p-4">
-            <div class="d-flex align-items-center justify-content-between">
-              <div>
-                <div class="d-flex align-items-center mb-2">
-                  <div class="bg-primary bg-gradient rounded-circle p-2 me-3">
-                    <i class="fa fa-calendar-check text-white fs-5"></i>
-                  </div>
-                  <span class="badge bg-primary-subtle text-primary fw-medium px-3 py-2">
-                    <i class="fa fa-check me-1"></i>Accepted
-                  </span>
-                </div>
-                <h3 class="display-6 fw-bold text-dark mb-0">{{ completed_appointments }}</h3>
-              </div>
+    <!-- Accepted Appointments Card -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 doctor-card hover:shadow-lg transition-all duration-300">
+      <div class="flex items-center justify-between">
+        <div class="flex-1">
+          <div class="flex items-center space-x-3 mb-4">
+            <div class="w-12 h-12 bg-gradient-to-br from-doctor-blue to-blue-600 rounded-xl flex items-center justify-center">
+              <i class="fas fa-calendar-check text-white text-lg"></i>
             </div>
-            <div class="position-absolute top-0 end-0 p-3 opacity-10">
-              <i class="fa fa-calendar-check" style="font-size: 3rem;"></i>
-            </div>
+            <span class="px-3 py-1 bg-doctor-light-blue text-doctor-blue text-sm font-medium rounded-full">
+              Accepted
+            </span>
           </div>
+          <h3 class="text-3xl font-bold text-doctor-dark-blue mb-1">{{ completed_appointments }}</h3>
+          <p class="text-sm text-doctor-dark-gray">Confirmed appointments</p>
+        </div>
+        <div class="opacity-10">
+          <i class="fas fa-calendar-check text-6xl text-doctor-blue"></i>
         </div>
       </div>
+    </div>
 
-      <!-- Pending Appointments Card -->
-      <div class="col-12 col-sm-6 col-lg-3">
-        <div class="card border-0 shadow-sm h-100 position-relative overflow-hidden">
-          <div class="card-body p-4">
-            <div class="d-flex align-items-center justify-content-between">
-              <div>
-                <div class="d-flex align-items-center mb-2">
-                  <div class="bg-warning bg-gradient rounded-circle p-2 me-3">
-                    <i class="fa fa-hourglass-half text-white fs-5"></i>
-                  </div>
-                  <span class="badge bg-warning-subtle text-warning fw-medium px-3 py-2">
-                    <i class="fa fa-exclamation-circle me-1"></i>Pending
-                  </span>
-                </div>
-                <h3 class="display-6 fw-bold text-dark mb-0">{{ pending_appointments }}</h3>
-              </div>
+    <!-- Pending Appointments Card -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 doctor-card hover:shadow-lg transition-all duration-300">
+      <div class="flex items-center justify-between">
+        <div class="flex-1">
+          <div class="flex items-center space-x-3 mb-4">
+            <div class="w-12 h-12 bg-gradient-to-br from-doctor-orange to-orange-600 rounded-xl flex items-center justify-center">
+              <i class="fas fa-hourglass-half text-white text-lg"></i>
             </div>
-            <div class="position-absolute top-0 end-0 p-3 opacity-10">
-              <i class="fa fa-hourglass-half" style="font-size: 3rem;"></i>
-            </div>
+            <span class="px-3 py-1 bg-orange-100 text-doctor-orange text-sm font-medium rounded-full">
+              Pending
+            </span>
           </div>
+          <h3 class="text-3xl font-bold text-doctor-dark-blue mb-1">{{ pending_appointments }}</h3>
+          <p class="text-sm text-doctor-dark-gray">Awaiting response</p>
+        </div>
+        <div class="opacity-10">
+          <i class="fas fa-hourglass-half text-6xl text-doctor-orange"></i>
         </div>
       </div>
+    </div>
 
-
-   
+    <!-- Today's Appointments Card -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 doctor-card hover:shadow-lg transition-all duration-300">
+      <div class="flex items-center justify-between">
+        <div class="flex-1">
+          <div class="flex items-center space-x-3 mb-4">
+            <div class="w-12 h-12 bg-gradient-to-br from-doctor-purple to-purple-600 rounded-xl flex items-center justify-center">
+              <i class="fas fa-calendar-day text-white text-lg"></i>
+            </div>
+            <span class="px-3 py-1 bg-purple-100 text-doctor-purple text-sm font-medium rounded-full">
+              Today
+            </span>
+          </div>
+          <h3 class="text-3xl font-bold text-doctor-dark-blue mb-1">{{ today_appointments|length }}</h3>
+          <p class="text-sm text-doctor-dark-gray">Today's schedule</p>
+        </div>
+        <div class="opacity-10">
+          <i class="fas fa-calendar-day text-6xl text-doctor-purple"></i>
+        </div>
+      </div>
     </div>
   </div>
 
   {% if messages %}
-    <div class="container-fluid mb-4">
+    <div class="space-y-4">
       {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-          {{ message }}
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <div class="bg-blue-50 border border-blue-200 text-blue-800 px-4 py-3 rounded-xl flex items-center justify-between">
+          <span>{{ message }}</span>
+          <button onclick="this.parentElement.remove()" class="text-blue-600 hover:text-blue-800">
+            <i class="fas fa-times"></i>
+          </button>
         </div>
       {% endfor %}
     </div>
   {% endif %}
 
   <!-- Appointments Management Section -->
-  <div class="container-fluid">
-    <div class="card border-0 shadow-sm">
-      <div class="card-header bg-white border-bottom py-4">
-        <div class="d-flex align-items-center justify-content-between">
-          <div>
-            <h4 class="fw-bold text-primary mb-1">
-              <i class="bi bi-calendar3 me-2"></i>Appointments Management
-            </h4>
-            <p class="text-muted mb-0">Manage and track all your patient appointments</p>
-          </div>
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-doctor-blue to-doctor-dark-blue p-6 text-white">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-2xl font-bold mb-2">
+            <i class="fas fa-calendar-alt mr-3"></i>Appointments Management
+          </h2>
+          <p class="text-blue-100">Manage and track all your patient appointments</p>
         </div>
       </div>
+    </div>
 
-      <div class="card-body p-0">
-        <!-- Enhanced Tab Navigation -->
-        <div class="border-bottom bg-light">
-          <ul class="nav nav-tabs border-0 px-4" id="appointmentTabs">
-            <li class="nav-item">
-              <a class="nav-link active fw-medium py-3 px-4 border-0 position-relative" data-bs-toggle="tab" href="#today">
-                <i class="bi bi-calendar-check me-2"></i>Today's Appointments
-                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">
-                  {{ today_appointments|length }}
-                </span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link fw-medium py-3 px-4 border-0 position-relative" data-bs-toggle="tab" href="#pending">
-                <i class="bi bi-hourglass-split me-2"></i>Pending
-                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning">
-                  {{ pending_appointments_list|length }}
-                </span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link fw-medium py-3 px-4 border-0 position-relative" data-bs-toggle="tab" href="#waiting">
-                <i class="bi bi-clock-history me-2"></i>Waiting List
-                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-info">
-                  {{ waiting_list_appointments|length }}
-                </span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link fw-medium py-3 px-4 border-0 position-relative" data-bs-toggle="tab" href="#accepted">
-                <i class="bi bi-check-circle me-2"></i>Accepted
-                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success">
-                  {{ accepted_appointments|length }}
-                </span>
-              </a>
-            </li>
-          </ul>
-        </div>
+    <!-- Tab Navigation -->
+    <div class="border-b border-gray-200 bg-gray-50">
+      <nav class="flex space-x-8 px-6" id="appointmentTabs">
+        <button class="tab-button active py-4 px-2 border-b-2 border-doctor-blue text-doctor-blue font-medium transition-colors" data-tab="today">
+          <i class="fas fa-calendar-check mr-2"></i>Today's Appointments
+          <span class="ml-2 bg-doctor-blue text-white text-xs px-2 py-1 rounded-full">{{ today_appointments|length }}</span>
+        </button>
+        <button class="tab-button py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-doctor-blue font-medium transition-colors" data-tab="pending">
+          <i class="fas fa-hourglass-half mr-2"></i>Pending
+          <span class="ml-2 bg-orange-500 text-white text-xs px-2 py-1 rounded-full">{{ pending_appointments_list|length }}</span>
+        </button>
+        <button class="tab-button py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-doctor-blue font-medium transition-colors" data-tab="waiting">
+          <i class="fas fa-clock mr-2"></i>Waiting List
+          <span class="ml-2 bg-blue-500 text-white text-xs px-2 py-1 rounded-full">{{ waiting_list_appointments|length }}</span>
+        </button>
+        <button class="tab-button py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-doctor-blue font-medium transition-colors" data-tab="accepted">
+          <i class="fas fa-check-circle mr-2"></i>Accepted
+          <span class="ml-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">{{ accepted_appointments|length }}</span>
+        </button>
+      </nav>
+    </div>
 
-        
-
-
-        <div class="tab-content p-4">
-          <!-- Today's Appointments Tab -->
-         <div class="tab-pane fade show active" id="today">
-          <div class="row">
-            <div class="col-12">
-              {% if today_appointments %}
-                <div class="table-responsive">
-                  <table class="table table-hover align-middle">
-                    <thead class="table-light">
-                      <tr>
-                        <th class="ps-4 border-0 fw-semibold">Patient</th>
-                        <th class="border-0 fw-semibold">Appointment Time</th>
-                        <th class="border-0 fw-semibold">Amount</th>
-                        <th class="text-center border-0 fw-semibold">Status</th>
-                        <th class="text-center border-0 fw-semibold">Symptoms</th>
-                        <th class="text-end pe-4 border-0 fw-semibold">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% for appointment in today_appointments %}
-                      <tr data-id="{{ appointment.id }}" class="border-bottom appointment-row">
-                        <td class="ps-4 py-3">
-                          <div class="d-flex align-items-center">
-                            <div class="avatar-circle bg-primary bg-gradient me-3">
-                              <span class="text-white fw-bold">{{ appointment.patient.first_name|slice:":1" }}</span>
-                            </div>
-                            <div>
-                              <h6 class="mb-0 fw-medium">{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</h6>
-                              <small class="text-muted">{{ appointment.patient.email }}</small>
-                            </div>
-                          </div>
-                        </td>
-                        <td class="py-3">
-                          <div class="d-flex flex-column">
-                            <span class="fw-medium text-dark">{{ appointment.slot.start_time|date:"M d, Y" }}</span>
-                            <small class="text-primary fw-medium">{{ appointment.slot.start_time|time:"h:i A" }}</small>
-                          </div>
-                        </td>
-                        <td class="py-3">
-                          <span class="badge bg-light text-dark fw-medium px-3 py-2">
-                            ${{ appointment.practitioner.price|floatformat:0 }}
-                          </span>
-                        </td>
-                        <td class="text-center py-3">
-                          <span class="badge bg-warning text-dark px-3 py-2">Pending</span>
-                        </td>
-
-                        <!-- 🔍 Symptoms Icon Column -->
-                        <td class="text-center py-3">
-                          <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#symptomModal{{ appointment.id }}">
-                            <i class="bi bi-clipboard-heart-fill"></i>
-                          </button>
-                        </td>
-
-                        <!-- ✅ Actions -->
-                        <td class="text-end pe-4 py-3">
-                          <div class="btn-group" role="group">
-                            <button class="btn btn-sm btn-outline-primary view-btn">
-                              <i class="bi bi-eye"></i>
-                            </button>
-                            <button class="btn btn-sm btn-success accept-btn">
-                              <i class="bi bi-check2"></i>
-                            </button>
-                            <button class="btn btn-sm btn-outline-danger cancel-btn">
-                              <i class="bi bi-x"></i>
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-
-                      <!-- 🧾 Symptom Modal -->
-                      <div class="modal fade" id="symptomModal{{ appointment.id }}" tabindex="-1" aria-labelledby="symptomModalLabel{{ appointment.id }}" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                          <div class="modal-content">
-                            <div class="modal-header bg-info text-white">
-                              <h5 class="modal-title" id="symptomModalLabel{{ appointment.id }}">
-                                Submitted Symptoms - {{ appointment.patient.first_name }}
-                              </h5>
-                              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                              {% if appointment.symptom_details %}
-                                <p class="text-dark">{{ appointment.symptom_details }}</p>
-                              {% else %}
-                                <p class="text-muted">No symptoms submitted.</p>
-                              {% endif %}
-                            </div>
-                            <div class="modal-footer">
-                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            </div>
-                          </div>
-                        </div>
+    <!-- Tab Content -->
+    <div class="p-6">
+      <!-- Today's Appointments Tab -->
+      <div class="tab-content active" id="today">
+        {% if today_appointments %}
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead>
+                <tr class="border-b border-gray-200">
+                  <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Patient</th>
+                  <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Time</th>
+                  <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Amount</th>
+                  <th class="text-center py-4 px-4 font-semibold text-doctor-dark-blue">Status</th>
+                  <th class="text-center py-4 px-4 font-semibold text-doctor-dark-blue">Symptoms</th>
+                  <th class="text-right py-4 px-4 font-semibold text-doctor-dark-blue">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-100">
+                {% for appointment in today_appointments %}
+                <tr class="appointment-row hover:bg-gray-50 transition-colors" data-id="{{ appointment.id }}">
+                  <td class="py-4 px-4">
+                    <div class="flex items-center space-x-3">
+                      <div class="w-10 h-10 bg-gradient-to-br from-doctor-blue to-doctor-purple rounded-full flex items-center justify-center">
+                        <span class="text-white font-semibold text-sm">{{ appointment.patient.first_name|slice:":1" }}</span>
                       </div>
-
-                      {% endfor %}
-                    </tbody>
-                  </table>
-                </div>
-              {% else %}
-                <div class="text-center py-5">
-                  <div class="mb-4">
-                    <i class="bi bi-calendar-x text-muted" style="font-size: 4rem;"></i>
-                  </div>
-                  <h5 class="text-muted mb-2">No appointments for today</h5>
-                  <p class="text-muted">Your schedule is clear for today!</p>
-                </div>
-              {% endif %}
-            </div>
-          </div>
-         </div>
-
-
-          <!-- Pending Appointments Tab -->
-          <div class="tab-pane fade" id="pending">
-            <div class="row">
-              <div class="col-12">
-                {% if pending_appointments_list %}
-                  <div class="table-responsive">
-                    <table class="table table-hover align-middle">
-                      <thead class="table-light">
-                        <tr>
-                          <th class="ps-4 border-0 fw-semibold">Patient</th>
-                          <th class="border-0 fw-semibold">Appointment Time</th>
-                          <th class="border-0 fw-semibold">Amount</th>
-                          <th class="text-center border-0 fw-semibold">Symptoms</th>
-                          <th class="text-center border-0 fw-semibold">Status</th>
-                          <th class="text-end pe-4 border-0 fw-semibold">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {% for appointment in pending_appointments_list %}
-                        <tr data-id="{{ appointment.id }}" class="border-bottom appointment-row">
-                          <td class="ps-4 py-3">
-                            <div class="d-flex align-items-center">
-                              <div class="avatar-circle bg-warning bg-gradient me-3">
-                                <span class="text-white fw-bold">{{ appointment.patient.first_name|slice:":1" }}</span>
-                              </div>
-                              <div>
-                                <h6 class="mb-0 fw-medium">{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</h6>
-                                <small class="text-muted">{{ appointment.patient.email }}</small>
-                              </div>
-                            </div>
-                          </td>
-                          <td class="py-3">
-                            <div class="d-flex flex-column">
-                              <span class="fw-medium text-dark">{{ appointment.slot.start_time|date:"M d, Y" }}</span>
-                              <small class="text-primary fw-medium">{{ appointment.slot.start_time|time:"h:i A" }}</small>
-                            </div>
-                          </td>
-                          <td class="py-3">
-                            <span class="badge bg-light text-dark fw-medium px-3 py-2">${{ appointment.practitioner.price|floatformat:0 }}</span>
-                          </td>
-                          <td class="text-center py-3">
-                            <!-- Symptom icon to open modal -->
-                            <button type="button" class="btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#symptomModalPending{{ appointment.id }}">
-                              <i class="bi bi-journal-medical"></i>
-                            </button>
-                          </td>
-                          <td class="text-center py-3">
-                            <span class="badge bg-warning text-dark px-3 py-2">Pending</span>
-                          </td>
-                          <td class="text-end pe-4 py-3">
-                            <div class="btn-group" role="group">
-                              <button class="btn btn-sm btn-outline-primary view-btn">
-                                <i class="bi bi-eye"></i>
-                              </button>
-                              <button class="btn btn-sm btn-success accept-btn">
-                                <i class="bi bi-check2"></i>
-                              </button>
-                              <button class="btn btn-sm btn-outline-danger cancel-btn">
-                                <i class="bi bi-x"></i>
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-
-                        <!-- Symptom Modal -->
-                        <div class="modal fade" id="symptomModalPending{{ appointment.id }}" tabindex="-1" aria-labelledby="symptomModalLabelPending{{ appointment.id }}" aria-hidden="true">
-                          <div class="modal-dialog modal-dialog-scrollable">
-                            <div class="modal-content">
-                              <div class="modal-header">
-                                <h5 class="modal-title" id="symptomModalLabelPending{{ appointment.id }}">
-                                  Symptoms for {{ appointment.patient.first_name }} {{ appointment.patient.last_name }}
-                                </h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                              </div>
-                              <div class="modal-body">
-                                {% with symptoms=appointment.symptom_set.all %}
-                                  {% if symptoms %}
-                                    <ul class="list-group list-group-flush">
-                                      {% for symptom in symptoms %}
-                                        <li class="list-group-item">
-                                          <p class="mb-1">{{ symptom.details }}</p>
-                                          <small class="text-muted">Submitted on {{ symptom.created_at|date:"M d, Y H:i" }}</small>
-                                        </li>
-                                      {% endfor %}
-                                    </ul>
-                                  {% else %}
-                                    <p class="text-muted">No symptoms submitted for this appointment.</p>
-                                  {% endif %}
-                                {% endwith %}
-                              </div>
-                              <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        {% endfor %}
-                      </tbody>
-                    </table>
-                  </div>
-                {% else %}
-                  <div class="text-center py-5">
-                    <div class="mb-4">
-                      <i class="bi bi-hourglass text-muted" style="font-size: 4rem;"></i>
+                      <div>
+                        <p class="font-medium text-doctor-dark-blue">{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</p>
+                        <p class="text-sm text-doctor-dark-gray">{{ appointment.patient.email }}</p>
+                      </div>
                     </div>
-                    <h5 class="text-muted mb-2">No pending appointments</h5>
-                    <p class="text-muted">All caught up! No appointments awaiting your response.</p>
-                  </div>
-                {% endif %}
-              </div>
-            </div>
-          </div>
-
-
-
-          <!-- Waiting List Tab -->
-          <div class="tab-pane fade" id="waiting">
-            <div class="row">
-              <div class="col-12">
-                {% if waiting_list_appointments %}
-                  <div class="table-responsive">
-                    <table class="table table-hover align-middle">
-                      <thead class="table-light">
-                        <tr>
-                          <th class="ps-4 border-0 fw-semibold">Patient</th>
-                          <th class="border-0 fw-semibold">Appointment Time</th>
-                          <th class="border-0 fw-semibold">Amount</th>
-                          <th class="text-center border-0 fw-semibold">Symptoms</th>
-                          <th class="text-center border-0 fw-semibold">Status</th>
-                          <th class="text-end pe-4 border-0 fw-semibold">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {% for appointment in waiting_list_appointments %}
-                        <tr data-id="{{ appointment.id }}" class="border-bottom appointment-row">
-                          <td class="ps-4 py-3">
-                            <div class="d-flex align-items-center">
-                              <div class="avatar-circle bg-info bg-gradient me-3">
-                                <span class="text-white fw-bold">{{ appointment.patient.first_name|slice:":1" }}</span>
-                              </div>
-                              <div>
-                                <h6 class="mb-0 fw-medium">{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</h6>
-                                <small class="text-muted">{{ appointment.patient.email }}</small>
-                              </div>
-                            </div>
-                          </td>
-                          <td class="py-3">
-                            <div class="d-flex flex-column">
-                              <span class="fw-medium text-dark">{{ appointment.slot.start_time|date:"M d, Y" }}</span>
-                              <small class="text-primary fw-medium">{{ appointment.slot.start_time|time:"h:i A" }}</small>
-                            </div>
-                          </td>
-                          <td class="py-3">
-                            <span class="badge bg-light text-dark fw-medium px-3 py-2">${{ appointment.practitioner.price|floatformat:0 }}</span>
-                          </td>
-                          <td class="text-center py-3">
-                            <!-- Symptom icon to open modal -->
-                            <button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#symptomModalWaiting{{ appointment.id }}">
-                              <i class="bi bi-journal-medical"></i>
-                            </button>
-                          </td>
-                          <td class="text-center py-3">
-                            <span class="badge bg-info text-white px-3 py-2">Waiting</span>
-                          </td>
-                          <td class="text-end pe-4 py-3">
-                            <div class="btn-group" role="group">
-                              <button class="btn btn-sm btn-outline-primary view-btn">
-                                <i class="bi bi-eye"></i>
-                              </button>
-                              <button class="btn btn-sm btn-success accept-btn">
-                                <i class="bi bi-check2"></i>
-                              </button>
-                              <button class="btn btn-sm btn-outline-danger cancel-btn">
-                                <i class="bi bi-x"></i>
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-
-                        <!-- Symptom Modal -->
-                        <div class="modal fade" id="symptomModalWaiting{{ appointment.id }}" tabindex="-1" aria-labelledby="symptomModalLabelWaiting{{ appointment.id }}" aria-hidden="true">
-                          <div class="modal-dialog modal-dialog-scrollable">
-                            <div class="modal-content">
-                              <div class="modal-header">
-                                <h5 class="modal-title" id="symptomModalLabelWaiting{{ appointment.id }}">
-                                  Symptoms for {{ appointment.patient.first_name }} {{ appointment.patient.last_name }}
-                                </h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                              </div>
-                              <div class="modal-body">
-                                {% with symptoms=appointment.symptom_set.all %}
-                                  {% if symptoms %}
-                                    <ul class="list-group list-group-flush">
-                                      {% for symptom in symptoms %}
-                                        <li class="list-group-item">
-                                          <p class="mb-1">{{ symptom.details }}</p>
-                                          <small class="text-muted">Submitted on {{ symptom.created_at|date:"M d, Y H:i" }}</small>
-                                        </li>
-                                      {% endfor %}
-                                    </ul>
-                                  {% else %}
-                                    <p class="text-muted">No symptoms submitted for this appointment.</p>
-                                  {% endif %}
-                                {% endwith %}
-                              </div>
-                              <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        {% endfor %}
-                      </tbody>
-                    </table>
-                  </div>
-                {% else %}
-                  <div class="text-center py-5">
-                    <div class="mb-4">
-                      <i class="bi bi-clock-history text-muted" style="font-size: 4rem;"></i>
+                  </td>
+                  <td class="py-4 px-4">
+                    <div>
+                      <p class="font-medium text-doctor-dark-blue">{{ appointment.slot.start_time|date:"M d, Y" }}</p>
+                      <p class="text-sm text-doctor-blue">{{ appointment.slot.start_time|time:"h:i A" }}</p>
                     </div>
-                    <h5 class="text-muted mb-2">No appointments in waiting list</h5>
-                    <p class="text-muted">Your waiting list is empty.</p>
-                  </div>
-                {% endif %}
-              </div>
-            </div>
-          </div>
-
-
-
-
-
-
-          <!-- Accepted Appointments Tab -->
-          <div class="tab-pane fade" id="accepted">
-            <div class="row">
-              <div class="col-12">
-                {% if accepted_appointments %}
-                  <div class="table-responsive">
-                    <table class="table table-hover align-middle">
-                      <thead class="table-light">
-                        <tr>
-                          <th class="ps-4 border-0 fw-semibold">Patient</th>
-                          <th class="border-0 fw-semibold">Appointment Time</th>
-                          <th class="border-0 fw-semibold">Amount</th>
-                          <th class="text-center border-0 fw-semibold">Symptoms</th>
-                          <th class="text-center border-0 fw-semibold">Status</th>
-                          <th class="text-end pe-4 border-0 fw-semibold">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {% for appointment in accepted_appointments %}
-                        <tr data-id="{{ appointment.id }}" class="border-bottom appointment-row">
-                          <td class="ps-4 py-3">
-                            <div class="d-flex align-items-center">
-                              <div class="avatar-circle bg-success bg-gradient me-3">
-                                <span class="text-white fw-bold">{{ appointment.patient.first_name|slice:":1" }}</span>
-                              </div>
-                              <div>
-                                <h6 class="mb-0 fw-medium">{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</h6>
-                                <small class="text-muted">{{ appointment.patient.email }}</small>
-                              </div>
-                            </div>
-                          </td>
-                          <td class="py-3">
-                            <div class="d-flex flex-column">
-                              <span class="fw-medium text-dark">{{ appointment.slot.start_time|date:"M d, Y" }}</span>
-                              <small class="text-primary fw-medium">{{ appointment.slot.start_time|time:"h:i A" }}</small>
-                            </div>
-                          </td>
-                          <td class="py-3">
-                            <span class="badge bg-light text-dark fw-medium px-3 py-2">${{ appointment.practitioner.price|floatformat:0 }}</span>
-                          </td>
-                          <td class="text-center py-3">
-                            <!-- Symptom icon to open modal -->
-                            <button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#symptomModal{{ appointment.id }}">
-                              <i class="bi bi-journal-medical"></i>
-                            </button>
-                          </td>
-                          <td class="text-center py-3">
-                            <span class="badge bg-success text-white px-3 py-2">Accepted</span>
-                          </td>
-                          <td class="text-end pe-4 py-3">
-                            <div class="btn-group" role="group">
-                              <button class="btn btn-sm btn-outline-primary view-btn">
-                                <i class="bi bi-eye"></i>
-                              </button>
-                              <button class="btn btn-sm btn-outline-danger cancel-btn">
-                                <i class="bi bi-x"></i>
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-
-                        <!-- Symptom Modal -->
-                        <div class="modal fade" id="symptomModal{{ appointment.id }}" tabindex="-1" aria-labelledby="symptomModalLabel{{ appointment.id }}" aria-hidden="true">
-                          <div class="modal-dialog modal-dialog-scrollable">
-                            <div class="modal-content">
-                              <div class="modal-header">
-                                <h5 class="modal-title" id="symptomModalLabel{{ appointment.id }}">
-                                  Symptoms for {{ appointment.patient.first_name }} {{ appointment.patient.last_name }}
-                                </h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                              </div>
-                              <div class="modal-body">
-                                {% with symptoms=appointment.symptom_set.all %}
-                                  {% if symptoms %}
-                                    <ul class="list-group list-group-flush">
-                                      {% for symptom in symptoms %}
-                                        <li class="list-group-item">
-                                          <p class="mb-1">{{ symptom.details }}</p>
-                                          <small class="text-muted">Submitted on {{ symptom.created_at|date:"M d, Y H:i" }}</small>
-                                        </li>
-                                      {% endfor %}
-                                    </ul>
-                                  {% else %}
-                                    <p class="text-muted">No symptoms submitted for this appointment.</p>
-                                  {% endif %}
-                                {% endwith %}
-                              </div>
-                              <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        {% endfor %}
-                      </tbody>
-                    </table>
-                  </div>
-                {% else %}
-                  <div class="text-center py-5">
-                    <div class="mb-4">
-                      <i class="bi bi-check-circle text-muted" style="font-size: 4rem;"></i>
+                  </td>
+                  <td class="py-4 px-4">
+                    <span class="px-3 py-1 bg-gray-100 text-doctor-dark-blue rounded-full text-sm font-medium">
+                      ${{ appointment.practitioner.price|floatformat:0 }}
+                    </span>
+                  </td>
+                  <td class="py-4 px-4 text-center">
+                    <span class="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm font-medium">Pending</span>
+                  </td>
+                  <td class="py-4 px-4 text-center">
+                    <button class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors" onclick="openSymptomModal('{{ appointment.id }}', '{{ appointment.patient.first_name }}', '{{ appointment.symptom_details|default:"No symptoms submitted" }}')">
+                      <i class="fas fa-clipboard-list"></i>
+                    </button>
+                  </td>
+                  <td class="py-4 px-4 text-right">
+                    <div class="flex items-center justify-end space-x-2">
+                      <button class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors view-btn">
+                        <i class="fas fa-eye"></i>
+                      </button>
+                      <button class="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition-colors accept-btn">
+                        <i class="fas fa-check"></i>
+                      </button>
+                      <button class="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors cancel-btn">
+                        <i class="fas fa-times"></i>
+                      </button>
                     </div>
-                    <h5 class="text-muted mb-2">No accepted appointments</h5>
-                    <p class="text-muted">No appointments have been accepted yet.</p>
-                  </div>
-                {% endif %}
-              </div>
-            </div>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
           </div>
+        {% else %}
+          <div class="text-center py-12">
+            <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <i class="fas fa-calendar-times text-gray-400 text-3xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-doctor-dark-blue mb-2">No appointments for today</h3>
+            <p class="text-doctor-dark-gray">Your schedule is clear for today!</p>
+          </div>
+        {% endif %}
+      </div>
 
+      <!-- Pending Appointments Tab -->
+      <div class="tab-content hidden" id="pending">
+        {% if pending_appointments_list %}
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead>
+                <tr class="border-b border-gray-200">
+                  <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Patient</th>
+                  <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Time</th>
+                  <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Amount</th>
+                  <th class="text-center py-4 px-4 font-semibold text-doctor-dark-blue">Symptoms</th>
+                  <th class="text-center py-4 px-4 font-semibold text-doctor-dark-blue">Status</th>
+                  <th class="text-right py-4 px-4 font-semibold text-doctor-dark-blue">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-100">
+                {% for appointment in pending_appointments_list %}
+                <tr class="appointment-row hover:bg-gray-50 transition-colors" data-id="{{ appointment.id }}">
+                  <td class="py-4 px-4">
+                    <div class="flex items-center space-x-3">
+                      <div class="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center">
+                        <span class="text-white font-semibold text-sm">{{ appointment.patient.first_name|slice:":1" }}</span>
+                      </div>
+                      <div>
+                        <p class="font-medium text-doctor-dark-blue">{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</p>
+                        <p class="text-sm text-doctor-dark-gray">{{ appointment.patient.email }}</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="py-4 px-4">
+                    <div>
+                      <p class="font-medium text-doctor-dark-blue">{{ appointment.slot.start_time|date:"M d, Y" }}</p>
+                      <p class="text-sm text-doctor-blue">{{ appointment.slot.start_time|time:"h:i A" }}</p>
+                    </div>
+                  </td>
+                  <td class="py-4 px-4">
+                    <span class="px-3 py-1 bg-gray-100 text-doctor-dark-blue rounded-full text-sm font-medium">
+                      ${{ appointment.practitioner.price|floatformat:0 }}
+                    </span>
+                  </td>
+                  <td class="py-4 px-4 text-center">
+                    <button class="p-2 bg-orange-100 text-orange-600 rounded-lg hover:bg-orange-200 transition-colors" onclick="openSymptomModal('{{ appointment.id }}', '{{ appointment.patient.first_name }}', '{{ appointment.symptom_details|default:"No symptoms submitted" }}')">
+                      <i class="fas fa-clipboard-list"></i>
+                    </button>
+                  </td>
+                  <td class="py-4 px-4 text-center">
+                    <span class="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm font-medium">Pending</span>
+                  </td>
+                  <td class="py-4 px-4 text-right">
+                    <div class="flex items-center justify-end space-x-2">
+                      <button class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors view-btn">
+                        <i class="fas fa-eye"></i>
+                      </button>
+                      <button class="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition-colors accept-btn">
+                        <i class="fas fa-check"></i>
+                      </button>
+                      <button class="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors cancel-btn">
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="text-center py-12">
+            <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <i class="fas fa-hourglass text-gray-400 text-3xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-doctor-dark-blue mb-2">No pending appointments</h3>
+            <p class="text-doctor-dark-gray">All caught up! No appointments awaiting your response.</p>
+          </div>
+        {% endif %}
+      </div>
 
-        </div>
+      <!-- Waiting List Tab -->
+      <div class="tab-content hidden" id="waiting">
+        {% if waiting_list_appointments %}
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead>
+                <tr class="border-b border-gray-200">
+                  <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Patient</th>
+                  <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Time</th>
+                  <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Amount</th>
+                  <th class="text-center py-4 px-4 font-semibold text-doctor-dark-blue">Symptoms</th>
+                  <th class="text-center py-4 px-4 font-semibold text-doctor-dark-blue">Status</th>
+                  <th class="text-right py-4 px-4 font-semibold text-doctor-dark-blue">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-100">
+                {% for appointment in waiting_list_appointments %}
+                <tr class="appointment-row hover:bg-gray-50 transition-colors" data-id="{{ appointment.id }}">
+                  <td class="py-4 px-4">
+                    <div class="flex items-center space-x-3">
+                      <div class="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center">
+                        <span class="text-white font-semibold text-sm">{{ appointment.patient.first_name|slice:":1" }}</span>
+                      </div>
+                      <div>
+                        <p class="font-medium text-doctor-dark-blue">{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</p>
+                        <p class="text-sm text-doctor-dark-gray">{{ appointment.patient.email }}</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="py-4 px-4">
+                    <div>
+                      <p class="font-medium text-doctor-dark-blue">{{ appointment.slot.start_time|date:"M d, Y" }}</p>
+                      <p class="text-sm text-doctor-blue">{{ appointment.slot.start_time|time:"h:i A" }}</p>
+                    </div>
+                  </td>
+                  <td class="py-4 px-4">
+                    <span class="px-3 py-1 bg-gray-100 text-doctor-dark-blue rounded-full text-sm font-medium">
+                      ${{ appointment.practitioner.price|floatformat:0 }}
+                    </span>
+                  </td>
+                  <td class="py-4 px-4 text-center">
+                    <button class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors" onclick="openSymptomModal('{{ appointment.id }}', '{{ appointment.patient.first_name }}', '{{ appointment.symptom_details|default:"No symptoms submitted" }}')">
+                      <i class="fas fa-clipboard-list"></i>
+                    </button>
+                  </td>
+                  <td class="py-4 px-4 text-center">
+                    <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">Waiting</span>
+                  </td>
+                  <td class="py-4 px-4 text-right">
+                    <div class="flex items-center justify-end space-x-2">
+                      <button class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors view-btn">
+                        <i class="fas fa-eye"></i>
+                      </button>
+                      <button class="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition-colors accept-btn">
+                        <i class="fas fa-check"></i>
+                      </button>
+                      <button class="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors cancel-btn">
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="text-center py-12">
+            <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <i class="fas fa-clock text-gray-400 text-3xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-doctor-dark-blue mb-2">No appointments in waiting list</h3>
+            <p class="text-doctor-dark-gray">Your waiting list is empty.</p>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Accepted Appointments Tab -->
+      <div class="tab-content hidden" id="accepted">
+        {% if accepted_appointments %}
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead>
+                <tr class="border-b border-gray-200">
+                  <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Patient</th>
+                  <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Time</th>
+                  <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Amount</th>
+                  <th class="text-center py-4 px-4 font-semibold text-doctor-dark-blue">Symptoms</th>
+                  <th class="text-center py-4 px-4 font-semibold text-doctor-dark-blue">Status</th>
+                  <th class="text-right py-4 px-4 font-semibold text-doctor-dark-blue">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-100">
+                {% for appointment in accepted_appointments %}
+                <tr class="appointment-row hover:bg-gray-50 transition-colors" data-id="{{ appointment.id }}">
+                  <td class="py-4 px-4">
+                    <div class="flex items-center space-x-3">
+                      <div class="w-10 h-10 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center">
+                        <span class="text-white font-semibold text-sm">{{ appointment.patient.first_name|slice:":1" }}</span>
+                      </div>
+                      <div>
+                        <p class="font-medium text-doctor-dark-blue">{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</p>
+                        <p class="text-sm text-doctor-dark-gray">{{ appointment.patient.email }}</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="py-4 px-4">
+                    <div>
+                      <p class="font-medium text-doctor-dark-blue">{{ appointment.slot.start_time|date:"M d, Y" }}</p>
+                      <p class="text-sm text-doctor-blue">{{ appointment.slot.start_time|time:"h:i A" }}</p>
+                    </div>
+                  </td>
+                  <td class="py-4 px-4">
+                    <span class="px-3 py-1 bg-gray-100 text-doctor-dark-blue rounded-full text-sm font-medium">
+                      ${{ appointment.practitioner.price|floatformat:0 }}
+                    </span>
+                  </td>
+                  <td class="py-4 px-4 text-center">
+                    <button class="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition-colors" onclick="openSymptomModal('{{ appointment.id }}', '{{ appointment.patient.first_name }}', '{{ appointment.symptom_details|default:"No symptoms submitted" }}')">
+                      <i class="fas fa-clipboard-list"></i>
+                    </button>
+                  </td>
+                  <td class="py-4 px-4 text-center">
+                    <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">Accepted</span>
+                  </td>
+                  <td class="py-4 px-4 text-right">
+                    <div class="flex items-center justify-end space-x-2">
+                      <button class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors view-btn">
+                        <i class="fas fa-eye"></i>
+                      </button>
+                      <button class="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors cancel-btn">
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="text-center py-12">
+            <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <i class="fas fa-check-circle text-gray-400 text-3xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-doctor-dark-blue mb-2">No accepted appointments</h3>
+            <p class="text-doctor-dark-gray">No appointments have been accepted yet.</p>
+          </div>
+        {% endif %}
       </div>
     </div>
   </div>
-
-  <!-- Enhanced Patient Details Modal -->
-  <div class="modal fade" id="patientModal" tabindex="-1" aria-labelledby="patientModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-      <div class="modal-content border-0 shadow-lg">
-        <div class="modal-header border-0 pb-0">
-          <h5 class="modal-title fw-bold text-primary" id="patientModalLabel">
-            <i class="bi bi-person-circle me-2"></i>Patient Information
-          </h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body p-4">
-          <div class="row">
-            <div class="col-md-4 text-center">
-              <div class="patient-photo-container mb-3">
-                <img id="patientPhoto" src="" alt="Profile Photo" class="img-fluid rounded-circle shadow-sm" style="max-width: 150px; max-height: 150px; object-fit: cover;"/>
-              </div>
-            </div>
-            <div class="col-md-8">
-              <div class="patient-details">
-                <div class="row g-3">
-                  <div class="col-12">
-                    <div class="info-item">
-                      <label class="fw-semibold text-muted small">GREETING</label>
-                      <p class="mb-0" id="patientGreeting"></p>
-                    </div>
-                  </div>
-                  <div class="col-6">
-                    <div class="info-item">
-                      <label class="fw-semibold text-muted small">FULL NAME</label>
-                      <p class="mb-0 fw-medium" id="patientName"></p>
-                    </div>
-                  </div>
-                  <div class="col-6">
-                    <div class="info-item">
-                      <label class="fw-semibold text-muted small">GENDER</label>
-                      <p class="mb-0" id="patientGender"></p>
-                    </div>
-                  </div>
-                  <div class="col-6">
-                    <div class="info-item">
-                      <label class="fw-semibold text-muted small">PHONE</label>
-                      <p class="mb-0" id="patientPhone"></p>
-                    </div>
-                  </div>
-                  <div class="col-6">
-                    <div class="info-item">
-                      <label class="fw-semibold text-muted small">DATE OF BIRTH</label>
-                      <p class="mb-0" id="patientDob"></p>
-                    </div>
-                  </div>
-                  <div class="col-12">
-                    <div class="info-item">
-                      <label class="fw-semibold text-muted small">EMAIL</label>
-                      <p class="mb-0" id="patientEmail"></p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer border-0 pt-0">
-          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-            <i class="bi bi-x-circle me-1"></i>Close
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-
 </div>
 
-<!-- Custom Styles -->
-<style>
-  .avatar-circle {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-  }
+<!-- Patient Details Modal -->
+<div id="patientModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+    <div class="p-6 border-b border-gray-200">
+      <div class="flex items-center justify-between">
+        <h2 class="text-2xl font-bold text-doctor-dark-blue">
+          <i class="fas fa-user-circle mr-3 text-doctor-blue"></i>Patient Information
+        </h2>
+        <button onclick="closePatientModal()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+          <i class="fas fa-times text-gray-500"></i>
+        </button>
+      </div>
+    </div>
+    <div class="p-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="text-center">
+          <div class="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden bg-gray-100">
+            <img id="patientPhoto" src="" alt="Profile Photo" class="w-full h-full object-cover"/>
+          </div>
+        </div>
+        <div class="md:col-span-2 space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-gray-50 p-4 rounded-xl border-l-4 border-doctor-blue">
+              <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Full Name</label>
+              <p id="patientName" class="font-medium text-doctor-dark-blue mt-1"></p>
+            </div>
+            <div class="bg-gray-50 p-4 rounded-xl border-l-4 border-doctor-green">
+              <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Gender</label>
+              <p id="patientGender" class="font-medium text-doctor-dark-blue mt-1"></p>
+            </div>
+            <div class="bg-gray-50 p-4 rounded-xl border-l-4 border-doctor-purple">
+              <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Phone</label>
+              <p id="patientPhone" class="font-medium text-doctor-dark-blue mt-1"></p>
+            </div>
+            <div class="bg-gray-50 p-4 rounded-xl border-l-4 border-doctor-orange">
+              <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Date of Birth</label>
+              <p id="patientDob" class="font-medium text-doctor-dark-blue mt-1"></p>
+            </div>
+            <div class="md:col-span-2 bg-gray-50 p-4 rounded-xl border-l-4 border-doctor-teal">
+              <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Email</label>
+              <p id="patientEmail" class="font-medium text-doctor-dark-blue mt-1"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="p-6 border-t border-gray-200 flex justify-end">
+      <button onclick="closePatientModal()" class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+        <i class="fas fa-times mr-2"></i>Close
+      </button>
+    </div>
+  </div>
+</div>
 
-  .appointment-row {
-    transition: all 0.2s ease;
-  }
-
-  .appointment-row:hover {
-    background-color: #f8f9fa;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-  }
-
-  .nav-tabs .nav-link.active {
-    background-color: #fff;
-    border-bottom: 3px solid #0d6efd;
-    color: #0d6efd;
-  }
-
-  .nav-tabs .nav-link:hover {
-    border-color: transparent;
-    color: #0d6efd;
-  }
-
-  .info-item {
-    padding: 0.75rem;
-    background-color: #f8f9fa;
-    border-radius: 0.5rem;
-    border-left: 3px solid #0d6efd;
-  }
-
-  .info-item label {
-    font-size: 0.75rem;
-    letter-spacing: 0.5px;
-  }
-
-  .card {
-    transition: all 0.2s ease;
-  }
-
-  .btn-group .btn {
-    border-radius: 0.375rem;
-    margin-right: 0.25rem;
-  }
-
-  .btn-group .btn:last-child {
-    margin-right: 0;
-  }
-
-  .opacity-10 {
-    opacity: 0.1;
-  }
-
-  .bg-success-subtle {
-    background-color: rgba(25, 135, 84, 0.1);
-  }
-
-  .bg-primary-subtle {
-    background-color: rgba(13, 110, 253, 0.1);
-  }
-
-  .bg-warning-subtle {
-    background-color: rgba(255, 193, 7, 0.1);
-  }
-</style>
-
-<!-- Scripts -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Symptom Modal -->
+<div id="symptomModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full">
+    <div class="p-6 border-b border-gray-200">
+      <div class="flex items-center justify-between">
+        <h2 class="text-xl font-bold text-doctor-dark-blue">
+          <i class="fas fa-clipboard-list mr-3 text-doctor-blue"></i>Patient Symptoms
+        </h2>
+        <button onclick="closeSymptomModal()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+          <i class="fas fa-times text-gray-500"></i>
+        </button>
+      </div>
+    </div>
+    <div class="p-6">
+      <div class="bg-blue-50 p-4 rounded-xl border-l-4 border-doctor-blue">
+        <h3 id="symptomPatientName" class="font-semibold text-doctor-dark-blue mb-2"></h3>
+        <p id="symptomDetails" class="text-doctor-dark-gray"></p>
+      </div>
+    </div>
+    <div class="p-6 border-t border-gray-200 flex justify-end">
+      <button onclick="closeSymptomModal()" class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+        Close
+      </button>
+    </div>
+  </div>
+</div>
 
 <script>
+// Tab functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const targetTab = button.getAttribute('data-tab');
+            
+            // Remove active class from all buttons and contents
+            tabButtons.forEach(btn => {
+                btn.classList.remove('active', 'border-doctor-blue', 'text-doctor-blue');
+                btn.classList.add('border-transparent', 'text-gray-500');
+            });
+            tabContents.forEach(content => {
+                content.classList.add('hidden');
+                content.classList.remove('active');
+            });
+            
+            // Add active class to clicked button and corresponding content
+            button.classList.add('active', 'border-doctor-blue', 'text-doctor-blue');
+            button.classList.remove('border-transparent', 'text-gray-500');
+            document.getElementById(targetTab).classList.remove('hidden');
+            document.getElementById(targetTab).classList.add('active');
+        });
+    });
+});
+
+// Modal functions
+function openSymptomModal(appointmentId, patientName, symptoms) {
+    document.getElementById('symptomPatientName').textContent = patientName + "'s Symptoms";
+    document.getElementById('symptomDetails').textContent = symptoms;
+    document.getElementById('symptomModal').classList.remove('hidden');
+}
+
+function closeSymptomModal() {
+    document.getElementById('symptomModal').classList.add('hidden');
+}
+
+function closePatientModal() {
+    document.getElementById('patientModal').classList.add('hidden');
+}
+
+// Appointment actions
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle Accept and Cancel buttons
+    document.querySelectorAll('.accept-btn, .cancel-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const appointmentRow = this.closest('tr');
+            const appointmentId = appointmentRow.getAttribute('data-id');
+            const status = this.classList.contains('accept-btn') ? 'Accepted' : 'Cancelled';
+            
+            const url = status === 'Accepted' 
+                ? `/practitioner-dashboard/appointments/${appointmentId}/Accepted/`
+                : `/practitioner-dashboard/appointments/${appointmentId}/Cancelled/`;
+            
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    alert(`Successfully ${status} the appointment`);
+                    location.reload();
+                })
+                .catch(error => {
+                    alert('Something went wrong. Please try again.');
+                });
+        });
+    });
+
+    // Handle View button
+    document.querySelectorAll('.view-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const appointmentRow = this.closest('tr');
+            const appointmentId = appointmentRow.getAttribute('data-id');
+            
+            fetch(`/practitioner-dashboard/patient/${appointmentId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    const patient = data.patient;
+                    
+                    document.getElementById('patientName').textContent = `${patient.first_name} ${patient.last_name}`;
+                    document.getElementById('patientGender').textContent = patient.gender;
+                    document.getElementById('patientPhone').textContent = patient.mobile_phone;
+                    document.getElementById('patientDob').textContent = patient.date_of_birth;
+                    document.getElementById('patientEmail').textContent = patient.email;
+                    
+                    if (patient.profile_photo) {
+                        document.getElementById('patientPhoto').src = patient.profile_photo;
+                    }
+                    
+                    document.getElementById('patientModal').classList.remove('hidden');
+                })
+                .catch(error => {
+                    alert('Failed to load patient details.');
+                });
+        });
+    });
+});
+
+// Profile validation
 document.addEventListener("DOMContentLoaded", function () {
-    // Get practitioner details from Django template as JSON-safe strings
     var practitionerPhoto = "{{ practitioner.photo.url|default:''|escapejs }}".trim();
     var practitionerPrice = "{{ practitioner.price|default:''|escapejs }}".trim();
     var practitionerDescription = "{{ practitioner.description|default:''|escapejs }}".trim();
 
-    // Ensure values are valid and not empty or None
     if (!practitionerPhoto || practitionerPhoto === "None" || practitionerPhoto === "" || 
         !practitionerPrice || practitionerPrice === "None" || practitionerPrice === "" || 
         !practitionerDescription || practitionerDescription === "None" || practitionerDescription === "") {
         alert("Please complete your profile. Some required details are missing.");
     }
 });
-
-$(document).ready(function () {
-    // Handle Accept and Cancel buttons
-    $(".accept-btn, .cancel-btn").on("click", function () {
-        var appointmentRow = $(this).closest("tr");
-        var appointmentId = appointmentRow.data("id");
-        var status = $(this).hasClass("accept-btn") ? "Accepted" : "Cancelled";
-
-        // Determine the correct URL based on the status
-        var url = status === "Accepted" 
-            ? `/practitioner-dashboard/appointments/${appointmentId}/Accepted/`
-            : `/practitioner-dashboard/appointments/${appointmentId}/Cancelled/`;
-
-        // Make the AJAX request to update the appointment status
-        $.ajax({
-            url: url,
-            type: "GET",
-            success: function (response) {
-                if (status === "Cancelled") {
-                    alert("Successfully Cancelled the appointment");
-                    location.reload(); // Reload the page to reflect changes
-                } else if (status === "Accepted") {
-                    alert("Successfully Accepted the appointment");
-                    location.reload();
-                }
-            },
-            error: function (xhr, status, error) {
-                alert("Something went wrong. Please try again.");
-            },
-        });
-    });
-
-    // Handle View button to show patient details
-    $(".view-btn").on("click", function () {
-        var appointmentRow = $(this).closest("tr");
-        var appointmentId = appointmentRow.data("id"); // Get the appointment ID
-
-        // Make an AJAX request to fetch the patient data
-        $.ajax({
-            url: `/practitioner-dashboard/patient/${appointmentId}/`, // Your URL to get patient details
-            type: "GET",
-            success: function (response) {
-                var patient = response.patient;
-
-                // Update the modal with patient details
-                $("#patientGreeting").text(patient.greeting);
-                $("#patientName").text(patient.first_name + " " + patient.last_name);
-                $("#patientGender").text(patient.gender);
-                $("#patientPhone").text(patient.mobile_phone);
-                $("#patientDob").text(patient.date_of_birth);
-                $("#patientEmail").text(patient.email);
-                
-                if (patient.profile_photo) {
-                    $("#patientPhoto").attr("src", patient.profile_photo);
-                } else {
-                    $("#patientPhoto").attr("src", "/path/to/default/photo"); // Set a default photo if not present
-                }
-
-                // Show the modal with patient details
-                $("#patientModal").modal("show");
-            },
-            error: function (xhr, status, error) {
-                alert("Failed to load patient details.");
-            },
-        });
-    });
-
-    // Add smooth scrolling to tabs
-    $('.nav-link[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
-        $(e.target.getAttribute('href')).find('.table-responsive').animate({
-            scrollTop: 0
-        }, 300);
-    });
-});
 </script>
 
 {% if error %}
 <script type="text/javascript">
-    // Display JavaScript alert with the error message
     alert("{{ error }}");
-
-    // Redirect to the profile completion page after the alert is closed
     window.location.href = "/practitioner-dashboard{{ redirect_url }}";
 </script>
 {% endif %}

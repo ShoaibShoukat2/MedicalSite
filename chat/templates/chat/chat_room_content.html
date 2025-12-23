@@ -497,63 +497,141 @@
             const messageInput = document.getElementById('chat-message-input');
             const messagesContainer = document.getElementById('messages-container');
             const roomId = '{{ chat_room.id }}';
-            let chatSocket = null;
+            // HTTP-based chat system (fallback for WebSocket issues)
+            let isConnected = false;
+            let messagePollingInterval = null;
 
-            function connectWebSocket() {
-                if (chatSocket) {
-                    chatSocket.close();
+            function initializeChat() {
+                isConnected = true;
+                if (chatForm) {
+                    chatForm.removeAttribute('disabled');
                 }
-
-                const wsScheme = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-                const websocketUrl = `${wsScheme}${window.location.host}/ws/chat/${roomId}/`;
                 
-                chatSocket = new WebSocket(websocketUrl);
-
-                chatSocket.onopen = function(e) {
-                    if (chatForm) {
-                        chatForm.removeAttribute('disabled');
-                    }
-                };
-
-                chatSocket.onerror = function(error) {
-                    console.error('WebSocket Error:', error);
-                };
-
-                chatSocket.onclose = function(e) {
-                    console.log('WebSocket connection closed');
-                    setTimeout(connectWebSocket, 5000);
-                };
-
-                chatSocket.onmessage = function(e) {
-                    try {
-                        const data = JSON.parse(e.data);
-                        
-                        const messageDiv = document.createElement('div');
-                        messageDiv.className = `message ${data.sender_id == '{{ user_id }}' ? 'sent' : 'received'}`;
-                        messageDiv.style.animationDelay = '0.1s';
-                        
-                        const currentTime = new Date(data.timestamp).toLocaleString('en-US', { 
-                            hour: 'numeric', 
-                            minute: 'numeric', 
-                            hour12: true 
-                        });
-
-                        messageDiv.innerHTML = `
-                            <div class="message-bubble">${data.message}</div>
-                            <div class="message-time">${currentTime}</div>
-                        `;
-                        
-                        if (messagesContainer) {
-                            messagesContainer.appendChild(messageDiv);
-                            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                        }
-                    } catch (error) {
-                        console.error('Error handling message:', error);
-                    }
-                };
+                // Start polling for new messages every 2 seconds
+                startMessagePolling();
+                console.log('Chat initialized with HTTP fallback');
             }
 
-            connectWebSocket();
+            function startMessagePolling() {
+                if (messagePollingInterval) {
+                    clearInterval(messagePollingInterval);
+                }
+                
+                messagePollingInterval = setInterval(async () => {
+                    try {
+                        const response = await fetch(`/chat/get-messages/${roomId}/`);
+                        if (response.ok) {
+                            const data = await response.json();
+                            if (data.success) {
+                                updateMessages(data.messages);
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Error polling messages:', error);
+                    }
+                }, 2000);
+            }
+
+            function updateMessages(messages) {
+                if (!messagesContainer) return;
+                
+                // Clear existing messages
+                messagesContainer.innerHTML = '';
+                
+                messages.forEach(messageData => {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = `message ${messageData.sender_id == '{{ user_id }}' ? 'sent' : 'received'}`;
+                    messageDiv.style.animationDelay = '0.1s';
+                    
+                    const messageTime = messageData.timestamp || new Date().toLocaleTimeString('en-US', { 
+                        hour: 'numeric', 
+                        minute: 'numeric', 
+                        hour12: true 
+                    });
+
+                    messageDiv.innerHTML = `
+                        <div class="message-bubble">${messageData.content}</div>
+                        <div class="message-time">${messageTime}</div>
+                    `;
+                    
+                    messagesContainer.appendChild(messageDiv);
+                });
+                
+                // Scroll to bottom
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+
+            async function sendMessageHTTP(message) {
+                try {
+                    const response = await fetch('/chat/send-message/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCookie('csrftoken')
+                        },
+                        body: JSON.stringify({
+                            room_id: roomId,
+                            message: message
+                        })
+                    });
+
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        // Message sent successfully, it will appear in next poll
+                        return true;
+                    } else {
+                        console.error('Error sending message:', data.error);
+                        showErrorMessage(data.error || 'Failed to send message');
+                        return false;
+                    }
+                } catch (error) {
+                    console.error('Network error:', error);
+                    showErrorMessage('Network error. Please check your connection.');
+                    return false;
+                }
+            }
+
+            function showErrorMessage(message) {
+                // Create temporary error message
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'message system-message';
+                errorDiv.innerHTML = `
+                    <div class="message-bubble error-message" style="background: #ff4757; color: white;">
+                        <i class="fas fa-exclamation-triangle"></i> ${message}
+                    </div>
+                `;
+                
+                if (messagesContainer) {
+                    messagesContainer.appendChild(errorDiv);
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                    
+                    // Remove error message after 5 seconds
+                    setTimeout(() => {
+                        if (errorDiv.parentNode) {
+                            errorDiv.parentNode.removeChild(errorDiv);
+                        }
+                    }, 5000);
+                }
+            }
+
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+
+            // Initialize chat system
+            initializeChat();
 
             function scrollToBottom() {
                 messagesContainer.scrollTo({
@@ -563,27 +641,40 @@
             }
 
             if (chatForm) {
-                chatForm.addEventListener('submit', function(e) {
+                chatForm.addEventListener('submit', async function(e) {
                     e.preventDefault();
-                    if (!messageInput || !chatSocket) return;
+                    if (!messageInput || !isConnected) return;
 
                     const message = messageInput.value.trim();
                     
-                    if (message && chatSocket.readyState === WebSocket.OPEN) {
+                    if (message) {
                         const sendButton = chatForm.querySelector('.send-button');
-                        sendButton.style.transform = 'scale(0.9) rotate(20deg)';
+                        const originalHTML = sendButton.innerHTML;
                         
-                        setTimeout(() => {
-                            sendButton.style.transform = 'scale(1) rotate(0deg)';
-                        }, 200);
-
-                        chatSocket.send(JSON.stringify({
-                            'message': message,
-                            'room_id': roomId,
-                            'user_id': '{{ user_id }}'
-                        }));
+                        // Disable button and show loading
+                        sendButton.disabled = true;
+                        sendButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                        sendButton.style.transform = 'scale(0.9)';
                         
+                        // Clear input immediately for better UX
                         messageInput.value = '';
+                        
+                        // Send message via HTTP
+                        const success = await sendMessageHTTP(message);
+                        
+                        // Re-enable button
+                        sendButton.disabled = false;
+                        sendButton.innerHTML = originalHTML;
+                        sendButton.style.transform = 'scale(1)';
+                        
+                        if (success) {
+                            // Add visual feedback
+                            sendButton.style.transform = 'scale(1.1)';
+                            setTimeout(() => {
+                                sendButton.style.transform = 'scale(1)';
+                            }, 200);
+                        }
+                        
                         messageInput.focus();
                     }
                 });

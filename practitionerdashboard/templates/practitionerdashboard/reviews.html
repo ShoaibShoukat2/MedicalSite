@@ -1,133 +1,230 @@
 {% extends "practitionerdashboard/base.html" %}
-
 {% load static %}
 {% load user_info_tags %}
 
-
 {% block content %}
-<div class="container mt-4">
-
-
-  {% if reviews %}
-    {% for review in reviews %}
-
-    <div class="card mb-3">
-      <div class="card-body">
-        <div class="d-flex justify-content-between align-items-center">
-          <div class="d-flex align-items-center">
-            <img
-              src="{% static 'assets/img/patient-thumb-01.jpg' %}"
-              class="rounded-circle me-3"
-              alt="Reviewer Image"
-              width="50"
-              height="50"
-            />
+<div class="space-y-6">
+    <!-- Header Section -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+        <div class="flex items-center justify-between">
             <div>
-              <h6 class="mb-0">{{ review.patient.first_name }} {{ review.patient.last_name }}</h6>
-              <small class="text-muted">Reviewed {{ review.created_at|timesince }} ago</small>
+                <h1 class="text-3xl font-bold text-doctor-dark-blue mb-2" data-translate="Reviews">Patient Reviews</h1>
+                <p class="text-doctor-dark-gray">View and respond to patient feedback</p>
             </div>
-          </div>
-
-          <div class="text-warning">
-            {% for i in review.rating|to %}
-              <i class="fa fa-star"></i>
-            {% endfor %}
-            {% if review.rating < 5 %}
-              <i class="fa fa-star-half-alt"></i>
-            {% endif %}
-          </div>
+            <div class="hidden md:flex items-center space-x-4">
+                <div class="text-right">
+                    <p class="text-sm text-doctor-dark-gray">Total Reviews</p>
+                    <p class="text-2xl font-bold text-doctor-blue">{{ reviews|length }}</p>
+                </div>
+                <div class="w-12 h-12 bg-gradient-to-br from-doctor-blue to-doctor-purple rounded-xl flex items-center justify-center">
+                    <i class="fas fa-star text-white text-lg"></i>
+                </div>
+            </div>
         </div>
-
-        <p class="mt-3">{{ review.feedback }}</p>
-
-
-
-        <!-- Display replies -->
-        {% if review.replies.all %}
-          <div class="mt-3">
-            <h6>Replies:</h6>
-            {% for reply in review.replies.all %}
-              <div class="alert alert-info">
-                <strong>{{ reply.review.patient.first_name }}:</strong> {{ reply.message }}<br>
-                <small class="text-muted">{{ reply.created_at|timesince }} ago</small>
-              </div>
-            {% endfor %}
-          </div>
-        {% endif %}
-
-
-        <!-- Reply form -->
-        <div class="mt-3" id="reply-form-{{ review.id }}" style="display: none;">
-          <textarea class="form-control" id="reply-message-{{ review.id }}" placeholder="Write a reply..." required></textarea>
-          <button class="btn btn-primary mt-2" onclick="submitReply({{ review.id }})">Reply</button>
-        </div>
-
-
-        <a href="javascript:void(0);" class="text-primary" onclick="toggleReplyForm({{ review.id }})"><i class="fa fa-reply"></i> Reply</a>
-        <div class="mt-3">
-          <span class="text-muted">Recommend?</span>
-          <button class="btn btn-sm btn-outline-success ms-2">YES</button>
-          <button class="btn btn-sm btn-outline-danger">NO</button>
-        </div>
-
-      </div>
     </div>
-    {% endfor %}
-  {% else %}
-    <div class="alert alert-info">
 
-      Review Not Found
-    </div>
-  {% endif %}
+    <!-- Reviews Section -->
+    {% if reviews %}
+        <div class="space-y-6">
+            {% for review in reviews %}
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden doctor-card hover:shadow-lg transition-all duration-300">
+                <!-- Review Header -->
+                <div class="p-6 border-b border-gray-100">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-doctor-blue/20">
+                                <img src="{% static 'assets/img/patient-thumb-01.jpg' %}" 
+                                     alt="{{ review.patient.first_name }}" 
+                                     class="w-full h-full object-cover">
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-doctor-dark-blue">
+                                    {{ review.patient.first_name }} {{ review.patient.last_name }}
+                                </h3>
+                                <p class="text-sm text-doctor-dark-gray">
+                                    Reviewed {{ review.created_at|timesince }} ago
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <!-- Star Rating -->
+                        <div class="flex items-center space-x-1">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= review.rating %}
+                                    <i class="fas fa-star text-yellow-400 text-lg"></i>
+                                {% else %}
+                                    <i class="far fa-star text-gray-300 text-lg"></i>
+                                {% endif %}
+                            {% endfor %}
+                            <span class="ml-2 text-sm font-medium text-doctor-dark-blue">{{ review.rating }}/5</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review Content -->
+                <div class="p-6">
+                    <div class="bg-blue-50 p-4 rounded-xl border-l-4 border-doctor-blue mb-4">
+                        <p class="text-doctor-dark-gray leading-relaxed">{{ review.feedback }}</p>
+                    </div>
+
+                    <!-- Replies Section -->
+                    {% if review.replies.all %}
+                        <div class="space-y-3 mb-4">
+                            <h4 class="font-semibold text-doctor-dark-blue flex items-center">
+                                <i class="fas fa-reply text-doctor-blue mr-2"></i>
+                                Replies
+                            </h4>
+                            {% for reply in review.replies.all %}
+                                <div class="bg-green-50 p-4 rounded-xl border-l-4 border-doctor-green ml-4">
+                                    <div class="flex items-start space-x-3">
+                                        <div class="w-8 h-8 bg-doctor-green rounded-full flex items-center justify-center">
+                                            <i class="fas fa-user-md text-white text-xs"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <p class="text-doctor-dark-gray">{{ reply.message }}</p>
+                                            <p class="text-xs text-doctor-dark-gray mt-2">
+                                                <strong>Dr. {{ reply.review.patient.first_name }}</strong> • {{ reply.created_at|timesince }} ago
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <!-- Reply Form -->
+                    <div id="reply-form-{{ review.id }}" class="hidden mt-4 p-4 bg-gray-50 rounded-xl">
+                        <div class="space-y-4">
+                            <textarea id="reply-message-{{ review.id }}" 
+                                      rows="3" 
+                                      class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-doctor-blue focus:border-doctor-blue transition-colors resize-none" 
+                                      placeholder="Write a professional response to this review..."></textarea>
+                            <div class="flex justify-end space-x-3">
+                                <button onclick="toggleReplyForm({{ review.id }})" 
+                                        class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+                                    Cancel
+                                </button>
+                                <button onclick="submitReply({{ review.id }})" 
+                                        class="px-4 py-2 bg-gradient-to-r from-doctor-blue to-doctor-dark-blue text-white rounded-lg hover:shadow-lg transition-all duration-300">
+                                    <i class="fas fa-paper-plane mr-2"></i>Send Reply
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                        <button onclick="toggleReplyForm({{ review.id }})" 
+                                class="flex items-center space-x-2 px-4 py-2 bg-blue-100 text-doctor-blue rounded-lg hover:bg-blue-200 transition-colors">
+                            <i class="fas fa-reply"></i>
+                            <span>Reply</span>
+                        </button>
+                        
+                        <div class="flex items-center space-x-3">
+                            <span class="text-sm text-doctor-dark-gray">Would you recommend this doctor?</span>
+                            <div class="flex space-x-2">
+                                <button class="px-3 py-1 bg-green-100 text-green-700 rounded-lg text-sm font-medium hover:bg-green-200 transition-colors">
+                                    <i class="fas fa-thumbs-up mr-1"></i>YES
+                                </button>
+                                <button class="px-3 py-1 bg-red-100 text-red-700 rounded-lg text-sm font-medium hover:bg-red-200 transition-colors">
+                                    <i class="fas fa-thumbs-down mr-1"></i>NO
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <!-- Empty State -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center">
+            <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-star text-gray-400 text-4xl"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-doctor-dark-blue mb-4">No Reviews Yet</h3>
+            <p class="text-doctor-dark-gray mb-6">You haven't received any patient reviews yet. Keep providing excellent care!</p>
+            <div class="flex items-center justify-center space-x-4 text-sm text-doctor-dark-gray">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-lightbulb text-doctor-blue"></i>
+                    <span>Encourage patients to leave reviews after appointments</span>
+                </div>
+            </div>
+        </div>
+    {% endif %}
 </div>
 
-
+<!-- Success/Error Messages -->
+<div id="messageContainer" class="fixed top-4 right-4 z-50 space-y-2"></div>
 
 <script>
-
-
 function toggleReplyForm(reviewId) {
-    var form = document.getElementById("reply-form-" + reviewId);
+    const form = document.getElementById("reply-form-" + reviewId);
     if (form) {
-        form.style.display = (form.style.display === "none" || form.style.display === "") ? "block" : "none";
+        if (form.classList.contains('hidden')) {
+            form.classList.remove('hidden');
+            // Focus on textarea
+            const textarea = document.getElementById("reply-message-" + reviewId);
+            if (textarea) {
+                textarea.focus();
+            }
+        } else {
+            form.classList.add('hidden');
+            // Clear textarea
+            const textarea = document.getElementById("reply-message-" + reviewId);
+            if (textarea) {
+                textarea.value = '';
+            }
+        }
     } else {
-        alert("Error: Reply form not found.");
+        showMessage('error', 'Reply form not found.');
     }
 }
 
-
-
 function submitReply(reviewId) {
-    var messageInput = document.getElementById("reply-message-" + reviewId);
+    const messageInput = document.getElementById("reply-message-" + reviewId);
 
     if (!messageInput) {
-        alert("Error: Reply input field not found.");
+        showMessage('error', 'Reply input field not found.');
         return;
     }
 
-    var message = messageInput.value.trim();
+    const message = messageInput.value.trim();
     if (!message) {
-        alert("Please enter a message.");
+        showMessage('error', 'Please enter a message.');
         return;
     }
 
-    var csrfToken = getCSRFToken();
+    const csrfToken = getCSRFToken();
     if (!csrfToken) {
-        alert("CSRF token not found. Please refresh the page and try again.");
+        showMessage('error', 'CSRF token not found. Please refresh the page and try again.');
         return;
     }
 
-    var xhr = new XMLHttpRequest();
+    // Show loading state
+    const submitButton = event.target;
+    const originalText = submitButton.innerHTML;
+    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Sending...';
+    submitButton.disabled = true;
+
+    const xhr = new XMLHttpRequest();
     xhr.open("POST", window.location.href, true);
     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xhr.setRequestHeader("X-CSRFToken", csrfToken);
 
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4) {
+            // Reset button
+            submitButton.innerHTML = originalText;
+            submitButton.disabled = false;
+            
             if (xhr.status === 200) {
-                location.reload();
+                showMessage('success', 'Reply sent successfully!');
+                setTimeout(() => {
+                    location.reload();
+                }, 1000);
             } else {
-                alert("Failed to submit reply. Server Error: " + xhr.responseText);
+                showMessage('error', 'Failed to submit reply. Please try again.');
             }
         }
     };
@@ -136,16 +233,15 @@ function submitReply(reviewId) {
     xhr.send("review_id=" + reviewId + "&message=" + encodeURIComponent(message));
 }
 
-// Function to retrieve CSRF token from cookies
 function getCSRFToken() {
-    var csrfTokenElement = document.querySelector("[name=csrfmiddlewaretoken]");
+    const csrfTokenElement = document.querySelector("[name=csrfmiddlewaretoken]");
     if (csrfTokenElement) {
         return csrfTokenElement.value;
     }
     
-    var cookies = document.cookie.split("; ");
-    for (var i = 0; i < cookies.length; i++) {
-        var parts = cookies[i].split("=");
+    const cookies = document.cookie.split("; ");
+    for (let i = 0; i < cookies.length; i++) {
+        const parts = cookies[i].split("=");
         if (parts[0] === "csrftoken") {
             return parts[1];
         }
@@ -154,10 +250,51 @@ function getCSRFToken() {
     return "";
 }
 
+function showMessage(type, message) {
+    const container = document.getElementById('messageContainer');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `p-4 rounded-xl shadow-lg max-w-sm animate-fade-in ${
+        type === 'success' ? 'bg-green-50 border border-green-200 text-green-800' : 'bg-red-50 border border-red-200 text-red-800'
+    }`;
+    messageDiv.innerHTML = `
+        <div class="flex items-center">
+            <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} mr-3"></i>
+            <span>${message}</span>
+            <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    `;
+    container.appendChild(messageDiv);
+    
+    setTimeout(() => {
+        if (messageDiv.parentElement) {
+            messageDiv.remove();
+        }
+    }, 5000);
+}
 
-
-
+// Add CSRF token to page if not present
+document.addEventListener('DOMContentLoaded', function() {
+    if (!document.querySelector("[name=csrfmiddlewaretoken]")) {
+        const csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = 'csrfmiddlewaretoken';
+        csrfInput.value = getCSRFToken();
+        document.body.appendChild(csrfInput);
+    }
+});
 </script>
 
-{% endblock %}
+<style>
+@keyframes fade-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
+.animate-fade-in {
+    animation: fade-in 0.3s ease-out;
+}
+</style>
+
+{% endblock %}

@@ -6,15 +6,111 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reeducaive</title>
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/8.1.0/mdb.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'medical-blue': '#0066CC',
+                        'medical-light-blue': '#E6F3FF',
+                        'medical-dark-blue': '#004499',
+                        'medical-green': '#00A86B',
+                        'medical-light-green': '#E8F5E8',
+                        'medical-teal': '#008B8B',
+                        'medical-gray': '#F8FAFC',
+                        'medical-dark-gray': '#64748B',
+                        'medical-red': '#DC2626',
+                        'medical-orange': '#EA580C'
+                    },
+                    fontFamily: {
+                        'medical': ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.6s ease-out',
+                        'fade-in-down': 'fadeInDown 0.6s ease-out',
+                        'slide-in-left': 'slideInLeft 0.6s ease-out',
+                        'slide-in-right': 'slideInRight 0.6s ease-out',
+                        'pulse-slow': 'pulse 3s infinite',
+                        'bounce-slow': 'bounce 2s infinite',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(30px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        fadeInDown: {
+                            '0%': { opacity: '0', transform: 'translateY(-30px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        slideInLeft: {
+                            '0%': { opacity: '0', transform: 'translateX(-30px)' },
+                            '100%': { opacity: '1', transform: 'translateX(0)' }
+                        },
+                        slideInRight: {
+                            '0%': { opacity: '0', transform: 'translateX(30px)' },
+                            '100%': { opacity: '1', transform: 'translateX(0)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        :root {
-            --primary-blue: #2589bd;
+        /* Custom Medical Theme Styles */
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        
+        /* Medical gradient backgrounds */
+        .medical-gradient {
+            background: linear-gradient(135deg, #0066CC 0%, #004499 100%);
+        }
+        
+        .medical-gradient-light {
+            background: linear-gradient(135deg, #E6F3FF 0%, #F8FAFC 100%);
+        }
+        
+        .medical-card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .medical-card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 102, 204, 0.15);
+        }
+        
+        /* Medical pulse animation */
+        .medical-pulse {
+            animation: medical-pulse 2s infinite;
+        }
+        
+        @keyframes medical-pulse {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(0, 102, 204, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 0 20px rgba(0, 102, 204, 0);
+            }
+        }
+        
+        /* Medical icon animations */
+        .medical-icon-bounce {
+            animation: medical-bounce 2s infinite;
+        }
+        
+        @keyframes medical-bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
         }
         
         /* Main wrapper for video background */
@@ -23,13 +119,13 @@
             overflow: hidden;
         }
 
-        /* Single video background */
+        /* Enhanced video background */
         .main-video-background {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            height: 90vh;
+            height: 100vh;
             z-index: -2;
         }
 
@@ -39,7 +135,7 @@
             object-fit: cover;
         }
 
-        /* Overlay for entire section */
+        /* Professional overlay */
         .main-video-background::after {
             content: '';
             position: absolute;
@@ -47,18 +143,25 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(19, 59, 81, 0.8);
+            background: linear-gradient(135deg, rgba(0, 123, 255, 0.8) 0%, rgba(0, 86, 179, 0.9) 100%);
             z-index: 1;
         }
         
-        /* Updated navbar and logo styles */
-        /* Updated navbar and logo styles */
+        /* Professional Navbar Styles */
         .navbar-custom {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
             position: relative;
-            padding: 0;  /* Remove padding completely */
-            height: 80px;  /* Fixed height for navbar */
-            display: flex;
-            align-items: center;
+            z-index: 1050;
+        }
+        
+        .navbar-custom.scrolled {
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.15);
         }
         
         .navbar-brand {
@@ -66,49 +169,79 @@
             z-index: 2;
             padding: 0;
             margin: 0;
-            line-height: 0;  /* Remove line height spacing */
         }
         
         .navbar-brand img {
-            height: 150px;  /* Your desired logo height */
+            height: 50px;
             width: auto;
             object-fit: contain;
-            position: absolute;  /* Take logo out of normal flow */
-            top: 50%;  /* Center vertically */
-            transform: translateY(-50%);  /* Adjust for perfect centering */
+            transition: all 0.3s ease;
         }
         
-        /* Ensure other navbar elements stay aligned */
-        .navbar-collapse {
-            height: 80px;  /* Match navbar height */
-            display: flex;
-            align-items: center;
+        .navbar-brand:hover img {
+            transform: scale(1.05);
         }
+        
+
       
         .nav-link {
-            color: white !important;
-            margin: 0 10px;
+            color: #333 !important;
+            margin: 0 15px;
             position: relative;
             z-index: 2;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 0 !important;
+        }
+        
+        .nav-link:hover {
+            color: var(--primary-blue) !important;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-blue);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
         }
         
         .btn-appointment {
-            background-color: white;
-            color: var(--primary-blue);
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-dark));
+            color: white;
             border-radius: 25px;
-            padding: 8px 20px;
-            font-weight: 500;
-            margin-left: 10px;
+            padding: 10px 25px;
+            font-weight: 600;
+            margin-left: 15px;
             position: relative;
             z-index: 2;
+            border: none;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
         }
         
+        .btn-appointment:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
+            color: white;
+        }
+        
+        /* Professional Hero Section */
         .hero-section {
             position: relative;
-            padding: 4rem 0;
-            min-height: calc(100vh - 80px);
+            padding: 8rem 0 6rem;
+            min-height: 100vh;
             display: flex;
             align-items: center;
+            background: linear-gradient(135deg, rgba(0, 123, 255, 0.9) 0%, rgba(0, 86, 179, 0.95) 100%);
         }
         
         .hero-content {
@@ -116,225 +249,10 @@
             z-index: 2;
             text-align: center;
             margin: 0 auto;
-            max-width: 800px;
+            max-width: 900px;
+            animation: fadeInUp 1s ease-out;
         }
         
-        .hero-content h1 {
-            font-size: 3.5rem;
-            font-weight: 700;
-            color: white;
-            margin-bottom: 1.5rem;
-        }
-        
-        .hero-content p {
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 1.1rem;
-            margin-bottom: 2rem;
-        }
-        
-        /* New search bar styles */
-        .search-container {
-            position: relative;
-            max-width: 700px;
-            margin: 2rem auto;
-        }
-        
-        .search-input {
-            width: 100%;
-            padding: 1.2rem 1.5rem;
-            border-radius: 50px;
-            border: none;
-            font-size: 1.1rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-        
-        .search-input::placeholder {
-            color: #aaa;
-        }
-        
-        .search-button {
-            position: absolute;
-            right: 8px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: var(--primary-blue);
-            border: none;
-            color: white;
-            padding: 0.8rem 1.5rem;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: 200;
-        }
-        .hero-section::after {
-            content: '';
-            position: absolute;
-            bottom: -50px;
-            left: 0;
-            right: 0;
-            height: 100px;
-            background-color: white;
-            z-index: 1;
-        }
-        
-        @media (max-width: 991px) {
-            .navbar-custom {
-                height: auto;
-                padding: 1rem 0;
-            }
-    
-            .navbar-brand img {
-                height: 100px;  /* Slightly smaller logo on mobile */
-                position: static;
-                transform: none;
-            }
-    
-            .navbar-collapse {
-                background: transparent; /* Set background color to transparent */
-                padding: 0; /* Optional: Adjust padding as needed */
-                border-radius: 0; /* Remove border radius for a seamless look */
-                margin-top: 0; /* Remove top margin */
-            }
-            
-            .navbar-toggler {
-                padding: 0.5rem;
-                border: 2px solid white; /* Retain toggler visibility */
-            }
-        
-            .d-flex {
-                flex-direction: column;
-                gap: 10px;
-                width: 100%;
-                align-items: center;
-            }
-            
-            .btn-appointment {
-                width: 80%;
-                margin: 5px 0;
-                text-align: center;
-            }
-            
-            
-    
-            /* Ensure the mobile menu appears below the logo */
-            .navbar > .container {
-                position: relative;
-            }
-        }
-    
-       
-        @media (max-width: 768px) {
-            
-        
-            .hero-content h1 {
-                font-size: 2.2rem; /* Reduce heading size on smaller screens */
-                margin-bottom: 1rem;
-            }
-        
-            .hero-content p {
-                font-size: 1rem; /* Adjust paragraph font size */
-                margin-bottom: 1.5rem;
-            }
-        
-        
-        
-            .hero-content {
-                padding: 0 1rem;
-                text-align: center;
-            }
-        
-            .search-container {
-                padding: 0 1rem;
-            }
-        
-            .search-input {
-                padding: 0.8rem 1rem;
-                font-size: 1rem;
-            }
-        
-            .search-button {
-                padding: 1rem 0.7rem;
-                font-size: 0.8rem;
-                border-radius: 20px;
-            }
-        }
-
-        /* Footer Styles */
-        .footer {
-            z-index: 1040;
-
-            background-color:rgb(14, 82, 116);
-            color: #fff;
-            padding: 40px 20px;
-            position: relative;
-            width: 100%;
-            margin-top: auto;
-        }
-
-        .footer h5 {
-            color: #fff;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-
-        .footer a {
-            color: #fff;
-            text-decoration: none;
-        }
-
-        .footer a:hover {
-            color: #ddd;
-        }
-
-        .footer .social-icons a {
-            font-size: 20px;
-            margin-right: 10px;
-        }
-
-        .footer .bottom-footer {
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-            padding-top: 20px;
-            margin-top: 20px;
-        }
-        
-        .hover-animate {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .hover-animate:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-        }
-        
-        .card-body i {
-            transition: transform 0.3s ease;
-        }
-        
-        .hover-animate:hover i {
-            transform: scale(1.1);
-        }
-        
-        .card-title {
-            color: #2c3e50;
-        }
-        
-        .card-text {
-            font-size: 0.9rem;
-        }
-        
-        .btn-primary {
-            transition: background-color 0.3s ease, transform 0.3s ease;
-        }
-        
-        .btn-primary:hover {
-            background-color: rgb(14, 82, 116);
-            transform: translateY(-3px);
-        }
-        
-        .text-primary {
-            color: rgb(14, 82, 116) !important;
-        }
-        
-        /* Fade-in animation */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -346,31 +264,521 @@
             }
         }
         
-        /* Responsive design */
-        @media (max-width: 768px) {
-            .card-body {
-                padding: 2rem;
-            }
+        .hero-content h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            color: white;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            line-height: 1.2;
+        }
         
-            .card-title {
-                font-size: 1.2rem;
-            }
+        .hero-content .lead {
+            color: rgba(255, 255, 255, 0.95);
+            font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+            margin-bottom: 3rem;
+            font-weight: 400;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
         
-            .card-text {
-                font-size: 0.85rem;
-            }
+        /* Enhanced Search Container */
+        .search-container {
+            position: relative;
+            max-width: 700px;
+            margin: 0 auto;
+        }
         
-            .btn-lg {
-                font-size: 0.9rem;
-                padding: 0.7rem 1.5rem;
+        .search-container .input-group {
+            background: white;
+            border-radius: 50px;
+            padding: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .search-container .input-group:hover {
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+        }
+        
+        .search-input {
+            border: none;
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            outline: none;
+            flex: 1;
+        }
+        
+        .search-input::placeholder {
+            color: #999;
+        }
+        
+        .search-button {
+            background: linear-gradient(135deg, var(--success-green), #20c997);
+            border: none;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .search-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+        }
+        
+        /* Smooth transition to content */
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: linear-gradient(to bottom, transparent, white);
+            z-index: 1;
+        }
+        
+        /* Professional Responsive Design */
+        @media (max-width: 991px) {
+            .navbar-custom {
+                padding: 0.5rem 0;
+                background: rgba(255, 255, 255, 0.98);
+            }
+    
+            .navbar-brand img {
+                height: 40px;
+            }
+    
+
+        
+            .nav-link {
+                margin: 0.5rem 0;
+                text-align: center;
+            }
+            
+            .btn-appointment {
+                width: 100%;
+                margin: 0.5rem 0;
+                text-align: center;
+            }
+            
+            .d-flex {
+                flex-direction: column;
+                gap: 10px;
+                width: 100%;
+                align-items: center;
             }
         }
-        .content-area {
-            flex: 1;
-            min-width: 0;
-            width:100%;
-            padding: 20px;
-            margin-left: 250px;
+    
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 6rem 0 4rem;
+                min-height: 90vh;
+            }
+        
+            .hero-content {
+                padding: 0 1rem;
+            }
+        
+            .search-container {
+                padding: 0 1rem;
+            }
+            
+            .search-container .input-group {
+                flex-direction: column;
+                padding: 1rem;
+                border-radius: 20px;
+            }
+        
+            .search-input {
+                padding: 1rem;
+                font-size: 1rem;
+                border-radius: 15px;
+                margin-bottom: 1rem;
+            }
+        
+            .search-button {
+                padding: 1rem;
+                border-radius: 15px;
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .hero-section {
+                padding: 4rem 0 3rem;
+            }
+            
+            .navbar-brand img {
+                height: 35px;
+            }
+        }
+
+        /* Professional Footer Styles */
+        .footer {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: #fff;
+            padding: 60px 0 20px;
+            position: relative;
+            width: 100%;
+            margin-top: auto;
+            z-index: 1040;
+        }
+        
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        }
+
+        .footer h5 {
+            color: #fff;
+            font-weight: 600;
+            margin-bottom: 25px;
+            font-size: 1.2rem;
+            position: relative;
+        }
+        
+        .footer h5::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 30px;
+            height: 2px;
+            background: var(--primary-blue);
+        }
+
+        .footer a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+            padding: 0.25rem 0;
+        }
+
+        .footer a:hover {
+            color: #fff;
+            transform: translateX(5px);
+        }
+
+        .footer .social-icons a {
+            font-size: 1.5rem;
+            margin-right: 15px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .footer .social-icons a:hover {
+            background: var(--primary-blue);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
+        }
+
+        .footer .list-unstyled li {
+            margin-bottom: 8px;
+        }
+        
+        .footer .list-unstyled li i {
+            width: 20px;
+            color: var(--primary-blue);
+        }
+        
+        /* Bottom footer with enhanced styling */
+        .footer .row.mt-4 {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 30px;
+            margin-top: 40px;
+        }
+        
+        .footer .row.mt-4 a {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+        
+        .footer .row.mt-4 a:hover {
+            color: var(--primary-blue);
+        }
+        
+        /* Professional Animation and Interaction Styles */
+        .hover-animate {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .hover-animate:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card-body i {
+            transition: all 0.3s ease;
+        }
+        
+        .hover-animate:hover i {
+            transform: scale(1.1) rotate(5deg);
+        }
+        
+        /* Enhanced Button Styles */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-dark));
+            border: none;
+            border-radius: 25px;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4);
+        }
+        
+        .btn-lg {
+            padding: 15px 40px;
+            font-size: 1.1rem;
+        }
+        
+        /* Professional Color Scheme */
+        .text-primary {
+            color: var(--primary-blue) !important;
+        }
+        
+        .bg-primary {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-dark)) !important;
+        }
+        
+        /* Smooth Scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Loading Animation */
+        .loading {
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        
+        /* Staggered Animation */
+        .loading:nth-child(1) { animation-delay: 0.1s; }
+        .loading:nth-child(2) { animation-delay: 0.2s; }
+        .loading:nth-child(3) { animation-delay: 0.3s; }
+        .loading:nth-child(4) { animation-delay: 0.4s; }
+        
+        /* Professional Card Styles */
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card-title {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        
+        .card-text {
+            color: #6c757d;
+            line-height: 1.6;
+        }
+        
+        /* Language Selector Styles */
+        .language-selector {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            padding: 0.5rem 1rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 1000;
+        }
+        
+        .language-selector:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+        
+        .language-dropdown {
+            background: rgba(255, 255, 255, 0.98) !important;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 0, 0, 0.1) !important;
+            border-radius: 15px !important;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3) !important;
+            padding: 0.5rem 0;
+            min-width: 200px;
+            z-index: 9999 !important;
+            position: absolute !important;
+            top: 100% !important;
+            left: 0 !important;
+            margin-top: 0.5rem !important;
+            animation: dropdownFadeIn 0.3s ease-out;
+            transform-origin: top center;
+        }
+        
+        @keyframes dropdownFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        .language-dropdown .dropdown-item {
+            padding: 0.75rem 1.5rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #333 !important;
+            text-decoration: none !important;
+            border: none !important;
+            background: transparent !important;
+        }
+        
+        .language-dropdown .dropdown-item:hover {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-dark)) !important;
+            color: white !important;
+            transform: translateX(5px);
+            border-radius: 8px;
+            margin: 0 0.5rem;
+        }
+        
+        .flag-icon {
+            font-size: 1.2rem;
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* Bootstrap Dropdown Override for Language Selector */
+        .nav-item.dropdown {
+            position: relative;
+        }
+        
+        .nav-item.dropdown .dropdown-menu {
+            position: absolute !important;
+            top: 100% !important;
+            left: 0 !important;
+            z-index: 9999 !important;
+            transform: none !important;
+            margin-top: 0.5rem !important;
+        }
+        
+        .nav-item.dropdown .dropdown-menu.show {
+            display: block !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+        
+        /* RTL Support */
+        [dir="rtl"] {
+            text-align: right;
+        }
+        
+        [dir="rtl"] .navbar-nav {
+            flex-direction: row-reverse;
+        }
+        
+        [dir="rtl"] .language-dropdown .dropdown-item:hover {
+            transform: translateX(-5px);
+        }
+
+        /* Utility Classes */
+        .text-gradient {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .shadow-soft {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08) !important;
+        }
+        
+        .shadow-hover {
+            transition: box-shadow 0.3s ease;
+        }
+        
+        .shadow-hover:hover {
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15) !important;
+        }
+        
+        /* Professional Spacing */
+        .section-padding {
+            padding: 80px 0;
+        }
+        
+        .section-padding-sm {
+            padding: 60px 0;
+        }
+        
+        /* Enhanced Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .section-padding {
+                padding: 60px 0;
+            }
+            
+            .section-padding-sm {
+                padding: 40px 0;
+            }
+            
+            .btn-lg {
+                font-size: 1rem;
+                padding: 12px 30px;
+            }
+            
+            .language-dropdown {
+                right: 0 !important;
+                left: auto !important;
+                min-width: 180px;
+                margin-top: 0.25rem !important;
+            }
+            
+            .language-selector {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.9rem;
+            }
         }
         
     </style>
@@ -388,19 +796,172 @@
         </div>
 
 
-        <!-- Navigation -->
-        <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
-            <div class="container">
-                <a class="navbar-brand" href="#">
-                    <img src="{% static 'MedicalSiteLogo.svg' %}" alt="Clinika">
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+        <!-- Modern Medical Navigation -->
+        <nav class="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-lg border-b border-gray-200 shadow-lg">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-20">
+                    <!-- Logo -->
+                    <div class="flex-shrink-0">
+                        <a href="/" class="flex items-center space-x-2">
+                            <img src="{% static 'MedicalSiteLogo.svg' %}" alt="Medical Platform" class="h-12 w-auto">
+                        </a>
+                    </div>
 
+                    <!-- Desktop Navigation -->
+                    <div class="hidden lg:flex items-center space-x-6">
+                        <!-- Language Selector -->
+                        <div class="relative">
+                            <button class="flex items-center space-x-2 px-4 py-2 rounded-full bg-medical-light-blue text-medical-blue hover:bg-medical-blue hover:text-white transition-all duration-300" id="languageDropdown" onclick="toggleLanguageDropdown()">
+                                <i class="fas fa-globe"></i>
+                                <span id="current-language" class="font-medium">English</span>
+                                <i class="fas fa-chevron-down text-xs"></i>
+                            </button>
+                            <div id="language-dropdown" class="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 hidden z-50">
+                                <a href="#" onclick="changeLanguage('en')" class="flex items-center space-x-3 px-4 py-3 hover:bg-medical-light-blue transition-colors">
+                                    <span class="text-xl">🇺🇸</span>
+                                    <span class="font-medium">English</span>
+                                </a>
+                                <a href="#" onclick="changeLanguage('ur')" class="flex items-center space-x-3 px-4 py-3 hover:bg-medical-light-blue transition-colors">
+                                    <span class="text-xl">🇵🇰</span>
+                                    <span class="font-medium">اردو</span>
+                                </a>
+                                <a href="#" onclick="changeLanguage('ar')" class="flex items-center space-x-3 px-4 py-3 hover:bg-medical-light-blue transition-colors">
+                                    <span class="text-xl">🇸🇦</span>
+                                    <span class="font-medium">العربية</span>
+                                </a>
+                                <a href="#" onclick="changeLanguage('hi')" class="flex items-center space-x-3 px-4 py-3 hover:bg-medical-light-blue transition-colors">
+                                    <span class="text-xl">🇮🇳</span>
+                                    <span class="font-medium">हिन्दी</span>
+                                </a>
+                                <a href="#" onclick="changeLanguage('es')" class="flex items-center space-x-3 px-4 py-3 hover:bg-medical-light-blue transition-colors">
+                                    <span class="text-xl">🇪🇸</span>
+                                    <span class="font-medium">Español</span>
+                                </a>
+                                <a href="#" onclick="changeLanguage('fr')" class="flex items-center space-x-3 px-4 py-3 hover:bg-medical-light-blue transition-colors">
+                                    <span class="text-xl">🇫🇷</span>
+                                    <span class="font-medium">Français</span>
+                                </a>
+                                <a href="#" onclick="changeLanguage('de')" class="flex items-center space-x-3 px-4 py-3 hover:bg-medical-light-blue transition-colors">
+                                    <span class="text-xl">🇩🇪</span>
+                                    <span class="font-medium">Deutsch</span>
+                                </a>
+                                <a href="#" onclick="changeLanguage('zh')" class="flex items-center space-x-3 px-4 py-3 hover:bg-medical-light-blue transition-colors">
+                                    <span class="text-xl">🇨🇳</span>
+                                    <span class="font-medium">中文</span>
+                                </a>
+                            </div>
+                        </div>
 
-                <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                    <ul class="navbar-nav d-flex align-items-center">
+                        {% get_practitioner_name request as practitioner_name %}
+                        {% get_patient_name request as patient_name %}
+                
+                        {% if practitioner_name %}
+                            <div class="flex items-center space-x-4">
+                                <span class="text-medical-dark-gray font-medium">Welcome, {{ practitioner_name }}</span>
+                                <a href="{% url 'practitioner_dashboard:dashboard' %}" class="px-6 py-2 bg-medical-blue text-white rounded-full hover:bg-medical-dark-blue transition-all duration-300 font-medium">
+                                    <i class="fas fa-user-md mr-2"></i>Dashboard
+                                </a>
+                                <a href="{% url 'frontend:logout' %}" class="px-6 py-2 bg-medical-red text-white rounded-full hover:bg-red-700 transition-all duration-300 font-medium" data-translate="Logout">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                                </a>
+                            </div>
+                        {% elif patient_name %}
+                            <div class="flex items-center space-x-4">
+                                <span class="text-medical-dark-gray font-medium">Welcome, {{ patient_name }}</span>
+                                <a href="{% url 'patient_dashboard:appointments_patients' %}" class="px-6 py-2 bg-medical-green text-white rounded-full hover:bg-green-700 transition-all duration-300 font-medium">
+                                    <i class="fas fa-user mr-2"></i>Dashboard
+                                </a>
+                                <a href="{% url 'frontend:logout' %}" class="px-6 py-2 bg-medical-red text-white rounded-full hover:bg-red-700 transition-all duration-300 font-medium" data-translate="Logout">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                                </a>
+                            </div>
+                        {% else %}
+                            <div class="flex items-center space-x-4">
+                                <a href="{% url 'frontend:patient_login' %}" class="px-6 py-2 bg-medical-green text-white rounded-full hover:bg-green-700 transition-all duration-300 font-medium" data-translate="Patient Login">
+                                    <i class="fas fa-user mr-2"></i>Patient Login
+                                </a>
+                                <a href="{% url 'frontend:practitioner_login' %}" class="px-6 py-2 border-2 border-medical-blue text-medical-blue rounded-full hover:bg-medical-blue hover:text-white transition-all duration-300 font-medium" data-translate="Practitioner Login">
+                                    <i class="fas fa-user-md mr-2"></i>Practitioner Login
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Mobile Navigation Controls -->
+                    <div class="lg:hidden flex items-center space-x-4">
+                        <!-- Mobile Language Button -->
+                        <button type="button" class="p-2 rounded-lg text-medical-blue hover:bg-medical-light-blue transition-colors" onclick="toggleLanguageDropdown()">
+                            <i class="fas fa-globe text-lg"></i>
+                        </button>
+                        
+                        <!-- Mobile Menu Button -->
+                        <button type="button" class="p-2 rounded-lg text-medical-blue hover:bg-medical-light-blue transition-colors" onclick="toggleMobileMenu()">
+                            <i class="fas fa-bars text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Mobile Navigation -->
+                <div id="mobile-menu" class="lg:hidden hidden bg-white border-t border-gray-200 shadow-lg">
+                    <div class="px-4 py-6 space-y-4">
+                        {% if practitioner_name %}
+                            <div class="text-center space-y-4">
+                                <p class="text-medical-dark-gray font-medium">Welcome, {{ practitioner_name }}</p>
+                                <a href="{% url 'practitioner_dashboard:dashboard' %}" class="block w-full px-6 py-3 bg-medical-blue text-white rounded-full text-center font-medium">
+                                    <i class="fas fa-user-md mr-2"></i>Dashboard
+                                </a>
+                                <a href="{% url 'frontend:logout' %}" class="block w-full px-6 py-3 bg-medical-red text-white rounded-full text-center font-medium" data-translate="Logout">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                                </a>
+                            </div>
+                        {% elif patient_name %}
+                            <div class="text-center space-y-4">
+                                <p class="text-medical-dark-gray font-medium">Welcome, {{ patient_name }}</p>
+                                <a href="{% url 'patient_dashboard:appointments_patients' %}" class="block w-full px-6 py-3 bg-medical-green text-white rounded-full text-center font-medium">
+                                    <i class="fas fa-user mr-2"></i>Dashboard
+                                </a>
+                                <a href="{% url 'frontend:logout' %}" class="block w-full px-6 py-3 bg-medical-red text-white rounded-full text-center font-medium" data-translate="Logout">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                                </a>
+                            </div>
+                        {% else %}
+                            <div class="space-y-4">
+                                <a href="{% url 'frontend:patient_login' %}" class="block w-full px-6 py-3 bg-medical-green text-white rounded-full text-center font-medium" data-translate="Patient Login">
+                                    <i class="fas fa-user mr-2"></i>Patient Login
+                                </a>
+                                <a href="{% url 'frontend:practitioner_login' %}" class="block w-full px-6 py-3 border-2 border-medical-blue text-medical-blue rounded-full text-center font-medium" data-translate="Practitioner Login">
+                                    <i class="fas fa-user-md mr-2"></i>Practitioner Login
+                                </a>
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Mobile Language Selector -->
+                        <div class="border-t pt-4">
+                            <p class="text-sm font-medium text-medical-dark-gray mb-3">Select Language</p>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button onclick="changeLanguage('en')" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-medical-light-blue transition-colors">
+                                    <span>🇺🇸</span><span class="text-sm">English</span>
+                                </button>
+                                <button onclick="changeLanguage('ur')" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-medical-light-blue transition-colors">
+                                    <span>🇵🇰</span><span class="text-sm">اردو</span>
+                                </button>
+                                <button onclick="changeLanguage('ar')" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-medical-light-blue transition-colors">
+                                    <span>🇸🇦</span><span class="text-sm">العربية</span>
+                                </button>
+                                <button onclick="changeLanguage('hi')" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-medical-light-blue transition-colors">
+                                    <span>🇮🇳</span><span class="text-sm">हिन्दी</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+                                <li><a class="dropdown-item" href="#" onclick="changeLanguage('zh')">
+                                    <span class="flag-icon">🇨🇳</span> 中文
+                                </a></li>
+                            </ul>
+                        </li>
                         {% get_practitioner_name request as practitioner_name %}
                         {% get_patient_name request as patient_name %}
                 
@@ -418,7 +979,8 @@
                         <li class="nav-item ms-3">
                             <a class="btn btn-danger text-white"
                                href="{% url 'frontend:logout' %}"
-                               style="border-radius: 25px; padding: 10px 20px; font-size: 14px; text-decoration: none; font-weight: bold;">
+                               style="border-radius: 25px; padding: 10px 20px; font-size: 14px; text-decoration: none; font-weight: bold;"
+                               data-translate="Logout">
                                Logout
                             </a>
                         </li>
@@ -438,18 +1000,21 @@
                         <li class="nav-item ms-3">
                             <a class="btn btn-danger text-white"
                                href="{% url 'frontend:logout' %}"
-                               style="border-radius: 25px; padding: 10px 20px; font-size: 14px; text-decoration: none; font-weight: bold;">
+                               style="border-radius: 25px; padding: 10px 20px; font-size: 14px; text-decoration: none; font-weight: bold;"
+                               data-translate="Logout">
                                Logout
                             </a>
                         </li>
                         {% else %}
                         <div class="d-flex">
                             <a href="{% url 'frontend:patient_login' %}" class="btn btn-appointment text-white"
-                               style="background-color: #f76c5e; border-radius: 25px; padding: 10px 20px; font-size: 14px; text-decoration: none; font-weight: bold;">
+                               style="background-color: #f76c5e; border-radius: 25px; padding: 10px 20px; font-size: 14px; text-decoration: none; font-weight: bold;"
+                               data-translate="Patient Login">
                                Patient Login
                             </a>
                             <a href="{% url 'frontend:practitioner_login' %}" class="btn btn-appointment ms-3"
-                               style="color: #007bff; border: 2px solid #007bff; border-radius: 25px; padding: 10px 20px; font-size: 14px; text-decoration: none; font-weight: bold; background-color: white;">
+                               style="color: #007bff; border: 2px solid #007bff; border-radius: 25px; padding: 10px 20px; font-size: 14px; text-decoration: none; font-weight: bold; background-color: white;"
+                               data-translate="Practitioner Login">
                                Practitioner Login
                             </a>
                         </div>
@@ -591,9 +1156,831 @@
 </div>
 </footer>
 
-    <!-- Bootstrap JS and Popper.js -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <!-- Modern JavaScript for Tailwind -->
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    
+    <!-- Professional Enhancement Scripts -->
+    <script>
+        // Ensure global scope
+        console.log('Loading language system...');
+        
+        // Language System
+        const translations = {
+            en: {
+                'Find a Practitioner & Book Appointment': 'Find a Practitioner & Book Appointment',
+                'Connect with qualified healthcare professionals': 'Connect with qualified healthcare professionals and get the care you deserve. Our platform makes it easy to find, book, and manage your medical appointments.',
+                'Search Doctors': 'Search Doctors',
+                'Search by practitioner name, specialty, or location...': 'Search by practitioner name, specialty, or location...',
+                'Why Choose Our Platform?': 'Why Choose Our Platform?',
+                'Experience healthcare the modern way': 'Experience healthcare the modern way with our comprehensive medical platform',
+                'Qualified Practitioners': 'Qualified Practitioners',
+                'Easy Booking': 'Easy Booking',
+                'Secure Communication': 'Secure Communication',
+                'Mobile Friendly': 'Mobile Friendly',
+                'HIPAA Compliant': 'HIPAA Compliant',
+                'AI Assistant': 'AI Assistant',
+                'Get instant help with our intelligent medical assistant available 24/7': 'Get instant help with our intelligent medical assistant available 24/7',
+                'Schedule appointments instantly with our user-friendly booking system': 'Schedule appointments instantly with our user-friendly booking system',
+                'Chat securely with your healthcare providers through our encrypted platform': 'Chat securely with your healthcare providers through our encrypted platform',
+                'Access your healthcare anywhere, anytime with our responsive design': 'Access your healthcare anywhere, anytime with our responsive design',
+                'Your medical information is protected with industry-standard security': 'Your medical information is protected with industry-standard security',
+                'Medical Specialties': 'Medical Specialties',
+                'Find specialists across various medical fields': 'Find specialists across various medical fields',
+                'How It Works': 'How It Works',
+                'Get started in just three simple steps': 'Get started in just three simple steps',
+                'Ready to Get Started?': 'Ready to Get Started?',
+                'Join thousands of patients who trust our platform for their healthcare needs': 'Join thousands of patients who trust our platform for their healthcare needs',
+                'Sign Up as Patient': 'Sign Up as Patient',
+                'Join as Practitioner': 'Join as Practitioner',
+                'Patient Login': 'Patient Login',
+                'Practitioner Login': 'Practitioner Login',
+                'Welcome': 'Welcome',
+                'Logout': 'Logout'
+            },
+            'ur': {
+                'Find a Practitioner & Book Appointment': 'ڈاکٹر تلاش کریں اور اپائنٹمنٹ بک کریں',
+                'Connect with qualified healthcare professionals': 'قابل صحت کی دیکھ بھال کرنے والے پیشہ ور افراد سے رابطہ کریں اور وہ دیکھ بھال حاصل کریں جس کے آپ مستحق ہیں۔',
+                'Search Doctors': 'ڈاکٹر تلاش کریں',
+                'Search by practitioner name, specialty, or location...': 'ڈاکٹر کے نام، خصوصیت، یا مقام کے ذریعے تلاش کریں...',
+                'Why Choose Our Platform?': 'ہمارا پلیٹ فارم کیوں منتخب کریں؟',
+                'Experience healthcare the modern way': 'جدید طریقے سے صحت کی دیکھ بھال کا تجربہ کریں',
+                'Qualified Practitioners': 'قابل ڈاکٹرز',
+                'Easy Booking': 'آسان بکنگ',
+                'Secure Communication': 'محفوظ رابطہ',
+                'Mobile Friendly': 'موبائل فرینڈلی',
+                'HIPAA Compliant': 'HIPAA کمپلائنٹ',
+                'AI Assistant': 'AI اسسٹنٹ',
+                'Get instant help with our intelligent medical assistant available 24/7': 'ہمارے ذہین طبی معاون سے 24/7 فوری مدد حاصل کریں',
+                'Schedule appointments instantly with our user-friendly booking system': 'ہمارے صارف دوست بکنگ سسٹم کے ساتھ فوری طور پر اپائنٹمنٹ شیڈول کریں',
+                'Chat securely with your healthcare providers through our encrypted platform': 'ہمارے خفیہ کردہ پلیٹ فارم کے ذریعے اپنے صحت کی دیکھ بھال فراہم کرنے والوں سے محفوظ طریقے سے بات کریں',
+                'Access your healthcare anywhere, anytime with our responsive design': 'ہمارے ریسپانسیو ڈیزائن کے ساتھ کہیں بھی، کسی بھی وقت اپنی صحت کی دیکھ بھال تک رسائی حاصل کریں',
+                'Your medical information is protected with industry-standard security': 'آپ کی طبی معلومات صنعتی معیار کی سیکیورٹی کے ساتھ محفوظ ہیں',
+                'Medical Specialties': 'طبی خصوصیات',
+                'Find specialists across various medical fields': 'مختلف طبی شعبوں میں ماہرین تلاش کریں',
+                'How It Works': 'یہ کیسے کام کرتا ہے',
+                'Get started in just three simple steps': 'صرف تین آسان مراحل میں شروع کریں',
+                'Ready to Get Started?': 'شروع کرنے کے لیے تیار ہیں؟',
+                'Join thousands of patients who trust our platform for their healthcare needs': 'ہزاروں مریضوں میں شامل ہوں جو اپنی صحت کی ضروریات کے لیے ہمارے پلیٹ فارم پر بھروسہ کرتے ہیں',
+                'Sign Up as Patient': 'مریض کے طور پر سائن اپ کریں',
+                'Join as Practitioner': 'ڈاکٹر کے طور پر شامل ہوں',
+                'Patient Login': 'مریض لاگ ان',
+                'Practitioner Login': 'ڈاکٹر لاگ ان',
+                'Welcome': 'خوش آمدید',
+                'Logout': 'لاگ آؤٹ'
+            },
+            'ar': {
+                'Find a Practitioner & Book Appointment': 'ابحث عن طبيب واحجز موعداً',
+                'Connect with qualified healthcare professionals': 'تواصل مع المهنيين المؤهلين في مجال الرعاية الصحية واحصل على الرعاية التي تستحقها.',
+                'Search Doctors': 'البحث عن الأطباء',
+                'Search by practitioner name, specialty, or location...': 'البحث بالاسم أو التخصص أو الموقع...',
+                'Why Choose Our Platform?': 'لماذا تختار منصتنا؟',
+                'Experience healthcare the modern way': 'اختبر الرعاية الصحية بالطريقة الحديثة',
+                'Qualified Practitioners': 'أطباء مؤهلون',
+                'Easy Booking': 'حجز سهل',
+                'Secure Communication': 'تواصل آمن',
+                'Mobile Friendly': 'متوافق مع الهاتف المحمول',
+                'HIPAA Compliant': 'متوافق مع HIPAA',
+                'AI Assistant': 'مساعد ذكي',
+                'Get instant help with our intelligent medical assistant available 24/7': 'احصل على مساعدة فورية من مساعدنا الطبي الذكي المتاح على مدار الساعة',
+                'Schedule appointments instantly with our user-friendly booking system': 'احجز المواعيد فوراً باستخدام نظام الحجز السهل الاستخدام',
+                'Chat securely with your healthcare providers through our encrypted platform': 'تحدث بأمان مع مقدمي الرعاية الصحية من خلال منصتنا المشفرة',
+                'Access your healthcare anywhere, anytime with our responsive design': 'اوصل إلى رعايتك الصحية في أي مكان وأي وقت مع تصميمنا المتجاوب',
+                'Your medical information is protected with industry-standard security': 'معلوماتك الطبية محمية بأمان يلبي معايير الصناعة',
+                'Medical Specialties': 'التخصصات الطبية',
+                'Find specialists across various medical fields': 'ابحث عن المتخصصين في مختلف المجالات الطبية',
+                'How It Works': 'كيف يعمل',
+                'Get started in just three simple steps': 'ابدأ في ثلاث خطوات بسيطة فقط',
+                'Ready to Get Started?': 'مستعد للبدء؟',
+                'Join thousands of patients who trust our platform for their healthcare needs': 'انضم إلى آلاف المرضى الذين يثقون في منصتنا لاحتياجاتهم الصحية',
+                'Sign Up as Patient': 'التسجيل كمريض',
+                'Join as Practitioner': 'انضم كطبيب',
+                'Patient Login': 'تسجيل دخول المريض',
+                'Practitioner Login': 'تسجيل دخول الطبيب',
+                'Welcome': 'مرحباً',
+                'Logout': 'تسجيل الخروج'
+            },
+            'hi': {
+                'Find a Practitioner & Book Appointment': 'डॉक्टर खोजें और अपॉइंटमेंट बुक करें',
+                'Connect with qualified healthcare professionals': 'योग्य स्वास्थ्य सेवा पेशेवरों से जुड़ें और वह देखभाल प्राप्त करें जिसके आप हकदार हैं।',
+                'Search Doctors': 'डॉक्टर खोजें',
+                'Search by practitioner name, specialty, or location...': 'डॉक्टर के नाम, विशेषता, या स्थान से खोजें...',
+                'Why Choose Our Platform?': 'हमारा प्लेटफॉर्म क्यों चुनें?',
+                'Experience healthcare the modern way': 'आधुनिक तरीके से स्वास्थ्य सेवा का अनुभव करें',
+                'Qualified Practitioners': 'योग्य चिकित्सक',
+                'Easy Booking': 'आसान बुकिंग',
+                'Secure Communication': 'सुरक्षित संचार',
+                'Mobile Friendly': 'मोबाइल फ्रेंडली',
+                'HIPAA Compliant': 'HIPAA अनुपालित',
+                'AI Assistant': 'AI सहायक',
+                'Get instant help with our intelligent medical assistant available 24/7': 'हमारे बुद्धिमान चिकित्सा सहायक से 24/7 तत्काल सहायता प्राप्त करें',
+                'Schedule appointments instantly with our user-friendly booking system': 'हमारे उपयोगकर्ता-अनुकूल बुकिंग सिस्टम के साथ तुरंत अपॉइंटमेंट शेड्यूल करें',
+                'Chat securely with your healthcare providers through our encrypted platform': 'हमारे एन्क्रिप्टेड प्लेटफॉर्म के माध्यम से अपने स्वास्थ्य सेवा प्रदाताओं के साथ सुरक्षित रूप से चैट करें',
+                'Access your healthcare anywhere, anytime with our responsive design': 'हमारे रिस्पॉन्सिव डिज़ाइन के साथ कहीं भी, कभी भी अपनी स्वास्थ्य सेवा तक पहुंचें',
+                'Your medical information is protected with industry-standard security': 'आपकी चिकित्सा जानकारी उद्योग-मानक सुरक्षा के साथ सुरक्षित है',
+                'Medical Specialties': 'चिकित्सा विशेषताएं',
+                'Find specialists across various medical fields': 'विभिन्न चिकित्सा क्षेत्रों में विशेषज्ञ खोजें',
+                'How It Works': 'यह कैसे काम करता है',
+                'Get started in just three simple steps': 'केवल तीन सरल चरणों में शुरू करें',
+                'Ready to Get Started?': 'शुरू करने के लिए तैयार हैं?',
+                'Join thousands of patients who trust our platform for their healthcare needs': 'हजारों मरीजों में शामिल हों जो अपनी स्वास्थ्य आवश्यकताओं के लिए हमारे प्लेटफॉर्म पर भरोसा करते हैं',
+                'Sign Up as Patient': 'मरीज़ के रूप में साइन अप करें',
+                'Join as Practitioner': 'चिकित्सक के रूप में जुड़ें',
+                'Patient Login': 'मरीज़ लॉगिन',
+                'Practitioner Login': 'चिकित्सक लॉगिन',
+                'Welcome': 'स्वागत है',
+                'Logout': 'लॉगआउट'
+            },
+            'es': {
+                'Find a Practitioner & Book Appointment': 'Encuentra un Médico y Reserva una Cita',
+                'Connect with qualified healthcare professionals': 'Conéctate con profesionales de la salud calificados',
+                'Search by practitioner name, specialty, or location...': 'Buscar por nombre del médico, especialidad o ubicación...',
+                'Search Doctors': 'Buscar Médicos',
+                'Why Choose Our Platform?': '¿Por qué elegir nuestra plataforma?',
+                'Experience healthcare the modern way': 'Experimenta la atención médica de manera moderna',
+                'Qualified Practitioners': 'Profesionales Calificados',
+                'Easy Booking': 'Reserva Fácil',
+                'Secure Communication': 'Comunicación Segura',
+                'Mobile Friendly': 'Compatible con Móviles',
+                'HIPAA Compliant': 'Cumple con HIPAA',
+                'AI Assistant': 'Asistente IA',
+                'Get instant help with our intelligent medical assistant available 24/7': 'Obtén ayuda instantánea con nuestro asistente médico inteligente disponible 24/7',
+                'Schedule appointments instantly with our user-friendly booking system': 'Programa citas al instante con nuestro sistema de reservas fácil de usar',
+                'Chat securely with your healthcare providers through our encrypted platform': 'Chatea de forma segura con tus proveedores de atención médica a través de nuestra plataforma encriptada',
+                'Access your healthcare anywhere, anytime with our responsive design': 'Accede a tu atención médica en cualquier lugar, en cualquier momento con nuestro diseño responsivo',
+                'Your medical information is protected with industry-standard security': 'Tu información médica está protegida con seguridad estándar de la industria',
+                'Medical Specialties': 'Especialidades Médicas',
+                'Find specialists across various medical fields': 'Encuentra especialistas en varios campos médicos',
+                'How It Works': 'Cómo Funciona',
+                'Get started in just three simple steps': 'Comienza en solo tres pasos simples',
+                'Ready to Get Started?': '¿Listo para comenzar?',
+                'Join thousands of patients who trust our platform for their healthcare needs': 'Únete a miles de pacientes que confían en nuestra plataforma para sus necesidades de atención médica',
+                'Sign Up as Patient': 'Registrarse como Paciente',
+                'Join as Practitioner': 'Unirse como Médico',
+                'Patient Login': 'Iniciar Sesión Paciente',
+                'Practitioner Login': 'Iniciar Sesión Médico',
+                'Welcome': 'Bienvenido',
+                'Logout': 'Cerrar Sesión'
+            },
+            'fr': {
+                'Find a Practitioner & Book Appointment': 'Trouvez un Praticien et Réservez un Rendez-vous',
+                'Connect with qualified healthcare professionals': 'Connectez-vous avec des professionnels de santé qualifiés',
+                'Search by practitioner name, specialty, or location...': 'Rechercher par nom de praticien, spécialité ou lieu...',
+                'Search Doctors': 'Rechercher des Médecins',
+                'Why Choose Our Platform?': 'Pourquoi choisir notre plateforme?',
+                'Experience healthcare the modern way': 'Découvrez les soins de santé à la manière moderne',
+                'Qualified Practitioners': 'Praticiens Qualifiés',
+                'Easy Booking': 'Réservation Facile',
+                'Secure Communication': 'Communication Sécurisée',
+                'Mobile Friendly': 'Compatible Mobile',
+                'HIPAA Compliant': 'Conforme HIPAA',
+                'AI Assistant': 'Assistant IA',
+                'Get instant help with our intelligent medical assistant available 24/7': 'Obtenez une aide instantanée avec notre assistant médical intelligent disponible 24h/24 et 7j/7',
+                'Schedule appointments instantly with our user-friendly booking system': 'Planifiez des rendez-vous instantanément avec notre système de réservation convivial',
+                'Chat securely with your healthcare providers through our encrypted platform': 'Discutez en toute sécurité avec vos prestataires de soins via notre plateforme cryptée',
+                'Access your healthcare anywhere, anytime with our responsive design': 'Accédez à vos soins de santé partout, à tout moment avec notre design réactif',
+                'Your medical information is protected with industry-standard security': 'Vos informations médicales sont protégées par une sécurité standard de l\'industrie',
+                'Medical Specialties': 'Spécialités Médicales',
+                'Find specialists across various medical fields': 'Trouvez des spécialistes dans divers domaines médicaux',
+                'How It Works': 'Comment ça marche',
+                'Get started in just three simple steps': 'Commencez en seulement trois étapes simples',
+                'Ready to Get Started?': 'Prêt à commencer?',
+                'Join thousands of patients who trust our platform for their healthcare needs': 'Rejoignez des milliers de patients qui font confiance à notre plateforme pour leurs besoins de santé',
+                'Sign Up as Patient': 'S\'inscrire comme Patient',
+                'Join as Practitioner': 'Rejoindre comme Praticien',
+                'Patient Login': 'Connexion Patient',
+                'Practitioner Login': 'Connexion Praticien',
+                'Welcome': 'Bienvenue',
+                'Logout': 'Déconnexion'
+            },
+            'de': {
+                'Find a Practitioner & Book Appointment': 'Finden Sie einen Arzt und buchen Sie einen Termin',
+                'Connect with qualified healthcare professionals': 'Verbinden Sie sich mit qualifizierten Gesundheitsfachkräften',
+                'Search by practitioner name, specialty, or location...': 'Suchen Sie nach Arztname, Fachgebiet oder Standort...',
+                'Search Doctors': 'Ärzte suchen',
+                'Why Choose Our Platform?': 'Warum unsere Plattform wählen?',
+                'Experience healthcare the modern way': 'Erleben Sie Gesundheitsversorgung auf moderne Art',
+                'Qualified Practitioners': 'Qualifizierte Ärzte',
+                'Easy Booking': 'Einfache Buchung',
+                'Secure Communication': 'Sichere Kommunikation',
+                'Mobile Friendly': 'Mobilfreundlich',
+                'HIPAA Compliant': 'HIPAA-konform',
+                'AI Assistant': 'KI-Assistent',
+                'Get instant help with our intelligent medical assistant available 24/7': 'Erhalten Sie sofortige Hilfe von unserem intelligenten medizinischen Assistenten, der rund um die Uhr verfügbar ist',
+                'Schedule appointments instantly with our user-friendly booking system': 'Terminieren Sie Termine sofort mit unserem benutzerfreundlichen Buchungssystem',
+                'Chat securely with your healthcare providers through our encrypted platform': 'Chatten Sie sicher mit Ihren Gesundheitsdienstleistern über unsere verschlüsselte Plattform',
+                'Access your healthcare anywhere, anytime with our responsive design': 'Greifen Sie jederzeit und überall auf Ihre Gesundheitsversorgung zu mit unserem responsiven Design',
+                'Your medical information is protected with industry-standard security': 'Ihre medizinischen Informationen sind mit branchenüblicher Sicherheit geschützt',
+                'Medical Specialties': 'Medizinische Fachgebiete',
+                'Find specialists across various medical fields': 'Finden Sie Spezialisten in verschiedenen medizinischen Bereichen',
+                'How It Works': 'Wie es funktioniert',
+                'Get started in just three simple steps': 'Beginnen Sie in nur drei einfachen Schritten',
+                'Ready to Get Started?': 'Bereit anzufangen?',
+                'Join thousands of patients who trust our platform for their healthcare needs': 'Schließen Sie sich Tausenden von Patienten an, die unserer Plattform für ihre Gesundheitsbedürfnisse vertrauen',
+                'Sign Up as Patient': 'Als Patient anmelden',
+                'Join as Practitioner': 'Als Arzt beitreten',
+                'Patient Login': 'Patienten-Login',
+                'Practitioner Login': 'Arzt-Login',
+                'Welcome': 'Willkommen',
+                'Logout': 'Abmelden'
+            },
+            'zh': {
+                'Find a Practitioner & Book Appointment': '寻找医生并预约',
+                'Connect with qualified healthcare professionals': '与合格的医疗专业人员联系',
+                'Search by practitioner name, specialty, or location...': '按医生姓名、专科或地点搜索...',
+                'Search Doctors': '搜索医生',
+                'Why Choose Our Platform?': '为什么选择我们的平台？',
+                'Experience healthcare the modern way': '体验现代化的医疗保健',
+                'Qualified Practitioners': '合格的医生',
+                'Easy Booking': '轻松预约',
+                'Secure Communication': '安全通信',
+                'Mobile Friendly': '移动友好',
+                'HIPAA Compliant': 'HIPAA合规',
+                'AI Assistant': 'AI助手',
+                'Get instant help with our intelligent medical assistant available 24/7': '通过我们24/7可用的智能医疗助手获得即时帮助',
+                'Schedule appointments instantly with our user-friendly booking system': '使用我们用户友好的预约系统即时安排预约',
+                'Chat securely with your healthcare providers through our encrypted platform': '通过我们的加密平台与您的医疗服务提供者安全聊天',
+                'Access your healthcare anywhere, anytime with our responsive design': '通过我们的响应式设计随时随地访问您的医疗保健',
+                'Your medical information is protected with industry-standard security': '您的医疗信息受到行业标准安全保护',
+                'Medical Specialties': '医疗专科',
+                'Find specialists across various medical fields': '在各个医疗领域寻找专家',
+                'How It Works': '工作原理',
+                'Get started in just three simple steps': '只需三个简单步骤即可开始',
+                'Ready to Get Started?': '准备开始了吗？',
+                'Join thousands of patients who trust our platform for their healthcare needs': '加入数千名信任我们平台满足其医疗需求的患者',
+                'Sign Up as Patient': '注册为患者',
+                'Join as Practitioner': '加入为医生',
+                'Patient Login': '患者登录',
+                'Practitioner Login': '医生登录',
+                'Welcome': '欢迎',
+                'Logout': '退出登录'
+            }
+        };
+
+        // Language names for display
+        const languageNames = {
+            'en': 'English',
+            'ur': 'اردو',
+            'ar': 'العربية',
+            'hi': 'हिन्दी',
+            'es': 'Español',
+            'fr': 'Français',
+            'de': 'Deutsch',
+            'zh': '中文'
+        };
+
+        // Change language function - make it globally accessible
+        window.changeLanguage = function(langCode) {
+            try {
+                console.log('Changing language to:', langCode);
+                
+                // Update current language display
+                const currentLangElement = document.getElementById('current-language');
+                if (currentLangElement) {
+                    currentLangElement.textContent = languageNames[langCode];
+                }
+                
+                // Set document direction for RTL languages
+                if (langCode === 'ur' || langCode === 'ar') {
+                    document.documentElement.setAttribute('dir', 'rtl');
+                    document.documentElement.setAttribute('lang', langCode);
+                } else {
+                    document.documentElement.setAttribute('dir', 'ltr');
+                    document.documentElement.setAttribute('lang', langCode);
+                }
+                
+                // Store language preference
+                localStorage.setItem('selectedLanguage', langCode);
+                
+                // Translate page content
+                translatePage(langCode);
+                
+                // Update AI assistant language
+                if (typeof updateAILanguage === 'function') {
+                    updateAILanguage(langCode);
+                }
+                
+                // Show success message
+                showLanguageChangeMessage(languageNames[langCode]);
+                
+                console.log('Language changed successfully to:', langCode);
+            } catch (error) {
+                console.error('Error changing language:', error);
+            }
+        }
+        
+        // Verify function is accessible
+        console.log('changeLanguage function defined:', typeof window.changeLanguage);
+        
+        // Add event listeners as backup for language switching
+        document.addEventListener('DOMContentLoaded', function() {
+            const languageDropdownItems = document.querySelectorAll('.language-dropdown .dropdown-item');
+            languageDropdownItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const onclick = this.getAttribute('onclick');
+                    if (onclick) {
+                        const langMatch = onclick.match(/changeLanguage\('([^']+)'\)/);
+                        if (langMatch && langMatch[1]) {
+                            const langCode = langMatch[1];
+                            console.log('Language dropdown clicked:', langCode);
+                            if (typeof window.changeLanguage === 'function') {
+                                window.changeLanguage(langCode);
+                            } else {
+                                console.error('changeLanguage function not available');
+                            }
+                        }
+                    }
+                });
+            });
+        });
+
+        // Translate page content
+        function translatePage(langCode) {
+            try {
+                console.log('Translating page to:', langCode);
+                const translation = translations[langCode] || translations['en'];
+                
+                if (!translation) {
+                    console.error('No translation found for language:', langCode);
+                    return;
+                }
+                
+                let translatedCount = 0;
+                
+                // Translate all elements with data-translate attribute
+                document.querySelectorAll('[data-translate]').forEach(element => {
+                    const key = element.getAttribute('data-translate');
+                    if (translation[key]) {
+                        if (element.tagName === 'INPUT' && (element.type === 'text' || element.type === 'search')) {
+                            element.placeholder = translation[key];
+                        } else {
+                            element.textContent = translation[key];
+                        }
+                        translatedCount++;
+                    }
+                });
+                
+                // Also translate navbar buttons that might not have data-translate
+                const patientLoginBtn = document.querySelector('a[href*="patient_login"]');
+                if (patientLoginBtn && translation['Patient Login']) {
+                    patientLoginBtn.textContent = translation['Patient Login'];
+                    translatedCount++;
+                }
+                
+                const practitionerLoginBtn = document.querySelector('a[href*="practitioner_login"]');
+                if (practitionerLoginBtn && translation['Practitioner Login']) {
+                    practitionerLoginBtn.textContent = translation['Practitioner Login'];
+                    translatedCount++;
+                }
+                
+                // Translate logout buttons
+                const logoutBtns = document.querySelectorAll('a[href*="logout"]');
+                logoutBtns.forEach(btn => {
+                    if (translation['Logout']) {
+                        btn.textContent = translation['Logout'];
+                        translatedCount++;
+                    }
+                });
+                
+                // Translate welcome messages
+                const welcomeSpans = document.querySelectorAll('.nav-link');
+                welcomeSpans.forEach(span => {
+                    if (span.textContent.includes('Welcome,') && translation['Welcome']) {
+                        const name = span.textContent.replace('Welcome, ', '');
+                        span.textContent = translation['Welcome'] + ', ' + name;
+                        translatedCount++;
+                    }
+                });
+                
+                console.log(`Translation completed: ${translatedCount} elements translated to ${langCode}`);
+            } catch (error) {
+                console.error('Error in translatePage:', error);
+            }
+        }
+
+        // Update AI assistant language
+        function updateAILanguage(langCode) {
+            // Update AI assistant messages and interface
+            const aiMessages = {
+                'en': {
+                    welcome: "Hello! I'm Dr. Amanda, your AI medical assistant. How can I help you today?",
+                    thinking: "Dr. Amanda is analyzing your question",
+                    placeholder: "Type your health question here..."
+                },
+                'ur': {
+                    welcome: "سلام! میں ڈاکٹر امانڈا ہوں، آپ کی AI طبی معاون۔ آج میں آپ کی کیسے مدد کر سکتی ہوں؟",
+                    thinking: "ڈاکٹر امانڈا آپ کے سوال کا تجزیہ کر رہی ہے",
+                    placeholder: "یہاں اپنا صحت کا سوال ٹائپ کریں..."
+                },
+                'ar': {
+                    welcome: "مرحباً! أنا الدكتورة أماندا، مساعدتك الطبية الذكية. كيف يمكنني مساعدتك اليوم؟",
+                    thinking: "الدكتورة أماندا تحلل سؤالك",
+                    placeholder: "اكتب سؤالك الصحي هنا..."
+                },
+                'hi': {
+                    welcome: "नमस्ते! मैं डॉ. अमांडा हूं, आपकी AI चिकित्सा सहायक। आज मैं आपकी कैसे मदद कर सकती हूं?",
+                    thinking: "डॉ. अमांडा आपके प्रश्न का विश्लेषण कर रही है",
+                    placeholder: "यहाँ अपना स्वास्थ्य प्रश्न टाइप करें..."
+                }
+            };
+            
+            const messages = aiMessages[langCode] || aiMessages['en'];
+            
+            // Update AI interface if it exists
+            const welcomeMessage = document.querySelector('.welcome-message .message-content');
+            if (welcomeMessage) {
+                welcomeMessage.textContent = messages.welcome;
+            }
+            
+            const chatInput = document.getElementById('user-question');
+            if (chatInput) {
+                chatInput.placeholder = messages.placeholder;
+            }
+            
+            // Store AI language preference
+            window.aiLanguage = langCode;
+        }
+
+        // Show language change confirmation
+        function showLanguageChangeMessage(languageName) {
+            const message = document.createElement('div');
+            message.className = 'language-change-notification';
+            message.innerHTML = `
+                <i class="fas fa-check-circle me-2"></i>
+                Language changed to ${languageName}
+            `;
+            message.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 30px;
+                background: linear-gradient(135deg, #28a745, #20c997);
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 10px;
+                box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+                z-index: 10000;
+                animation: slideInRight 0.3s ease-out;
+            `;
+            
+            document.body.appendChild(message);
+            
+            setTimeout(() => {
+                message.style.animation = 'slideOutRight 0.3s ease-out';
+                setTimeout(() => {
+                    document.body.removeChild(message);
+                }, 300);
+            }, 3000);
+        }
+
+        // Initialize language on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                console.log('Initializing language system...');
+                
+                // Check if translations object is properly loaded
+                if (!translations || !translations.en) {
+                    console.error('Translations object not properly loaded');
+                    return;
+                }
+                
+                const savedLanguage = localStorage.getItem('selectedLanguage') || 'en';
+                console.log('Saved language:', savedLanguage);
+                
+                // Update current language display
+                const currentLangElement = document.getElementById('current-language');
+                if (currentLangElement) {
+                    currentLangElement.textContent = languageNames[savedLanguage] || 'English';
+                }
+                
+                // Apply saved language if not English
+                if (savedLanguage !== 'en') {
+                    setTimeout(() => {
+                        changeLanguage(savedLanguage);
+                    }, 100);
+                }
+                
+                console.log('Language system initialized successfully');
+            } catch (error) {
+                console.error('Error initializing language system:', error);
+            }
+        });
+
+        // Professional Navbar Scroll Effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar-custom');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+        
+        // Smooth Scroll for Anchor Links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Professional Loading Animation
+        window.addEventListener('load', function() {
+            const loadingElements = document.querySelectorAll('.loading');
+            loadingElements.forEach((element, index) => {
+                setTimeout(() => {
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+        
+        // Enhanced Form Interactions
+        document.querySelectorAll('.form-control').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('focused');
+            });
+            
+            input.addEventListener('blur', function() {
+                if (!this.value) {
+                    this.parentElement.classList.remove('focused');
+                }
+            });
+        });
+        
+        // Professional Button Hover Effects
+        document.querySelectorAll('.btn').forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+            });
+            
+            button.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+        
+        // Intersection Observer for Animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-in');
+                }
+            });
+        }, observerOptions);
+        
+        // Observe elements for animation
+        document.querySelectorAll('.hover-animate, .feature-card, .specialty-card, .step-card').forEach(el => {
+            observer.observe(el);
+        });
+        
+        // Professional Search Enhancement
+        const searchInput = document.querySelector('.search-input');
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                if (this.value.length > 0) {
+                    this.parentElement.classList.add('has-content');
+                } else {
+                    this.parentElement.classList.remove('has-content');
+                }
+            });
+        }
+        
+
+        
+        // Professional Error Handling
+        window.addEventListener('error', function(e) {
+            console.log('Professional error handling:', e.message);
+        });
+        
+        // Performance Optimization
+        if ('loading' in HTMLImageElement.prototype) {
+            const images = document.querySelectorAll('img[loading="lazy"]');
+            images.forEach(img => {
+                img.src = img.dataset.src;
+            });
+        }
+        
+        // Debug function for language testing
+        window.testLanguageSwitch = function() {
+            console.log('Testing language switch...');
+            console.log('Available languages:', Object.keys(translations));
+            console.log('Current language:', localStorage.getItem('selectedLanguage') || 'en');
+            console.log('Elements with data-translate:', document.querySelectorAll('[data-translate]').length);
+            
+            // Test each language
+            Object.keys(translations).forEach(lang => {
+                console.log(`Testing ${lang}:`, translations[lang]['Find a Practitioner & Book Appointment']);
+            });
+        };
+        
+        // Mobile Menu Toggle
+        window.toggleMobileMenu = function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        };
+        
+        // Language Dropdown Toggle
+        window.toggleLanguageDropdown = function() {
+            const dropdown = document.getElementById('language-dropdown');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            // On mobile, show language options in mobile menu
+            if (window.innerWidth < 1024) {
+                mobileMenu.classList.remove('hidden');
+                // Scroll to language section in mobile menu
+                setTimeout(() => {
+                    const languageSection = mobileMenu.querySelector('.border-t');
+                    if (languageSection) {
+                        languageSection.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }, 100);
+            } else {
+                dropdown.classList.toggle('hidden');
+            }
+        };
+        
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(event) {
+            const languageDropdown = document.getElementById('language-dropdown');
+            const languageButton = document.getElementById('languageDropdown');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            // Close language dropdown if clicking outside
+            if (!languageButton.contains(event.target) && !languageDropdown.contains(event.target)) {
+                languageDropdown.classList.add('hidden');
+            }
+            
+            // Close mobile menu if clicking outside
+            if (!mobileMenu.contains(event.target) && !event.target.closest('[onclick="toggleMobileMenu()"]')) {
+                mobileMenu.classList.add('hidden');
+            }
+        });
+        
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Intersection Observer for animations
+        const observeElements = () => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-fade-in-up');
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+            
+            document.querySelectorAll('.medical-card-hover').forEach(el => {
+                observer.observe(el);
+            });
+        };
+        
+        // Initialize animations
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', observeElements);
+        } else {
+            observeElements();
+        }
+        
+        console.log('🏥 Modern Medical Platform Loaded Successfully!');
+        console.log('💬 Language system ready. Use testLanguageSwitch() to debug.');
+        
+        // Final verification and backup
+        if (typeof window.changeLanguage !== 'function') {
+            console.error('changeLanguage function not found! Creating backup...');
+            window.changeLanguage = function(langCode) {
+                console.log('Using backup changeLanguage function for:', langCode);
+                alert('Language switching temporarily unavailable. Please refresh the page.');
+            };
+        } else {
+            console.log('✅ changeLanguage function is ready!');
+        }
+    </script>
+    
+    <!-- Additional CSS for Enhanced Animations -->
+    <style>
+        .animate-in {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        
+        .focused {
+            transform: scale(1.02);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+        
+        .has-content .search-input {
+            background: #f8f9fa;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+        }
+        
+        /* Professional Loading States */
+        .btn.loading {
+            position: relative;
+            color: transparent;
+        }
+        
+        .btn.loading::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            top: 50%;
+            left: 50%;
+            margin-left: -8px;
+            margin-top: -8px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        /* Language Change Notification Animations */
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes slideOutRight {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+        }
+        
+        /* RTL Layout Adjustments */
+        [dir="rtl"] .hero-content {
+            text-align: right;
+        }
+        
+        [dir="rtl"] .search-container {
+            direction: rtl;
+        }
+        
+        [dir="rtl"] .feature-card,
+        [dir="rtl"] .specialty-card,
+        [dir="rtl"] .step-card {
+            text-align: right;
+        }
+        
+        [dir="rtl"] .navbar-nav {
+            margin-left: 0;
+            margin-right: auto;
+        }
+        
+        [dir="rtl"] .btn-appointment {
+            margin-left: 0;
+            margin-right: 15px;
+        }
+    </style>
 </body>
 </html>
 

@@ -1,0 +1,181 @@
+{% extends 'patientdashboard/patient_base.html' %}
+{% load static %}
+
+{% block title %}All Notifications - Patient Dashboard{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-patient-gray to-patient-light-blue p-4">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl font-bold text-patient-dark-blue mb-2">All Notifications</h1>
+                    <p class="text-patient-dark-gray">Stay updated with your healthcare activities</p>
+                </div>
+                <button onclick="markAllAsRead()" class="bg-patient-blue text-white px-4 py-2 rounded-lg hover:bg-patient-dark-blue transition-colors">
+                    <i class="fas fa-check-double mr-2"></i>
+                    Mark All Read
+                </button>
+            </div>
+        </div>
+
+        <!-- Recent Appointments -->
+        {% if recent_appointments %}
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold text-patient-dark-blue mb-4">
+                <i class="fas fa-calendar-check text-patient-blue mr-2"></i>
+                Recent Appointments
+            </h2>
+            <div class="space-y-4">
+                {% for appointment in recent_appointments %}
+                <div class="flex items-start space-x-4 p-4 bg-patient-light-blue/30 rounded-lg hover:bg-patient-light-blue/50 transition-colors">
+                    <div class="w-12 h-12 bg-patient-blue/10 rounded-full flex items-center justify-center flex-shrink-0">
+                        {% if appointment.status == 'Pending' %}
+                            <i class="fas fa-clock text-patient-blue"></i>
+                        {% elif appointment.status == 'Accepted' %}
+                            <i class="fas fa-check-circle text-patient-green"></i>
+                        {% else %}
+                            <i class="fas fa-times-circle text-patient-red"></i>
+                        {% endif %}
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold text-patient-dark-blue">
+                            {% if appointment.status == 'Pending' %}
+                                Appointment Pending
+                            {% elif appointment.status == 'Accepted' %}
+                                Appointment Confirmed
+                            {% else %}
+                                Appointment Cancelled
+                            {% endif %}
+                        </h3>
+                        <p class="text-patient-dark-gray text-sm mt-1">
+                            Dr. {{ appointment.practitioner.first_name }} {{ appointment.practitioner.last_name }} - 
+                            {{ appointment.slot.date|date:"M d, Y" }} at {{ appointment.slot.start_time|time:"g:i A" }}
+                        </p>
+                        <p class="text-patient-blue text-sm mt-1">{{ appointment.practitioner.get_specialty_display }}</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs text-patient-dark-gray">{{ appointment.created_at|timesince }} ago</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Recent Prescriptions -->
+        {% if recent_prescriptions %}
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold text-patient-dark-blue mb-4">
+                <i class="fas fa-prescription-bottle text-patient-orange mr-2"></i>
+                Recent Prescriptions
+            </h2>
+            <div class="space-y-4">
+                {% for prescription in recent_prescriptions %}
+                <div class="flex items-start space-x-4 p-4 bg-patient-light-blue/30 rounded-lg hover:bg-patient-light-blue/50 transition-colors">
+                    <div class="w-12 h-12 bg-patient-orange/10 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-pills text-patient-orange"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold text-patient-dark-blue">New Prescription</h3>
+                        <p class="text-patient-dark-gray text-sm mt-1">
+                            Dr. {{ prescription.practitioner.first_name }} {{ prescription.practitioner.last_name }} prescribed new medication
+                        </p>
+                        <p class="text-patient-orange text-sm mt-1">{{ prescription.medication_name }} - {{ prescription.dosage }}</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs text-patient-dark-gray">{{ prescription.created_at|timesince }} ago</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Database Notifications -->
+        {% if db_notifications %}
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold text-patient-dark-blue mb-4">
+                <i class="fas fa-bell text-patient-teal mr-2"></i>
+                Messages & Updates
+            </h2>
+            <div class="space-y-4">
+                {% for notification in db_notifications %}
+                <div class="flex items-start space-x-4 p-4 {% if not notification.is_read %}bg-patient-light-blue/30{% else %}bg-gray-50{% endif %} rounded-lg hover:bg-patient-light-blue/50 transition-colors">
+                    <div class="w-12 h-12 bg-patient-teal/10 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-comment-medical text-patient-teal"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-semibold text-patient-dark-blue">System Message</h3>
+                        <p class="text-patient-dark-gray text-sm mt-1">{{ notification.message }}</p>
+                        {% if notification.url %}
+                        <a href="{{ notification.url }}" class="text-patient-teal text-sm mt-1 hover:underline">View Details</a>
+                        {% endif %}
+                    </div>
+                    <div class="text-right">
+                        {% if not notification.is_read %}
+                        <span class="w-3 h-3 bg-patient-teal rounded-full inline-block mb-1"></span>
+                        {% endif %}
+                        <span class="text-xs text-patient-dark-gray block">{{ notification.created_at|timesince }} ago</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Empty State -->
+        {% if not recent_appointments and not recent_prescriptions and not db_notifications %}
+        <div class="bg-white rounded-xl shadow-lg p-12 text-center">
+            <div class="w-24 h-24 bg-patient-light-blue rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-bell-slash text-patient-blue text-3xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-patient-dark-blue mb-2">No Notifications</h3>
+            <p class="text-patient-dark-gray">You're all caught up! Check back later for updates.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function markAllAsRead() {
+    fetch('/patient-dashboard/mark-notifications-read/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({})
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Reload the page to show updated state
+            location.reload();
+        } else {
+            alert('Error marking notifications as read');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error marking notifications as read');
+    });
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+{% endblock %}

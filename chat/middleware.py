@@ -11,7 +11,8 @@ class ChatAuthMiddleware:
             practitioner_id = request.session.get('practitioner_id')
             
             if not patient_id and not practitioner_id:
-                return redirect('login')  # Replace with your login URL
+                # Redirect to patient login page
+                return redirect('frontend:patient_login')
 
         response = self.get_response(request)
         return response

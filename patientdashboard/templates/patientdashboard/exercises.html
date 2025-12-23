@@ -1,84 +1,268 @@
 {% extends 'patientdashboard/patient_base.html' %}
-{% load static %}  <!-- Load static files -->
+{% load static %}
 
-{% block extra_css %}
-<style>
-    .container {
-        max-width: 1200px;  
-        margin: 0 auto;
-        padding: 20px;
-    }
-
-    .exercises-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-        justify-content: center;  }
-
-    .exercise-item {
-        border: 1px solid #ddd;
-        padding: 20px;
-        border-radius: 10px;
-        width: 30%;  
-        text-align: center;
-        background: #fff;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .exercise-item:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    }
-
-    .exercise-item img {
-        max-width: 100%;
-        height: auto;
-        border-radius: 10px;
-        margin-bottom: 15px;
-    }
-
-    .btn {
-        display: inline-block;
-        padding: 10px 20px;
-        background-color: #007bff;
-        color: white;
-        text-decoration: none;
-        border-radius: 5px;
-        transition: background-color 0.3s ease;
-    }
-
-    .btn:hover {
-        background-color: #0056b3;
-    }
-
-    h1 {
-        text-align: center;
-        color: #343a40;
-        margin-bottom: 20px;
-    }
-
-    p {
-        text-align: center;
-        color: #6c757d;
-        margin-bottom: 30px;
-    }
-</style>
-{% endblock %}
+{% block title %}Exercises - Patient Dashboard{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1>Interactive Exercises</h1>
-    <p>Engage in various exercises tailored to your rehabilitation needs.</p>
-    
-    <div class="exercises-list">
-        {% for exercise in exercises %}
-        <div class="exercise-item">
-            <h2>{{ exercise.name }}</h2>
-            <img src="{% static exercise.image %}" alt="{{ exercise.name }}" style="width:100%; max-width:400px;">
-            <a href="{% url exercise.url %}" class="btn btn-primary">Start Exercise</a>
+<!-- Modern Exercises Header -->
+<div class="bg-gradient-to-r from-patient-green to-green-600 rounded-2xl p-6 mb-8 text-white">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+        <div>
+            <h1 class="text-2xl md:text-3xl font-bold mb-2" data-translate="Interactive Exercises">Interactive Exercises</h1>
+            <p class="text-white/90">Engage in various exercises tailored to your rehabilitation needs</p>
         </div>
-        {% endfor %}
+        <div class="mt-4 md:mt-0">
+            <div class="flex items-center space-x-4">
+                <div class="text-center">
+                    <div class="text-2xl font-bold">{{ exercises|length }}</div>
+                    <div class="text-sm text-white/80">Available</div>
+                </div>
+                <div class="w-px h-12 bg-white/20"></div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold">0</div>
+                    <div class="text-sm text-white/80">Completed</div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+<!-- Exercise Categories -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+    <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 patient-card">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-patient-dark-gray text-sm font-medium">Cardio</p>
+                <p class="text-2xl font-bold text-patient-red">3</p>
+            </div>
+            <div class="w-12 h-12 bg-gradient-to-br from-patient-red to-red-600 rounded-xl flex items-center justify-center">
+                <i class="fas fa-heartbeat text-white text-lg"></i>
+            </div>
+        </div>
+    </div>
+    
+    <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 patient-card">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-patient-dark-gray text-sm font-medium">Strength</p>
+                <p class="text-2xl font-bold text-patient-blue">4</p>
+            </div>
+            <div class="w-12 h-12 bg-gradient-to-br from-patient-blue to-patient-dark-blue rounded-xl flex items-center justify-center">
+                <i class="fas fa-dumbbell text-white text-lg"></i>
+            </div>
+        </div>
+    </div>
+    
+    <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 patient-card">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-patient-dark-gray text-sm font-medium">Flexibility</p>
+                <p class="text-2xl font-bold text-patient-purple">2</p>
+            </div>
+            <div class="w-12 h-12 bg-gradient-to-br from-patient-purple to-purple-600 rounded-xl flex items-center justify-center">
+                <i class="fas fa-leaf text-white text-lg"></i>
+            </div>
+        </div>
+    </div>
+    
+    <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 patient-card">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-patient-dark-gray text-sm font-medium">Balance</p>
+                <p class="text-2xl font-bold text-patient-teal">2</p>
+            </div>
+            <div class="w-12 h-12 bg-gradient-to-br from-patient-teal to-teal-600 rounded-xl flex items-center justify-center">
+                <i class="fas fa-balance-scale text-white text-lg"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Exercises Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for exercise in exercises %}
+    <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden patient-card group">
+        <!-- Exercise Image -->
+        <div class="relative h-48 bg-gradient-to-br from-patient-light-blue to-patient-light-green overflow-hidden">
+            {% if exercise.image %}
+                <img src="{% static exercise.image %}" alt="{{ exercise.name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+            {% else %}
+                <div class="w-full h-full flex items-center justify-center">
+                    <i class="fas fa-dumbbell text-6xl text-patient-blue/30"></i>
+                </div>
+            {% endif %}
+            <div class="absolute top-4 right-4">
+                <span class="px-3 py-1 bg-white/90 text-patient-blue rounded-full text-sm font-medium">
+                    {{ exercise.category|default:"Exercise" }}
+                </span>
+            </div>
+        </div>
+        
+        <!-- Exercise Content -->
+        <div class="p-6">
+            <h3 class="text-xl font-bold text-patient-dark-blue mb-2">{{ exercise.name }}</h3>
+            <p class="text-patient-dark-gray mb-4 text-sm">{{ exercise.description|default:"Improve your health with this targeted exercise routine." }}</p>
+            
+            <!-- Exercise Stats -->
+            <div class="flex items-center justify-between mb-4 text-sm text-patient-dark-gray">
+                <div class="flex items-center">
+                    <i class="fas fa-clock mr-1"></i>
+                    <span>{{ exercise.duration|default:"15 min" }}</span>
+                </div>
+                <div class="flex items-center">
+                    <i class="fas fa-signal mr-1"></i>
+                    <span>{{ exercise.difficulty|default:"Beginner" }}</span>
+                </div>
+                <div class="flex items-center">
+                    <i class="fas fa-fire mr-1"></i>
+                    <span>{{ exercise.calories|default:"50" }} cal</span>
+                </div>
+            </div>
+            
+            <!-- Action Button -->
+            <a href="{% url exercise.url %}" class="w-full inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-patient-green to-green-600 text-white rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-300 font-semibold shadow-lg group-hover:shadow-xl">
+                <i class="fas fa-play mr-2"></i>
+                <span data-translate="Start Exercise">Start Exercise</span>
+            </a>
+        </div>
+    </div>
+    {% empty %}
+    <!-- Empty State -->
+    <div class="col-span-full">
+        <div class="text-center py-16">
+            <div class="w-24 h-24 bg-patient-light-green rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-dumbbell text-patient-green text-4xl"></i>
+            </div>
+            <h3 class="text-2xl font-semibold text-patient-dark-blue mb-4">No Exercises Available</h3>
+            <p class="text-patient-dark-gray mb-8 max-w-md mx-auto">Exercise programs will be assigned by your healthcare provider based on your treatment plan.</p>
+            <a href="{% url 'patientdashboard:appointments_patients' %}" class="inline-flex items-center px-6 py-3 bg-patient-blue text-white rounded-xl hover:bg-patient-dark-blue transition-colors font-semibold">
+                <i class="fas fa-calendar-plus mr-2"></i>Book Appointment
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Default Exercises (if no exercises from database) -->
+{% if not exercises %}
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+    <!-- Sample Exercise 1 -->
+    <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden patient-card group">
+        <div class="relative h-48 bg-gradient-to-br from-red-100 to-red-200 overflow-hidden">
+            <div class="w-full h-full flex items-center justify-center">
+                <i class="fas fa-heartbeat text-6xl text-red-500/50"></i>
+            </div>
+            <div class="absolute top-4 right-4">
+                <span class="px-3 py-1 bg-white/90 text-red-600 rounded-full text-sm font-medium">Cardio</span>
+            </div>
+        </div>
+        <div class="p-6">
+            <h3 class="text-xl font-bold text-patient-dark-blue mb-2">Walking Exercise</h3>
+            <p class="text-patient-dark-gray mb-4 text-sm">A gentle walking routine to improve cardiovascular health and mobility.</p>
+            <div class="flex items-center justify-between mb-4 text-sm text-patient-dark-gray">
+                <div class="flex items-center">
+                    <i class="fas fa-clock mr-1"></i>
+                    <span>20 min</span>
+                </div>
+                <div class="flex items-center">
+                    <i class="fas fa-signal mr-1"></i>
+                    <span>Beginner</span>
+                </div>
+                <div class="flex items-center">
+                    <i class="fas fa-fire mr-1"></i>
+                    <span>80 cal</span>
+                </div>
+            </div>
+            <button class="w-full inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl hover:from-red-600 hover:to-red-700 transition-all duration-300 font-semibold shadow-lg">
+                <i class="fas fa-play mr-2"></i>Start Exercise
+            </button>
+        </div>
+    </div>
+
+    <!-- Sample Exercise 2 -->
+    <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden patient-card group">
+        <div class="relative h-48 bg-gradient-to-br from-blue-100 to-blue-200 overflow-hidden">
+            <div class="w-full h-full flex items-center justify-center">
+                <i class="fas fa-dumbbell text-6xl text-blue-500/50"></i>
+            </div>
+            <div class="absolute top-4 right-4">
+                <span class="px-3 py-1 bg-white/90 text-blue-600 rounded-full text-sm font-medium">Strength</span>
+            </div>
+        </div>
+        <div class="p-6">
+            <h3 class="text-xl font-bold text-patient-dark-blue mb-2">Arm Strengthening</h3>
+            <p class="text-patient-dark-gray mb-4 text-sm">Build upper body strength with these targeted arm exercises.</p>
+            <div class="flex items-center justify-between mb-4 text-sm text-patient-dark-gray">
+                <div class="flex items-center">
+                    <i class="fas fa-clock mr-1"></i>
+                    <span>15 min</span>
+                </div>
+                <div class="flex items-center">
+                    <i class="fas fa-signal mr-1"></i>
+                    <span>Intermediate</span>
+                </div>
+                <div class="flex items-center">
+                    <i class="fas fa-fire mr-1"></i>
+                    <span>60 cal</span>
+                </div>
+            </div>
+            <button class="w-full inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 font-semibold shadow-lg">
+                <i class="fas fa-play mr-2"></i>Start Exercise
+            </button>
+        </div>
+    </div>
+
+    <!-- Sample Exercise 3 -->
+    <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden patient-card group">
+        <div class="relative h-48 bg-gradient-to-br from-purple-100 to-purple-200 overflow-hidden">
+            <div class="w-full h-full flex items-center justify-center">
+                <i class="fas fa-leaf text-6xl text-purple-500/50"></i>
+            </div>
+            <div class="absolute top-4 right-4">
+                <span class="px-3 py-1 bg-white/90 text-purple-600 rounded-full text-sm font-medium">Flexibility</span>
+            </div>
+        </div>
+        <div class="p-6">
+            <h3 class="text-xl font-bold text-patient-dark-blue mb-2">Stretching Routine</h3>
+            <p class="text-patient-dark-gray mb-4 text-sm">Improve flexibility and reduce muscle tension with gentle stretches.</p>
+            <div class="flex items-center justify-between mb-4 text-sm text-patient-dark-gray">
+                <div class="flex items-center">
+                    <i class="fas fa-clock mr-1"></i>
+                    <span>10 min</span>
+                </div>
+                <div class="flex items-center">
+                    <i class="fas fa-signal mr-1"></i>
+                    <span>Beginner</span>
+                </div>
+                <div class="flex items-center">
+                    <i class="fas fa-fire mr-1"></i>
+                    <span>30 cal</span>
+                </div>
+            </div>
+            <button class="w-full inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl hover:from-purple-600 hover:to-purple-700 transition-all duration-300 font-semibold shadow-lg">
+                <i class="fas fa-play mr-2"></i>Start Exercise
+            </button>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<script>
+// Initialize cards animation
+document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('.patient-card');
+    cards.forEach((card, index) => {
+        setTimeout(() => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'all 0.5s ease';
+            
+            setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 100);
+        }, index * 100);
+    });
+});
+</script>
 {% endblock %}

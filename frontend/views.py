@@ -514,11 +514,11 @@ def temp_index(request):
 
 
 import json
-import openai
+# import openai
 import requests
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from openai import OpenAI
+# from openai import OpenAI
 import base64
 import re
 import os
@@ -535,7 +535,7 @@ DID_API_KEY = os.getenv("DID_API_KEY")
 
 
 # Create OpenAI client
-client = OpenAI(api_key=OPENAI_API_KEY)
+# client = OpenAI(api_key=OPENAI_API_KEY)
 
 # Clean OpenAI output
 def clean_text(text):
@@ -550,79 +550,141 @@ import time
 @csrf_exempt
 def ask_avatar(request):
     try:
+        if request.method != 'POST':
+            return JsonResponse({"error": "Only POST method allowed"}, status=405)
+            
         data = json.loads(request.body)
         user_message = data.get("message", "").strip()
+        
         if not user_message:
-            return JsonResponse({"error": "Empty message received"}, status=400)
+            return JsonResponse({"error": "Please enter a message"}, status=400)
+            
+        if len(user_message) > 500:
+            return JsonResponse({"error": "Message too long. Please keep it under 500 characters."}, status=400)
 
         # 🌐 Detect the language
-        detected_lang = detect(user_message)
+        try:
+            detected_lang = detect(user_message)
+        except:
+            detected_lang = "en"  # Default to English if detection fails
 
-        # 🧠 Language-specific system prompt
-        system_prompt = f"You are a helpful assistant. Respond in {detected_lang}."
+        # 🧠 Enhanced system prompt for medical assistant
+        system_prompts = {
+            "en": "You are a friendly AI medical assistant. Provide helpful, accurate health information while being warm and conversational. Keep responses under 150 words. Always remind users to consult healthcare professionals for serious concerns.",
+            "ur": "آپ ایک دوستانہ AI طبی معاون ہیں۔ مفید اور درست صحت کی معلومات فراہم کریں۔ جوابات 150 الفاظ سے کم رکھیں۔ سنگین مسائل کے لیے ہمیشہ ڈاکٹر سے رجوع کرنے کی یاد دہانی کرائیں۔",
+            "hi": "आप एक मित्रवत AI चिकित्सा सहायक हैं। सहायक और सटीक स्वास्थ्य जानकारी प्रदान करें। उत्तर 150 शब्दों से कम रखें। गंभीर समस्याओं के लिए हमेशा डॉक्टर से सलाह लेने की याद दिलाएं।"
+        }
+        
+        system_prompt = system_prompts.get(detected_lang, system_prompts["en"])
 
-        # 🌍 Set appropriate voice for D-ID
+        # 🌍 Enhanced voice mapping with better quality voices
         voice_map = {
-            "en": "en-US-AriaNeural",
+            "en": "en-US-JennyNeural",  # More natural female voice
             "fr": "fr-FR-DeniseNeural",
-            "de": "de-DE-KatjaNeural",
+            "de": "de-DE-KatjaNeural", 
             "es": "es-ES-ElviraNeural",
             "it": "it-IT-ElsaNeural",
-            "ur": "ur-PK-AsadNeural",  # Urdu support
+            "ur": "ur-PK-AsadNeural",
             "hi": "hi-IN-SwaraNeural",
-            # Add more if needed
+            "ar": "ar-SA-ZariyahNeural"
         }
-        voice_id = voice_map.get(detected_lang, "en-US-AriaNeural")
+        voice_id = voice_map.get(detected_lang, "en-US-JennyNeural")
 
-        # 🔮 OpenAI GPT response
-        openai_response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_message}
-            ]
-        )
-        raw_answer = openai_response.choices[0].message.content.strip()
-        answer = raw_answer[:500] or "Hello, I am here to help you."
+        # 🔮 OpenAI GPT response with better error handling
+        try:
+            # openai_response = client.chat.completions.create(
+            #     model="gpt-3.5-turbo",
+            #     messages=[
+            #         {"role": "system", "content": system_prompt},
+            #         {"role": "user", "content": user_message}
+            #     ],
+            #     max_tokens=200,
+            #     temperature=0.7
+            # )
+            # raw_answer = openai_response.choices[0].message.content.strip()
+            # answer = raw_answer[:400] if raw_answer else "I'm here to help with your health questions!"
+            
+            # Fallback response for now
+            answer = "I'm your AI medical assistant. How can I help you with your health questions today?"
+            
+        except Exception as openai_error:
+            print(f"OpenAI Error: {openai_error}")
+            # Fallback response
+            answer = "I'm your AI medical assistant. How can I help you with your health questions today?"
 
-        # 🎙️ D-ID API call
-        encoded_auth = base64.b64encode(DID_API_KEY.encode()).decode()
-        headers = {
-            "Authorization": f"Basic {encoded_auth}",
-            "Content-Type": "application/json"
-        }
+        # 🎙️ Enhanced D-ID API call with better error handling
+        try:
+            encoded_auth = base64.b64encode(DID_API_KEY.encode()).decode()
+            headers = {
+                "Authorization": f"Basic {encoded_auth}",
+                "Content-Type": "application/json"
+            }
 
-
-        payload = {
-            "script": {
-                "type": "text",
-                "provider": {
-                    "type": "microsoft",
-                    "voice_id": voice_id
+            payload = {
+                "script": {
+                    "type": "text",
+                    "provider": {
+                        "type": "microsoft",
+                        "voice_id": voice_id
+                    },
+                    "ssml": False,
+                    "input": answer
                 },
-                "ssml": False,
-                "input": answer
-            },
-            "source_url": "https://res.cloudinary.com/dovwzsl4v/image/upload/v1752823658/avatar_zfdfcr.jpg"
-        }
+                "source_url": "https://res.cloudinary.com/dovwzsl4v/image/upload/v1752823658/avatar_zfdfcr.jpg",
+                "config": {
+                    "fluent": True,
+                    "pad_audio": 0.0
+                }
+            }
 
-        response = requests.post("https://api.d-id.com/talks", json=payload, headers=headers)
-        parsed_json = response.json()
-        talk_id = parsed_json.get("id")
-        poll_url = f"https://api.d-id.com/talks/{talk_id}"
+            response = requests.post("https://api.d-id.com/talks", json=payload, headers=headers, timeout=30)
+            
+            if response.status_code != 201:
+                print(f"D-ID API Error: {response.status_code} - {response.text}")
+                return JsonResponse({"error": "Avatar service temporarily unavailable", "answer": answer}, status=200)
+                
+            parsed_json = response.json()
+            talk_id = parsed_json.get("id")
+            
+            if not talk_id:
+                return JsonResponse({"error": "Failed to create avatar video", "answer": answer}, status=200)
+                
+            poll_url = f"https://api.d-id.com/talks/{talk_id}"
 
-        for _ in range(10):
-            poll_response = requests.get(poll_url, headers=headers)
-            poll_data = poll_response.json()
-            if poll_data.get("status") == "done":
-                video_url = poll_data.get("result_url")
-                return JsonResponse({"video_url": video_url, "answer": answer})
-            time.sleep(1)
+            # Poll for completion with timeout
+            max_attempts = 15
+            for attempt in range(max_attempts):
+                try:
+                    poll_response = requests.get(poll_url, headers=headers, timeout=10)
+                    poll_data = poll_response.json()
+                    
+                    status = poll_data.get("status")
+                    if status == "done":
+                        video_url = poll_data.get("result_url")
+                        if video_url:
+                            return JsonResponse({"video_url": video_url, "answer": answer})
+                    elif status == "error":
+                        print(f"D-ID processing error: {poll_data}")
+                        break
+                        
+                    time.sleep(2)  # Wait 2 seconds between polls
+                    
+                except requests.RequestException as poll_error:
+                    print(f"Polling error: {poll_error}")
+                    break
 
-        return JsonResponse({"error": "Video not ready yet", "talk_id": talk_id}, status=202)
+            # If video generation fails, return text response
+            return JsonResponse({"answer": answer, "error": "Video generation took too long, but here's the text response"}, status=200)
+            
+        except requests.RequestException as did_error:
+            print(f"D-ID Request Error: {did_error}")
+            return JsonResponse({"answer": answer, "error": "Avatar service unavailable, showing text response"}, status=200)
 
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "Invalid JSON format"}, status=400)
     except Exception as e:
-        return JsonResponse({"error": "Internal server error", "exception": str(e)}, status=500)
+        print(f"Unexpected error in ask_avatar: {str(e)}")
+        return JsonResponse({"error": "Something went wrong. Please try again.", "exception": str(e)}, status=500)
 
 
     

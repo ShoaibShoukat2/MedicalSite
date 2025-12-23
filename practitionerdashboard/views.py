@@ -65,14 +65,26 @@ def dashboard_view(request):
     # Count pending appointments
     pending_appointments = Appointment.objects.filter(practitioner_id=practitioner_id, status="Pending").count()
 
-    today = date.today()
-    now_time = datetime.now()
-    today_start = datetime.combine(today, datetime.min.time())  # Start of today
-    today_end = datetime.combine(today, datetime.max.time())  # End of today
+    # Get current date and time in local timezone
+    from django.utils import timezone as django_timezone
     
-    # 24 hours from now timestamp
+    # Get current time aware of timezone
+    now_time = django_timezone.now()
+    today = django_timezone.localdate()  # Get local date
+    
+    # Create today's start and end datetime
+    today_start = django_timezone.make_aware(datetime.combine(today, datetime.min.time()))
+    today_end = django_timezone.make_aware(datetime.combine(today, datetime.max.time()))
+    
+    # 24 hours from now
     twenty_four_hours_later = now_time + timedelta(hours=24)
 
+    # Today's appointments (appointments for today with any status)
+    today_appointments = Appointment.objects.filter(
+        slot__start_time__range=(today_start, today_end),
+        practitioner_id=practitioner_id,
+    ).order_by('slot__start_time')
+    
     # Accepted appointments (status = Accepted)
     accepted_appointments = Appointment.objects.filter(
         practitioner_id=practitioner_id,
@@ -85,7 +97,6 @@ def dashboard_view(request):
         slot__start_time__gte=twenty_four_hours_later,
         status='Pending',
         practitioner_id=practitioner_id,
-        
     ).order_by('slot__start_time')
     
     # Pending appointments (< 24 hours away with status = Pending)
@@ -93,17 +104,6 @@ def dashboard_view(request):
         slot__start_time__lt=twenty_four_hours_later,
         status='Pending',
         practitioner_id=practitioner_id,
-        
-    ).order_by('slot__start_time')
-    
-    
-    
-    # Today's appointments
-    today_appointments = Appointment.objects.filter(
-        slot__start_time__range=(today_start, today_end),
-        status='Pending',
-        practitioner_id=practitioner_id,
-        
     ).order_by('slot__start_time')
 
     return render(request, 'practitionerdashboard/dashboard.html', {
@@ -130,43 +130,46 @@ from django.contrib import messages
 
 
 def accept_appointment(request, appointment_id):
+    """Accept appointment with enhanced notifications"""
     appointment = get_object_or_404(Appointment, id=appointment_id)
     appointment.status = "Accepted"
     appointment.save()
 
-    # Send email
-    subject = 'Your Appointment Has Been Accepted'
-    message = f"""
-    Dear {appointment.patient.first_name},
-
-    Your appointment has been accepted.
-
-    Appointment Details:
-    - Date: {appointment.get_formatted_date()}
-    - Time: {appointment.get_formatted_time()}
-    - Practitioner: {appointment.practitioner.first_name}
-    - Video Call Link: {appointment.video_call_link}
-    """
-    recipient_email = appointment.patient.email
-    send_mail(subject, message, 'your_email@example.com', [recipient_email])
+    # Import notification functions
+    from .notifications import notify_appointment_accepted
+    
+    # Send comprehensive notifications
+    notify_appointment_accepted(appointment)
 
     # Add frontend notification
-    messages.success(request, "Appointment accepted and email sent successfully.")
+    messages.success(request, "Appointment accepted successfully! Patient has been notified via email and SMS.")
 
     return redirect('practitioner_dashboard:dashboard')
 
 
 
 def cancel_appointment(request, appointment_id):
+    """Cancel appointment with enhanced notifications and reason"""
     appointment = get_object_or_404(Appointment, id=appointment_id)
-
-    patient_name = appointment.patient.first_name
-    recipient_email = appointment.patient.email
-    date = appointment.get_formatted_date()
-    time = appointment.get_formatted_time()
-    practitioner_name = appointment.practitioner.first_name
-
-    appointment.delete()
+    
+    # Get cancellation reason from request
+    reason = request.POST.get('reason', 'No reason provided')
+    
+    # Import notification functions
+    from .notifications import notify_appointment_cancelled
+    
+    # Send notifications before deleting
+    notify_appointment_cancelled(appointment, reason)
+    
+    # Update status instead of deleting (for record keeping)
+    appointment.status = "Cancelled"
+    appointment.cancellation_reason = reason
+    appointment.save()
+    
+    # Add frontend notification
+    messages.success(request, f"Appointment cancelled successfully! Patient has been notified.")
+    
+    return redirect('practitioner_dashboard:dashboard')
 
     subject = 'Your Appointment Has Been Cancelled'
     message = f"""
@@ -212,10 +215,93 @@ def get_patient_details(request, appointment_id):
 
 
 def telemedicine(request):
-    return render(request, 'practitionerdashboard/telemedicine.html')
+    """Enhanced telemedicine view with unified video system"""
+    practitioner_id = request.session.get('practitioner_id')
+    
+    if not practitioner_id:
+        return redirect('frontend:practitioner_login')
+    
+    practitioner = get_object_or_404(Practitioner, id=practitioner_id)
+    
+    # Get today's accepted appointments for video calls
+    from django.utils import timezone as django_timezone
+    today = django_timezone.localdate()
+    today_start = django_timezone.make_aware(datetime.combine(today, datetime.min.time()))
+    today_end = django_timezone.make_aware(datetime.combine(today, datetime.max.time()))
+    
+    video_appointments = Appointment.objects.filter(
+        practitioner_id=practitioner_id,
+        status='Accepted',
+        slot__start_time__range=(today_start, today_end)
+    ).select_related('patient', 'slot').order_by('slot__start_time')
+    
+    context = {
+        'practitioner': practitioner,
+        'video_appointments': video_appointments,
+        'total_video_calls': video_appointments.count(),
+    }
+    
+    return render(request, 'practitionerdashboard/telemedicine.html', context)
 
 def appointment(request):
-    return render(request, 'practitionerdashboard/appointment.html')
+    """Enhanced appointment view with proper data"""
+    practitioner_id = request.session.get('practitioner_id')
+    
+    if not practitioner_id:
+        return redirect('frontend:practitioner_login')
+    
+    practitioner = get_object_or_404(Practitioner, id=practitioner_id)
+    
+    # Get current time
+    from django.utils import timezone as django_timezone
+    now_time = django_timezone.now()
+    today = django_timezone.localdate()
+    
+    # Create today's start and end datetime
+    today_start = django_timezone.make_aware(datetime.combine(today, datetime.min.time()))
+    today_end = django_timezone.make_aware(datetime.combine(today, datetime.max.time()))
+    
+    # Get all appointments for this practitioner
+    all_appointments = Appointment.objects.filter(
+        practitioner_id=practitioner_id
+    ).select_related('patient', 'slot').order_by('-created_at')
+    
+    # Today's appointments
+    today_appointments = all_appointments.filter(
+        slot__start_time__range=(today_start, today_end)
+    )
+    
+    # Pending appointments (need action)
+    pending_appointments = all_appointments.filter(status='Pending')
+    
+    # Accepted appointments
+    accepted_appointments = all_appointments.filter(status='Accepted')
+    
+    # Cancelled appointments
+    cancelled_appointments = all_appointments.filter(status='Cancelled')
+    
+    # Upcoming appointments (next 7 days)
+    next_week = today + timedelta(days=7)
+    upcoming_appointments = all_appointments.filter(
+        slot__start_time__date__range=(today, next_week),
+        status__in=['Pending', 'Accepted']
+    )
+    
+    context = {
+        'practitioner': practitioner,
+        'all_appointments': all_appointments,
+        'today_appointments': today_appointments,
+        'pending_appointments': pending_appointments,
+        'accepted_appointments': accepted_appointments,
+        'cancelled_appointments': cancelled_appointments,
+        'upcoming_appointments': upcoming_appointments,
+        'total_appointments': all_appointments.count(),
+        'pending_count': pending_appointments.count(),
+        'accepted_count': accepted_appointments.count(),
+        'today_count': today_appointments.count(),
+    }
+    
+    return render(request, 'practitionerdashboard/appointment.html', context)
 
 
 def chat(request):
@@ -248,25 +334,68 @@ def add_slot(request):
             
             # Parse JSON data
             data = json.loads(request.body)
-            date = datetime.strptime(data['date'], '%Y-%m-%d').date()
+            
+            # Parse date - ensure it's treated as local date
+            slot_date = datetime.strptime(data['date'], '%Y-%m-%d').date()
+            
+            # Parse times
             start_time = datetime.strptime(data['start_time'], '%H:%M').time()
             end_time = datetime.strptime(data['end_time'], '%H:%M').time()
+            
+            # Validate that end time is after start time
+            if end_time <= start_time:
+                return JsonResponse({
+                    'success': False, 
+                    'error': 'End time must be after start time'
+                }, status=400)
+            
+            # Check if slot already exists
+            existing_slot = AvailableSlot.objects.filter(
+                practitioner=practitioner,
+                date=slot_date,
+                start_time=start_time,
+                end_time=end_time
+            ).exists()
+            
+            if existing_slot:
+                return JsonResponse({
+                    'success': False, 
+                    'error': 'This slot already exists'
+                }, status=400)
 
             # Create the slot
             slot = AvailableSlot.objects.create(
                 practitioner=practitioner,
-                date=date,
+                date=slot_date,
                 start_time=start_time,
                 end_time=end_time
             )
 
-
-
-
-            return JsonResponse({'success': True})
+            return JsonResponse({
+                'success': True,
+                'slot': {
+                    'id': slot.id,
+                    'date': slot.date.strftime('%Y-%m-%d'),
+                    'start_time': slot.start_time.strftime('%H:%M'),
+                    'end_time': slot.end_time.strftime('%H:%M')
+                }
+            })
         
+        except KeyError as e:
+            return JsonResponse({
+                'success': False, 
+                'error': f'Missing required field: {str(e)}'
+            }, status=400)
+        except ValueError as e:
+            return JsonResponse({
+                'success': False, 
+                'error': f'Invalid date/time format: {str(e)}'
+            }, status=400)
         except Exception as e:
-            return JsonResponse({'success': False, 'error': str(e)}, status=400)
+            return JsonResponse({
+                'success': False, 
+                'error': f'An error occurred: {str(e)}'
+            }, status=400)
 
     return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=405)
     

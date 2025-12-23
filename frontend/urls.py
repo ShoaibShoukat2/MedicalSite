@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import *
+from .views_ai import ask_avatar
 
 app_name = 'frontend'
 
@@ -17,6 +18,9 @@ urlpatterns = [
     path('Practitioner/login/', practitioner_login, name='practitioner_login'),
     path('verify_otp/', verify_otp, name='patient_verify_otp'),
     path('practitioner_verify_otp/', practitioner_verify_otp, name='practitioner_verify_otp'),
+    
+    # AI Avatar endpoint
+    path('ask-avatar/', ask_avatar, name='ask_avatar'),
     
     path('logout/', logout, name='logout'),
      

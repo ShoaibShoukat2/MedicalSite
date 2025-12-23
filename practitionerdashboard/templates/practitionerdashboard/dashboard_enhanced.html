@@ -1,0 +1,882 @@
+{% extends "practitionerdashboard/base.html" %}
+{% load static %}
+
+{% block title %}Practitioner Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Enhanced Dashboard Styles */
+    .dashboard-header {
+        background: linear-gradient(135deg, #0e5274 0%, #1a6a8f 100%);
+        color: white;
+        padding: 40px;
+        border-radius: 16px;
+        margin-bottom: 32px;
+        box-shadow: 0 8px 24px rgba(14, 82, 116, 0.15);
+    }
+    
+    .dashboard-header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+        color: white;
+    }
+    
+    .dashboard-header p {
+        color: rgba(255, 255, 255, 0.9);
+        margin: 0;
+        font-size: 1.1rem;
+    }
+    
+    /* Stats Cards */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 24px;
+        margin-bottom: 32px;
+    }
+    
+    .stat-card {
+        background: white;
+        border-radius: 16px;
+        padding: 28px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 32px rgba(0,0,0,0.12);
+    }
+    
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(135deg, rgba(14, 82, 116, 0.1), transparent);
+        border-radius: 0 16px 0 100%;
+    }
+    
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 16px;
+        font-size: 24px;
+        color: white;
+    }
+    
+    .stat-icon.success {
+        background: linear-gradient(135deg, #28a745, #34ce57);
+    }
+    
+    .stat-icon.primary {
+        background: linear-gradient(135deg, #0e5274, #1a6a8f);
+    }
+    
+    .stat-icon.warning {
+        background: linear-gradient(135deg, #ffc107, #ffb300);
+    }
+    
+    .stat-icon.danger {
+        background: linear-gradient(135deg, #dc3545, #e74c3c);
+    }
+    
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #0e5274;
+        margin-bottom: 4px;
+    }
+    
+    .stat-label {
+        color: #6c757d;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 600;
+    }
+    
+    /* Enhanced Tabs */
+    .nav-tabs {
+        border-bottom: 2px solid #e9ecef;
+        margin-bottom: 32px;
+    }
+    
+    .nav-tabs .nav-link {
+        border: none;
+        color: #6c757d;
+        font-weight: 600;
+        padding: 16px 24px;
+        margin-right: 8px;
+        border-radius: 12px 12px 0 0;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+    
+    .nav-tabs .nav-link:hover {
+        color: #0e5274;
+        background: rgba(14, 82, 116, 0.05);
+    }
+    
+    .nav-tabs .nav-link.active {
+        color: #0e5274;
+        background: white;
+        border-bottom: 3px solid #0e5274;
+    }
+    
+    .nav-tabs .nav-link .badge {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        padding: 4px 8px;
+        border-radius: 10px;
+        font-size: 11px;
+    }
+    
+    /* Table Enhancement */
+    .table-container {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        overflow: hidden;
+    }
+    
+    .table {
+        margin: 0;
+    }
+    
+    .table thead th {
+        background: linear-gradient(135deg, #0e5274, #1a6a8f);
+        color: white;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 13px;
+        letter-spacing: 0.5px;
+        padding: 20px 16px;
+        border: none;
+    }
+    
+    .table tbody tr {
+        transition: all 0.3s ease;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .table tbody tr:hover {
+        background: rgba(14, 82, 116, 0.05);
+        transform: scale(1.01);
+    }
+    
+    .table tbody td {
+        padding: 20px 16px;
+        vertical-align: middle;
+    }
+    
+    /* Patient Info */
+    .patient-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .patient-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #0e5274, #1a6a8f);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 700;
+        font-size: 18px;
+    }
+    
+    .patient-details strong {
+        color: #0e5274;
+        font-size: 15px;
+        display: block;
+    }
+    
+    .patient-details small {
+        color: #6c757d;
+        font-size: 13px;
+    }
+    
+    /* Action Buttons */
+    .btn-action {
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 13px;
+        transition: all 0.3s ease;
+        border: none;
+        margin: 0 4px;
+    }
+    
+    .btn-action:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .btn-view {
+        background: linear-gradient(135deg, #17a2b8, #138496);
+        color: white;
+    }
+    
+    .btn-accept {
+        background: linear-gradient(135deg, #28a745, #34ce57);
+        color: white;
+    }
+    
+    .btn-cancel {
+        background: linear-gradient(135deg, #dc3545, #c82333);
+        color: white;
+    }
+    
+    .btn-symptoms {
+        background: linear-gradient(135deg, #ffc107, #e0a800);
+        color: #000;
+    }
+    
+    .btn-video {
+        background: linear-gradient(135deg, #6f42c1, #5a32a3);
+        color: white;
+    }
+    
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 80px 20px;
+    }
+    
+    .empty-state i {
+        font-size: 80px;
+        color: #e9ecef;
+        margin-bottom: 24px;
+    }
+    
+    .empty-state h3 {
+        color: #6c757d;
+        margin-bottom: 12px;
+        font-size: 1.5rem;
+    }
+    
+    .empty-state p {
+        color: #adb5bd;
+        margin-bottom: 24px;
+    }
+    
+    /* Modal Enhancement */
+    .modal-content {
+        border-radius: 16px;
+        border: none;
+        box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+    }
+    
+    .modal-header {
+        background: linear-gradient(135deg, #0e5274, #1a6a8f);
+        color: white;
+        border-radius: 16px 16px 0 0;
+        padding: 24px;
+    }
+    
+    .modal-header .btn-close {
+        filter: brightness(0) invert(1);
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .dashboard-header {
+            padding: 24px;
+        }
+        
+        .dashboard-header h1 {
+            font-size: 1.75rem;
+        }
+        
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .nav-tabs .nav-link {
+            padding: 12px 16px;
+            font-size: 13px;
+        }
+        
+        .btn-action {
+            width: 100%;
+            margin: 4px 0;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Dashboard Header -->
+    <div class="dashboard-header fade-in">
+        <h1><i class="fas fa-tachometer-alt me-3"></i>Practitioner Dashboard</h1>
+        <p>Welcome back! Here's what's happening with your practice today.</p>
+    </div>
+    
+    <!-- Stats Cards -->
+    <div class="stats-grid fade-in">
+        <div class="stat-card">
+            <div class="stat-icon success">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-number">{{ total_patients }}</div>
+            <div class="stat-label">Total Patients</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon primary">
+                <i class="fas fa-calendar-check"></i>
+            </div>
+            <div class="stat-number">{{ completed_appointments }}</div>
+            <div class="stat-label">Completed</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon warning">
+                <i class="fas fa-hourglass-half"></i>
+            </div>
+            <div class="stat-number">{{ pending_appointments }}</div>
+            <div class="stat-label">Pending</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon danger">
+                <i class="fas fa-dollar-sign"></i>
+            </div>
+            <div class="stat-number">${{ total_revenue|default:"0" }}</div>
+            <div class="stat-label">Revenue</div>
+        </div>
+    </div>
+    
+    <!-- Messages -->
+    {% if messages %}
+    <div class="alert-container">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            <i class="fas fa-info-circle me-2"></i>{{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <!-- Tabs Navigation -->
+    <ul class="nav nav-tabs" id="appointmentTabs" role="tablist">
+        <li class="nav-item">
+            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#today">
+                <i class="fas fa-calendar-day me-2"></i>Today
+                <span class="badge bg-primary">{{ today_appointments|length }}</span>
+            </button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#pending">
+                <i class="fas fa-clock me-2"></i>Pending
+                <span class="badge bg-warning">{{ pending_appointments_list|length }}</span>
+            </button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#accepted">
+                <i class="fas fa-check-circle me-2"></i>Accepted
+                <span class="badge bg-success">{{ accepted_appointments|length }}</span>
+            </button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#waiting">
+                <i class="fas fa-list me-2"></i>Waiting List
+                <span class="badge bg-info">{{ waiting_list_appointments|length }}</span>
+            </button>
+        </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content">
+        <!-- Today's Appointments -->
+        <div class="tab-pane fade show active" id="today">
+            <div class="table-container">
+                {% if today_appointments %}
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-user me-2"></i>Patient</th>
+                            <th><i class="fas fa-clock me-2"></i>Time</th>
+                            <th><i class="fas fa-dollar-sign me-2"></i>Amount</th>
+                            <th><i class="fas fa-notes-medical me-2"></i>Symptoms</th>
+                            <th><i class="fas fa-info-circle me-2"></i>Status</th>
+                            <th><i class="fas fa-cog me-2"></i>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for appointment in today_appointments %}
+                        <tr data-id="{{ appointment.id }}">
+                            <td>
+                                <div class="patient-info">
+                                    <div class="patient-avatar">
+                                        {{ appointment.patient.first_name|slice:":1" }}
+                                    </div>
+                                    <div class="patient-details">
+                                        <strong>{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</strong>
+                                        <small>{{ appointment.patient.email }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <strong>{{ appointment.slot.start_time|time:"h:i A" }}</strong><br>
+                                <small class="text-muted">{{ appointment.slot.date|date:"M d, Y" }}</small>
+                            </td>
+                            <td><strong>${{ appointment.practitioner.price|floatformat:0 }}</strong></td>
+                            <td>
+                                <button class="btn btn-action btn-symptoms btn-sm" data-bs-toggle="modal" data-bs-target="#symptomModal{{ appointment.id }}">
+                                    <i class="fas fa-eye me-1"></i>View
+                                </button>
+                            </td>
+                            <td>
+                                <span class="badge bg-warning text-dark">
+                                    <i class="fas fa-clock me-1"></i>Pending
+                                </span>
+                            </td>
+                            <td>
+                                <div class="d-flex gap-2 flex-wrap">
+                                    <button class="btn btn-action btn-accept btn-sm accept-btn">
+                                        <i class="fas fa-check me-1"></i>Accept
+                                    </button>
+                                    <button class="btn btn-action btn-cancel btn-sm cancel-btn">
+                                        <i class="fas fa-times me-1"></i>Cancel
+                                    </button>
+                                    <a href="{{ appointment.video_call_link }}" target="_blank" class="btn btn-action btn-video btn-sm">
+                                        <i class="fas fa-video me-1"></i>Join
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <!-- Symptom Modal -->
+                        <div class="modal fade" id="symptomModal{{ appointment.id }}" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">
+                                            <i class="fas fa-notes-medical me-2"></i>
+                                            Symptoms - {{ appointment.patient.first_name }}
+                                        </h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        {% if appointment.symptom_details %}
+                                            <p class="text-dark">{{ appointment.symptom_details }}</p>
+                                        {% else %}
+                                            <p class="text-muted">No symptoms submitted yet.</p>
+                                        {% endif %}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-calendar-times"></i>
+                    <h3>No Appointments Today</h3>
+                    <p>Your schedule is clear for today!</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Pending Appointments -->
+        <div class="tab-pane fade" id="pending">
+            <div class="table-container">
+                {% if pending_appointments_list %}
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-user me-2"></i>Patient</th>
+                            <th><i class="fas fa-clock me-2"></i>Time</th>
+                            <th><i class="fas fa-dollar-sign me-2"></i>Amount</th>
+                            <th><i class="fas fa-notes-medical me-2"></i>Symptoms</th>
+                            <th><i class="fas fa-info-circle me-2"></i>Status</th>
+                            <th><i class="fas fa-cog me-2"></i>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for appointment in pending_appointments_list %}
+                        <tr data-id="{{ appointment.id }}">
+                            <td>
+                                <div class="patient-info">
+                                    <div class="patient-avatar">
+                                        {{ appointment.patient.first_name|slice:":1" }}
+                                    </div>
+                                    <div class="patient-details">
+                                        <strong>{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</strong>
+                                        <small>{{ appointment.patient.email }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <strong>{{ appointment.slot.start_time|time:"h:i A" }}</strong><br>
+                                <small class="text-muted">{{ appointment.slot.date|date:"M d, Y" }}</small>
+                            </td>
+                            <td><strong>${{ appointment.practitioner.price|floatformat:0 }}</strong></td>
+                            <td>
+                                <button class="btn btn-action btn-symptoms btn-sm" data-bs-toggle="modal" data-bs-target="#symptomModalPending{{ appointment.id }}">
+                                    <i class="fas fa-eye me-1"></i>View
+                                </button>
+                            </td>
+                            <td>
+                                <span class="badge bg-warning text-dark">
+                                    <i class="fas fa-clock me-1"></i>Pending
+                                </span>
+                            </td>
+                            <td>
+                                <div class="d-flex gap-2 flex-wrap">
+                                    <button class="btn btn-action btn-accept btn-sm accept-btn">
+                                        <i class="fas fa-check me-1"></i>Accept
+                                    </button>
+                                    <button class="btn btn-action btn-cancel btn-sm cancel-btn">
+                                        <i class="fas fa-times me-1"></i>Cancel
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <!-- Symptom Modal -->
+                        <div class="modal fade" id="symptomModalPending{{ appointment.id }}" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">
+                                            <i class="fas fa-notes-medical me-2"></i>
+                                            Symptoms - {{ appointment.patient.first_name }}
+                                        </h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        {% with symptoms=appointment.symptom_set.all %}
+                                            {% if symptoms %}
+                                                <ul class="list-group">
+                                                    {% for symptom in symptoms %}
+                                                    <li class="list-group-item">
+                                                        <p class="mb-1">{{ symptom.details }}</p>
+                                                        <small class="text-muted">{{ symptom.created_at|date:"M d, Y H:i" }}</small>
+                                                    </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% else %}
+                                                <p class="text-muted">No symptoms submitted.</p>
+                                            {% endif %}
+                                        {% endwith %}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-hourglass-half"></i>
+                    <h3>No Pending Appointments</h3>
+                    <p>All caught up! No appointments awaiting your response.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Accepted Appointments -->
+        <div class="tab-pane fade" id="accepted">
+            <div class="table-container">
+                {% if accepted_appointments %}
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-user me-2"></i>Patient</th>
+                            <th><i class="fas fa-clock me-2"></i>Time</th>
+                            <th><i class="fas fa-dollar-sign me-2"></i>Amount</th>
+                            <th><i class="fas fa-notes-medical me-2"></i>Symptoms</th>
+                            <th><i class="fas fa-info-circle me-2"></i>Status</th>
+                            <th><i class="fas fa-cog me-2"></i>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for appointment in accepted_appointments %}
+                        <tr data-id="{{ appointment.id }}">
+                            <td>
+                                <div class="patient-info">
+                                    <div class="patient-avatar">
+                                        {{ appointment.patient.first_name|slice:":1" }}
+                                    </div>
+                                    <div class="patient-details">
+                                        <strong>{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</strong>
+                                        <small>{{ appointment.patient.email }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <strong>{{ appointment.slot.start_time|time:"h:i A" }}</strong><br>
+                                <small class="text-muted">{{ appointment.slot.date|date:"M d, Y" }}</small>
+                            </td>
+                            <td><strong>${{ appointment.practitioner.price|floatformat:0 }}</strong></td>
+                            <td>
+                                <button class="btn btn-action btn-symptoms btn-sm" data-bs-toggle="modal" data-bs-target="#symptomModalAccepted{{ appointment.id }}">
+                                    <i class="fas fa-eye me-1"></i>View
+                                </button>
+                            </td>
+                            <td>
+                                <span class="badge bg-success">
+                                    <i class="fas fa-check-circle me-1"></i>Accepted
+                                </span>
+                            </td>
+                            <td>
+                                <div class="d-flex gap-2 flex-wrap">
+                                    <a href="{{ appointment.video_call_link }}" target="_blank" class="btn btn-action btn-video btn-sm">
+                                        <i class="fas fa-video me-1"></i>Join Call
+                                    </a>
+                                    <button class="btn btn-action btn-view btn-sm">
+                                        <i class="fas fa-eye me-1"></i>Details
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <!-- Symptom Modal -->
+                        <div class="modal fade" id="symptomModalAccepted{{ appointment.id }}" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">
+                                            <i class="fas fa-notes-medical me-2"></i>
+                                            Symptoms - {{ appointment.patient.first_name }}
+                                        </h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        {% with symptoms=appointment.symptom_set.all %}
+                                            {% if symptoms %}
+                                                <ul class="list-group">
+                                                    {% for symptom in symptoms %}
+                                                    <li class="list-group-item">
+                                                        <p class="mb-1">{{ symptom.details }}</p>
+                                                        <small class="text-muted">{{ symptom.created_at|date:"M d, Y H:i" }}</small>
+                                                    </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% else %}
+                                                <p class="text-muted">No symptoms submitted.</p>
+                                            {% endif %}
+                                        {% endwith %}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-check-circle"></i>
+                    <h3>No Accepted Appointments</h3>
+                    <p>Accepted appointments will appear here.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Waiting List -->
+        <div class="tab-pane fade" id="waiting">
+            <div class="table-container">
+                {% if waiting_list_appointments %}
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-user me-2"></i>Patient</th>
+                            <th><i class="fas fa-clock me-2"></i>Time</th>
+                            <th><i class="fas fa-dollar-sign me-2"></i>Amount</th>
+                            <th><i class="fas fa-notes-medical me-2"></i>Symptoms</th>
+                            <th><i class="fas fa-info-circle me-2"></i>Status</th>
+                            <th><i class="fas fa-cog me-2"></i>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for appointment in waiting_list_appointments %}
+                        <tr data-id="{{ appointment.id }}">
+                            <td>
+                                <div class="patient-info">
+                                    <div class="patient-avatar">
+                                        {{ appointment.patient.first_name|slice:":1" }}
+                                    </div>
+                                    <div class="patient-details">
+                                        <strong>{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</strong>
+                                        <small>{{ appointment.patient.email }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <strong>{{ appointment.slot.start_time|time:"h:i A" }}</strong><br>
+                                <small class="text-muted">{{ appointment.slot.date|date:"M d, Y" }}</small>
+                            </td>
+                            <td><strong>${{ appointment.practitioner.price|floatformat:0 }}</strong></td>
+                            <td>
+                                <button class="btn btn-action btn-symptoms btn-sm" data-bs-toggle="modal" data-bs-target="#symptomModalWaiting{{ appointment.id }}">
+                                    <i class="fas fa-eye me-1"></i>View
+                                </button>
+                            </td>
+                            <td>
+                                <span class="badge bg-info">
+                                    <i class="fas fa-list me-1"></i>Waiting
+                                </span>
+                            </td>
+                            <td>
+                                <div class="d-flex gap-2 flex-wrap">
+                                    <button class="btn btn-action btn-accept btn-sm accept-btn">
+                                        <i class="fas fa-check me-1"></i>Accept
+                                    </button>
+                                    <button class="btn btn-action btn-cancel btn-sm cancel-btn">
+                                        <i class="fas fa-times me-1"></i>Cancel
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <!-- Symptom Modal -->
+                        <div class="modal fade" id="symptomModalWaiting{{ appointment.id }}" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">
+                                            <i class="fas fa-notes-medical me-2"></i>
+                                            Symptoms - {{ appointment.patient.first_name }}
+                                        </h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        {% with symptoms=appointment.symptom_set.all %}
+                                            {% if symptoms %}
+                                                <ul class="list-group">
+                                                    {% for symptom in symptoms %}
+                                                    <li class="list-group-item">
+                                                        <p class="mb-1">{{ symptom.details }}</p>
+                                                        <small class="text-muted">{{ symptom.created_at|date:"M d, Y H:i" }}</small>
+                                                    </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% else %}
+                                                <p class="text-muted">No symptoms submitted.</p>
+                                            {% endif %}
+                                        {% endwith %}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-list"></i>
+                    <h3>No Waiting List</h3>
+                    <p>Your waiting list is empty.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Accept Appointment
+document.querySelectorAll('.accept-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const row = this.closest('tr');
+        const appointmentId = row.getAttribute('data-id');
+        
+        if (confirm('Accept this appointment?')) {
+            fetch(`/practitioner-dashboard/appointments/${appointmentId}/Accepted/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Appointment accepted!');
+                    location.reload();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            });
+        }
+    });
+});
+
+// Cancel Appointment
+document.querySelectorAll('.cancel-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const row = this.closest('tr');
+        const appointmentId = row.getAttribute('data-id');
+        
+        if (confirm('Cancel this appointment?')) {
+            fetch(`/practitioner-dashboard/appointments/${appointmentId}/Cancelled/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Appointment cancelled!');
+                    location.reload();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            });
+        }
+    });
+});
+
+// Fade-in animation
+document.addEventListener('DOMContentLoaded', function() {
+    const elements = document.querySelectorAll('.fade-in');
+    elements.forEach((el, index) => {
+        setTimeout(() => {
+            el.style.opacity = '1';
+            el.style.transform = 'translateY(0)';
+        }, index * 100);
+    });
+});
+</script>
+{% endblock %}

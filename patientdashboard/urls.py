@@ -71,6 +71,11 @@ urlpatterns = [
     # Review form for a specific practitioner
     path('review/<int:practitioner_id>/', views.review_practitioner, name='review_practitioner'),
     
+    # Notification URLs
+    path('mark-notifications-read/', views.mark_notifications_read, name='mark_notifications_read'),
+    path('mark-notification-read/', views.mark_notification_read, name='mark_notification_read'),
+    path('notifications/', views.all_notifications, name='all_notifications'),
+    
 
 ]
 

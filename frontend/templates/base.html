@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/8.1.0/mdb.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css">
     <link rel="stylesheet" href="{% static 'assets/css/templatemo-training-studio.css' %}">
+    <link rel="stylesheet" href="{% static 'css/medical-theme.css' %}">
     {% block extra_css_main %}{% endblock extra_css_main %}
 
 
@@ -51,30 +52,34 @@
 
         /* Custom Burger Icon */
         .navbar-toggler {
-            border: none;
-            background: transparent;
+            border: none !important;
+            padding: 0.25rem 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .navbar-toggler:focus {
+            box-shadow: none !important;
+            outline: none;
         }
 
         .navbar-toggler-icon {
-            width: 30px;
-            height: 30px;
+            width: 24px;
+            height: 24px;
             position: relative;
+            display: inline-block;
         }
 
         .navbar-toggler-icon::before,
-        .navbar-toggler-icon::after,
-        .navbar-toggler-icon span {
+        .navbar-toggler-icon::after {
             content: '';
             position: absolute;
             width: 100%;
-            height: 4px;
+            height: 3px;
             background-color: #333;
-            transition: 0.3s;
-        }
-
-        .navbar-toggler-icon span {
-            top: 50%;
-            transform: translateY(-50%);
+            transition: all 0.3s ease;
+            left: 0;
         }
 
         .navbar-toggler-icon::before {
@@ -85,12 +90,26 @@
             bottom: 0;
         }
 
+        .navbar-toggler-icon {
+            background: linear-gradient(to right, #333 0%, #333 100%);
+            background-size: 100% 3px;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
         /* Main Layout Structure */
         .main-wrapper {
             display: flex;
             flex: 1;
             margin-top: 60px;
             min-height: calc(100vh - 60px);
+            transition: margin-top 0.3s ease;
+        }
+
+        @media (max-width: 991px) {
+            .main-wrapper {
+                margin-top: auto;
+            }
         }
 
         /* Sidebar Styles */
@@ -105,6 +124,11 @@
             overflow-y: auto;
             transition: transform 0.3s ease;
             padding-top: 20px;
+            display: none;
+        }
+
+        #sidebar.show {
+            display: block;
         }
 
         .menu-item {
@@ -126,12 +150,19 @@
             min-width: 0;
             padding: 20px;
             margin-left: 250px;
+            width: 100%;
+        }
+
+        @media (max-width: 991px) {
+            .content-area {
+                margin-left: 0;
+                width: 100%;
+            }
         }
 
         /* Footer Styles */
         .footer {
             z-index: 1040;
-
             background-color: #004080;
             color: #fff;
             padding: 40px 20px;
@@ -144,11 +175,13 @@
             color: #fff;
             font-weight: bold;
             margin-bottom: 20px;
+            font-size: 1.2rem;
         }
 
         .footer a {
             color: #fff;
             text-decoration: none;
+            transition: color 0.3s ease;
         }
 
         .footer a:hover {
@@ -158,6 +191,12 @@
         .footer .social-icons a {
             font-size: 20px;
             margin-right: 10px;
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        .footer .social-icons a:hover {
+            transform: translateY(-2px);
         }
 
         .footer .bottom-footer {
@@ -166,8 +205,171 @@
             margin-top: 20px;
         }
 
-        /* Responsive Design */
+        .footer ul li {
+            margin-bottom: 8px;
+        }
+
+        .footer ul li a {
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Footer Responsive Design */
+        @media (max-width: 992px) {
+            .footer {
+                padding: 30px 15px;
+            }
+            
+            .footer h5 {
+                font-size: 1.1rem;
+                margin-bottom: 15px;
+            }
+            
+            .footer .col-lg-3 {
+                margin-bottom: 30px;
+            }
+        }
+
         @media (max-width: 768px) {
+            .footer {
+                padding: 25px 10px;
+                text-align: center;
+            }
+            
+            .footer .row {
+                margin: 0;
+            }
+            
+            .footer .col-md-6 {
+                margin-bottom: 20px;
+            }
+            
+            .footer h5 {
+                font-size: 1rem;
+                margin-bottom: 12px;
+            }
+            
+            .footer ul li a {
+                font-size: 0.9rem;
+            }
+            
+            .footer .social-icons {
+                margin-top: 15px;
+                text-align: center;
+            }
+            
+            .footer .social-icons a {
+                font-size: 18px;
+                margin: 0 8px;
+            }
+            
+            .footer .bottom-footer {
+                padding-top: 15px;
+                margin-top: 15px;
+            }
+            
+            .footer .bottom-footer .col-md-6 {
+                margin-bottom: 10px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .footer {
+                padding: 20px 8px;
+            }
+            
+            .footer h5 {
+                font-size: 0.95rem;
+                margin-bottom: 10px;
+            }
+            
+            .footer ul li {
+                margin-bottom: 6px;
+            }
+            
+            .footer ul li a {
+                font-size: 0.85rem;
+            }
+            
+            .footer .social-icons a {
+                font-size: 16px;
+                margin: 0 6px;
+            }
+            
+            .footer .bottom-footer {
+                padding-top: 12px;
+                margin-top: 12px;
+            }
+            
+            .footer .bottom-footer p {
+                font-size: 0.85rem;
+                margin-bottom: 8px;
+            }
+            
+            .footer .bottom-footer a {
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .footer {
+                padding: 15px 5px;
+            }
+            
+            .footer h5 {
+                font-size: 0.9rem;
+            }
+            
+            .footer ul li a {
+                font-size: 0.8rem;
+            }
+            
+            .footer .social-icons a {
+                font-size: 14px;
+                margin: 0 4px;
+            }
+            
+            .footer .bottom-footer p,
+            .footer .bottom-footer a {
+                font-size: 0.8rem;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 991px) {
+            .navbar-brand {
+                margin: 0 !important;
+            }
+
+            .navbar-brand img {
+                max-height: 40px;
+            }
+
+            .navbar-collapse {
+                background-color: #fff;
+                margin-top: 5px;
+                border-radius: 0 0 8px 8px;
+                padding: 15px 0;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            .navbar-nav .nav-link {
+                padding: 8px 15px !important;
+                margin: 5px 0;
+            }
+
+            .navbar-nav .btn {
+                width: 90%;
+                margin: 8px auto !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                height: auto;
+                padding: 10px 0;
+            }
+
             #sidebar {
                 position: fixed;
                 transform: translateX(-250px);
@@ -182,7 +384,49 @@
             }
 
             .navbar-brand img {
-                max-height: 40px;
+                max-height: 35px;
+            }
+
+            .navbar-toggler {
+                padding: 0.25rem 0.5rem;
+            }
+
+            .navbar-toggler-icon {
+                width: 20px;
+                height: 20px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .navbar {
+                height: auto;
+                padding: 8px 0;
+            }
+
+            .container-fluid {
+                padding: 0 10px;
+            }
+
+            .navbar-brand img {
+                max-height: 30px;
+            }
+
+            .navbar-toggler {
+                padding: 0.2rem 0.4rem;
+            }
+
+            .navbar-toggler-icon {
+                width: 18px;
+                height: 18px;
+            }
+
+            .navbar-collapse {
+                padding: 10px 0;
+            }
+
+            .navbar-nav .btn {
+                font-size: 12px;
+                padding: 8px 12px !important;
             }
         }
 
@@ -202,12 +446,8 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light fixed-top">
         <div class="container-fluid">
-            <button class="navbar-toggler" id="sidebarToggle" type="button" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-    
-            <a class="navbar-brand ms-2" href="/">
-                <img src="{% static 'MedicalSiteLogo.svg' %}" alt="Logo" style="max-height: 60px; transform: scale(1.5);">
+            <a class="navbar-brand" href="/">
+                <img src="{% static 'MedicalSiteLogo.svg' %}" alt="Logo" style="max-height: 50px;">
             </a>
     
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -314,24 +554,24 @@
 
     <!-- Footer -->
     <footer class="footer">
-        <div class="container">
-
-
-            <div class="row">
+        <div class="container-fluid px-3 px-md-4">
+            <div class="row g-4">
                 <!-- Logo Section -->
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <img src="{% static 'MedicalSiteLogo.svg' %}" alt="Logo" class="img-fluid mb-3" style="max-width: 150px;">
-                    <div class="social-icons">
-                        <a href="#"><i class="fab fa-facebook me-3"></i></a>
-                        <a href="#"><i class="fab fa-twitter me-3"></i></a>
-                        <a href="#"><i class="fab fa-linkedin me-3"></i></a>
-                        <a href="#"><i class="fab fa-instagram me-3"></i></a>
-                        <a href="#"><i class="fab fa-dribbble"></i></a>
+                <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+                    <div class="text-center text-md-start">
+                        <img src="{% static 'MedicalSiteLogo.svg' %}" alt="Logo" class="img-fluid mb-3" style="max-width: 120px;">
+                        <div class="social-icons">
+                            <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                            <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                            <a href="#" aria-label="Dribbble"><i class="fab fa-dribbble"></i></a>
+                        </div>
                     </div>
                 </div>
 
                 <!-- For Patients Section -->
-                <div class="col-lg-3 col-md-6 mb-4">
+                <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
                     <h5 class="text-uppercase">For Patients</h5>
                     <ul class="list-unstyled">
                         <li><a href="#">Search for Doctors</a></li>
@@ -343,7 +583,7 @@
                 </div>
 
                 <!-- For Doctors Section -->
-                <div class="col-lg-3 col-md-6 mb-4">
+                <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
                     <h5 class="text-uppercase">For Doctors</h5>
                     <ul class="list-unstyled">
                         <li><a href="#">Appointments</a></li>
@@ -355,30 +595,38 @@
                 </div>
 
                 <!-- Contact Us Section -->
-                <div class="col-lg-3 col-md-6 mb-4">
+                <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
                     <h5 class="text-uppercase">Contact Us</h5>
                     <ul class="list-unstyled">
-                        <li><i class="fas fa-map-marker-alt me-2"></i> 3556 Beech Street, San Francisco, CA 94108</li>
-                        <li><i class="fas fa-phone me-2"></i> +1 315 369 5943</li>
-                        <li><i class="fas fa-envelope me-2"></i> Reeducaive@example.com</li>
+                        <li class="mb-2">
+                            <i class="fas fa-map-marker-alt me-2"></i>
+                            <span class="d-inline-block">3556 Beech Street, San Francisco, CA 94108</span>
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-phone me-2"></i>
+                            <a href="tel:+13153695943">+1 315 369 5943</a>
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-envelope me-2"></i>
+                            <a href="mailto:Reeducaive@example.com">Reeducaive@example.com</a>
+                        </li>
                     </ul>
                 </div>
             </div>
 
             <!-- Bottom Footer -->
-<!-- Bottom Footer continued -->
-<div class="row mt-4 pt-3 border-top">
-    <div class="col-md-6 text-center text-md-start">
-        <p class="mb-0">&copy; 2025 Reeducaive. All Rights Reserved.</p>
-    </div>
-    <div class="col-md-6 text-center text-md-end">
-        <a href="#">Terms and Conditions</a>
-        <span class="mx-2">|</span>
-        <a href="#">Policy</a>
-    </div>
-</div>
-</div>
-</footer>
+            <div class="row mt-4 pt-3 border-top">
+                <div class="col-md-6 col-12 text-center text-md-start mb-2 mb-md-0">
+                    <p class="mb-0">&copy; 2025 Reeducaive. All Rights Reserved.</p>
+                </div>
+                <div class="col-md-6 col-12 text-center text-md-end">
+                    <a href="#" class="me-2">Terms and Conditions</a>
+                    <span class="mx-1 d-none d-sm-inline">|</span>
+                    <a href="#" class="ms-2">Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
 
 <!-- JavaScript Libraries -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -398,26 +646,28 @@
 <script src="{% static 'assets/js/accordions.js' %}"></script>
 <script src="{% static 'assets/js/custom.js' %}"></script>
 
-<!-- Sidebar Toggle and Carousel Initialization -->
+<!-- Navbar and Sidebar Toggle Script -->
 <script>
-// Toggle sidebar visibility
-const sidebar = document.getElementById('sidebar');
-const sidebarToggle = document.getElementById('sidebarToggle');
+document.addEventListener('DOMContentLoaded', function() {
+    const navbar = document.querySelector('.navbar');
+    const navbarToggler = document.querySelector('.navbar-toggler');
+    const navbarCollapse = document.querySelector('.navbar-collapse');
 
-if (sidebarToggle) {
-sidebarToggle.addEventListener('click', function(e) {
-    e.stopPropagation();
-    sidebar.classList.toggle('active');
-});
-}
-
-// Close sidebar on outside click (mobile)
-document.addEventListener('click', function(e) {
-if (window.innerWidth < 768) {
-    if (!sidebar.contains(e.target) && !sidebarToggle.contains(e.target)) {
-        sidebar.classList.remove('active');
+    if (navbarToggler && navbarCollapse) {
+        navbarToggler.addEventListener('click', function() {
+            navbarCollapse.classList.toggle('show');
+        });
     }
-}
+
+    document.addEventListener('click', function(e) {
+        if (window.innerWidth < 992) {
+            if (navbarCollapse && navbarCollapse.classList.contains('show')) {
+                if (!navbar.contains(e.target)) {
+                    navbarCollapse.classList.remove('show');
+                }
+            }
+        }
+    });
 });
 
 // Initialize Slick carousel if it exists

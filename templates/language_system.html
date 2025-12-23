@@ -1,0 +1,576 @@
+<!-- Language System Template - Include this in all dashboard templates -->
+<style>
+/* Language Selector Styles for Dashboards */
+.dashboard-language-selector {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 25px;
+    padding: 0.5rem 1rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-language-dropdown {
+    background: rgba(255, 255, 255, 0.98) !important;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    border-radius: 15px !important;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3) !important;
+    padding: 0.5rem 0;
+    min-width: 200px;
+    z-index: 10001 !important;
+    position: absolute !important;
+    top: 100% !important;
+    right: 0 !important;
+    margin-top: 0.5rem !important;
+    animation: dropdownFadeIn 0.3s ease-out;
+}
+
+.dashboard-language-dropdown .dropdown-item {
+    padding: 0.75rem 1.5rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: #333 !important;
+    text-decoration: none !important;
+    border: none !important;
+    background: transparent !important;
+}
+
+.dashboard-language-dropdown .dropdown-item:hover {
+    background: linear-gradient(135deg, #007bff, #0056b3) !important;
+    color: white !important;
+    transform: translateX(-5px);
+    border-radius: 8px;
+    margin: 0 0.5rem;
+}
+
+.flag-icon {
+    font-size: 1.2rem;
+    width: 20px;
+    text-align: center;
+}
+
+@keyframes dropdownFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* RTL Support for Dashboards */
+[dir="rtl"] .dashboard-language-selector {
+    right: auto;
+    left: 20px;
+}
+
+[dir="rtl"] .dashboard-language-dropdown {
+    right: auto !important;
+    left: 0 !important;
+}
+
+[dir="rtl"] .dashboard-language-dropdown .dropdown-item:hover {
+    transform: translateX(5px);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .dashboard-language-selector {
+        top: 10px;
+        right: 10px;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.9rem;
+    }
+    
+    .dashboard-language-dropdown {
+        min-width: 180px;
+        margin-top: 0.25rem !important;
+    }
+}
+</style>
+
+<!-- Language Selector HTML -->
+<div class="dashboard-language-selector">
+    <div class="dropdown">
+        <a class="dropdown-toggle text-decoration-none text-dark d-flex align-items-center" href="#" id="dashboardLanguageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-globe me-2"></i>
+            <span id="dashboard-current-language">English</span>
+        </a>
+        <ul class="dropdown-menu dashboard-language-dropdown" aria-labelledby="dashboardLanguageDropdown">
+            <li><a class="dropdown-item" href="#" onclick="changeDashboardLanguage('en')">
+                <span class="flag-icon">🇺🇸</span> English
+            </a></li>
+            <li><a class="dropdown-item" href="#" onclick="changeDashboardLanguage('ur')">
+                <span class="flag-icon">🇵🇰</span> اردو
+            </a></li>
+            <li><a class="dropdown-item" href="#" onclick="changeDashboardLanguage('ar')">
+                <span class="flag-icon">🇸🇦</span> العربية
+            </a></li>
+            <li><a class="dropdown-item" href="#" onclick="changeDashboardLanguage('hi')">
+                <span class="flag-icon">🇮🇳</span> हिन्दी
+            </a></li>
+            <li><a class="dropdown-item" href="#" onclick="changeDashboardLanguage('es')">
+                <span class="flag-icon">🇪🇸</span> Español
+            </a></li>
+            <li><a class="dropdown-item" href="#" onclick="changeDashboardLanguage('fr')">
+                <span class="flag-icon">🇫🇷</span> Français
+            </a></li>
+            <li><a class="dropdown-item" href="#" onclick="changeDashboardLanguage('de')">
+                <span class="flag-icon">🇩🇪</span> Deutsch
+            </a></li>
+            <li><a class="dropdown-item" href="#" onclick="changeDashboardLanguage('zh')">
+                <span class="flag-icon">🇨🇳</span> 中文
+            </a></li>
+        </ul>
+    </div>
+</div>
+
+<script>
+// Dashboard Language System
+const dashboardTranslations = {
+    'en': {
+        // Common Dashboard Terms
+        'Dashboard': 'Dashboard',
+        'Profile': 'Profile',
+        'Appointments': 'Appointments',
+        'Settings': 'Settings',
+        'Logout': 'Logout',
+        'Home': 'Home',
+        'Search': 'Search',
+        'Save': 'Save',
+        'Cancel': 'Cancel',
+        'Edit': 'Edit',
+        'Delete': 'Delete',
+        'View': 'View',
+        'Back': 'Back',
+        'Next': 'Next',
+        'Previous': 'Previous',
+        'Submit': 'Submit',
+        'Close': 'Close',
+        'Welcome': 'Welcome',
+        'Loading': 'Loading',
+        'Success': 'Success',
+        'Error': 'Error',
+        'Warning': 'Warning',
+        'Information': 'Information',
+        
+        // Patient Dashboard Specific
+        'My Appointments': 'My Appointments',
+        'Book Appointment': 'Book Appointment',
+        'Medical History': 'Medical History',
+        'Prescriptions': 'Prescriptions',
+        'Test Results': 'Test Results',
+        'Bills & Payments': 'Bills & Payments',
+        'Find Doctors': 'Find Doctors',
+        'Telemedicine': 'Telemedicine',
+        'Chat with Doctor': 'Chat with Doctor',
+        'Symptoms': 'Symptoms',
+        'Exercises': 'Exercises',
+        
+        // Practitioner Dashboard Specific
+        'My Patients': 'My Patients',
+        'Schedule': 'Schedule',
+        'Patient Records': 'Patient Records',
+        'Consultations': 'Consultations',
+        'Reviews': 'Reviews',
+        'Earnings': 'Earnings',
+        'Availability': 'Availability',
+        'Medical Records': 'Medical Records',
+        'Prescribe Medicine': 'Prescribe Medicine',
+        'Video Call': 'Video Call',
+        
+        // Common Actions
+        'Book Now': 'Book Now',
+        'View Details': 'View Details',
+        'Download': 'Download',
+        'Print': 'Print',
+        'Share': 'Share',
+        'Update': 'Update',
+        'Confirm': 'Confirm',
+        'Reschedule': 'Reschedule',
+        'Complete': 'Complete',
+        'Pending': 'Pending',
+        'Approved': 'Approved',
+        'Rejected': 'Rejected',
+        'Active': 'Active',
+        'Inactive': 'Inactive'
+    },
+    'ur': {
+        // Common Dashboard Terms
+        'Dashboard': 'ڈیش بورڈ',
+        'Profile': 'پروفائل',
+        'Appointments': 'اپائنٹمنٹس',
+        'Settings': 'سیٹنگز',
+        'Logout': 'لاگ آؤٹ',
+        'Home': 'ہوم',
+        'Search': 'تلاش',
+        'Save': 'محفوظ کریں',
+        'Cancel': 'منسوخ',
+        'Edit': 'ترمیم',
+        'Delete': 'حذف',
+        'View': 'دیکھیں',
+        'Back': 'واپس',
+        'Next': 'اگلا',
+        'Previous': 'پچھلا',
+        'Submit': 'جمع کریں',
+        'Close': 'بند',
+        'Welcome': 'خوش آمدید',
+        'Loading': 'لوڈ ہو رہا ہے',
+        'Success': 'کامیابی',
+        'Error': 'خرابی',
+        'Warning': 'انتباہ',
+        'Information': 'معلومات',
+        
+        // Patient Dashboard Specific
+        'My Appointments': 'میری اپائنٹمنٹس',
+        'Book Appointment': 'اپائنٹمنٹ بک کریں',
+        'Medical History': 'طبی تاریخ',
+        'Prescriptions': 'نسخے',
+        'Test Results': 'ٹیسٹ کے نتائج',
+        'Bills & Payments': 'بل اور ادائیگیاں',
+        'Find Doctors': 'ڈاکٹر تلاش کریں',
+        'Telemedicine': 'ٹیلی میڈیسن',
+        'Chat with Doctor': 'ڈاکٹر سے چیٹ',
+        'Symptoms': 'علامات',
+        'Exercises': 'ورزشیں',
+        
+        // Practitioner Dashboard Specific
+        'My Patients': 'میرے مریض',
+        'Schedule': 'شیڈول',
+        'Patient Records': 'مریض کے ریکارڈز',
+        'Consultations': 'مشاورت',
+        'Reviews': 'جائزے',
+        'Earnings': 'آمدنی',
+        'Availability': 'دستیابی',
+        'Medical Records': 'طبی ریکارڈز',
+        'Prescribe Medicine': 'دوا تجویز کریں',
+        'Video Call': 'ویڈیو کال',
+        
+        // Common Actions
+        'Book Now': 'ابھی بک کریں',
+        'View Details': 'تفصیلات دیکھیں',
+        'Download': 'ڈاؤن لوڈ',
+        'Print': 'پرنٹ',
+        'Share': 'شیئر',
+        'Update': 'اپ ڈیٹ',
+        'Confirm': 'تصدیق',
+        'Reschedule': 'دوبارہ شیڈول',
+        'Complete': 'مکمل',
+        'Pending': 'زیر التواء',
+        'Approved': 'منظور',
+        'Rejected': 'مسترد',
+        'Active': 'فعال',
+        'Inactive': 'غیر فعال'
+    },
+    'ar': {
+        // Common Dashboard Terms
+        'Dashboard': 'لوحة التحكم',
+        'Profile': 'الملف الشخصي',
+        'Appointments': 'المواعيد',
+        'Settings': 'الإعدادات',
+        'Logout': 'تسجيل الخروج',
+        'Home': 'الرئيسية',
+        'Search': 'بحث',
+        'Save': 'حفظ',
+        'Cancel': 'إلغاء',
+        'Edit': 'تحرير',
+        'Delete': 'حذف',
+        'View': 'عرض',
+        'Back': 'رجوع',
+        'Next': 'التالي',
+        'Previous': 'السابق',
+        'Submit': 'إرسال',
+        'Close': 'إغلاق',
+        'Welcome': 'مرحباً',
+        'Loading': 'جاري التحميل',
+        'Success': 'نجح',
+        'Error': 'خطأ',
+        'Warning': 'تحذير',
+        'Information': 'معلومات',
+        
+        // Patient Dashboard Specific
+        'My Appointments': 'مواعيدي',
+        'Book Appointment': 'حجز موعد',
+        'Medical History': 'التاريخ الطبي',
+        'Prescriptions': 'الوصفات الطبية',
+        'Test Results': 'نتائج الفحوصات',
+        'Bills & Payments': 'الفواتير والمدفوعات',
+        'Find Doctors': 'البحث عن أطباء',
+        'Telemedicine': 'الطب عن بُعد',
+        'Chat with Doctor': 'محادثة مع الطبيب',
+        'Symptoms': 'الأعراض',
+        'Exercises': 'التمارين',
+        
+        // Practitioner Dashboard Specific
+        'My Patients': 'مرضاي',
+        'Schedule': 'الجدول الزمني',
+        'Patient Records': 'سجلات المرضى',
+        'Consultations': 'الاستشارات',
+        'Reviews': 'المراجعات',
+        'Earnings': 'الأرباح',
+        'Availability': 'التوفر',
+        'Medical Records': 'السجلات الطبية',
+        'Prescribe Medicine': 'وصف الدواء',
+        'Video Call': 'مكالمة فيديو',
+        
+        // Common Actions
+        'Book Now': 'احجز الآن',
+        'View Details': 'عرض التفاصيل',
+        'Download': 'تحميل',
+        'Print': 'طباعة',
+        'Share': 'مشاركة',
+        'Update': 'تحديث',
+        'Confirm': 'تأكيد',
+        'Reschedule': 'إعادة جدولة',
+        'Complete': 'مكتمل',
+        'Pending': 'معلق',
+        'Approved': 'موافق عليه',
+        'Rejected': 'مرفوض',
+        'Active': 'نشط',
+        'Inactive': 'غير نشط'
+    },
+    'hi': {
+        // Common Dashboard Terms
+        'Dashboard': 'डैशबोर्ड',
+        'Profile': 'प्रोफाइल',
+        'Appointments': 'अपॉइंटमेंट्स',
+        'Settings': 'सेटिंग्स',
+        'Logout': 'लॉगआउट',
+        'Home': 'होम',
+        'Search': 'खोजें',
+        'Save': 'सेव करें',
+        'Cancel': 'रद्द करें',
+        'Edit': 'संपादित करें',
+        'Delete': 'हटाएं',
+        'View': 'देखें',
+        'Back': 'वापस',
+        'Next': 'अगला',
+        'Previous': 'पिछला',
+        'Submit': 'सबमिट करें',
+        'Close': 'बंद करें',
+        'Welcome': 'स्वागत है',
+        'Loading': 'लोड हो रहा है',
+        'Success': 'सफलता',
+        'Error': 'त्रुटि',
+        'Warning': 'चेतावनी',
+        'Information': 'जानकारी',
+        
+        // Patient Dashboard Specific
+        'My Appointments': 'मेरी अपॉइंटमेंट्स',
+        'Book Appointment': 'अपॉइंटमेंट बुक करें',
+        'Medical History': 'चिकित्सा इतिहास',
+        'Prescriptions': 'नुस्खे',
+        'Test Results': 'टेस्ट परिणाम',
+        'Bills & Payments': 'बिल और भुगतान',
+        'Find Doctors': 'डॉक्टर खोजें',
+        'Telemedicine': 'टेलीमेडिसिन',
+        'Chat with Doctor': 'डॉक्टर से चैट',
+        'Symptoms': 'लक्षण',
+        'Exercises': 'व्यायाम',
+        
+        // Practitioner Dashboard Specific
+        'My Patients': 'मेरे मरीज़',
+        'Schedule': 'शेड्यूल',
+        'Patient Records': 'मरीज़ के रिकॉर्ड',
+        'Consultations': 'परामर्श',
+        'Reviews': 'समीक्षाएं',
+        'Earnings': 'आय',
+        'Availability': 'उपलब्धता',
+        'Medical Records': 'चिकित्सा रिकॉर्ड',
+        'Prescribe Medicine': 'दवा लिखें',
+        'Video Call': 'वीडियो कॉल',
+        
+        // Common Actions
+        'Book Now': 'अभी बुक करें',
+        'View Details': 'विवरण देखें',
+        'Download': 'डाउनलोड',
+        'Print': 'प्रिंट',
+        'Share': 'शेयर',
+        'Update': 'अपडेट',
+        'Confirm': 'पुष्टि करें',
+        'Reschedule': 'पुनर्निर्धारण',
+        'Complete': 'पूर्ण',
+        'Pending': 'लंबित',
+        'Approved': 'स्वीकृत',
+        'Rejected': 'अस्वीकृत',
+        'Active': 'सक्रिय',
+        'Inactive': 'निष्क्रिय'
+    }
+};
+
+// Language names for display
+const dashboardLanguageNames = {
+    'en': 'English',
+    'ur': 'اردو',
+    'ar': 'العربية',
+    'hi': 'हिन्दी',
+    'es': 'Español',
+    'fr': 'Français',
+    'de': 'Deutsch',
+    'zh': '中文'
+};
+
+// Dashboard Language Change Function
+window.changeDashboardLanguage = function(langCode) {
+    try {
+        console.log('Changing dashboard language to:', langCode);
+        
+        // Update current language display
+        const currentLangElement = document.getElementById('dashboard-current-language');
+        if (currentLangElement) {
+            currentLangElement.textContent = dashboardLanguageNames[langCode];
+        }
+        
+        // Set document direction for RTL languages
+        if (langCode === 'ur' || langCode === 'ar') {
+            document.documentElement.setAttribute('dir', 'rtl');
+            document.documentElement.setAttribute('lang', langCode);
+        } else {
+            document.documentElement.setAttribute('dir', 'ltr');
+            document.documentElement.setAttribute('lang', langCode);
+        }
+        
+        // Store language preference
+        localStorage.setItem('selectedLanguage', langCode);
+        
+        // Translate dashboard content
+        translateDashboard(langCode);
+        
+        // Show success message
+        showDashboardLanguageMessage(dashboardLanguageNames[langCode]);
+        
+        console.log('Dashboard language changed successfully to:', langCode);
+    } catch (error) {
+        console.error('Error changing dashboard language:', error);
+    }
+};
+
+// Translate Dashboard Content
+function translateDashboard(langCode) {
+    try {
+        const translation = dashboardTranslations[langCode] || dashboardTranslations['en'];
+        
+        if (!translation) {
+            console.error('No translation found for language:', langCode);
+            return;
+        }
+        
+        let translatedCount = 0;
+        
+        // Translate all elements with data-translate attribute
+        document.querySelectorAll('[data-translate]').forEach(element => {
+            const key = element.getAttribute('data-translate');
+            if (translation[key]) {
+                if (element.tagName === 'INPUT' && (element.type === 'text' || element.type === 'search')) {
+                    element.placeholder = translation[key];
+                } else {
+                    element.textContent = translation[key];
+                }
+                translatedCount++;
+            }
+        });
+        
+        console.log(`Dashboard translation completed: ${translatedCount} elements translated to ${langCode}`);
+    } catch (error) {
+        console.error('Error in translateDashboard:', error);
+    }
+}
+
+// Show Language Change Message
+function showDashboardLanguageMessage(languageName) {
+    const message = document.createElement('div');
+    message.className = 'dashboard-language-notification';
+    message.innerHTML = `
+        <i class="fas fa-check-circle me-2"></i>
+        Language changed to ${languageName}
+    `;
+    message.style.cssText = `
+        position: fixed;
+        top: 80px;
+        right: 30px;
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        z-index: 10002;
+        animation: slideInRight 0.3s ease-out;
+    `;
+    
+    document.body.appendChild(message);
+    
+    setTimeout(() => {
+        message.style.animation = 'slideOutRight 0.3s ease-out';
+        setTimeout(() => {
+            if (document.body.contains(message)) {
+                document.body.removeChild(message);
+            }
+        }, 300);
+    }, 3000);
+}
+
+// Initialize Dashboard Language System
+document.addEventListener('DOMContentLoaded', function() {
+    try {
+        console.log('Initializing dashboard language system...');
+        
+        const savedLanguage = localStorage.getItem('selectedLanguage') || 'en';
+        console.log('Saved language:', savedLanguage);
+        
+        // Update current language display
+        const currentLangElement = document.getElementById('dashboard-current-language');
+        if (currentLangElement) {
+            currentLangElement.textContent = dashboardLanguageNames[savedLanguage] || 'English';
+        }
+        
+        // Apply saved language if not English
+        if (savedLanguage !== 'en') {
+            setTimeout(() => {
+                changeDashboardLanguage(savedLanguage);
+            }, 100);
+        }
+        
+        console.log('Dashboard language system initialized successfully');
+    } catch (error) {
+        console.error('Error initializing dashboard language system:', error);
+    }
+});
+
+// CSS animations
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideInRight {
+        from {
+            opacity: 0;
+            transform: translateX(100px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    
+    @keyframes slideOutRight {
+        from {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        to {
+            opacity: 0;
+            transform: translateX(100px);
+        }
+    }
+`;
+document.head.appendChild(style);
+
+console.log('🏥 Dashboard Language System Loaded Successfully!');
+</script>

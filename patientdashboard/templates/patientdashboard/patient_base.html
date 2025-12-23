@@ -1,53 +1,422 @@
 <!DOCTYPE html>
 {% load static %}
 <html lang="en">
-
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
     <link rel="shortcut icon" type="image/x-icon" href="{% static 'assets/img/favicon.ico' %}">
-    <title>{% block title %}Dashboard{% endblock %}</title>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="{% static 'assets/css/bootstrap.min.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'assets/css/font-awesome.min.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'assets/css/style.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.3.0/mdb.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
-		
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>{% block title %}Patient Dashboard{% endblock %}</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'patient-blue': '#0066CC',
+                        'patient-light-blue': '#E6F3FF',
+                        'patient-dark-blue': '#004499',
+                        'patient-green': '#00A86B',
+                        'patient-light-green': '#E8F5E8',
+                        'patient-teal': '#008B8B',
+                        'patient-gray': '#F8FAFC',
+                        'patient-dark-gray': '#64748B',
+                        'patient-red': '#DC2626',
+                        'patient-orange': '#EA580C',
+                        'patient-purple': '#7C3AED',
+                        'patient-pink': '#EC4899'
+                    },
+                    fontFamily: {
+                        'patient': ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    animation: {
+                        'slide-in': 'slideIn 0.3s ease-out',
+                        'fade-in': 'fadeIn 0.3s ease-out',
+                        'bounce-gentle': 'bounceGentle 2s infinite',
+                    }
+                }
+            }
+        }
+    </script>
 
     {% block extra_css %}{% endblock %}
     <style>
-       /* Base sidebar styles */
-    .sidebar {
-        position: fixed;
-        width: 240px;
-        height: 100vh;
-        top: 0;
-        left: 0;
-        background: rgb(14, 82, 116);
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s ease;
-        z-index: 999;
-        overflow-y: auto;
-    }
-    
-    /* Mobile styles */
-    @media (max-width: 991.98px) {
-        /* Reset any max-width constraints */
-        .sidebar {
+        /* Modern Patient Dashboard Styles */
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: linear-gradient(135deg, #F8FAFC 0%, #E6F3FF 100%);
+        }
+        
+        /* Sidebar Animations */
+        .sidebar-enter {
             transform: translateX(-100%);
-            width: 100vw !important;
-            max-width: none !important;
+        }
+        
+        .sidebar-enter-active {
+            transform: translateX(0);
+            transition: transform 0.3s ease-out;
+        }
+        
+        .sidebar-exit {
+            transform: translateX(0);
+        }
+        
+        .sidebar-exit-active {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-out;
+        }
+        
+        /* Card Hover Effects */
+        .patient-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .patient-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 102, 204, 0.15);
+        }
+        
+        /* Medical Pulse Animation */
+        .medical-pulse {
+            animation: medicalPulse 2s infinite;
+        }
+        
+        @keyframes medicalPulse {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(0, 102, 204, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 0 15px rgba(0, 102, 204, 0);
+            }
+        }
+        
+        /* Notification Badge */
+        .notification-badge {
+            animation: notificationBounce 2s infinite;
+        }
+        
+        @keyframes notificationBounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-3px);
+            }
+            60% {
+                transform: translateY(-1px);
+            }
+        }
+        
+        /* Notification Panel Animations */
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        /* Prevent notification panel from affecting layout */
+        #notificationPanel {
+            transform-origin: top right;
+        }
+        
+        /* Header positioning fix */
+        header {
+            position: relative;
+            z-index: 1000;
+        }
+        
+        /* Notification System Z-Index Fix */
+        #notificationDropdown {
+            position: relative;
+            z-index: 5000;
+        }
+        
+        #notificationPanel {
+            position: absolute !important;
+            z-index: 5000 !important;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+            min-width: 320px;
+            max-width: 90vw;
+        }
+        
+        /* Responsive notification panel */
+        @media (max-width: 640px) {
+            #notificationPanel {
+                right: -16px !important;
+                width: calc(100vw - 32px) !important;
+                max-width: none !important;
+            }
+        }
+        
+        /* Ensure notification panel appears above sidebar and other elements */
+        .notification-overlay {
+            position: fixed;
+            top: 0;
             left: 0;
             right: 0;
-            margin: 0;
-            padding: 0;
+            bottom: 0;
+            z-index: 10004;
+            background: transparent;
+            pointer-events: none;
+        }
+        
+        .notification-overlay.active {
+            pointer-events: auto;
+        }
+        
+        /* Notification Color Classes */
+        .notification-icon-patient-blue { background-color: rgba(0, 102, 204, 0.1); }
+        .notification-text-patient-blue { color: #0066CC; }
+        .notification-bg-patient-blue { background-color: #0066CC; }
+        
+        .notification-icon-patient-green { background-color: rgba(0, 168, 107, 0.1); }
+        .notification-text-patient-green { color: #00A86B; }
+        .notification-bg-patient-green { background-color: #00A86B; }
+        
+        .notification-icon-patient-orange { background-color: rgba(234, 88, 12, 0.1); }
+        .notification-text-patient-orange { color: #EA580C; }
+        .notification-bg-patient-orange { background-color: #EA580C; }
+        
+        .notification-icon-patient-purple { background-color: rgba(124, 58, 237, 0.1); }
+        .notification-text-patient-purple { color: #7C3AED; }
+        .notification-bg-patient-purple { background-color: #7C3AED; }
+        
+        .notification-icon-patient-teal { background-color: rgba(0, 139, 139, 0.1); }
+        .notification-text-patient-teal { color: #008B8B; }
+        .notification-bg-patient-teal { background-color: #008B8B; }
+        
+        /* Smooth Transitions */
+        .smooth-transition {
+            transition: all 0.3s ease;
+        }
+        
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #0066CC;
+            border-radius: 10px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #004499;
+        }
+        
+        /* Language Dropdown Specific Styles */
+        #languageDropdown {
+            z-index: 99999 !important;
+            position: absolute !important;
+            right: 0 !important;
+            top: calc(100% + 0.5rem) !important;
+            width: 14rem !important;
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px) !important;
+            border-radius: 1rem !important;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
+            border: 1px solid rgba(229, 231, 235, 0.5) !important;
+            transform-origin: top right !important;
+        }
+        
+        /* Fix dropdown positioning on small screens */
+        @media (max-width: 640px) {
+            #languageDropdown {
+                right: -2rem !important;
+                width: calc(100vw - 4rem) !important;
+                max-width: 20rem !important;
+            }
+        }
+        
+        /* Language option hover effects */
+        .language-option:hover {
+            transform: translateX(4px);
+            transition: all 0.2s ease;
+        }
+        
+        /* Language selector button effects */
+        #languageSelector {
+            position: relative !important;
+            z-index: 10000 !important;
+            display: flex !important;
+            align-items: center !important;
+            min-width: 44px !important;
+            min-height: 44px !important;
+            box-shadow: 0 4px 15px rgba(0, 102, 204, 0.2) !important;
+        }
+        
+        #languageSelector:hover {
+            box-shadow: 0 8px 25px rgba(0, 102, 204, 0.3) !important;
+        }
+        
+        /* Ensure language selector container has proper positioning */
+        .language-selector-container {
+            position: relative !important;
+            z-index: 10000 !important;
+            display: inline-block !important;
+        }
+        
+        /* Responsive Design Improvements */
+        @media (max-width: 1024px) {
+            /* Tablet and mobile adjustments */
+            .sidebar-mobile-hidden {
+                display: none;
+            }
+            
+            /* Adjust header padding */
+            header {
+                padding: 0.75rem 1rem !important;
+            }
+            
+            /* Make main content responsive */
+            main {
+                padding: 1rem !important;
+            }
+            
+            /* Responsive cards */
+            .patient-card {
+                margin-bottom: 1rem;
+            }
+            
+            /* Mobile-friendly buttons */
+            .mobile-btn {
+                padding: 0.5rem;
+                min-width: 44px;
+                min-height: 44px;
+            }
+            
+            /* Adjust search bar */
+            .search-container {
+                max-width: none !important;
+                margin: 0 0.5rem !important;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            /* Mobile specific adjustments */
+            .text-responsive {
+                font-size: 0.875rem;
+            }
+            
+            /* Hide less important elements on mobile */
+            .mobile-hidden {
+                display: none !important;
+            }
+            
+            /* Adjust spacing */
+            .space-mobile {
+                gap: 0.5rem !important;
+            }
+            
+            /* Full width cards on mobile */
+            .mobile-full-width {
+                width: 100% !important;
+                margin: 0 !important;
+            }
+            
+            /* Adjust notification panel for mobile */
+            #notificationPanel {
+                right: -16px !important;
+                width: calc(100vw - 32px) !important;
+                max-width: none !important;
+            }
+            
+            /* Mobile header adjustments */
+            header {
+                padding: 0.5rem 0.75rem !important;
+            }
+            
+            /* Mobile sidebar full width */
+            #sidebar {
+                width: 100vw !important;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            /* Extra small screens */
+            .text-xs-responsive {
+                font-size: 0.75rem;
+            }
+            
+            /* Very compact spacing */
+            .space-xs {
+                gap: 0.25rem !important;
+            }
+            
+            /* Hide text on very small screens */
+            .xs-hidden {
+                display: none !important;
+            }
+            
+            /* Adjust language selector for very small screens */
+            #languageSelector {
+                padding: 0.5rem !important;
+                min-width: 40px !important;
+            }
+            
+            #languageDropdown {
+                width: calc(100vw - 2rem) !important;
+                right: -1rem !important;
+            }
+        }
+        
+        /* RTL Support for Language System */
+        [dir="rtl"] {
+            text-align: right;
+        }
+        
+        [dir="rtl"] .flex {
+            flex-direction: row-reverse;
+        }
+        
+        [dir="rtl"] .space-x-3 > * + * {
+            margin-left: 0;
+            margin-right: 0.75rem;
+        }
+        
+        [dir="rtl"] .space-x-4 > * + * {
+            margin-left: 0;
+            margin-right: 1rem;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes slideOutRight {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(100px);
+            }
         }
     
         .sidebar.show {
@@ -152,14 +521,13 @@
             -webkit-transform: translateX(0);
             transform: translateX(0);
         }
-    }
-    
-    /* Ensure no horizontal scrolling */
-    body {
-        overflow-x: hidden;
-        width: 100%;
-        position: relative;
-    }
+        
+        /* Ensure no horizontal scrolling */
+        body {
+            overflow-x: hidden;
+            width: 100%;
+            position: relative;
+        }
 
         /* Header Styles */
         .header {
@@ -407,44 +775,7 @@
         font-weight: 500;
         font-size: 14px;
     }
-    /* Footer Styles */
     
-    .footer {
-        z-index: 1040;
-
-        background-color:rgb(14, 82, 116);
-        color: #fff;
-        padding: 40px 20px;
-        position: relative;
-        width: 100%;
-        margin-top: auto;
-    }
-
-    .footer h5 {
-        color: #fff;
-        font-weight: bold;
-        margin-bottom: 20px;
-    }
-
-    .footer a {
-        color: #fff;
-        text-decoration: none;
-    }
-
-    .footer a:hover {
-        color: #ddd;
-    }
-
-    .footer .social-icons a {
-        font-size: 20px;
-        margin-right: 10px;
-    }
-
-    .footer .bottom-footer {
-        border-top: 1px solid rgba(255, 255, 255, 0.2);
-        padding-top: 20px;
-        margin-top: 20px;
-    }
     /* Reduce logo size when mini-sidebar is active */
 .mini-sidebar .header .logo img {
     width: 50px;
@@ -452,172 +783,7 @@
     transition: all 0.3s ease; /* Smooth transition */
 }
 
-         /* Chatbot Button */
-#chatbot-btn {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: #007bff;
-    color: white;
-    border: none;
-    padding: 12px 15px;
-    border-radius: 50px;
-    font-size: 16px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-}
 
-#chatbot-btn i {
-    font-size: 18px;
-}
-
-/* Chatbot Window */
-/* Chatbot Window - Increase height */
-#chatbot-window {
-    position: fixed;
-    bottom: 80px;
-    right: 20px;
-    width: 380px; /* Increase width slightly for better UI */
-    height: 500px; /* Increase height */
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-    display: none;
-    flex-direction: column;
-}
-
-/* Chat Body - Expandable */
-.chat-body {
-    padding: 10px;
-    height: 400px; /* Increase chat content area */
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-}
-
-
-/* Chat Header */
-.chat-header {
-    background: #007bff;
-    color: white;
-    padding: 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-}
-
-.chat-header button {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 18px;
-    cursor: pointer;
-}
-
-/* Chat Body */
-
-
-/* Chat Messages */
-.bot-message {
-    background: #f1f1f1;
-    padding: 8px;
-    border-radius: 5px;
-    margin: 5px 0;
-    align-self: flex-start;
-}
-
-.user-message {
-    background: #007bff;
-    color: white;
-    padding: 8px;
-    border-radius: 5px;
-    margin: 5px 0;
-    align-self: flex-end;
-}
-
-/* Chat Footer */
-.chat-footer {
-    display: flex;
-    padding: 10px;
-    border-top: 1px solid #ddd;
-}
-
-.chat-footer input {
-    flex: 1;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-}
-
-.chat-footer button {
-    background: #007bff;
-    color: white;
-    border: none;
-    padding: 8px 10px;
-    margin-left: 5px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-.video-container {
-    display: flex;
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
-    height: 100vh; /* Full height */
-    width: 100%; /* Full width */
-}
-/* Avatar Video Container Styles */
-#avatar-video-container {
-    position: fixed;
-    bottom: 80px;
-    right: 420px; /* Position to the left of the chat window */
-    width: 380px; /* Same width as chat window */
-    height: 500px; /* Same height as chat window */
-    overflow: hidden;
-    display: none;
-    z-index: 1000;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    border-radius: 10px; /* Same rounded corners as chat */
-    background: #000; /* Black background for video container */
-}
-
-#avatar-video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-/* AI Avatar Outside Chat Window */
-#ai-avatar-container {
-    position: fixed;
-    bottom: 80px;
-    left: 20px;  /* Moves the avatar to the left */
-    width: 100px;
-    height: 100px;
-    background-color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-    cursor: pointer;
-}
-
-/* AI Avatar Image */
-#ai-avatar-img {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    transition: transform 0.3s ease-in-out;
-}
-
-/* Hover Effect for AI Avatar */
-#ai-avatar-container:hover {
-    transform: scale(1.1); /* Slightly enlarge when hovered */
-}
 /* Add this to your existing CSS */
 
     </style>
@@ -627,358 +793,307 @@
 </head>
     
 
-<body>
-    <div class="header">
-        <!-- Mobile Menu Button -->
-        <a id="mobile_btn" class="mobile_btn float-left d-lg-none" href="javascript:void(0);">
-            <i class="fa fa-bars"style="color: white;"></i>
-        </a>
-       
-
-        <!-- Logo -->
-        <div class="header-left">
-            <a href="/" class="logo">
-                <img src="{% static 'MedicalSiteLogo.svg' %}" width="35" height="35" alt="Preclinic">
-            </a>
-
-        </div>
-        <a id="toggle_btn" class="d-none d-lg-block" href="javascript:void(0);">
-            <i class="fa fa-bars"style="color: white;"></i>
-        </a>
-        <!-- Desktop Toggle Button -->
+<body class="bg-gradient-to-br from-patient-gray to-patient-light-blue min-h-screen font-patient">
+    <!-- Modern Patient Dashboard Layout -->
+    <div class="flex h-screen overflow-hidden">
         
-    
-        <!-- Desktop Search -->
-        <!-- Desktop Search -->
-         <!-- Desktop Search -->
-         <form action="{% url 'patientdashboard:search' %}" method="get" class="d-flex">
-            <input type="text" name="query" class="form-control" placeholder="Search doctor by name or speciality..." value="{{ query|default:'' }}" style="width: 600px;">
-            <button class="btn btn-primary" type="submit" style="margin-left: 8px;">
-                <i class="fa fa-search"></i>
-            </button>
-        </form>
-        
-        
-        
-
-    
-        <!-- User Menu -->
-        <ul class="nav user-menu ml-auto">
-            <!-- Mobile Search Toggle -->
-            <li class="nav-item d-lg-none">
-                <a class="nav-link" href="#" id="mobile-search-toggle">
-                    <i class="fa fa-search"></i>
-                </a>
-            </li>
-
-    
-            <!-- Notifications -->
-            <!-- <li class="nav-item dropdown d-none d-lg-block">
-                <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
-                    <i class="fa fa-bell" style="color: white;"></i>
-                    <span class="badge badge-pill bg-danger">{{ notifications.count }}</span>
-                </a>
-        
-                <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="notificationDropdown">
-                    <li class="dropdown-header text-center bg-warning text-white">Notifications</li>
-                    
-                    {% for notification in notifications %}
-                        <li class="dropdown-item d-flex justify-content-between align-items-center">
-                            <a href="{{ notification.url }}" target="_blank" class="btn btn-sm btn-primary">
-                                Join <i class="fa fa-video-camera"></i>
-                            </a>
-                        </li>
-                    {% empty %}
-                        <li class="dropdown-item text-muted text-center">No new notifications</li>
-                    {% endfor %}
-                </ul>
-            </li>
-        
-     -->
-            <!-- Chat -->
-            <li class="nav-item" >
-                <a href="{% url 'chat:chat_list' %}" class="nav-link">
-                    <i class="fa fa-comments" style="color: white;"></i>
-                    <span class="badge badge-pill bg-primary">5</span>
-                </a>
-            </li>
-
-
-
-
-
-            <!-- Profile -->
-           <li class="nav-item dropdown has-arrow">
-                <a href="#" class="dropdown-toggle nav-link user-link" data-toggle="dropdown" aria-expanded="false" style="display: flex; align-items: center;">
-                    <span class="user-img" style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px;">
-                        {% if patient and patient.profile_photo %}
-                            <img src="{{ patient.profile_photo.url }}" alt="Profile" style="width: 30px; height: 30px; border-radius: 50%;">
-                        {% else %}
-                            <i class="fas fa-user-circle" style="font-size: 30px; color: #6c757d;"></i>
-                        {% endif %}
-                    </span>
-
-                </a>
-
-                <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="{% url 'patientdashboard:profile' %}">Patient Profile</a>
-                    <a class="dropdown-item" href="{% url 'frontend:logout' %}">Logout</a>
-                </div>
-            </li>
-
-
-
-
-        </ul>
-    </div>
-
-    
-    <!-- Mobile Search Bar (Hidden by default) -->
-    <div class="mobile-search d-lg-none">
-        <form action="{% url 'patientdashboard:search' %}" method="get" class="d-flex">
-            <input type="text" name="query" class="form-control" placeholder="Search...">
-            <button class="btn btn-primary" type="submit" style="margin-left: auto;">
-                <i class="fa fa-search"></i>
-            </button>
-        </form>
-    </div>
-
-
-    
-        <!-- Overlay -->
-        <div class="sidebar-overlay"></div>
-    
-        <!-- Main wrapper -->
-        <div class="main-wrapper">
-            <!-- Sidebar -->
-            <div class="sidebar" id="sidebar">
-                <button class="sidebar-close">
-                    <i class="fa fa-times"></i>
+        <!-- Modern Language Selector -->
+        <div class="fixed top-4 right-4 z-50">
+            <div class="relative">
+                <button onclick="toggleLanguageDropdown()" class="flex items-center space-x-2 px-4 py-2 bg-white/90 backdrop-blur-lg rounded-full shadow-lg border border-white/20 hover:bg-white transition-all duration-300">
+                    <i class="fas fa-globe text-patient-blue"></i>
+                    <span id="dashboard-current-language" class="text-sm font-medium text-patient-dark-blue">English</span>
+                    <i class="fas fa-chevron-down text-xs text-patient-blue"></i>
                 </button>
-                <div class="sidebar-inner">
-<div id="sidebar-menu" class="sidebar-menu">
-    <ul>
-        <li class="{% if request.resolver_match.url_name == 'appointments_patients' %}active{% endif %}">
-            <a href="{% url 'patientdashboard:appointments_patients' %}">
-                <i class="fa fa-dashboard" style="color: white;"></i>
-                <span style="color: rgb(255, 255, 255);">Dashboard</span>
-            </a>
-        </li>
-
-        <li class="{% if request.resolver_match.url_name == 'specialty_selection' %}active{% endif %}">
-            <a href="{% url 'patient_dashboard:specialty_selection' %}">
-                <i class="fa fa-calendar" style="color: white;"></i>
-                <span style="color: white;">Book Appointments</span>
-            </a>
-        </li>
-
-        <li class="{% if request.resolver_match.url_name == 'all_bills' %}active{% endif %}">
-            <a href="{% url 'patient_dashboard:all_bills' %}">
-                <i class="fa fa-calendar-check-o" style="color: white;"></i>
-                <span style="color: white;">Billing and Payments</span>
-            </a>
-        </li>
-
-        <li class="{% if request.resolver_match.url_name == 'exercises' %}active{% endif %}">
-            <a href="{% url 'patientdashboard:exercises' %}">
-                <i class="fa fa-heartbeat" style="color: white;"></i>
-                <span style="color: white;">Exercises</span>
-            </a>
-        </li>
-
-        <li class="{% if request.resolver_match.url_name == 'symptoms_list' %}active{% endif %}">
-            <a href="{% url 'patientdashboard:symptoms_list' %}">
-                <i class="fa fa-stethoscope" style="color: white;"></i>
-                <span style="color: white;">Symptoms Details</span>
-            </a>
-        </li>
-
-        <li class="{% if request.resolver_match.url_name == 'eligible_practitioners_for_review' %}active{% endif %}">
-            <a href="{% url 'patient_dashboard:eligible_practitioners_for_review' %}">
-                <i class="fa fa-stethoscope" style="color: white;"></i>
-                <span style="color: white;">Review</span>
-            </a>
-        </li>
-    </ul>
-</div>
-
-
-
-                  
-                </div>
-
-            </div>
-
-
-
-        <!-- Page wrapper -->
-        <div class="page-wrapper">
-            {% block content %}
-            {% endblock content %}
-        </div>
-    </div>
-   <!-- Chatbot Button -->
-<button id="chatbot-btn" onclick="toggleChatbot()">
-    <i class="fa fa-comment"></i> Chat with AI
-</button>
-{% load static %}
-
-<!-- AI Avatar (Outside the Chat Window) -->
-<div id="ai-avatar-container">
-</div>
-
-<!-- Chatbot Button -->
-<button id="chatbot-btn" onclick="toggleChatbot()">
-    <i class="fa fa-comment"></i> Chat with AI
-</button>
-<!-- Avatar Video Container -->
-<div id="avatar-video-container">
-    <video id="avatar-video" loop muted>
-        <source src="{% static 'video.mp4' %}" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
-</div>
-<!-- Chatbot Window -->
-<div id="chatbot-window">
-    <div class="chat-header">
-        <span>AI Chatbot</span>
-        <button onclick="toggleChatbot()">&times;</button>
-    </div>
-    
-    <div class="chat-body" id="chat-messages">
-        <div class="bot-message">Hello! How can I assist you today?</div>
-    </div>
-
-    <div class="chat-footer">
-        <input type="text" id="chat-input" placeholder="Type a message..." onkeypress="handleKeyPress(event)">
-        <button onclick="sendMessage()"><i class="fa fa-paper-plane"></i></button>
-    </div>
-</div>
-
-    
-    <footer class="footer">
-        <div class="container">
-            <div class="row">
-                <!-- Logo Section -->
-                <div class="col-lg-3 col-md-6 mb-4">
-
-                    <a href="/">
-
-                    <img src="{% static 'MedicalSiteLogo.svg' %}" alt="Logo" class="img-fluid mb-3" style="max-width: 150px;">
-
-
+                <div id="language-dropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 hidden z-50">
+                    <a href="#" onclick="changeDashboardLanguage('en')" class="flex items-center space-x-3 px-4 py-2 hover:bg-patient-light-blue transition-colors">
+                        <span class="text-lg">🇺🇸</span>
+                        <span class="text-sm font-medium">English</span>
                     </a>
-                    <div class="social-icons">
-                        <a href="#"><i class="fab fa-facebook me-3"></i></a>
-                        <a href="#"><i class="fab fa-twitter me-3"></i></a>
-                        <a href="#"><i class="fab fa-linkedin me-3"></i></a>
-                        <a href="#"><i class="fab fa-instagram me-3"></i></a>
-                        <a href="#"><i class="fab fa-dribbble"></i></a>
+                    <a href="#" onclick="changeDashboardLanguage('ur')" class="flex items-center space-x-3 px-4 py-2 hover:bg-patient-light-blue transition-colors">
+                        <span class="text-lg">🇵🇰</span>
+                        <span class="text-sm font-medium">اردو</span>
+                    </a>
+                    <a href="#" onclick="changeDashboardLanguage('ar')" class="flex items-center space-x-3 px-4 py-2 hover:bg-patient-light-blue transition-colors">
+                        <span class="text-lg">🇸🇦</span>
+                        <span class="text-sm font-medium">العربية</span>
+                    </a>
+                    <a href="#" onclick="changeDashboardLanguage('hi')" class="flex items-center space-x-3 px-4 py-2 hover:bg-patient-light-blue transition-colors">
+                        <span class="text-lg">🇮🇳</span>
+                        <span class="text-sm font-medium">हिन्दी</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modern Sidebar -->
+        <div id="sidebar" class="w-64 sm:w-72 lg:w-64 bg-gradient-to-b from-patient-blue to-patient-dark-blue shadow-2xl transform transition-transform duration-300 ease-in-out lg:translate-x-0 -translate-x-full fixed lg:relative z-40 h-full flex flex-col">
+            <!-- Sidebar Header -->
+            <div class="p-4 sm:p-6 border-b border-white/10 flex-shrink-0">
+                <div class="flex items-center space-x-3">
+                    <img src="{% static 'MedicalSiteLogo.svg' %}" alt="Medical Platform" class="h-8 w-8 sm:h-10 sm:w-10">
+                    <div>
+                        <h2 class="text-white font-bold text-base sm:text-lg">Patient Portal</h2>
+                        <p class="text-white/70 text-xs sm:text-sm">Healthcare Dashboard</p>
                     </div>
                 </div>
-
-
-                <!-- For Patients Section -->
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <h5 class="text-uppercase">For Patients</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="/">Search for Doctors</a></li>
-                        <li><a href="{% url 'frontend:patient_login' %}">Login</a></li>
-                        <li><a href="{% url 'frontend:patient_signup' %}">Register</a></li>
-                        <li>
-                            {% if request.session.patient_id %}
-                                <a href="{% url 'patient_dashboard:appointments_patients' %}">Patient Dashboard</a>
-                            {% else %}
-                                <a href="{% url 'frontend:patient_login' %}">Patient Dashboard</a>
-                            {% endif %}
-                        </li>
-
-
-                    </ul>
-
-                </div>
-                 <!-- For Doctors Section -->
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <h5 class="text-uppercase">For Doctors</h5>
-                    <ul class="list-unstyled">
-                        <li>
-                            <a href="{% if request.session.practitioner_id %}
-                                        {% url 'practitioner_dashboard:dashboard' %}
-                                    {% elif request.user.is_authenticated and request.user.is_practitioner %}
-                                        {% url 'practitioner_dashboard:dashboard' %}
-                                    {% else %}
-                                        {% url 'frontend:practitioner_login' %}
-                                    {% endif %}">
-                                Appointments
-                            </a>
-                        </li>
-
-
-                        <li>
-                            <a href="{% if request.session.practitioner_id %}
-                                        {% url 'practitioner_dashboard:chat' %}
-                                    {% elif request.user.is_authenticated and request.user.is_practitioner %}
-                                        {% url 'practitioner_dashboard:chat' %}
-                                    {% else %}
-                                        {% url 'frontend:practitioner_login' %}
-                                    {% endif %}">
-                                Chat
-                            </a>
-                        </li>
-
-                        <li><a href="{% url 'frontend:practitioner_login' %}">Login</a></li>
-                        <li><a href="{% url 'frontend:practitioner_signup' %}">Register</a></li>
-                        <li>
-                            <a href="{% if request.session.practitioner_id %}
-                                        {% url 'practitioner_dashboard:dashboard' %}
-                                    {% elif request.user.is_authenticated and request.user.is_practitioner %}
-                                        {% url 'practitioner_dashboard:dashboard' %}
-                                    {% else %}
-                                        {% url 'frontend:practitioner_login' %}
-                                    {% endif %}">
-                                Doctor Dashboard
-                            </a>
-                        </li>
-
-                    </ul>
-                </div>
-
-
-
-
-
-                <!-- Contact Us Section -->
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <h5 class="text-uppercase">Contact Us</h5>
-                    <ul class="list-unstyled">
-                        <li><i class="fas fa-map-marker-alt me-2"></i> 3556 Beech Street, San Francisco</li>
-                        <li><i class="fas fa-phone me-2"></i> +1 315 369 5943</li>
-                        <li><i class="fas fa-envelope me-2"></i> Reeducaive@example.com</li>
-                    </ul>
-                </div>
             </div>
 
-            <!-- Bottom Footer -->
-            <!-- Bottom Footer continued -->
-            <div class="row mt-4 pt-3 border-top">
-                <div class="col-md-6 text-center text-md-start">
-                    <p class="mb-0">&copy; 2025 Reeducaive. All Rights Reserved.</p>
+            <!-- Navigation Menu -->
+            <nav class="flex-1 mt-4 sm:mt-6 px-3 sm:px-4 space-y-2 custom-scrollbar overflow-y-auto">
+                <div class="pb-20">
+                <a href="{% url 'patientdashboard:appointments_patients' %}" class="flex items-center space-x-3 px-3 sm:px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'appointments_patients' %}bg-white/20 text-white{% endif %}">
+                    <i class="fas fa-tachometer-alt text-base sm:text-lg"></i>
+                    <span class="font-medium text-sm sm:text-base" data-translate="Dashboard">Dashboard</span>
+                </a>
+                
+                <a href="{% url 'patient_dashboard:specialty_selection' %}" class="flex items-center space-x-3 px-3 sm:px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'specialty_selection' %}bg-white/20 text-white{% endif %}">
+                    <i class="fas fa-calendar-plus text-base sm:text-lg"></i>
+                    <span class="font-medium text-sm sm:text-base" data-translate="Book Appointment">Book Appointment</span>
+                </a>
+                
+                <a href="{% url 'patient_dashboard:all_bills' %}" class="flex items-center space-x-3 px-3 sm:px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'all_bills' %}bg-white/20 text-white{% endif %}">
+                    <i class="fas fa-file-invoice-dollar text-base sm:text-lg"></i>
+                    <span class="font-medium text-sm sm:text-base" data-translate="Bills & Payments">Bills & Payments</span>
+                </a>
+                
+                <a href="{% url 'patientdashboard:exercises' %}" class="flex items-center space-x-3 px-3 sm:px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'exercises' %}bg-white/20 text-white{% endif %}">
+                    <i class="fas fa-dumbbell text-base sm:text-lg"></i>
+                    <span class="font-medium text-sm sm:text-base" data-translate="Exercises">Exercises</span>
+                </a>
+                
+                <a href="{% url 'patientdashboard:symptoms_list' %}" class="flex items-center space-x-3 px-3 sm:px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'symptoms_list' %}bg-white/20 text-white{% endif %}">
+                    <i class="fas fa-stethoscope text-base sm:text-lg"></i>
+                    <span class="font-medium text-sm sm:text-base" data-translate="Symptoms">Symptoms</span>
+                </a>
+                
+                <a href="{% url 'patient_dashboard:eligible_practitioners_for_review' %}" class="flex items-center space-x-3 px-3 sm:px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'eligible_practitioners_for_review' %}bg-white/20 text-white{% endif %}">
+                    <i class="fas fa-star text-base sm:text-lg"></i>
+                    <span class="font-medium text-sm sm:text-base" data-translate="Reviews">Reviews</span>
+                </a>
+                
+                <a href="{% url 'chat:chat_list' %}" class="flex items-center space-x-3 px-3 sm:px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200">
+                    <i class="fas fa-comments text-base sm:text-lg"></i>
+                    <span class="font-medium text-sm sm:text-base">Chat</span>
+                    <span class="ml-auto bg-patient-green text-white text-xs px-2 py-1 rounded-full notification-badge">5</span>
+                </a>
                 </div>
-                <div class="col-md-6 text-center text-md-end">
-                    <a href="#">Terms and Conditions</a>
-                    <span class="mx-2">|</span>
-                    <a href="#">Policy</a>
+            </nav>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Modern Header -->
+            <header class="bg-white/80 backdrop-blur-lg shadow-sm border-b border-gray-200/50 px-2 sm:px-4 lg:px-6 py-3 sm:py-4">
+                <div class="flex items-center justify-between">
+                    <!-- Mobile Menu Button -->
+                    <button onclick="toggleSidebar()" class="lg:hidden p-2 rounded-lg text-patient-blue hover:bg-patient-light-blue transition-colors mobile-btn">
+                        <i class="fas fa-bars text-lg sm:text-xl"></i>
+                    </button>
+                    
+                    <!-- Search Bar -->
+                    <div class="flex-1 max-w-2xl mx-1 sm:mx-2 md:mx-4 search-container">
+                        <form action="{% url 'patientdashboard:search' %}" method="get" class="relative">
+                            <input type="text" 
+                                   name="query" 
+                                   class="w-full px-3 sm:px-4 py-2 pl-8 sm:pl-10 pr-12 sm:pr-16 bg-white/70 border border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-patient-blue/50 focus:border-patient-blue transition-all duration-200 text-sm sm:text-base" 
+                                   placeholder="Search doctors, specialties..." 
+                                   data-translate="Search"
+                                   value="{{ query|default:'' }}">
+                            <i class="fas fa-search absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm"></i>
+                            <button type="submit" class="absolute right-1 sm:right-2 top-1/2 transform -translate-y-1/2 px-2 sm:px-3 py-1 bg-patient-blue text-white rounded-md sm:rounded-lg hover:bg-patient-dark-blue transition-colors">
+                                <i class="fas fa-search text-xs sm:text-sm"></i>
+                            </button>
+                        </form>
+                    </div>
+                    
+                    <!-- User Profile -->
+                    <div class="flex items-center space-x-1 sm:space-x-2 md:space-x-4">
+                        <!-- Language Selector -->
+                        <div class="relative language-selector-container">
+                            <button id="languageSelector" class="flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-patient-blue to-patient-purple text-white hover:from-patient-dark-blue hover:to-patient-blue rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105" onclick="toggleLanguageDropdown()">
+                                <i class="fas fa-globe text-sm"></i>
+                                <span id="currentLanguage" class="text-sm font-medium hidden sm:inline">English</span>
+                                <i class="fas fa-chevron-down text-xs transition-transform duration-200" id="languageChevron"></i>
+                            </button>
+                            
+                            <!-- Language Dropdown -->
+                            <div id="languageDropdown" class="absolute right-0 top-full mt-3 w-56 bg-white rounded-2xl shadow-2xl border border-gray-100 py-3 z-[99999] hidden backdrop-blur-lg" style="z-index: 99999 !important; position: absolute !important; right: 0 !important; top: calc(100% + 0.75rem) !important;">
+                                <div class="px-4 py-2 text-xs font-bold text-patient-blue uppercase tracking-wider border-b border-gray-100 mb-2">
+                                    <i class="fas fa-language mr-2"></i>Choose Language
+                                </div>
+                                
+                                <button onclick="changeLanguage('en', 'English')" class="language-option w-full text-left px-4 py-3 hover:bg-gradient-to-r hover:from-patient-light-blue hover:to-blue-50 text-gray-700 hover:text-patient-dark-blue transition-all duration-200 flex items-center space-x-3 group">
+                                    <span class="w-8 h-6 bg-gradient-to-r from-blue-600 to-red-600 rounded-md flex items-center justify-center text-white text-xs font-bold shadow-sm group-hover:shadow-md transition-shadow">🇺🇸</span>
+                                    <div class="flex flex-col">
+                                        <span class="font-medium">English</span>
+                                        <span class="text-xs text-gray-500">United States</span>
+                                    </div>
+                                </button>
+                                
+                                <button onclick="changeLanguage('ur', 'اردو')" class="language-option w-full text-left px-4 py-3 hover:bg-gradient-to-r hover:from-patient-light-blue hover:to-blue-50 text-gray-700 hover:text-patient-dark-blue transition-all duration-200 flex items-center space-x-3 group">
+                                    <span class="w-8 h-6 bg-gradient-to-r from-green-600 to-green-700 rounded-md flex items-center justify-center text-white text-xs font-bold shadow-sm group-hover:shadow-md transition-shadow">🇵🇰</span>
+                                    <div class="flex flex-col">
+                                        <span class="font-medium">اردو</span>
+                                        <span class="text-xs text-gray-500">Pakistan</span>
+                                    </div>
+                                </button>
+                                
+                                <button onclick="changeLanguage('ar', 'العربية')" class="language-option w-full text-left px-4 py-3 hover:bg-gradient-to-r hover:from-patient-light-blue hover:to-blue-50 text-gray-700 hover:text-patient-dark-blue transition-all duration-200 flex items-center space-x-3 group">
+                                    <span class="w-8 h-6 bg-gradient-to-r from-green-700 to-green-800 rounded-md flex items-center justify-center text-white text-xs font-bold shadow-sm group-hover:shadow-md transition-shadow">🇸🇦</span>
+                                    <div class="flex flex-col">
+                                        <span class="font-medium">العربية</span>
+                                        <span class="text-xs text-gray-500">Saudi Arabia</span>
+                                    </div>
+                                </button>
+                                
+                                <button onclick="changeLanguage('hi', 'हिंदी')" class="language-option w-full text-left px-4 py-3 hover:bg-gradient-to-r hover:from-patient-light-blue hover:to-blue-50 text-gray-700 hover:text-patient-dark-blue transition-all duration-200 flex items-center space-x-3 group">
+                                    <span class="w-8 h-6 bg-gradient-to-r from-orange-500 to-orange-600 rounded-md flex items-center justify-center text-white text-xs font-bold shadow-sm group-hover:shadow-md transition-shadow">🇮🇳</span>
+                                    <div class="flex flex-col">
+                                        <span class="font-medium">हिंदी</span>
+                                        <span class="text-xs text-gray-500">India</span>
+                                    </div>
+                                </button>
+                                
+                                <button onclick="changeLanguage('es', 'Español')" class="language-option w-full text-left px-4 py-3 hover:bg-gradient-to-r hover:from-patient-light-blue hover:to-blue-50 text-gray-700 hover:text-patient-dark-blue transition-all duration-200 flex items-center space-x-3 group">
+                                    <span class="w-8 h-6 bg-gradient-to-r from-red-600 to-yellow-500 rounded-md flex items-center justify-center text-white text-xs font-bold shadow-sm group-hover:shadow-md transition-shadow">🇪🇸</span>
+                                    <div class="flex flex-col">
+                                        <span class="font-medium">Español</span>
+                                        <span class="text-xs text-gray-500">Spain</span>
+                                    </div>
+                                </button>
+                                
+                                <button onclick="changeLanguage('fr', 'Français')" class="language-option w-full text-left px-4 py-3 hover:bg-gradient-to-r hover:from-patient-light-blue hover:to-blue-50 text-gray-700 hover:text-patient-dark-blue transition-all duration-200 flex items-center space-x-3 group">
+                                    <span class="w-8 h-6 bg-gradient-to-r from-blue-700 to-red-700 rounded-md flex items-center justify-center text-white text-xs font-bold shadow-sm group-hover:shadow-md transition-shadow">🇫🇷</span>
+                                    <div class="flex flex-col">
+                                        <span class="font-medium">Français</span>
+                                        <span class="text-xs text-gray-500">France</span>
+                                    </div>
+                                </button>
+                                
+                                <button onclick="changeLanguage('de', 'Deutsch')" class="language-option w-full text-left px-4 py-3 hover:bg-gradient-to-r hover:from-patient-light-blue hover:to-blue-50 text-gray-700 hover:text-patient-dark-blue transition-all duration-200 flex items-center space-x-3 group">
+                                    <span class="w-8 h-6 bg-gradient-to-r from-black to-red-700 rounded-md flex items-center justify-center text-white text-xs font-bold shadow-sm group-hover:shadow-md transition-shadow">🇩🇪</span>
+                                    <div class="flex flex-col">
+                                        <span class="font-medium">Deutsch</span>
+                                        <span class="text-xs text-gray-500">Germany</span>
+                                    </div>
+                                </button>
+                                
+                                <button onclick="changeLanguage('zh', '中文')" class="language-option w-full text-left px-4 py-3 hover:bg-gradient-to-r hover:from-patient-light-blue hover:to-blue-50 text-gray-700 hover:text-patient-dark-blue transition-all duration-200 flex items-center space-x-3 group">
+                                    <span class="w-8 h-6 bg-gradient-to-r from-red-700 to-yellow-600 rounded-md flex items-center justify-center text-white text-xs font-bold shadow-sm group-hover:shadow-md transition-shadow">🇨🇳</span>
+                                    <div class="flex flex-col">
+                                        <span class="font-medium">中文</span>
+                                        <span class="text-xs text-gray-500">China</span>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Notifications -->
+                        <div class="relative mobile-hidden" id="notificationDropdown">
+                            <button onclick="toggleNotifications()" class="p-2 text-patient-blue hover:bg-patient-light-blue rounded-lg transition-colors relative mobile-btn">
+                                <i class="fas fa-bell text-base sm:text-lg"></i>
+                                {% if notifications_count > 0 %}
+                                <span id="notificationBadge" class="absolute -top-1 -right-1 bg-patient-red text-white text-xs w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center notification-badge">{{ notifications_count }}</span>
+                                {% else %}
+                                <span id="notificationBadge" class="absolute -top-1 -right-1 bg-patient-red text-white text-xs w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center notification-badge hidden">0</span>
+                                {% endif %}
+                            </button>
+                            
+                            <!-- Notification Dropdown -->
+                            <div id="notificationPanel" class="absolute right-0 top-full mt-2 w-80 bg-white rounded-xl shadow-2xl border border-gray-200 hidden transform origin-top-right">
+                                <!-- Header -->
+                                <div class="p-4 border-b border-gray-200 bg-gradient-to-r from-patient-blue to-patient-dark-blue text-white rounded-t-xl">
+                                    <div class="flex items-center justify-between">
+                                        <h3 class="font-semibold text-lg">Notifications</h3>
+                                        <button onclick="markAllAsRead()" class="text-white/80 hover:text-white text-sm transition-colors">
+                                            Mark all read
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Notification List -->
+                                <div class="max-h-96 overflow-y-auto custom-scrollbar">
+                                    {% if recent_notifications %}
+                                        {% for notification in recent_notifications %}
+                                        <div class="p-4 border-b border-gray-100 hover:bg-patient-light-blue/30 transition-colors cursor-pointer" onclick="viewNotification('{{ notification.type }}', {{ notification.id }})">
+                                            <div class="flex items-start space-x-3">
+                                                <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 notification-icon-{{ notification.color }}">
+                                                    <i class="fas fa-{{ notification.icon }} notification-text-{{ notification.color }}"></i>
+                                                </div>
+                                                <div class="flex-1 min-w-0">
+                                                    <p class="font-medium text-patient-dark-blue text-sm">{{ notification.title }}</p>
+                                                    <p class="text-patient-dark-gray text-xs mt-1">{{ notification.message }}</p>
+                                                    {% if notification.subtitle %}
+                                                    <p class="text-xs mt-1 notification-text-{{ notification.color }}">{{ notification.subtitle }}</p>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="flex flex-col items-end">
+                                                    {% if not notification.is_read %}
+                                                    <span class="w-2 h-2 rounded-full notification-bg-{{ notification.color }}"></span>
+                                                    {% endif %}
+                                                    <span class="text-xs text-patient-dark-gray mt-1">{{ notification.time_ago }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <!-- No Notifications -->
+                                        <div class="p-8 text-center">
+                                            <div class="w-16 h-16 bg-patient-light-blue rounded-full flex items-center justify-center mx-auto mb-4">
+                                                <i class="fas fa-bell-slash text-patient-blue text-2xl"></i>
+                                            </div>
+                                            <h3 class="font-medium text-patient-dark-blue mb-2">No notifications</h3>
+                                            <p class="text-patient-dark-gray text-sm">You're all caught up!</p>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Footer -->
+                                <div class="p-4 border-t border-gray-200 bg-patient-gray rounded-b-xl">
+                                    <button onclick="viewAllNotifications()" class="w-full text-center text-patient-blue hover:text-patient-dark-blue font-medium text-sm transition-colors">
+                                        View All Notifications
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center space-x-2 sm:space-x-3">
+                            <div class="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-patient-blue to-patient-purple rounded-full flex items-center justify-center">
+                                {% if patient and patient.profile_photo %}
+                                    <img src="{{ patient.profile_photo.url }}" alt="Profile" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover">
+                                {% else %}
+                                    <i class="fas fa-user text-white text-sm sm:text-base"></i>
+                                {% endif %}
+                            </div>
+                            <div class="hidden lg:block">
+                                <p class="text-sm font-medium text-patient-dark-blue">Welcome back!</p>
+                                <p class="text-xs text-patient-dark-gray">Patient Dashboard</p>
+                            </div>
+                        </div>
+                        
+                        <a href="{% url 'frontend:logout' %}" class="px-2 sm:px-4 py-2 bg-patient-red text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium mobile-btn" data-translate="Logout">
+                            <i class="fas fa-sign-out-alt sm:mr-2"></i><span class="hidden sm:inline">Logout</span>
+                        </a>
+                    </div>
                 </div>
-            </div>
-            </div>
-</footer>
+            </header>
+
+            <!-- Page Content -->
+            <main class="flex-1 overflow-y-auto p-2 sm:p-4 lg:p-6 custom-scrollbar">
+                {% block content %}
+                <!-- Page content will be inserted here -->
+                {% endblock content %}
+            </main>
+        </div>
+    </div>
+
+    <!-- Mobile Sidebar Overlay -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-30 lg:hidden hidden" onclick="toggleSidebar()"></div>
+
 <script>
     let chatSocket;
     let selectedVoice = null;
-
-    document.getElementById("ai-avatar-container").addEventListener("click", function() {
-        toggleChatbot();
-    });
     function initializeVoice() {
     // Common male voice names across different browsers/OS
     const maleVoiceNames = [
@@ -1023,18 +1138,39 @@
 
 function toggleChatbot() {
     let chatbotWindow = document.getElementById("chatbot-window");
-    let videoContainer = document.getElementById("avatar-video-container");
+    let avatarContainer = document.getElementById("ai-avatar-container");
+    
+    console.log("toggleChatbot called");
+    console.log("chatbotWindow:", chatbotWindow);
+    console.log("Current display:", chatbotWindow ? chatbotWindow.style.display : "element not found");
+    
+    if (!chatbotWindow) {
+        console.error("Chatbot window not found!");
+        return;
+    }
     
     if (chatbotWindow.style.display === "none" || chatbotWindow.style.display === "") {
+        console.log("Opening chatbot");
         chatbotWindow.style.display = "flex";
-        videoContainer.style.display = "block";
+        chatbotWindow.style.zIndex = "1001";
+        
+        // Avatar gets attention when chat opens
+        if (avatarContainer) {
+            avatarContainer.classList.add("attention");
+            setTimeout(() => {
+                avatarContainer.classList.remove("attention");
+            }, 2000);
+        }
     } else {
+        console.log("Closing chatbot");
         chatbotWindow.style.display = "none";
-        videoContainer.style.display = "none";
-        // Pause video when closing chat
-        document.getElementById("avatar-video").pause();
-        // Stop any ongoing speech
+        
+        // Stop any ongoing speech and animations
         speechSynthesis.cancel();
+        if (avatarContainer) {
+            avatarContainer.classList.remove("talking");
+            avatarContainer.classList.remove("attention");
+        }
     }
 }
 
@@ -1050,7 +1186,12 @@ function connectWebSocket() {
         let botMessage = data.message;
         
         displayMessage(botMessage, "bot");
-        speakAIResponse(botMessage);  // AI speaks response
+        
+        // Generate D-ID talking avatar video
+        avatarGetAttention();
+        setTimeout(() => {
+            didAvatarManager.generateAndPlayVideo(botMessage);
+        }, 500);
     };
 
     chatSocket.onerror = function (error) {
@@ -1091,41 +1232,250 @@ function displayMessage(message, sender) {
     chatMessages.appendChild(messageDiv);
     chatMessages.scrollTop = chatMessages.scrollHeight;  
 }
-function speakAIResponse(text) {
-    if (!selectedVoice) {
-        initializeVoice(); // Try to initialize if not done yet
+// D-ID Avatar Video Management
+class DIDAvatarManager {
+    constructor() {
+        this.avatarVideo = document.getElementById("avatar-video");
+        this.avatarImg = document.getElementById("ai-avatar-img");
+        this.avatarLoading = document.getElementById("avatar-loading");
+        this.speechDisplay = document.getElementById("avatar-speech-display");
+        this.speechContent = document.getElementById("speech-content");
+        this.isGenerating = false;
+        this.currentVideoUrl = null;
     }
-
-    let speech = new SpeechSynthesisUtterance(text);
-    speech.lang = "en-US";
-    speech.pitch = 0.9; // Slightly lower pitch for more masculine sound
-    speech.rate = 1;
     
-    if (selectedVoice) {
-        speech.voice = selectedVoice;
+    showLoading() {
+        this.avatarLoading.style.display = "block";
+        this.avatarImg.style.opacity = "0.3";
     }
-
-    // Get video element
-    let avatarVideo = document.getElementById("avatar-video");
     
-    // Play video when speech starts
-    speech.onstart = function() {
-        avatarVideo.play();
-    };
+    hideLoading() {
+        this.avatarLoading.style.display = "none";
+        this.avatarImg.style.opacity = "1";
+    }
     
-    // Pause video when speech ends
-    speech.onend = function() {
-        avatarVideo.pause();
-        avatarVideo.currentTime = 0; // Reset to start
-    };
+    showSpeechText(text) {
+        this.speechContent.textContent = text;
+        this.speechDisplay.classList.add("active");
+        this.speechDisplay.classList.add("speaking");
+    }
+    
+    hideSpeechText() {
+        this.speechDisplay.classList.remove("speaking");
+        setTimeout(() => {
+            this.speechDisplay.classList.remove("active");
+            this.speechContent.textContent = "Hi! I'm your AI medical assistant. Click me to start chatting!";
+        }, 3000);
+    }
+    
+    async generateAndPlayVideo(text) {
+        if (this.isGenerating) {
+            console.log("Already generating video, please wait...");
+            return;
+        }
+        
+        this.isGenerating = true;
+        this.showLoading();
+        this.showSpeechText(text);
+        
+        try {
+            console.log("Generating D-ID avatar video for:", text);
+            
+            // Call backend to generate D-ID video
+            const response = await fetch('/generate-avatar-response/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: JSON.stringify({ message: text })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success && data.avatar_video) {
+                // Play the generated transparent video
+                await this.playAvatarVideo(data.avatar_video);
+                console.log("D-ID video played successfully");
+            } else {
+                // Fallback to text-to-speech
+                console.log("Video generation failed, using TTS fallback");
+                this.fallbackToTTS(data.response_text || text);
+            }
+            
+        } catch (error) {
+            console.error("Avatar generation error:", error);
+            this.fallbackToTTS(text);
+        } finally {
+            this.isGenerating = false;
+            this.hideLoading();
+        }
+    }
+    
+    async playAvatarVideo(videoUrl) {
+        return new Promise((resolve, reject) => {
+            // Hide static image
+            this.avatarImg.style.display = "none";
+            
+            // Set video source
+            this.avatarVideo.src = videoUrl;
+            this.avatarVideo.style.display = "block";
+            
+            // Play video
+            this.avatarVideo.onloadeddata = () => {
+                this.avatarVideo.play().then(() => {
+                    console.log("Avatar video started playing");
+                    resolve();
+                }).catch(reject);
+            };
+            
+            // When video ends, return to static image
+            this.avatarVideo.onended = () => {
+                this.avatarVideo.style.display = "none";
+                this.avatarImg.style.display = "block";
+                this.hideSpeechText();
+                console.log("Avatar video ended");
+            };
+            
+            this.avatarVideo.onerror = (error) => {
+                console.error("Video playback error:", error);
+                this.avatarVideo.style.display = "none";
+                this.avatarImg.style.display = "block";
+                reject(error);
+            };
+        });
+    }
+    
+    fallbackToTTS(text) {
+        // Fallback to original text-to-speech
+        if (!selectedVoice) {
+            initializeVoice();
+        }
 
-    // Cancel any ongoing speech before starting new one
-    speechSynthesis.cancel();
-    speechSynthesis.speak(speech);
+        let speech = new SpeechSynthesisUtterance(text);
+        speech.lang = "en-US";
+        speech.pitch = 0.9;
+        speech.rate = 0.9;
+        
+        if (selectedVoice) {
+            speech.voice = selectedVoice;
+        }
+        
+        speech.onend = () => {
+            this.hideSpeechText();
+        };
+        
+        speechSynthesis.cancel();
+        speechSynthesis.speak(speech);
+    }
+    
+    loadIdleVideo() {
+        // Load idle/breathing video when not talking
+        fetch('/get-idle-avatar/')
+            .then(response => response.json())
+            .then(data => {
+                if (data.idle_video) {
+                    this.avatarVideo.src = data.idle_video;
+                    this.avatarVideo.style.display = "block";
+                    this.avatarImg.style.display = "none";
+                    this.avatarVideo.play();
+                }
+            })
+            .catch(error => {
+                console.log("No idle video available:", error);
+            });
+    }
 }
+
+// Initialize D-ID Avatar Manager
+const didAvatarManager = new DIDAvatarManager();
+
+// Updated function to use D-ID video generation
+function speakAIResponse(text) {
+    didAvatarManager.generateAndPlayVideo(text);
+}
+
+// Add function to make avatar get attention when new message arrives
+function avatarGetAttention() {
+    let avatarContainer = document.getElementById("ai-avatar-container");
+    avatarContainer.classList.add("attention");
+    
+    // Remove attention effect after 3 seconds
+    setTimeout(() => {
+        avatarContainer.classList.remove("attention");
+    }, 3000);
+}
+// Add periodic idle animations to make avatar feel more alive
+function addIdleAnimations() {
+    const avatarContainer = document.getElementById("ai-avatar-container");
+    
+    setInterval(() => {
+        if (!speechSynthesis.speaking && !avatarContainer.classList.contains("talking")) {
+            // Random subtle movements every 10 seconds
+            const randomAnimation = Math.random();
+            if (randomAnimation < 0.4) {
+                avatarContainer.style.transform = "scale(1.02) translateY(-2px)";
+                setTimeout(() => {
+                    avatarContainer.style.transform = "";
+                }, 1200);
+            }
+        }
+    }, 10000);
+}
+
+// Add greeting when avatar is first clicked
+function avatarGreeting() {
+    const avatarContainer = document.getElementById("ai-avatar-container");
+    avatarContainer.classList.add("attention");
+    
+    const greetingText = "Hello! I'm your AI medical assistant. How can I help you today?";
+    
+    // Generate D-ID greeting video
+    setTimeout(() => {
+        didAvatarManager.generateAndPlayVideo(greetingText);
+        avatarContainer.classList.remove("attention");
+    }, 1000);
+}
+
 document.addEventListener("DOMContentLoaded", function() {
     initializeVoice();
-    document.getElementById("avatar-video-container").style.display = "none";
+    addIdleAnimations();
+    
+    // Initialize chatbot window
+    const chatbotWindow = document.getElementById("chatbot-window");
+    if (chatbotWindow) {
+        chatbotWindow.style.display = "none";
+        console.log("Chatbot window initialized");
+    } else {
+        console.error("Chatbot window not found during initialization!");
+    }
+    
+    // Add avatar click event
+    const avatarContainer = document.getElementById("ai-avatar-container");
+    if (avatarContainer) {
+        console.log("Avatar container found, adding click event");
+        avatarContainer.addEventListener("click", function() {
+            console.log("Avatar clicked - opening chatbot");
+            toggleChatbot();
+        });
+    } else {
+        console.error("Avatar container not found!");
+    }
+    
+    // Add one-time greeting on first interaction
+    let hasGreeted = false;
+    if (avatarContainer) {
+        avatarContainer.addEventListener("click", function() {
+            if (!hasGreeted) {
+                setTimeout(() => {
+                    avatarGreeting();
+                }, 500);
+                hasGreeted = true;
+            }
+        });
+    }
+    
+    console.log("AI Avatar initialized - Standing avatar with face animation ready!");
 });
 
 connectWebSocket();
@@ -1133,134 +1483,687 @@ connectWebSocket();
 </script>
 
 
-    <!-- Scripts -->
-<script src="{% static 'assets/js/jquery-3.2.1.min.js' %}"></script>
-<script src="{% static 'assets/js/popper.min.js' %}"></script>
-<script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.3.0/mdb.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            const isMobile = () => window.innerWidth <= 991.98;
+    <!-- Essential Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-            // Function to update sidebar height
-            function updateSidebarHeight() {
-                const windowHeight = window.innerHeight;
-                $(".sidebar").css("height", `${windowHeight}px`);
-            }
-
-
-            // Toggle sidebar function
-            function toggleSidebar() {
-                if (isMobile()) {
-                    updateSidebarHeight();
-                    $(".sidebar").toggleClass("show");
-                    $(".sidebar-overlay").toggleClass("show");
-                } else {
-                    $("body").toggleClass("mini-sidebar");
-                }
-            }
-
-            // Handle sidebar toggle
-            $("#mobile_btn, #toggle_btn").on("click", function(e) {
-                e.preventDefault();
-                toggleSidebar();
-            });
-
-            // Handle close button click
-            $(".sidebar-close").on("click", function() {
-                $(".sidebar").removeClass("show");
-                $(".sidebar-overlay").removeClass("show");
-            });
-
-            // Handle overlay click
-            $(".sidebar-overlay").on("click", function() {
-                $(".sidebar").removeClass("show");
-                $(".sidebar-overlay").removeClass("show");
-            });
-
-            // Handle submenu toggles
-            $(".submenu > a").on("click", function(e) {
-                e.preventDefault();
-                $(this).parent().toggleClass("active");
-                $(this).next("ul").slideToggle(200);
-            });
-
-            // Handle window resize
-            $(window).on('resize', function() {
-                updateSidebarHeight();
-                if (!isMobile()) {
-                    $(".sidebar-overlay").removeClass("show");
-                    $(".sidebar").removeClass("show");
-                } else {
-                    $("body").removeClass("mini-sidebar");
-                }
-            });
-
-            // Initial setup
-            updateSidebarHeight();
-        });
-    </script>
-    
 <script>
-    // Add this to your existing JavaScript
-    $(document).ready(function() {
-        // Mobile search toggle
-        $('#mobile-search-toggle').click(function(e) {
-            e.preventDefault();
-            $('.mobile-search').toggleClass('show');
+// Dashboard Language System
+const dashboardTranslations = {
+    'en': {
+        'Dashboard': 'Dashboard',
+        'Profile': 'Profile',
+        'Book Appointment': 'Book Appointment',
+        'Bills & Payments': 'Bills & Payments',
+        'Exercises': 'Exercises',
+        'Symptoms': 'Symptoms',
+        'Reviews': 'Reviews',
+        'Search': 'Search doctors, specialties...',
+        'Logout': 'Logout',
+        'Patient Profile': 'Patient Profile'
+    },
+    'ur': {
+        'Dashboard': 'ڈیش بورڈ',
+        'Profile': 'پروفائل',
+        'Book Appointment': 'اپائنٹمنٹ بک کریں',
+        'Bills & Payments': 'بل اور ادائیگیاں',
+        'Exercises': 'ورزشیں',
+        'Symptoms': 'علامات',
+        'Reviews': 'جائزے',
+        'Search': 'ڈاکٹرز، خصوصیات تلاش کریں...',
+        'Logout': 'لاگ آؤٹ',
+        'Patient Profile': 'مریض کا پروفائل'
+    },
+    'ar': {
+        'Dashboard': 'لوحة التحكم',
+        'Profile': 'الملف الشخصي',
+        'Book Appointment': 'حجز موعد',
+        'Bills & Payments': 'الفواتير والمدفوعات',
+        'Exercises': 'التمارين',
+        'Symptoms': 'الأعراض',
+        'Reviews': 'المراجعات',
+        'Search': 'البحث عن الأطباء والتخصصات...',
+        'Logout': 'تسجيل الخروج',
+        'Patient Profile': 'ملف المريض'
+    },
+    'hi': {
+        'Dashboard': 'डैशबोर्ड',
+        'Profile': 'प्रोफाइल',
+        'Book Appointment': 'अपॉइंटमेंट बुक करें',
+        'Bills & Payments': 'बिल और भुगतान',
+        'Exercises': 'व्यायाम',
+        'Symptoms': 'लक्षण',
+        'Reviews': 'समीक्षाएं',
+        'Search': 'डॉक्टर, विशेषताएं खोजें...',
+        'Logout': 'लॉगआउट',
+        'Patient Profile': 'मरीज़ की प्रोफाइल'
+    },
+    'es': {
+        'Dashboard': 'Panel de Control',
+        'Profile': 'Perfil',
+        'Book Appointment': 'Reservar Cita',
+        'Bills & Payments': 'Facturas y Pagos',
+        'Exercises': 'Ejercicios',
+        'Symptoms': 'Síntomas',
+        'Reviews': 'Reseñas',
+        'Search': 'Buscar médicos, especialidades...',
+        'Logout': 'Cerrar Sesión',
+        'Patient Profile': 'Perfil del Paciente'
+    },
+    'fr': {
+        'Dashboard': 'Tableau de Bord',
+        'Profile': 'Profil',
+        'Book Appointment': 'Prendre Rendez-vous',
+        'Bills & Payments': 'Factures et Paiements',
+        'Exercises': 'Exercices',
+        'Symptoms': 'Symptômes',
+        'Reviews': 'Avis',
+        'Search': 'Rechercher médecins, spécialités...',
+        'Logout': 'Déconnexion',
+        'Patient Profile': 'Profil du Patient'
+    },
+    'de': {
+        'Dashboard': 'Dashboard',
+        'Profile': 'Profil',
+        'Book Appointment': 'Termin Buchen',
+        'Bills & Payments': 'Rechnungen und Zahlungen',
+        'Exercises': 'Übungen',
+        'Symptoms': 'Symptome',
+        'Reviews': 'Bewertungen',
+        'Search': 'Ärzte, Fachgebiete suchen...',
+        'Logout': 'Abmelden',
+        'Patient Profile': 'Patientenprofil'
+    },
+    'zh': {
+        'Dashboard': '仪表板',
+        'Profile': '个人资料',
+        'Book Appointment': '预约',
+        'Bills & Payments': '账单和付款',
+        'Exercises': '锻炼',
+        'Symptoms': '症状',
+        'Reviews': '评论',
+        'Search': '搜索医生、专科...',
+        'Logout': '登出',
+        'Patient Profile': '患者档案'
+    }
+};
+
+const dashboardLanguageNames = {
+    'en': 'English',
+    'ur': 'اردو',
+    'ar': 'العربية',
+    'hi': 'हिन्दी',
+    'es': 'Español',
+    'fr': 'Français',
+    'de': 'Deutsch',
+    'zh': '中文'
+};
+
+// Dashboard Language Change Function
+window.changeDashboardLanguage = function(langCode) {
+    try {
+        console.log('Changing dashboard language to:', langCode);
+        
+        // Update current language display
+        const currentLangElement = document.getElementById('dashboard-current-language');
+        if (currentLangElement) {
+            currentLangElement.textContent = dashboardLanguageNames[langCode];
+        }
+        
+        // Set document direction for RTL languages
+        if (langCode === 'ur' || langCode === 'ar') {
+            document.documentElement.setAttribute('dir', 'rtl');
+            document.documentElement.setAttribute('lang', langCode);
+        } else {
+            document.documentElement.setAttribute('dir', 'ltr');
+            document.documentElement.setAttribute('lang', langCode);
+        }
+        
+        // Store language preference
+        localStorage.setItem('selectedLanguage', langCode);
+        
+        // Translate dashboard content
+        translateDashboard(langCode);
+        
+        // Show success message
+        showDashboardLanguageMessage(dashboardLanguageNames[langCode]);
+        
+        console.log('Dashboard language changed successfully to:', langCode);
+    } catch (error) {
+        console.error('Error changing dashboard language:', error);
+    }
+};
+
+// Translate Dashboard Content
+function translateDashboard(langCode) {
+    try {
+        const translation = dashboardTranslations[langCode] || dashboardTranslations['en'];
+        
+        if (!translation) {
+            console.error('No translation found for language:', langCode);
+            return;
+        }
+        
+        let translatedCount = 0;
+        
+        // Translate all elements with data-translate attribute
+        document.querySelectorAll('[data-translate]').forEach(element => {
+            const key = element.getAttribute('data-translate');
+            if (translation[key]) {
+                if (element.tagName === 'INPUT' && (element.type === 'text' || element.type === 'search')) {
+                    element.placeholder = translation[key];
+                } else {
+                    element.textContent = translation[key];
+                }
+                translatedCount++;
+            }
         });
+        
+        console.log(`Dashboard translation completed: ${translatedCount} elements translated to ${langCode}`);
+    } catch (error) {
+        console.error('Error in translateDashboard:', error);
+    }
+}
+
+// Show Language Change Message
+function showDashboardLanguageMessage(languageName) {
+    const message = document.createElement('div');
+    message.className = 'dashboard-language-notification';
+    message.innerHTML = `
+        <i class="fas fa-check-circle me-2"></i>
+        Language changed to ${languageName}
+    `;
+    message.style.cssText = `
+        position: fixed;
+        top: 80px;
+        right: 30px;
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        z-index: 10002;
+        animation: slideInRight 0.3s ease-out;
+    `;
     
-        // Hide mobile search on scroll
-        $(window).scroll(function() {
-            $('.mobile-search').removeClass('show');
-        });
+    document.body.appendChild(message);
     
-        // Hide mobile search when clicking outside
-        $(document).click(function(e) {
-            if (!$(e.target).closest('.mobile-search, #mobile-search-toggle').length) {
-                $('.mobile-search').removeClass('show');
+    setTimeout(() => {
+        message.style.animation = 'slideOutRight 0.3s ease-out';
+        setTimeout(() => {
+            if (document.body.contains(message)) {
+                document.body.removeChild(message);
+            }
+        }, 300);
+    }, 3000);
+}
+
+// Initialize Dashboard Language System
+document.addEventListener('DOMContentLoaded', function() {
+    try {
+        console.log('Initializing patient dashboard language system...');
+        
+        const savedLanguage = localStorage.getItem('selectedLanguage') || 'en';
+        console.log('Saved language:', savedLanguage);
+        
+        // Update current language display
+        const currentLangElement = document.getElementById('dashboard-current-language');
+        if (currentLangElement) {
+            currentLangElement.textContent = dashboardLanguageNames[savedLanguage] || 'English';
+        }
+        
+        // Apply saved language if not English
+        if (savedLanguage !== 'en') {
+            setTimeout(() => {
+                changeDashboardLanguage(savedLanguage);
+            }, 100);
+        }
+        
+        console.log('Patient dashboard language system initialized successfully');
+    } catch (error) {
+        console.error('Error initializing patient dashboard language system:', error);
+    }
+});
+
+// Language Dropdown Functionality
+function toggleLanguageDropdown() {
+    const dropdown = document.getElementById('languageDropdown');
+    const chevron = document.getElementById('languageChevron');
+    const button = document.getElementById('languageSelector');
+    
+    if (dropdown.classList.contains('hidden')) {
+        // Position dropdown properly
+        const rect = button.getBoundingClientRect();
+        const viewportWidth = window.innerWidth;
+        
+        // Reset any previous positioning
+        dropdown.style.left = 'auto';
+        dropdown.style.right = '0';
+        
+        // Check if dropdown would go off-screen
+        if (rect.right < 224) { // 224px = 14rem width
+            dropdown.style.right = 'auto';
+            dropdown.style.left = '0';
+        }
+        
+        dropdown.classList.remove('hidden');
+        chevron.style.transform = 'rotate(180deg)';
+    } else {
+        dropdown.classList.add('hidden');
+        chevron.style.transform = 'rotate(0deg)';
+    }
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(event) {
+    const languageSelector = document.getElementById('languageSelector');
+    const languageDropdown = document.getElementById('languageDropdown');
+    const chevron = document.getElementById('languageChevron');
+    
+    if (languageSelector && !languageSelector.contains(event.target)) {
+        languageDropdown.classList.add('hidden');
+        chevron.style.transform = 'rotate(0deg)';
+    }
+});
+
+// Enhanced Language Change Function with RTL Support
+function changeLanguage(langCode, langName) {
+    // Update current language display
+    document.getElementById('currentLanguage').textContent = langName;
+    
+    // Store language preference
+    localStorage.setItem('patientLanguage', langCode);
+    localStorage.setItem('patientLanguageName', langName);
+    localStorage.setItem('selectedLanguage', langCode);
+    
+    // Apply RTL for Arabic and Urdu
+    const rtlLanguages = ['ar', 'ur'];
+    const htmlElement = document.documentElement;
+    
+    if (rtlLanguages.includes(langCode)) {
+        htmlElement.setAttribute('dir', 'rtl');
+        htmlElement.setAttribute('lang', langCode);
+        document.body.classList.add('rtl-layout');
+    } else {
+        htmlElement.setAttribute('dir', 'ltr');
+        htmlElement.setAttribute('lang', langCode);
+        document.body.classList.remove('rtl-layout');
+    }
+    
+    // Translate all elements with data-translate attribute
+    translateDashboard(langCode);
+    
+    // Close dropdown
+    document.getElementById('languageDropdown').classList.add('hidden');
+    document.getElementById('languageChevron').style.transform = 'rotate(0deg)';
+    
+    // Show success message
+    showLanguageChangeNotification(langName);
+}
+
+// Show language change notification
+function showLanguageChangeNotification(langName) {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = 'fixed top-4 right-4 bg-patient-green text-white px-6 py-3 rounded-xl shadow-lg transform translate-x-full transition-transform duration-300';
+    notification.style.zIndex = '99999';
+    notification.innerHTML = `
+        <div class="flex items-center space-x-3">
+            <i class="fas fa-check-circle text-lg"></i>
+            <span class="font-medium">Language changed to ${langName}</span>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Animate in
+    setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+    }, 100);
+    
+    // Animate out and remove
+    setTimeout(() => {
+        notification.style.transform = 'translateX(100%)';
+        setTimeout(() => {
+            if (document.body.contains(notification)) {
+                document.body.removeChild(notification);
+            }
+        }, 300);
+    }, 3000);
+}
+
+// Load saved language on page load
+document.addEventListener('DOMContentLoaded', function() {
+    const savedLang = localStorage.getItem('patientLanguage') || localStorage.getItem('selectedLanguage');
+    const savedLangName = localStorage.getItem('patientLanguageName');
+    
+    if (savedLang && savedLangName) {
+        // Update display without showing notification
+        document.getElementById('currentLanguage').textContent = savedLangName;
+        translateDashboard(savedLang);
+        
+        // Apply RTL if needed
+        const rtlLanguages = ['ar', 'ur'];
+        if (rtlLanguages.includes(savedLang)) {
+            document.documentElement.setAttribute('dir', 'rtl');
+            document.documentElement.setAttribute('lang', savedLang);
+            document.body.classList.add('rtl-layout');
+        }
+    }
+});
+
+// Mobile Sidebar Toggle Function
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    
+    if (sidebar.classList.contains('-translate-x-full')) {
+        // Show sidebar
+        sidebar.classList.remove('-translate-x-full');
+        sidebar.classList.add('translate-x-0');
+        overlay.classList.remove('hidden');
+    } else {
+        // Hide sidebar
+        sidebar.classList.add('-translate-x-full');
+        sidebar.classList.remove('translate-x-0');
+        overlay.classList.add('hidden');
+    }
+}
+
+// Close sidebar when clicking outside on mobile
+document.addEventListener('click', function(event) {
+    const sidebar = document.getElementById('sidebar');
+    const mobileMenuBtn = document.querySelector('[onclick="toggleSidebar()"]');
+    const overlay = document.getElementById('sidebar-overlay');
+    
+    // Check if click is outside sidebar and not on menu button
+    if (window.innerWidth < 1024 && 
+        !sidebar.contains(event.target) && 
+        !mobileMenuBtn.contains(event.target) &&
+        !sidebar.classList.contains('-translate-x-full')) {
+        
+        sidebar.classList.add('-translate-x-full');
+        sidebar.classList.remove('translate-x-0');
+        overlay.classList.add('hidden');
+    }
+});
+
+// Handle window resize
+window.addEventListener('resize', function() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    
+    if (window.innerWidth >= 1024) {
+        // Desktop view - ensure sidebar is visible and overlay is hidden
+        sidebar.classList.remove('-translate-x-full');
+        sidebar.classList.add('translate-x-0');
+        overlay.classList.add('hidden');
+    } else {
+        // Mobile view - ensure sidebar is hidden by default
+        sidebar.classList.add('-translate-x-full');
+        sidebar.classList.remove('translate-x-0');
+        overlay.classList.add('hidden');
+    }
+});
+
+// Auto-hide mobile sidebar when clicking on navigation links
+document.addEventListener('DOMContentLoaded', function() {
+    const sidebarLinks = document.querySelectorAll('#sidebar a');
+    sidebarLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            if (window.innerWidth < 1024) {
+                setTimeout(() => {
+                    toggleSidebar();
+                }, 100);
             }
         });
     });
-    </script>
+});
+
+// Modern Dashboard Functions
+window.toggleSidebar = function() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
     
-<script>
-    // Add this to your existing JavaScript
-    $(document).ready(function() {
-        // Mobile search toggle
-        $('#mobile-search-toggle').click(function(e) {
-            e.preventDefault();
-            $('.mobile-search').toggleClass('show');
-        });
+    sidebar.classList.toggle('-translate-x-full');
+    overlay.classList.toggle('hidden');
+};
+
+window.toggleLanguageDropdown = function() {
+    const dropdown = document.getElementById('language-dropdown');
+    if (dropdown) {
+        dropdown.classList.toggle('hidden');
+    }
+};
+
+// Close dropdowns when clicking outside
+document.addEventListener('click', function(event) {
+    const languageDropdown = document.getElementById('language-dropdown');
+    const languageButton = event.target.closest('[onclick="toggleLanguageDropdown()"]');
     
-        // Hide mobile search on scroll
-        $(window).scroll(function() {
-            $('.mobile-search').removeClass('show');
-        });
-    
-        // Hide mobile search when clicking outside
-        $(document).click(function(e) {
-            if (!$(e.target).closest('.mobile-search, #mobile-search-toggle').length) {
-                $('.mobile-search').removeClass('show');
-            }
-        });
+    if (!languageButton && !languageDropdown.contains(event.target)) {
+        languageDropdown.classList.add('hidden');
+    }
+});
+
+// Smooth animations for cards
+document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('.patient-card');
+    cards.forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.1}s`;
+        card.classList.add('animate-fade-in');
     });
-    </script>
-    <script></script>
-    <!-- jQuery (required for Bootstrap) -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+});
 
-<!-- Popper.js (required for Bootstrap dropdowns) -->
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+// Auto-hide mobile sidebar when clicking on links
+document.querySelectorAll('#sidebar a').forEach(link => {
+    link.addEventListener('click', function() {
+        if (window.innerWidth < 1024) {
+            toggleSidebar();
+        }
+    });
+});
 
-<!-- Bootstrap JS -->
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+console.log('🏥 Modern Patient Dashboard Loaded Successfully!');
 
-<script src="{% static 'assets3/js/jquery.min.js' %}"></script>
-<script src="{% static 'assets3/js/popper.js' %}"></script>
-<script src="{% static 'assets3/js/bootstrap.min.js' %}"></script>
-<script src="{% static 'assets3/js/main.js' %}"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+// Notification System Functions
+let notificationCount = {{ notifications_count|default:0 }};
+let isNotificationOpen = false;
+
+function toggleNotifications() {
+    const panel = document.getElementById('notificationPanel');
+    const overlay = document.getElementById('notificationOverlay') || createNotificationOverlay();
+    
+    isNotificationOpen = !isNotificationOpen;
+    
+    if (isNotificationOpen) {
+        panel.classList.remove('hidden');
+        panel.classList.add('animate-fade-in');
+        overlay.classList.add('active');
+        overlay.style.display = 'block';
+    } else {
+        panel.classList.add('hidden');
+        panel.classList.remove('animate-fade-in');
+        overlay.classList.remove('active');
+        overlay.style.display = 'none';
+    }
+}
+
+function createNotificationOverlay() {
+    const overlay = document.createElement('div');
+    overlay.id = 'notificationOverlay';
+    overlay.className = 'notification-overlay';
+    overlay.style.display = 'none';
+    
+    // Close notification when clicking overlay
+    overlay.addEventListener('click', function() {
+        if (isNotificationOpen) {
+            toggleNotifications();
+        }
+    });
+    
+    document.body.appendChild(overlay);
+    return overlay;
+}
+
+function markAllAsRead() {
+    // Send AJAX request to mark all notifications as read
+    fetch('/patient-dashboard/mark-notifications-read/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({})
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update notification count
+            notificationCount = 0;
+            updateNotificationBadge();
+            
+            // Remove red dots from all notifications
+            const redDots = document.querySelectorAll('#notificationPanel .bg-patient-red, #notificationPanel .bg-patient-green, #notificationPanel .bg-patient-purple, #notificationPanel .bg-patient-orange, #notificationPanel .bg-patient-teal');
+            redDots.forEach(dot => {
+                dot.classList.remove('bg-patient-red', 'bg-patient-green', 'bg-patient-purple', 'bg-patient-orange', 'bg-patient-teal');
+                dot.classList.add('bg-gray-300');
+            });
+            
+            showNotificationMessage('All notifications marked as read');
+        }
+    })
+    .catch(error => {
+        console.error('Error marking notifications as read:', error);
+        showNotificationMessage('Error updating notifications');
+    });
+}
+
+function updateNotificationBadge() {
+    const badge = document.getElementById('notificationBadge');
+    if (notificationCount > 0) {
+        badge.textContent = notificationCount;
+        badge.classList.remove('hidden');
+    } else {
+        badge.classList.add('hidden');
+    }
+}
+
+function viewNotification(type, id) {
+    // Close notification panel
+    toggleNotifications();
+    
+    // Navigate based on notification type
+    switch(type) {
+        case 'appointment':
+            window.location.href = '/patient-dashboard/appointments_patients/';
+            break;
+        case 'results':
+            showNotificationMessage('Opening lab results...');
+            // Add your lab results URL here
+            break;
+        case 'prescription':
+            window.location.href = '/patient-dashboard/appointments_patients/';
+            break;
+        case 'message':
+            window.location.href = '/patient-dashboard/chat/';
+            break;
+        default:
+            showNotificationMessage('Opening notification...');
+    }
+    
+    // Mark notification as read
+    markNotificationAsRead(id);
+}
+
+function markNotificationAsRead(notificationId) {
+    fetch('/patient-dashboard/mark-notification-read/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({
+            'notification_id': notificationId
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && notificationCount > 0) {
+            notificationCount--;
+            updateNotificationBadge();
+        }
+    })
+    .catch(error => {
+        console.error('Error marking notification as read:', error);
+    });
+}
+
+function viewAllNotifications() {
+    toggleNotifications();
+    window.location.href = '/patient-dashboard/notifications/';
+}
+
+function showNotificationMessage(message) {
+    // Create notification toast
+    const toast = document.createElement('div');
+    toast.className = 'fixed top-4 right-4 bg-patient-blue text-white px-6 py-3 rounded-lg shadow-lg animate-fade-in';
+    toast.style.zIndex = '10007';
+    toast.innerHTML = `
+        <div class="flex items-center space-x-2">
+            <i class="fas fa-check-circle"></i>
+            <span>${message}</span>
+        </div>
+    `;
+    
+    document.body.appendChild(toast);
+    
+    // Remove toast after 3 seconds
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
+}
+
+// Helper function to get CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// Close notification panel when clicking outside
+document.addEventListener('click', function(event) {
+    const notificationDropdown = document.getElementById('notificationDropdown');
+    const notificationPanel = document.getElementById('notificationPanel');
+    
+    // Don't close if clicking inside the dropdown or panel
+    if (notificationDropdown && notificationDropdown.contains(event.target)) {
+        return;
+    }
+    
+    if (notificationPanel && notificationPanel.contains(event.target)) {
+        return;
+    }
+    
+    // Close if notification is open and clicked outside
+    if (isNotificationOpen) {
+        toggleNotifications();
+    }
+});
+
+// Initialize notification system
+document.addEventListener('DOMContentLoaded', function() {
+    updateNotificationBadge();
+});
+</script>
 
 </body>
 

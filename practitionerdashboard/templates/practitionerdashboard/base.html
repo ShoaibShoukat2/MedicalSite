@@ -1,849 +1,860 @@
-
-
-{% load static %}
 <!DOCTYPE html>
-
-{% load user_info_tags  %}
+{% load user_info_tags %}
+{% load static %}
 <html lang="en">
-
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
     <link rel="shortcut icon" type="image/x-icon" href="{% static 'assets/img/favicon.ico' %}">
-    <title>{% block title %}Dashboard{% endblock %}</title>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="{% static 'assets/css/bootstrap.min.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'assets/css/font-awesome.min.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'assets/css/style.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css' %}">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.3.0/mdb.min.css" rel="stylesheet">
+    <title>{% block title %}Practitioner Dashboard{% endblock %}</title>
     
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'doctor-blue': '#1e40af',
+                        'doctor-light-blue': '#dbeafe',
+                        'doctor-dark-blue': '#1e3a8a',
+                        'doctor-green': '#059669',
+                        'doctor-light-green': '#d1fae5',
+                        'doctor-teal': '#0d9488',
+                        'doctor-gray': '#f8fafc',
+                        'doctor-dark-gray': '#64748b',
+                        'doctor-red': '#dc2626',
+                        'doctor-orange': '#ea580c',
+                        'doctor-purple': '#7c3aed',
+                        'doctor-pink': '#ec4899',
+                        'doctor-indigo': '#4f46e5'
+                    },
+                    fontFamily: {
+                        'doctor': ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    animation: {
+                        'slide-in': 'slideIn 0.3s ease-out',
+                        'fade-in': 'fadeIn 0.3s ease-out',
+                        'bounce-gentle': 'bounceGentle 2s infinite',
+                    }
+                }
+            }
+        }
+    </script>
 
     {% block extra_css %}{% endblock %}
-</head>
-<style>
-    /* Base sidebar styles */
-    .sidebar {
-        position: fixed;
-        width: 240px;
-        height: 100vh;
-        top: 0;
-        left: 0;
-        background: rgb(14, 82, 116);
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s ease;
-        z-index: 999;
-        overflow-y: auto;
-    }
     
-    /* Mobile styles */
-    @media (max-width: 991.98px) {
-        /* Reset any max-width constraints */
-        .sidebar {
-            transform: translateX(-100%);
-            width: 100vw !important;
-            max-width: none !important;
-            left: 0;
-            right: 0;
-            margin: 0;
-            padding: 0;
+    <style>
+        /* Modern Practitioner Dashboard Styles */
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #dbeafe 100%);
         }
-    
-        .sidebar.show {
+        
+        /* Sidebar Animations */
+        .sidebar-enter {
+            transform: translateX(-100%);
+        }
+        
+        .sidebar-enter-active {
             transform: translateX(0);
-            width: 100vw !important;
+            transition: transform 0.3s ease-out;
         }
-    
-        /* Ensure inner content spans full width */
-        .sidebar-inner {
-            width: 100vw;
-            max-width: none;
-            padding: 0;
-            margin: 0;
-        }
-    
-        /* Menu styling */
-        #sidebar-menu {
-            width: 100vw;
-            padding: 0;
-        }
-    
-        .sidebar-menu ul {
-            width: 100%;
-            margin: 0;
-            padding: 0;
-        }
-    
-       /* Default menu item styles (not active) */
-.sidebar-menu ul li {
-    list-style: none;
-}
-
-.sidebar-menu ul li a {
-    color: white;
-    background: rgb(14, 82, 116);
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    padding: 10px 15px;
-    border-radius: 5px; /* Optional for rounded corners */
-    transition: all 0.3s ease; /* Smooth transition */
-}
-
-/* Active menu item styles */
-.sidebar-menu ul li.active a {
-    color: rgb(14, 82, 116); /* Active text color */
-    background: white; /* Active background */
-    font-weight: bold; /* Optional: Bold text for emphasis */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: Shadow for active item */
-}
-
-/* Hover effect */
-.sidebar-menu ul li a:hover {
-    color: rgb(200, 200, 200); /* Optional: Hover text color */
-}
-
-/* Icon Colors */
-.sidebar-menu ul li a i {
-    margin-right: 10px;
-    font-size: 16px;
-    transition: color 0.3s ease; /* Smooth transition for icon color */
-}
-
-.sidebar-menu ul li a:hover i,
-.sidebar-menu ul li.active a i {
-    color: #ffffff; /* White icon color on hover and active */
-}
-
-        /* Profile section */
-        .sidebar-profile {
-            width: 100vw;
-            box-sizing: border-box;
-        }
-    
-        /* Overlay */
-        .sidebar-overlay.show {
-            width: 100vw;
-            left: 0;
-        }
-    
-        /* Close button */
-        .sidebar-close {
-            position: fixed;
-            right: 15px;
-        }
-    
-        /* Remove any margin from page wrapper */
-        .page-wrapper {
-            margin-left: 0 !important;
-            width: 100vw;
-        }
-    
-        /* Force hardware acceleration for smoother transitions */
-        .sidebar {
-            -webkit-transform: translateX(-100%);
-            transform: translateX(-100%);
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
-        }
-    
-        .sidebar.show {
-            -webkit-transform: translateX(0);
+        
+        .sidebar-exit {
             transform: translateX(0);
         }
-    }
-    
-    /* Ensure no horizontal scrolling */
-    body {
-        overflow-x: hidden;
-        width: 100%;
-        position: relative;
-    }
-
-        /* Header Styles */
-        .header {
-            background-color: rgb(14, 82, 116);;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            height: 60px;
-            padding: 0 15px;
-            display: flex;
-            align-items: center;
+        
+        .sidebar-exit-active {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-out;
         }
         
-        /* Logo */
-        .header-left {
-            padding: 0 15px;
-        }
-        .header .logo img{
-            height: 100px;
-            width:100px;
-            
-        }
-        /* Search Bar */
-        .search-bar {
-            flex: 1;
-            max-width: 600px;
-            margin: 0 20px;
+        /* Card Hover Effects */
+        .doctor-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
-        .search-bar form {
-            width: 100%;
+        .doctor-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(30, 64, 175, 0.15);
         }
         
-        .search-bar .form-control {
-            border-radius: 20px 0 0 20px;
-            border-right: none;
+        /* Medical Pulse Animation */
+        .medical-pulse {
+            animation: medicalPulse 2s infinite;
         }
         
-        .search-bar .btn {
-            border-radius: 0 20px 20px 0;
-            
-        }
-        
-        /* User Menu */
-        .user-menu {
-            margin-left: auto;
-            display: flex;
-            align-items: center;
-        }
-        
-        .user-menu .nav-item {
-            margin: 0 5px;
-        }
-        
-        .user-menu .nav-link {
-            padding: 0 10px;
-            position: relative;
-        }
-        
-        /* Mobile Search */
-        .mobile-search {
-            display: none;
-            padding: 10px 15px;
-            background: #fff;
-            position: fixed;
-            top: 60px;
-            left: 0;
-            right: 0;
-            z-index: 999;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        
-        .mobile-search.show {
-            display: block;
-        }
-        
-        /* Responsive Styles */
-        @media (max-width: 991.98px) {
-            .header {
-                padding: 0 10px;
+        @keyframes medicalPulse {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(30, 64, 175, 0.4);
             }
+            50% {
+                box-shadow: 0 0 0 15px rgba(30, 64, 175, 0);
+            }
+        }
         
-            .search-bar {
+        /* Notification Badge */
+        .notification-badge {
+            animation: notificationBounce 2s infinite;
+        }
+        
+        @keyframes notificationBounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-3px);
+            }
+            60% {
+                transform: translateY(-1px);
+            }
+        }
+        
+        /* Notification Panel Animations */
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        /* Smooth Transitions */
+        .smooth-transition {
+            transition: all 0.3s ease;
+        }
+        
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #1e40af;
+            border-radius: 10px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #1e3a8a;
+        }
+        
+        /* Responsive Design Improvements */
+        @media (max-width: 768px) {
+            .sidebar-mobile-hidden {
                 display: none;
             }
-        
-            .user-menu .nav-item {
-                margin: 0 2px;
-            }
-        
-            .user-menu .nav-link {
-                padding: 0 5px;
-            }
-        
-            .header-left {
-                padding: 0 5px;
-            }
-        
-            .notifications {
-                position: fixed;
-                top: 60px;
-                left: 0;
-                right: 0;
-                width: 100%;
-                margin: 0;
-            }
-        }
-        
-        @media (max-width: 575.98px) {
-            .user-menu .nav-item.d-none {
-                display: none !important;
+            
+            /* Adjust header padding on mobile */
+            header {
+                padding: 0.75rem 1rem !important;
             }
             
-            .user-menu .user-link span.user-img {
-                margin-right: 0;
+            /* Make main content responsive */
+            main {
+                padding: 1rem !important;
+            }
+            
+            /* Responsive cards */
+            .doctor-card {
+                margin-bottom: 1rem;
+            }
+            
+            /* Mobile-friendly buttons */
+            .mobile-btn {
+                padding: 0.5rem;
+                min-width: 44px;
+                min-height: 44px;
             }
         }
         
-    .main-wrapper {
-        margin-top: 60px;
-        min-height: calc(100vh - 60px);
-        position: relative;
-    }
+        @media (max-width: 640px) {
+            /* Extra small screens */
+            .text-responsive {
+                font-size: 0.875rem;
+            }
+            
+            /* Hide less important elements on very small screens */
+            .sm-hidden {
+                display: none;
+            }
+        }
+        
+        /* Language Dropdown Specific Styles */
+        #languageDropdown {
+            z-index: 9999 !important;
+            position: absolute !important;
+        }
+        
+        /* Ensure language selector container has proper positioning */
+        .language-selector-container {
+            position: relative;
+            z-index: 1000;
+        }
+        
+        /* RTL Support for Language System */
+        [dir="rtl"] {
+            text-align: right;
+        }
+        
+        [dir="rtl"] .flex {
+            flex-direction: row-reverse;
+        }
+        
+        [dir="rtl"] .space-x-3 > * + * {
+            margin-left: 0;
+            margin-right: 0.75rem;
+        }
+        
+        [dir="rtl"] .space-x-4 > * + * {
+            margin-left: 0;
+            margin-right: 1rem;
+        }
 
-    /* Sidebar Overlay */
-    .sidebar-overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.5);
-        backdrop-filter: blur(2px);
-        z-index: 998;
-    }
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes slideOutRight {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+        }
+    </style>
+</head>
 
-    /* Sidebar styles */
-    
-    /* Sidebar inner content */
-    .sidebar-inner {
-        padding-top: 60px;
-        height: 100%;
-    }
-
-    .sidebar-profile {
-        text-align: center;
-        padding: 20px 15px;
-        border-bottom: 1px solid #ddd;
-    }
-
-    .sidebar-profile img {
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-        border: 2px solid #007bff;
-        padding: 5px;
-    }
-
-    .sidebar-menu ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-
-   
-    /* Close button */
-    .sidebar-close {
-        display: none;
-        position: absolute;
-        top: 70px;
-        right: 20px;
-        background: none;
-        border: none;
-        color: #333;
-        font-size: 24px;
-        cursor: pointer;
-        z-index: 1001;
-    }
-
-    /* Page wrapper */
-    .page-wrapper {
-        margin-left: 240px;
-        padding: 20px;
-        transition: all 0.3s ease;
-    }
-
-    /* Header elements */
-    .header .nav.user-menu {
-        margin-left: auto;
-    }
-
-    .header .nav.user-menu a i,
-    .header .nav.user-menu a span {
-        color: #007bff;
-    }
-
-    #toggle_btn,
-    #mobile_btn {
-        color: #007bff;
-        cursor: pointer;
-        font-size: 20px;
-        padding: 15px;
-    }
-
-    /* Mini sidebar styles */
-    .mini-sidebar .sidebar {
-        width: 80px;
-    }
-
-    .mini-sidebar .sidebar-profile img {
-        width: 40px;
-        height: 40px;
-    }
-
-    .mini-sidebar .sidebar-profile h4,
-    .mini-sidebar .sidebar-profile p,
-    .mini-sidebar .sidebar-menu ul li a span,
-    .mini-sidebar .menu-title {
-        display: none;
-    }
-
-    .mini-sidebar .page-wrapper {
-        margin-left: 60px;
-    }
-
-    /* Mobile styles */
-    
-
-    /* Submenu styles */
-    .submenu ul {
-        display: none;
-        padding-left: 20px !important;
-    }
-
-    .submenu.active ul {
-        display: block;
-    }
-
-    .menu-title {
-        padding: 12px 20px;
-        color: #333;
-        font-weight: 500;
-        font-size: 14px;
-    }
-    /* Footer Styles */
-    
-    .footer {
-        z-index: 1040;
-
-        background-color:rgb(14, 82, 116);
-        color: #fff;
-        padding: 40px 20px;
-        position: relative;
-        width: 100%;
-        margin-top: auto;
-    }
-
-    .footer h5 {
-        color: #fff;
-        font-weight: bold;
-        margin-bottom: 20px;
-    }
-
-    .footer a {
-        color: #fff;
-        text-decoration: none;
-    }
-
-    .footer a:hover {
-        color: #ddd;
-    }
-
-    .footer .social-icons a {
-        font-size: 20px;
-        margin-right: 10px;
-    }
-
-    .footer .bottom-footer {
-        border-top: 1px solid rgba(255, 255, 255, 0.2);
-        padding-top: 20px;
-        margin-top: 20px;
-    }
-    /* Reduce logo size when mini-sidebar is active */
-.mini-sidebar .header .logo img {
-    width: 50px;
-    height: 50px;
-    transition: all 0.3s ease; /* Smooth transition */
-}
-
-</style>
-
-
-
-<body>
-
-    <!-- Header -->
-<div class="header">
-    <div class="header-left">
-        <a href="/" class="logo">
-            <img src="{% static 'ReeDuVie.jpg' %}" width="35" height="35" alt="Preclinic">
-        </a>
-    </div>
-
-    <a id="mobile_btn" class="mobile_btn float-left" href="javascript:void(0);"><i class="fa fa-bars" style="color: white;"></i></a>
-    <a id="toggle_btn" href="javascript:void(0);"><i class="fa fa-bars" style="color: white;"></i></a>
-    <ul class="nav user-menu float-right">
-        <!-- Notifications Button -->
-<!-- 
-<li class="nav-item dropdown d-none d-sm-block">
-    <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
-        <i class="fa fa-bell" style="color: white;"></i>
-        {% if notifications %}
-       <span class="badge badge-pill bg-danger float-right">
-    {{ notifications.count|default:0 }}
-</span>
-
-        {% endif %}
-    </a>
-    <div class="dropdown-menu notifications">
-        <div class="topnav-dropdown-header">
-            <span>Notifications</span>
-        </div>
-
-        <div class="drop-scroll">
-            <ul class="notification-list">
-                {% for notification in notifications %}
-                <li class="notification-message {% if not notification.is_read %}bg-light{% endif %}">
-                    <a href="{{ notification.url|default:'#' }}">
-                        <div class="media">
-                            <span class="avatar">
-                                <img alt="User" src="{% static 'assets/img/user.jpg' %}" class="img-fluid">
-                            </span>
-                            <div class="media-body">
-                                <p class="noti-details">
-                                    <span class="noti-title">{{ notification.recipient.first_name }} {{ notification.recipient.last_name }}</span> 
-                                    {{ notification.message }}
-                                </p>
-                                <p class="noti-time">
-                                    <span class="notification-time">{{ notification.created_at|timesince }} ago</span>
-                                </p>
-                            </div>
-                        </div>
-                    </a>
-                </li>
-                {% empty %}
-                <li class="notification-message text-center text-muted">No new notifications</li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
-</li> -->
-    
-
-
-
-
-        <!-- Chat Button -->
-        <li class="nav-item">
-            <a href="{% url 'chat:chat_list' %}" class="nav-link">
-                <i class="fa fa-comments" style="color: white;"></i>
-                <span class="badge badge-pill bg-primary float-right">5</span>
-            </a>
-        </li>
-
-
-        <!-- Profile Picture -->
-     <li class="nav-item dropdown has-arrow">
-        <a href="#" class="dropdown-toggle nav-link user-link d-flex align-items-center" data-toggle="dropdown">
-            <span class="user-img d-inline-block position-relative">
-                <img src="{% get_practitioner_image request %}" 
-                    alt="Profile Picture" 
-                    class="img-fluid rounded-circle border border-light shadow-sm" 
-                    style="width: 36px; height: 36px; object-fit: cover;">
-            </span>
-            <span class="ml-2 font-weight-medium text-dark d-none d-md-inline">
-                {% if request.session.practitioner_name %}
-                    {{ request.session.practitioner_name }}
-                {% elif request.user.is_authenticated %}
-                    {{ request.user.name|default:request.user.email }}
-                {% else %}
-                    Guest
-                {% endif %}
-            </span>
-        </a>
-
-
-
-    <div class="dropdown-menu">
-        <a class="dropdown-item" href="{% url 'practitioner_dashboard:practitioner_profile' %}">My Profile</a>
-        <a class="dropdown-item" href="{% url 'frontend:logout' %}">Logout</a>
-    </div>
-</li>
-    </ul>
-
-</div>
-
-
-
-
-    <!-- Overlay -->
-    <div class="sidebar-overlay"></div>
-
-    <!-- Main wrapper -->
-    <div class="main-wrapper">
-        <!-- Sidebar -->
-      <div class="sidebar" id="sidebar">
-    <button class="sidebar-close">
-        <i class="fa fa-times"></i>
-    </button>
-    <div class="sidebar-inner">
-        <div id="sidebar-menu" class="sidebar-menu">
-            <ul>
-                <li class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
-                    <a href="{% url 'practitionerdashboard:dashboard' %}">
-                        <i class="fa fa-tachometer-alt"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-
-                <li class="{% if request.resolver_match.url_name == 'practitioner_profile' %}active{% endif %}">
-                    <a href="{% url 'practitioner_dashboard:practitioner_profile' %}">
-                        <i class="fa fa-user"></i>
-                        <span>Profile</span>
-                    </a>
-                </li>
-
-                <li class="{% if request.resolver_match.url_name == 'mypatient' %}active{% endif %}">
-                    <a href="{% url 'practitionerdashboard:mypatient' %}">
-                        <i class="fa fa-wheelchair"></i>
-                        <span>Patients</span>
-                    </a>
-                </li>
-
-                <li class="{% if request.resolver_match.url_name == 'schedule_timming' %}active{% endif %}">
-                    <a href="{% url 'practitionerdashboard:schedule_timming' %}">
-                        <i class="fa fa-clock"></i>
-                        <span>Schedule Timmings</span>
-                    </a>
-                </li>
-
-                <li class="{% if request.resolver_match.url_name == 'appointment' %}active{% endif %}">
-                    <a href="{% url 'practitionerdashboard:dashboard' %}">
-                        <i class="fa fa-calendar"></i>
-                        <span>Appointments</span>
-                    </a>
-                </li>
-
-                <li class="{% if request.resolver_match.url_name == 'cancellation_completion' %}active{% endif %}">
-                    <a href="{% url 'practitionerdashboard:cancellation_completion' %}">
-                        <i class="fa fa-times-circle"></i>
-                        <span>Cancellation & Completion</span>
-                    </a>
-                </li>
-
-                <li class="{% if request.resolver_match.url_name == 'reviews' %}active{% endif %}">
-                    <a href="{% url 'practitionerdashboard:reviews' %}">
-                        <i class="fa fa-comments"></i>
-                        <span>Reviews</span>
-                        <span class="badge badge-pill bg-primary float-right">
-                            {% review_count_from_session request %}
-                        </span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</div>
-
-
-        <!-- Page wrapper -->
-        <div class="page-wrapper">
-            {% block content %}
-            {% endblock content %}
-        </div>
-    </div>
-    <footer class="footer">
-        <div class="container">
-            <div class="row">
-
-
-                <!-- Logo Section -->
-
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <a href="/">
-                    <img src="{% static 'MedicalSiteLogo.svg' %}" alt="Logo" class="img-fluid mb-3" style="max-width: 150px;">
-
-                    </a>
-                    <div class="social-icons">
-                        <a href="#"><i class="fab fa-facebook me-3"></i></a>
-                        <a href="#"><i class="fab fa-twitter me-3"></i></a>
-                        <a href="#"><i class="fab fa-linkedin me-3"></i></a>
-                        <a href="#"><i class="fab fa-instagram me-3"></i></a>
-                        <a href="#"><i class="fab fa-dribbble"></i></a>
+<body class="bg-gradient-to-br from-doctor-gray to-doctor-light-blue min-h-screen font-doctor">
+    <!-- Modern Practitioner Dashboard Layout -->
+    <div class="flex h-screen overflow-hidden">
+        
+        <!-- Modern Sidebar -->
+        <div id="sidebar" class="w-64 bg-gradient-to-b from-doctor-blue to-doctor-dark-blue shadow-2xl transform transition-transform duration-300 ease-in-out lg:translate-x-0 -translate-x-full fixed lg:relative z-40 h-full flex flex-col">
+            <!-- Sidebar Header -->
+            <div class="p-6 border-b border-white/10 flex-shrink-0">
+                <div class="flex items-center space-x-3">
+                    <img src="{% static 'MedicalSiteLogo.svg' %}" alt="Medical Platform" class="h-10 w-10">
+                    <div>
+                        <h2 class="text-white font-bold text-lg">Doctor Portal</h2>
+                        <p class="text-white/70 text-sm">Healthcare Dashboard</p>
                     </div>
-                </div>
-
-                <!-- For Patients Section -->
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <h5 class="text-uppercase">For Patients</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="/">Search for Doctors</a></li>
-                        <li><a href="{% url 'frontend:patient_login' %}">Login</a></li>
-                        <li><a href="{% url 'frontend:patient_signup' %}">Register</a></li>
-                        <li>
-                            {% if request.session.patient_id %}
-                                <a href="{% url 'patient_dashboard:patient_dashboard' %}">Patient Dashboard</a>
-                            {% else %}
-                                <a href="{% url 'frontend:patient_login' %}">Patient Dashboard</a>
-                            {% endif %}
-                        </li>
-
-
-                    </ul>
-
-                </div>
-
-
-                <!-- For Doctors Section -->
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <h5 class="text-uppercase">For Doctors</h5>
-                    <ul class="list-unstyled">
-                        <li>
-                            <a href="{% if request.session.practitioner_id %}
-                                        {% url 'practitioner_dashboard:dashboard' %}
-                                    {% elif request.user.is_authenticated and request.user.is_practitioner %}
-                                        {% url 'practitioner_dashboard:dashboard' %}
-                                    {% else %}
-                                        {% url 'practitioner_login' %}
-                                    {% endif %}">
-                                Appointments
-                            </a>
-                        </li>
-
-                        <li>
-                            <a href="{% if request.session.practitioner_id %}
-                                        {% url 'practitioner_dashboard:chat' %}
-                                    {% elif request.user.is_authenticated and request.user.is_practitioner %}
-                                        {% url 'practitioner_dashboard:chat' %}
-                                    {% else %}
-                                        {% url 'practitioner_login' %}
-                                    {% endif %}">
-                                Chat
-                            </a>
-                        </li>
-
-                        <li><a href="{% url 'frontend:practitioner_login' %}">Login</a></li>
-                        <li><a href="{% url 'frontend:practitioner_signup' %}">Register</a></li>
-                        <li>
-                            <a href="{% if request.session.practitioner_id %}
-                                        {% url 'practitioner_dashboard:dashboard' %}
-                                    {% elif request.user.is_authenticated and request.user.is_practitioner %}
-                                        {% url 'practitioner_dashboard:dashboard' %}
-                                    {% else %}
-                                        {% url 'practitioner_login' %}
-                                    {% endif %}">
-                                Doctor Dashboard
-                            </a>
-                        </li>
-
-
-
-                    </ul>
-                </div>
-
-                <!-- Contact Us Section -->
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <h5 class="text-uppercase">Contact Us</h5>
-                    <ul class="list-unstyled">
-                        <li><i class="fas fa-map-marker-alt me-2"></i> 3556 Beech Street, San Francisco</li>
-                        <li><i class="fas fa-phone me-2"></i> +1 315 369 5943</li>
-                        <li><i class="fas fa-envelope me-2"></i> Reeducaive@example.com</li>
-                    </ul>
                 </div>
             </div>
 
-            <!-- Bottom Footer -->
-<!-- Bottom Footer continued -->
-<div class="row mt-4 pt-3 border-top">
-    <div class="col-md-6 text-center text-md-start">
-        <p class="mb-0">&copy; 2025 Reeducaive. All Rights Reserved.</p>
+            <!-- Navigation Menu -->
+            <nav class="flex-1 mt-6 px-4 space-y-2 custom-scrollbar overflow-y-auto">
+                <div class="pb-20">
+                <a href="{% url 'practitionerdashboard:dashboard' %}" class="flex items-center space-x-3 px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'dashboard' %}bg-white/20 text-white{% endif %}">
+                    <i class="fas fa-tachometer-alt text-lg"></i>
+                    <span class="font-medium" data-translate="Dashboard">Dashboard</span>
+                </a>
+                
+                <a href="{% url 'practitioner_dashboard:practitioner_profile' %}" class="flex items-center space-x-3 px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'practitioner_profile' %}bg-white/20 text-white{% endif %}">
+                    <i class="fas fa-user-md text-lg"></i>
+                    <span class="font-medium" data-translate="Profile">Profile</span>
+                </a>
+                
+                <a href="{% url 'practitionerdashboard:mypatient' %}" class="flex items-center space-x-3 px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'mypatient' %}bg-white/20 text-white{% endif %}">
+                    <i class="fas fa-users text-lg"></i>
+                    <span class="font-medium" data-translate="My Patients">My Patients</span>
+                </a>
+                
+                <a href="{% url 'practitionerdashboard:schedule_timming' %}" class="flex items-center space-x-3 px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'schedule_timming' %}bg-white/20 text-white{% endif %}">
+                    <i class="fas fa-clock text-lg"></i>
+                    <span class="font-medium" data-translate="Schedule">Schedule Timings</span>
+                </a>
+                
+                <a href="{% url 'practitionerdashboard:dashboard' %}" class="flex items-center space-x-3 px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'appointment' %}bg-white/20 text-white{% endif %}">
+                    <i class="fas fa-calendar-check text-lg"></i>
+                    <span class="font-medium" data-translate="Appointments">Appointments</span>
+                </a>
+                
+                <a href="{% url 'practitionerdashboard:cancellation_completion' %}" class="flex items-center space-x-3 px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'cancellation_completion' %}bg-white/20 text-white{% endif %}">
+                    <i class="fas fa-times-circle text-lg"></i>
+                    <span class="font-medium" data-translate="Cancellation & Completion">Cancellation & Completion</span>
+                </a>
+                
+                <a href="{% url 'practitionerdashboard:reviews' %}" class="flex items-center space-x-3 px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'reviews' %}bg-white/20 text-white{% endif %}">
+                    <i class="fas fa-star text-lg"></i>
+                    <span class="font-medium" data-translate="Reviews">Reviews</span>
+                    <span class="ml-auto bg-doctor-green text-white text-xs px-2 py-1 rounded-full notification-badge">
+                        {% review_count_from_session request %}
+                    </span>
+                </a>
+                
+                <a href="{% url 'chat:chat_list' %}" class="flex items-center space-x-3 px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200">
+                    <i class="fas fa-comments text-lg"></i>
+                    <span class="font-medium">Chat</span>
+                    <span class="ml-auto bg-doctor-green text-white text-xs px-2 py-1 rounded-full notification-badge">5</span>
+                </a>
+                </div>
+            </nav>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Modern Header -->
+            <header class="bg-white/80 backdrop-blur-lg shadow-sm border-b border-gray-200/50 px-4 lg:px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <!-- Mobile Menu Button -->
+                    <button onclick="toggleSidebar()" class="lg:hidden p-2 rounded-lg text-doctor-blue hover:bg-doctor-light-blue transition-colors">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    
+                    <!-- Search Bar -->
+                    <div class="flex-1 max-w-2xl mx-2 sm:mx-4 hidden sm:block">
+                        <div class="relative">
+                            <input type="text" 
+                                   class="w-full px-4 py-2 pl-10 pr-4 bg-white/70 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-doctor-blue/50 focus:border-doctor-blue transition-all duration-200" 
+                                   placeholder="Search patients, appointments..." 
+                                   data-translate="Search">
+                            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- User Profile -->
+                    <div class="flex items-center space-x-2 sm:space-x-4">
+                        <!-- Language Selector -->
+                        <div class="relative language-selector-container">
+                            <button id="languageSelector" class="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 bg-doctor-light-blue hover:bg-doctor-blue/10 rounded-xl transition-all duration-300 text-doctor-blue border border-doctor-blue/20" onclick="toggleLanguageDropdown()">
+                                <i class="fas fa-globe text-sm"></i>
+                                <span id="currentLanguage" class="text-sm font-medium hidden md:inline">English</span>
+                                <i class="fas fa-chevron-down text-xs transition-transform duration-200" id="languageChevron"></i>
+                            </button>
+                            
+                            <!-- Language Dropdown -->
+                            <div id="languageDropdown" class="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-2xl border border-gray-200 py-2 z-[9999] hidden">
+                                <div class="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide border-b border-gray-100">Select Language</div>
+                                <button onclick="changeLanguage('en', 'English')" class="language-option w-full text-left px-4 py-3 hover:bg-doctor-light-blue text-gray-700 hover:text-doctor-dark-blue transition-colors duration-200 flex items-center space-x-3">
+                                    <span class="w-6 h-4 bg-gradient-to-r from-blue-500 to-red-500 rounded-sm flex items-center justify-center text-white text-xs font-bold">EN</span>
+                                    <span>English</span>
+                                </button>
+                                <button onclick="changeLanguage('ur', 'اردو')" class="language-option w-full text-left px-4 py-3 hover:bg-doctor-light-blue text-gray-700 hover:text-doctor-dark-blue transition-colors duration-200 flex items-center space-x-3">
+                                    <span class="w-6 h-4 bg-gradient-to-r from-green-500 to-green-600 rounded-sm flex items-center justify-center text-white text-xs font-bold">UR</span>
+                                    <span>اردو</span>
+                                </button>
+                                <button onclick="changeLanguage('ar', 'العربية')" class="language-option w-full text-left px-4 py-3 hover:bg-doctor-light-blue text-gray-700 hover:text-doctor-dark-blue transition-colors duration-200 flex items-center space-x-3">
+                                    <span class="w-6 h-4 bg-gradient-to-r from-green-600 to-green-700 rounded-sm flex items-center justify-center text-white text-xs font-bold">AR</span>
+                                    <span>العربية</span>
+                                </button>
+                                <button onclick="changeLanguage('hi', 'हिंदी')" class="language-option w-full text-left px-4 py-3 hover:bg-doctor-light-blue text-gray-700 hover:text-doctor-dark-blue transition-colors duration-200 flex items-center space-x-3">
+                                    <span class="w-6 h-4 bg-gradient-to-r from-orange-500 to-orange-600 rounded-sm flex items-center justify-center text-white text-xs font-bold">HI</span>
+                                    <span>हिंदी</span>
+                                </button>
+                                <button onclick="changeLanguage('es', 'Español')" class="language-option w-full text-left px-4 py-3 hover:bg-doctor-light-blue text-gray-700 hover:text-doctor-dark-blue transition-colors duration-200 flex items-center space-x-3">
+                                    <span class="w-6 h-4 bg-gradient-to-r from-red-500 to-yellow-500 rounded-sm flex items-center justify-center text-white text-xs font-bold">ES</span>
+                                    <span>Español</span>
+                                </button>
+                                <button onclick="changeLanguage('fr', 'Français')" class="language-option w-full text-left px-4 py-3 hover:bg-doctor-light-blue text-gray-700 hover:text-doctor-dark-blue transition-colors duration-200 flex items-center space-x-3">
+                                    <span class="w-6 h-4 bg-gradient-to-r from-blue-600 to-red-600 rounded-sm flex items-center justify-center text-white text-xs font-bold">FR</span>
+                                    <span>Français</span>
+                                </button>
+                                <button onclick="changeLanguage('de', 'Deutsch')" class="language-option w-full text-left px-4 py-3 hover:bg-doctor-light-blue text-gray-700 hover:text-doctor-dark-blue transition-colors duration-200 flex items-center space-x-3">
+                                    <span class="w-6 h-4 bg-gradient-to-r from-black to-red-600 rounded-sm flex items-center justify-center text-white text-xs font-bold">DE</span>
+                                    <span>Deutsch</span>
+                                </button>
+                                <button onclick="changeLanguage('zh', '中文')" class="language-option w-full text-left px-4 py-3 hover:bg-doctor-light-blue text-gray-700 hover:text-doctor-dark-blue transition-colors duration-200 flex items-center space-x-3">
+                                    <span class="w-6 h-4 bg-gradient-to-r from-red-600 to-yellow-500 rounded-sm flex items-center justify-center text-white text-xs font-bold">ZH</span>
+                                    <span>中文</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Notifications -->
+                        <div class="relative hidden sm:block">
+                            <button class="p-2 text-doctor-blue hover:bg-doctor-light-blue rounded-lg transition-colors relative">
+                                <i class="fas fa-bell text-lg"></i>
+                                <span class="absolute -top-1 -right-1 bg-doctor-red text-white text-xs w-5 h-5 rounded-full flex items-center justify-center notification-badge">3</span>
+                            </button>
+                        </div>
+                        
+                        <!-- Chat -->
+                        <a href="{% url 'chat:chat_list' %}" class="p-2 text-doctor-blue hover:bg-doctor-light-blue rounded-lg transition-colors relative hidden sm:block">
+                            <i class="fas fa-comments text-lg"></i>
+                            <span class="absolute -top-1 -right-1 bg-doctor-green text-white text-xs w-5 h-5 rounded-full flex items-center justify-center notification-badge">5</span>
+                        </a>
+                        
+                        <!-- Profile -->
+                        <div class="flex items-center space-x-2 sm:space-x-3">
+                            <div class="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-doctor-blue to-doctor-purple rounded-full flex items-center justify-center">
+                                <img src="{% get_practitioner_image request %}" 
+                                     alt="Profile Picture" 
+                                     class="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover border-2 border-white shadow-sm">
+                            </div>
+                            <div class="hidden lg:block">
+                                <p class="text-sm font-medium text-doctor-dark-blue">
+                                    {% if request.session.practitioner_name %}
+                                        Dr. {{ request.session.practitioner_name }}
+                                    {% elif request.user.is_authenticated %}
+                                        Dr. {{ request.user.name|default:request.user.email }}
+                                    {% else %}
+                                        Doctor
+                                    {% endif %}
+                                </p>
+                                <p class="text-xs text-doctor-dark-gray">Medical Professional</p>
+                            </div>
+                        </div>
+                        
+                        <a href="{% url 'frontend:logout' %}" class="px-2 sm:px-4 py-2 bg-doctor-red text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium" data-translate="Logout">
+                            <i class="fas fa-sign-out-alt sm:mr-2"></i><span class="hidden sm:inline">Logout</span>
+                        </a>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <main class="flex-1 overflow-y-auto p-4 lg:p-6 custom-scrollbar">
+                {% block content %}
+                <!-- Page content will be inserted here -->
+                {% endblock content %}
+            </main>
+        </div>
     </div>
-    <div class="col-md-6 text-center text-md-end">
-        <a href="#">Terms and Conditions</a>
-        <span class="mx-2">|</span>
-        <a href="#">Policy</a>
-    </div>
-</div>
-</div>
 
+    <!-- Mobile Sidebar Overlay -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-30 lg:hidden hidden" onclick="toggleSidebar()"></div>
+<script>
+// Practitioner Dashboard Language System
+const practitionerTranslations = {
+    'en': {
+        'Dashboard': 'Dashboard',
+        'Profile': 'Profile',
+        'My Patients': 'My Patients',
+        'Schedule': 'Schedule Timings',
+        'Appointments': 'Appointments',
+        'Cancellation & Completion': 'Cancellation & Completion',
+        'Reviews': 'Reviews',
+        'Earnings': 'Earnings',
+        'Settings': 'Settings',
+        'Logout': 'Logout',
+        'Search': 'Search patients, appointments...',
+        'Consultations': 'Consultations',
+        'Medical Records': 'Medical Records'
+    },
+    'ur': {
+        'Dashboard': 'ڈیش بورڈ',
+        'Profile': 'پروفائل',
+        'My Patients': 'میرے مریض',
+        'Schedule': 'شیڈول ٹائمنگز',
+        'Appointments': 'اپائنٹمنٹس',
+        'Cancellation & Completion': 'منسوخی اور تکمیل',
+        'Reviews': 'جائزے',
+        'Earnings': 'آمدنی',
+        'Settings': 'سیٹنگز',
+        'Logout': 'لاگ آؤٹ',
+        'Search': 'مریض، اپائنٹمنٹس تلاش کریں...',
+        'Consultations': 'مشاورت',
+        'Medical Records': 'طبی ریکارڈز'
+    },
+    'ar': {
+        'Dashboard': 'لوحة التحكم',
+        'Profile': 'الملف الشخصي',
+        'My Patients': 'مرضاي',
+        'Schedule': 'مواعيد العمل',
+        'Appointments': 'المواعيد',
+        'Cancellation & Completion': 'الإلغاء والإنجاز',
+        'Reviews': 'المراجعات',
+        'Earnings': 'الأرباح',
+        'Settings': 'الإعدادات',
+        'Logout': 'تسجيل الخروج',
+        'Search': 'البحث عن المرضى والمواعيد...',
+        'Consultations': 'الاستشارات',
+        'Medical Records': 'السجلات الطبية'
+    },
+    'hi': {
+        'Dashboard': 'डैशबोर्ड',
+        'Profile': 'प्रोफाइल',
+        'My Patients': 'मेरे मरीज़',
+        'Schedule': 'शेड्यूल समय',
+        'Appointments': 'अपॉइंटमेंट्स',
+        'Cancellation & Completion': 'रद्दीकरण और पूर्णता',
+        'Reviews': 'समीक्षाएं',
+        'Earnings': 'आय',
+        'Settings': 'सेटिंग्स',
+        'Logout': 'लॉगआउट',
+        'Search': 'मरीज़, अपॉइंटमेंट खोजें...',
+        'Consultations': 'परामर्श',
+        'Medical Records': 'चिकित्सा रिकॉर्ड'
+    },
+    'es': {
+        'Dashboard': 'Panel de Control',
+        'Profile': 'Perfil',
+        'My Patients': 'Mis Pacientes',
+        'Schedule': 'Horarios',
+        'Appointments': 'Citas',
+        'Cancellation & Completion': 'Cancelación y Finalización',
+        'Reviews': 'Reseñas',
+        'Earnings': 'Ganancias',
+        'Settings': 'Configuración',
+        'Logout': 'Cerrar Sesión',
+        'Search': 'Buscar pacientes, citas...',
+        'Consultations': 'Consultas',
+        'Medical Records': 'Registros Médicos'
+    },
+    'fr': {
+        'Dashboard': 'Tableau de Bord',
+        'Profile': 'Profil',
+        'My Patients': 'Mes Patients',
+        'Schedule': 'Horaires',
+        'Appointments': 'Rendez-vous',
+        'Cancellation & Completion': 'Annulation et Achèvement',
+        'Reviews': 'Avis',
+        'Earnings': 'Revenus',
+        'Settings': 'Paramètres',
+        'Logout': 'Déconnexion',
+        'Search': 'Rechercher patients, rendez-vous...',
+        'Consultations': 'Consultations',
+        'Medical Records': 'Dossiers Médicaux'
+    },
+    'de': {
+        'Dashboard': 'Dashboard',
+        'Profile': 'Profil',
+        'My Patients': 'Meine Patienten',
+        'Schedule': 'Zeitpläne',
+        'Appointments': 'Termine',
+        'Cancellation & Completion': 'Stornierung und Abschluss',
+        'Reviews': 'Bewertungen',
+        'Earnings': 'Einnahmen',
+        'Settings': 'Einstellungen',
+        'Logout': 'Abmelden',
+        'Search': 'Patienten, Termine suchen...',
+        'Consultations': 'Beratungen',
+        'Medical Records': 'Krankenakten'
+    },
+    'zh': {
+        'Dashboard': '仪表板',
+        'Profile': '个人资料',
+        'My Patients': '我的患者',
+        'Schedule': '时间安排',
+        'Appointments': '预约',
+        'Cancellation & Completion': '取消和完成',
+        'Reviews': '评论',
+        'Earnings': '收入',
+        'Settings': '设置',
+        'Logout': '登出',
+        'Search': '搜索患者、预约...',
+        'Consultations': '咨询',
+        'Medical Records': '医疗记录'
+    }
+};
 
-</footer>
-    <!-- Scripts -->
-    <script src="{% static 'assets/js/jquery-3.2.1.min.js' %}"></script>
-    <script src="{% static 'assets/js/popper.min.js' %}"></script>
-    <script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.3.0/mdb.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            const isMobile = () => window.innerWidth <= 991.98;
+const practitionerLanguageNames = {
+    'en': 'English',
+    'ur': 'اردو',
+    'ar': 'العربية',
+    'hi': 'हिन्दी',
+    'es': 'Español',
+    'fr': 'Français',
+    'de': 'Deutsch',
+    'zh': '中文'
+};
 
-            // Function to update sidebar height
-            function updateSidebarHeight() {
-                const windowHeight = window.innerHeight;
-                $(".sidebar").css("height", `${windowHeight}px`);
-            }
-
-            // Toggle sidebar function
-            function toggleSidebar() {
-                if (isMobile()) {
-                    updateSidebarHeight();
-                    $(".sidebar").toggleClass("show");
-                    $(".sidebar-overlay").toggleClass("show");
-                } else {
-                    $("body").toggleClass("mini-sidebar");
-                }
-            }
-
-            // Handle sidebar toggle
-            $("#mobile_btn, #toggle_btn").on("click", function(e) {
-                e.preventDefault();
-                toggleSidebar();
-            });
-
-            // Handle close button click
-            $(".sidebar-close").on("click", function() {
-                $(".sidebar").removeClass("show");
-                $(".sidebar-overlay").removeClass("show");
-            });
-
-            // Handle overlay click
-            $(".sidebar-overlay").on("click", function() {
-                $(".sidebar").removeClass("show");
-                $(".sidebar-overlay").removeClass("show");
-            });
-
-            // Handle submenu toggles
-            $(".submenu > a").on("click", function(e) {
-                e.preventDefault();
-                $(this).parent().toggleClass("active");
-                $(this).next("ul").slideToggle(200);
-            });
-
-            // Handle window resize
-            $(window).on('resize', function() {
-                updateSidebarHeight();
-                if (!isMobile()) {
-                    $(".sidebar-overlay").removeClass("show");
-                    $(".sidebar").removeClass("show");
-                } else {
-                    $("body").removeClass("mini-sidebar");
-                }
-            });
-
-            // Initial setup
-            updateSidebarHeight();
-        });
-    </script>
-    <script>
-        function startVideoCall(patientId) {
-            fetch(`/practitioner-dashboard/start-video-call/${patientId}/`, {
-                method: "POST",
-                headers: {
-                    "X-CSRFToken": "{{ csrf_token }}",
-                    "Content-Type": "application/json"
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert("Video call started! Opening session...");
-                    window.open(data.jitsi_link, "_blank");  // Open Jitsi Meet in a new tab
-                } else {
-                    alert("Error: " + data.error);
-                }
-            })
-            .catch(error => console.error("Error:", error));
+// Practitioner Dashboard Language Change Function
+window.changeDashboardLanguage = function(langCode) {
+    try {
+        console.log('Changing practitioner dashboard language to:', langCode);
+        
+        // Update current language display
+        const currentLangElement = document.getElementById('dashboard-current-language');
+        if (currentLangElement) {
+            currentLangElement.textContent = practitionerLanguageNames[langCode];
         }
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+        
+        // Set document direction for RTL languages
+        if (langCode === 'ur' || langCode === 'ar') {
+            document.documentElement.setAttribute('dir', 'rtl');
+            document.documentElement.setAttribute('lang', langCode);
+        } else {
+            document.documentElement.setAttribute('dir', 'ltr');
+            document.documentElement.setAttribute('lang', langCode);
+        }
+        
+        // Store language preference
+        localStorage.setItem('selectedLanguage', langCode);
+        
+        // Translate dashboard content
+        translatePractitionerDashboard(langCode);
+        
+        // Show success message
+        showPractitionerLanguageMessage(practitionerLanguageNames[langCode]);
+        
+        console.log('Practitioner dashboard language changed successfully to:', langCode);
+    } catch (error) {
+        console.error('Error changing practitioner dashboard language:', error);
+    }
+};
+
+// Translate Practitioner Dashboard Content
+function translatePractitionerDashboard(langCode) {
+    try {
+        const translation = practitionerTranslations[langCode] || practitionerTranslations['en'];
+        
+        if (!translation) {
+            console.error('No translation found for language:', langCode);
+            return;
+        }
+        
+        let translatedCount = 0;
+        
+        // Translate all elements with data-translate attribute
+        document.querySelectorAll('[data-translate]').forEach(element => {
+            const key = element.getAttribute('data-translate');
+            if (translation[key]) {
+                if (element.tagName === 'INPUT' && (element.type === 'text' || element.type === 'search')) {
+                    element.placeholder = translation[key];
+                } else {
+                    element.textContent = translation[key];
+                }
+                translatedCount++;
+            }
+        });
+        
+        console.log(`Practitioner dashboard translation completed: ${translatedCount} elements translated to ${langCode}`);
+    } catch (error) {
+        console.error('Error in translatePractitionerDashboard:', error);
+    }
+}
+
+// Show Language Change Message
+function showPractitionerLanguageMessage(languageName) {
+    const message = document.createElement('div');
+    message.className = 'practitioner-language-notification';
+    message.innerHTML = `
+        <i class="fas fa-check-circle me-2"></i>
+        Language changed to ${languageName}
+    `;
+    message.style.cssText = `
+        position: fixed;
+        top: 80px;
+        right: 30px;
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        z-index: 10002;
+        animation: slideInRight 0.3s ease-out;
+    `;
+    
+    document.body.appendChild(message);
+    
+    setTimeout(() => {
+        message.style.animation = 'slideOutRight 0.3s ease-out';
+        setTimeout(() => {
+            if (document.body.contains(message)) {
+                document.body.removeChild(message);
+            }
+        }, 300);
+    }, 3000);
+}
+
+// Initialize Practitioner Dashboard Language System
+document.addEventListener('DOMContentLoaded', function() {
+    try {
+        console.log('Initializing practitioner dashboard language system...');
+        
+        const savedLanguage = localStorage.getItem('selectedLanguage') || 'en';
+        console.log('Saved language:', savedLanguage);
+        
+        // Update current language display
+        const currentLangElement = document.getElementById('dashboard-current-language');
+        if (currentLangElement) {
+            currentLangElement.textContent = practitionerLanguageNames[savedLanguage] || 'English';
+        }
+        
+        // Apply saved language if not English
+        if (savedLanguage !== 'en') {
+            setTimeout(() => {
+                changeDashboardLanguage(savedLanguage);
+            }, 100);
+        }
+        
+        console.log('Practitioner dashboard language system initialized successfully');
+    } catch (error) {
+        console.error('Error initializing practitioner dashboard language system:', error);
+    }
+});
+
+console.log('🏥 Practitioner Dashboard Language System Loaded Successfully!');
+
+// Language Dropdown Functionality
+function toggleLanguageDropdown() {
+    const dropdown = document.getElementById('languageDropdown');
+    const chevron = document.getElementById('languageChevron');
+    
+    if (dropdown.classList.contains('hidden')) {
+        dropdown.classList.remove('hidden');
+        chevron.style.transform = 'rotate(180deg)';
+    } else {
+        dropdown.classList.add('hidden');
+        chevron.style.transform = 'rotate(0deg)';
+    }
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(event) {
+    const languageSelector = document.getElementById('languageSelector');
+    const languageDropdown = document.getElementById('languageDropdown');
+    const chevron = document.getElementById('languageChevron');
+    
+    if (!languageSelector.contains(event.target)) {
+        languageDropdown.classList.add('hidden');
+        chevron.style.transform = 'rotate(0deg)';
+    }
+});
+
+// Enhanced Language Change Function with RTL Support
+function changeLanguage(langCode, langName) {
+    // Update current language display
+    document.getElementById('currentLanguage').textContent = langName;
+    
+    // Store language preference
+    localStorage.setItem('practitionerLanguage', langCode);
+    localStorage.setItem('practitionerLanguageName', langName);
+    
+    // Apply RTL for Arabic and Urdu
+    const rtlLanguages = ['ar', 'ur'];
+    const htmlElement = document.documentElement;
+    
+    if (rtlLanguages.includes(langCode)) {
+        htmlElement.setAttribute('dir', 'rtl');
+        htmlElement.setAttribute('lang', langCode);
+        document.body.classList.add('rtl-layout');
+    } else {
+        htmlElement.setAttribute('dir', 'ltr');
+        htmlElement.setAttribute('lang', langCode);
+        document.body.classList.remove('rtl-layout');
+    }
+    
+    // Translate all elements with data-translate attribute
+    translatePractitionerDashboard(langCode);
+    
+    // Close dropdown
+    document.getElementById('languageDropdown').classList.add('hidden');
+    document.getElementById('languageChevron').style.transform = 'rotate(0deg)';
+    
+    // Show success message
+    showLanguageChangeNotification(langName);
+}
+
+// Show language change notification
+function showLanguageChangeNotification(langName) {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = 'fixed top-4 right-4 bg-doctor-green text-white px-6 py-3 rounded-xl shadow-lg z-50 transform translate-x-full transition-transform duration-300';
+    notification.innerHTML = `
+        <div class="flex items-center space-x-3">
+            <i class="fas fa-check-circle text-lg"></i>
+            <span class="font-medium">Language changed to ${langName}</span>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Animate in
+    setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+    }, 100);
+    
+    // Animate out and remove
+    setTimeout(() => {
+        notification.style.transform = 'translateX(100%)';
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 300);
+    }, 3000);
+}
+
+// Load saved language on page load
+document.addEventListener('DOMContentLoaded', function() {
+    const savedLang = localStorage.getItem('practitionerLanguage');
+    const savedLangName = localStorage.getItem('practitionerLanguageName');
+    
+    if (savedLang && savedLangName) {
+        changeLanguage(savedLang, savedLangName);
+    }
+});
+
+// Mobile Sidebar Toggle Function
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    
+    if (sidebar.classList.contains('-translate-x-full')) {
+        // Show sidebar
+        sidebar.classList.remove('-translate-x-full');
+        sidebar.classList.add('translate-x-0');
+        overlay.classList.remove('hidden');
+    } else {
+        // Hide sidebar
+        sidebar.classList.add('-translate-x-full');
+        sidebar.classList.remove('translate-x-0');
+        overlay.classList.add('hidden');
+    }
+}
+
+// Close sidebar when clicking outside on mobile
+document.addEventListener('click', function(event) {
+    const sidebar = document.getElementById('sidebar');
+    const mobileMenuBtn = document.querySelector('[onclick="toggleSidebar()"]');
+    const overlay = document.getElementById('sidebar-overlay');
+    
+    // Check if click is outside sidebar and not on menu button
+    if (window.innerWidth < 1024 && 
+        !sidebar.contains(event.target) && 
+        !mobileMenuBtn.contains(event.target) &&
+        !sidebar.classList.contains('-translate-x-full')) {
+        
+        sidebar.classList.add('-translate-x-full');
+        sidebar.classList.remove('translate-x-0');
+        overlay.classList.add('hidden');
+    }
+});
+
+// Handle window resize
+window.addEventListener('resize', function() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    
+    if (window.innerWidth >= 1024) {
+        // Desktop view - ensure sidebar is visible and overlay is hidden
+        sidebar.classList.remove('-translate-x-full');
+        sidebar.classList.add('translate-x-0');
+        overlay.classList.add('hidden');
+    } else {
+        // Mobile view - ensure sidebar is hidden by default
+        sidebar.classList.add('-translate-x-full');
+        sidebar.classList.remove('translate-x-0');
+        overlay.classList.add('hidden');
+    }
+});
+</script>
 
 </body>
 

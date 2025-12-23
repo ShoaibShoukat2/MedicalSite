@@ -1,178 +1,212 @@
 {% extends 'patientdashboard/patient_base.html' %}
 {% load static %}
 
+{% block title %}My Profile - Patient Dashboard{% endblock %}
+
 {% block content %}
-<div class="container mt-5">
-    {% if messages %}
-    <div class="messages mb-4">
-        {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+<!-- Modern Profile Header -->
+<div class="bg-gradient-to-r from-patient-blue to-patient-dark-blue rounded-2xl p-6 mb-8 text-white">
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-2xl md:text-3xl font-bold mb-2" data-translate="My Profile">My Profile</h1>
+            <p class="text-white/90">Manage your personal information and preferences</p>
         </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-
-    <div class="profile-container">
-        <div class="header-nav mb-4">
-            <a href="{% url 'patientdashboard:appointments_patients' %}" class="back-link text-decoration-none">
-                <i class="fas fa-arrow-left"></i> Back to home
-            </a>
-        </div>
-
-        <div class="profile-card">
-            <div class="profile-header">
-                <div class="profile-image">
-                    {% if patient.profile_photo %}
-                        <img src="{{ patient.profile_photo.url }}" alt="Profile Photo">
-                    {% else %}
-                        <img src="{% static 'images/default-avatar.png' %}" alt="Default Profile">
-                    {% endif %}
-                </div>
-                <div class="profile-info">
-                    <h4 class="user-name">{{ patient.first_name }} {{ patient.last_name }}</h4>
-                    <p class="user-email text-muted">{{ patient.email }}</p>
-                    <button type="button" class="btn btn-primary btn-sm" id="editProfileBtn">
-                        <i class="fas fa-edit"></i> Edit Profile
-                    </button>
-                </div>
-            </div>
-
-            <form method="POST" enctype="multipart/form-data" class="profile-form" id="profileForm" style="display: none;">
-                {% csrf_token %}
-                
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label">Greeting</label>
-                        {{ form.greeting }}
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Gender</label>
-                        {{ form.gender }}
-                    </div>
-                </div>
-
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label">First Name</label>
-                        {{ form.first_name }}
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Last Name</label>
-                        {{ form.last_name }}
-                    </div>
-                </div>
-
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label">Email</label>
-                        {{ form.email }}
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Mobile Phone</label>
-                        {{ form.mobile_phone }}
-                    </div>
-                </div>
-
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label">Date of Birth</label>
-                        {{ form.date_of_birth }}
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Profile Photo</label>
-                        {{ form.profile_photo }}
-                    </div>
-                </div>
-
-                <div class="form-actions text-end mt-4">
-                    <button type="button" class="btn btn-secondary me-2" id="cancelEdit">Cancel</button>
-                    <button type="submit" name="update_profile" class="btn btn-primary px-4">
-                        Save Profile
-                    </button>
-                </div>
-            </form>
-
-            <!-- Profile Display Section -->
-            <div id="profileDisplay">
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <p><strong>Greeting:</strong> {{ patient.greeting }}</p>
-                        <p><strong>Gender:</strong> {{ patient.gender }}</p>
-                        <p><strong>First Name:</strong> {{ patient.first_name }}</p>
-                        <p><strong>Last Name:</strong> {{ patient.last_name }}</p>
-                    </div>
-                    <div class="col-md-6">
-                        <p><strong>Email:</strong> {{ patient.email }}</p>
-                        <p><strong>Mobile Phone:</strong> {{ patient.mobile_phone }}</p>
-                        <p><strong>Date of Birth:</strong> {{ patient.date_of_birth }}</p>
-                    </div>
-                </div>
-            </div>
+        <div class="hidden md:block">
+            <i class="fas fa-user-circle text-6xl text-white/20"></i>
         </div>
     </div>
 </div>
 
-<style>
-    .profile-container {
-        max-width: 800px;
-        margin: 0 auto;
-    }
+<!-- Messages -->
+{% if messages %}
+<div class="mb-6">
+    {% for message in messages %}
+    <div class="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-xl mb-4 flex items-center">
+        <i class="fas fa-check-circle mr-3 text-green-600"></i>
+        <span>{{ message }}</span>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
 
-    .profile-card {
-        background: white;
-        border-radius: 10px;
-        padding: 2rem;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
+<!-- Profile Card -->
+<div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+    <!-- Profile Header -->
+    <div class="bg-gradient-to-r from-patient-light-blue to-white p-8">
+        <div class="flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-6">
+            <!-- Profile Image -->
+            <div class="relative">
+                <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg">
+                    {% if patient.profile_photo %}
+                        <img src="{{ patient.profile_photo.url }}" alt="Profile Photo" class="w-full h-full object-cover">
+                    {% else %}
+                        <div class="w-full h-full bg-gradient-to-br from-patient-blue to-patient-purple flex items-center justify-center">
+                            <i class="fas fa-user text-white text-4xl"></i>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="absolute -bottom-2 -right-2 w-10 h-10 bg-patient-green rounded-full flex items-center justify-center shadow-lg">
+                    <i class="fas fa-camera text-white text-sm"></i>
+                </div>
+            </div>
+            
+            <!-- Profile Info -->
+            <div class="text-center md:text-left flex-1">
+                <h2 class="text-2xl font-bold text-patient-dark-blue mb-2">
+                    {{ patient.greeting|default:"" }} {{ patient.first_name }} {{ patient.last_name }}
+                </h2>
+                <p class="text-patient-dark-gray mb-4">{{ patient.email }}</p>
+                <div class="flex flex-wrap gap-2 justify-center md:justify-start">
+                    <span class="px-3 py-1 bg-patient-blue/10 text-patient-blue rounded-full text-sm font-medium">
+                        <i class="fas fa-user mr-1"></i>Patient
+                    </span>
+                    {% if patient.gender %}
+                    <span class="px-3 py-1 bg-patient-green/10 text-patient-green rounded-full text-sm font-medium">
+                        <i class="fas fa-venus-mars mr-1"></i>{{ patient.gender }}
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Edit Button -->
+            <div class="flex space-x-3">
+                <button type="button" id="editProfileBtn" class="px-6 py-3 bg-patient-blue text-white rounded-xl hover:bg-patient-dark-blue transition-colors font-semibold shadow-lg">
+                    <i class="fas fa-edit mr-2"></i>Edit Profile
+                </button>
+            </div>
+        </div>
+    </div>
 
-    .profile-header {
-        display: flex;
-        align-items: center;
-        margin-bottom: 2rem;
-    }
+    <!-- Profile Content -->
+    <div class="p-8">
+        <!-- Profile Display -->
+        <div id="profileDisplay">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="space-y-6">
+                    <div class="bg-patient-gray rounded-xl p-6">
+                        <h3 class="text-lg font-semibold text-patient-dark-blue mb-4">Personal Information</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="text-sm font-medium text-patient-dark-gray">Full Name</label>
+                                <p class="text-patient-dark-blue font-medium">{{ patient.first_name }} {{ patient.last_name }}</p>
+                            </div>
+                            <div>
+                                <label class="text-sm font-medium text-patient-dark-gray">Gender</label>
+                                <p class="text-patient-dark-blue font-medium">{{ patient.gender|default:"Not specified" }}</p>
+                            </div>
+                            <div>
+                                <label class="text-sm font-medium text-patient-dark-gray">Date of Birth</label>
+                                <p class="text-patient-dark-blue font-medium">{{ patient.date_of_birth|default:"Not specified" }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="space-y-6">
+                    <div class="bg-patient-gray rounded-xl p-6">
+                        <h3 class="text-lg font-semibold text-patient-dark-blue mb-4">Contact Information</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="text-sm font-medium text-patient-dark-gray">Email Address</label>
+                                <p class="text-patient-dark-blue font-medium">{{ patient.email }}</p>
+                            </div>
+                            <div>
+                                <label class="text-sm font-medium text-patient-dark-gray">Mobile Phone</label>
+                                <p class="text-patient-dark-blue font-medium">{{ patient.mobile_phone|default:"Not specified" }}</p>
+                            </div>
+                            <div>
+                                <label class="text-sm font-medium text-patient-dark-gray">Greeting Preference</label>
+                                <p class="text-patient-dark-blue font-medium">{{ patient.greeting|default:"Not specified" }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    .profile-image {
-        width: 100px;
-        height: 100px;
-        border-radius: 50%;
-        overflow: hidden;
-        margin-right: 1.5rem;
-        border: 3px solid #007bff;
-    }
-
-    .profile-image img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .back-link {
-        color: #666;
-        font-size: 0.9rem;
-    }
-
-    .back-link:hover {
-        color: #333;
-    }
-
-    .form-actions {
-        margin-top: 2rem;
-    }
-
-    @media (max-width: 768px) {
-        .profile-header {
-            flex-direction: column;
-            text-align: center;
-        }
-
-        .profile-image {
-            margin-right: 0;
-            margin-bottom: 1rem;
-        }
-    }
-</style>
+        <!-- Profile Edit Form -->
+        <form method="POST" enctype="multipart/form-data" id="profileForm" class="hidden">
+            {% csrf_token %}
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="space-y-6">
+                    <div class="bg-patient-gray rounded-xl p-6">
+                        <h3 class="text-lg font-semibold text-patient-dark-blue mb-4">Personal Information</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-patient-dark-gray mb-2">Greeting</label>
+                                <select name="greeting" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-patient-blue/50 focus:border-patient-blue">
+                                    <option value="">Select greeting</option>
+                                    <option value="Mr." {% if patient.greeting == "Mr." %}selected{% endif %}>Mr.</option>
+                                    <option value="Mrs." {% if patient.greeting == "Mrs." %}selected{% endif %}>Mrs.</option>
+                                    <option value="Ms." {% if patient.greeting == "Ms." %}selected{% endif %}>Ms.</option>
+                                    <option value="Dr." {% if patient.greeting == "Dr." %}selected{% endif %}>Dr.</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-patient-dark-gray mb-2">First Name</label>
+                                <input type="text" name="first_name" value="{{ patient.first_name }}" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-patient-blue/50 focus:border-patient-blue">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-patient-dark-gray mb-2">Last Name</label>
+                                <input type="text" name="last_name" value="{{ patient.last_name }}" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-patient-blue/50 focus:border-patient-blue">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-patient-dark-gray mb-2">Gender</label>
+                                <select name="gender" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-patient-blue/50 focus:border-patient-blue">
+                                    <option value="">Select gender</option>
+                                    <option value="Male" {% if patient.gender == "Male" %}selected{% endif %}>Male</option>
+                                    <option value="Female" {% if patient.gender == "Female" %}selected{% endif %}>Female</option>
+                                    <option value="Other" {% if patient.gender == "Other" %}selected{% endif %}>Other</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="space-y-6">
+                    <div class="bg-patient-gray rounded-xl p-6">
+                        <h3 class="text-lg font-semibold text-patient-dark-blue mb-4">Contact Information</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-patient-dark-gray mb-2">Email Address</label>
+                                <input type="email" name="email" value="{{ patient.email }}" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-patient-blue/50 focus:border-patient-blue">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-patient-dark-gray mb-2">Mobile Phone</label>
+                                <input type="tel" name="mobile_phone" value="{{ patient.mobile_phone|default:'' }}" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-patient-blue/50 focus:border-patient-blue">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-patient-dark-gray mb-2">Date of Birth</label>
+                                <input type="date" name="date_of_birth" value="{{ patient.date_of_birth|date:'Y-m-d' }}" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-patient-blue/50 focus:border-patient-blue">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-patient-dark-gray mb-2">Profile Photo</label>
+                                <input type="file" name="profile_photo" accept="image/*" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-patient-blue/50 focus:border-patient-blue">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Form Actions -->
+            <div class="flex justify-end space-x-4 mt-8 pt-6 border-t border-gray-200">
+                <button type="button" id="cancelEdit" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors font-semibold">
+                    Cancel
+                </button>
+                <button type="submit" name="update_profile" class="px-8 py-3 bg-patient-blue text-white rounded-xl hover:bg-patient-dark-blue transition-colors font-semibold shadow-lg">
+                    <i class="fas fa-save mr-2"></i>Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -182,15 +216,28 @@ document.addEventListener('DOMContentLoaded', function() {
     const profileDisplay = document.getElementById('profileDisplay');
 
     editBtn.addEventListener('click', function() {
-        profileForm.style.display = 'block';
-        profileDisplay.style.display = 'none';
+        profileForm.classList.remove('hidden');
+        profileDisplay.classList.add('hidden');
         editBtn.style.display = 'none';
     });
 
     cancelBtn.addEventListener('click', function() {
-        profileForm.style.display = 'none';
-        profileDisplay.style.display = 'block';
+        profileForm.classList.add('hidden');
+        profileDisplay.classList.remove('hidden');
         editBtn.style.display = 'inline-block';
+    });
+    
+    // Animate cards on load
+    const cards = document.querySelectorAll('.bg-patient-gray');
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = 'all 0.5s ease';
+        
+        setTimeout(() => {
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 200);
     });
 });
 </script>

@@ -2,327 +2,365 @@
 {% load static %}
 
 {% block content %}
-<div class="container py-5">
-  <div class="row justify-content-center">
-    <div class="col-lg-10">
-      <div class="card shadow-lg border-0 rounded-lg overflow-hidden">
-        <!-- Header with gradient background -->
-        <div class="card-header p-4 bg-gradient-primary text-white">
-          <div class="d-flex align-items-center">
-            <div>
-              <h4 class="mb-0 fw-bold">Practitioner Profile</h4>
-              <p class="mb-0 mt-1 opacity-75 small">Manage your professional information</p>
-            </div>
-            <div class="ms-auto">
-              <i class="fas fa-user-md fa-2x opacity-75"></i>
-            </div>
-          </div>
-        </div>
-
-        <div class="card-body p-0">
-          {% if practitioner.photo or practitioner.price or practitioner.description %}
-            <!-- Display Profile with Edit Mode Toggle -->
-            <div id="profile-view">
-              <div class="row g-0">
-                <!-- Sidebar with photo -->
-                <div class="col-md-4 bg-light p-4 text-center d-flex flex-column justify-content-center align-items-center border-end">
-                  <div class="col-12 mb-3 text-center">
-                    {% if practitioner.photo %}
-                      <img src="{{ practitioner.photo.url }}" 
-                           alt="Profile Photo" 
-                           class="rounded-circle img-thumbnail shadow"
-                           style="width: 180px; height: 180px; object-fit: cover; border-radius: 50%;">
-                    {% else %}
-                      <img src="{% static 'images/default-profile.png' %}" 
-                           alt="Default Profile" 
-                           class="rounded-circle img-thumbnail shadow"
-                           style="width: 180px; height: 180px; object-fit: cover; border-radius: 50%;">
-                    {% endif %}
-                  </div>
-                  
-                  <h5 class="fw-bold mb-1">{{ practitioner.first_name }} {{ practitioner.last_name }}</h5>
-                  <p class="text-primary mb-2">{{ practitioner.get_specialty_display }}</p>
-                  
-                  {% if practitioner.price %}
-                    <div class="badge bg-success fs-6 mb-3 p-2">
-                      <i class="fas fa-tag me-1"></i>${{ practitioner.price }} per session
-                    </div>
-                  {% endif %}
-                  
-                  <button id="edit-profile-btn" class="btn btn-outline-primary btn-sm mt-2">
-                    <i class="fas fa-edit me-1"></i>Edit Profile
-                  </button>
-                </div>
-                
-                <!-- Main content area -->
-                <div class="col-md-8 p-4">
-                  <h5 class="border-bottom pb-2 mb-3">
-                    <i class="fas fa-info-circle text-primary me-2"></i>Profile Information
-                  </h5>
-                  
-                  <div class="row mb-4">
-                    <div class="col-md-6 mb-3">
-                      <div class="card h-100 border-0 bg-light rounded-3">
-                        <div class="card-body">
-                          <h6 class="text-muted mb-2 small">Email Address</h6>
-                          <p class="mb-0 d-flex align-items-center">
-                            <i class="fas fa-envelope text-primary me-2"></i>
-                            {{ practitioner.email }}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                      <div class="card h-100 border-0 bg-light rounded-3">
-                        <div class="card-body">
-                          <h6 class="text-muted mb-2 small">Specialty</h6>
-                          <p class="mb-0 d-flex align-items-center">
-                            <i class="fas fa-stethoscope text-primary me-2"></i>
-                            {{ practitioner.get_specialty_display }}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {% if practitioner.description %}
-                    <h5 class="border-bottom pb-2 mb-3">
-                      <i class="fas fa-user-circle text-primary me-2"></i>Professional Bio
-                    </h5>
-                    <div class="p-3 bg-light rounded-3 mb-4">
-                      <p class="mb-0">{{ practitioner.description }}</p>
-                    </div>
-                  {% endif %}
-                  
-                  <div class="alert alert-info d-flex align-items-center mt-2 mb-0" role="alert">
-                    <i class="fas fa-lightbulb me-3 fs-4"></i>
-                    <div>
-                      <strong>Pro Tip:</strong> Keep your profile information up-to-date to attract more clients.
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <!-- Edit Profile Form (Hidden by Default) -->
-            <div id="edit-profile-form" class="p-4" style="display: none;">
-              <div class="d-flex justify-content-between align-items-center mb-4">
-                <h5 class="mb-0">
-                  <i class="fas fa-edit text-primary me-2"></i>Edit Your Profile
-                </h5>
-                <button id="cancel-edit-btn" class="btn btn-outline-secondary btn-sm">
-                  <i class="fas fa-times me-1"></i>Cancel
-                </button>
-              </div>
-              
-              <form method="POST" enctype="multipart/form-data" action="" class="needs-validation" novalidate>
-                {% csrf_token %}
-
-                <div class="row g-4">
-                  <!-- Current Photo Display -->
-                  <div class="col-12 mb-3 text-center">
-                    {% if practitioner.photo %}
-                      <img src="{{ practitioner.photo.url }}" 
-                           alt="Current Profile Photo" 
-                           class="rounded-circle img-thumbnail shadow mb-3"
-                           style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%;">
-                    {% else %}
-                      <img src="{% static 'images/default-profile.png' %}" 
-                           alt="Default Profile" 
-                           class="rounded-circle img-thumbnail shadow mb-3"
-                           style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%;">
-                    {% endif %}
-                  </div>
-                  
-                
-                  <!-- Photo Upload -->
-                  <div class="col-12 mb-3">
-                    <label for="photo" class="form-label fw-semibold text-primary">
-                      <i class="fas fa-camera-retro me-2"></i>Update Profile Photo
-                    </label>
-                    <div class="input-group">
-                      <input type="file" class="form-control" id="photo" name="photo" accept="image/*">
-                      <label class="input-group-text bg-primary text-white" for="photo">
-                        <i class="fas fa-upload me-1"></i>Upload
-                      </label>
-                    </div>
-                    <small class="text-muted mt-1 d-block">Leave empty to keep current photo</small>
-                  </div>
-                  
-                  <!-- Price -->
-                  <div class="col-md-6 mb-3">
-                    <label for="price" class="form-label fw-semibold text-primary">
-                      <i class="fas fa-dollar-sign me-2"></i>Session Price
-                    </label>
-                    <div class="input-group">
-                      <span class="input-group-text bg-light">$</span>
-                      <input type="number" step="0.01" class="form-control" id="price" name="price" placeholder="0.00" value="{{ practitioner.price|default_if_none:'' }}">
-                    </div>
-                  </div>
-                  
-                  <!-- Specialty (Read-only) -->
-                  <div class="col-md-6 mb-3">
-                    <label class="form-label fw-semibold text-primary">
-                      <i class="fas fa-stethoscope me-2"></i>Your Specialty
-                    </label>
-                    <input type="text" class="form-control bg-light" value="{{ practitioner.get_specialty_display }}" readonly>
-                  </div>
-
-                  <!-- Description -->
-                  <div class="col-12 mb-3">
-                    <label for="description" class="form-label fw-semibold text-primary">
-                      <i class="fas fa-pen-fancy me-2"></i>Professional Bio
-                    </label>
-                    <textarea class="form-control" id="description" name="description" rows="5" placeholder="Describe your expertise, qualifications, and approach to treatment">{{ practitioner.description|default_if_none:'' }}</textarea>
-                  </div>
-                </div>
-
-                <!-- Submit Button -->
-                <div class="d-grid gap-2 mt-4">
-                  <button type="submit" class="btn btn-primary py-2">
-                    <i class="fas fa-save me-2"></i>Update Profile
-                  </button>
-                </div>
-              </form>
-            </div>
-            
-          {% else %}
-            <!-- Display Initial Form to Complete Profile -->
-            <div class="p-4">
-              <div class="alert alert-info mb-4">
-                <i class="fas fa-info-circle me-2"></i>
-                Complete your profile to be visible to potential clients
-              </div>
-              
-              <form method="POST" enctype="multipart/form-data" action="" class="needs-validation" novalidate>
-                {% csrf_token %}
-
-                <div class="row g-4">
-                  <!-- Photo Upload -->
-                  <div class="col-12 mb-3">
-                    <label for="photo" class="form-label fw-semibold text-primary">
-                      <i class="fas fa-camera-retro me-2"></i>Profile Photo
-                    </label>
-                    <div class="input-group">
-                      <input type="file" class="form-control" id="photo" name="photo" accept="image/*">
-                      <label class="input-group-text bg-primary text-white" for="photo">
-                        <i class="fas fa-upload me-1"></i>Upload
-                      </label>
-                    </div>
-                    <small class="text-muted mt-1 d-block">Recommended: Square image, at least 300x300 pixels</small>
-                  </div>
-                  
-                  <!-- Price -->
-                  <div class="col-md-6 mb-3">
-                    <label for="price" class="form-label fw-semibold text-primary">
-                      <i class="fas fa-dollar-sign me-2"></i>Session Price
-                    </label>
-                    <div class="input-group">
-                      <span class="input-group-text bg-light">$</span>
-                      <input type="number" step="0.01" class="form-control" id="price" name="price" placeholder="0.00">
-                    </div>
-                    <small class="text-muted mt-1 d-block">Set a competitive rate based on your experience</small>
-                  </div>
-                  
-                  <!-- Specialty (Read-only) -->
-                  <div class="col-md-6 mb-3">
-                    <label class="form-label fw-semibold text-primary">
-                      <i class="fas fa-stethoscope me-2"></i>Your Specialty
-                    </label>
-                    <input type="text" class="form-control bg-light" value="{{ practitioner.get_specialty_display }}" readonly>
-                  </div>
-
-                  <!-- Description -->
-                  <div class="col-12 mb-3">
-                    <label for="description" class="form-label fw-semibold text-primary">
-                      <i class="fas fa-pen-fancy me-2"></i>Professional Bio
-                    </label>
-                    <textarea class="form-control" id="description" name="description" rows="5" placeholder="Describe your expertise, qualifications, and approach to treatment"></textarea>
-                    <small class="text-muted mt-1 d-block">A compelling bio helps clients understand your practice style</small>
-                  </div>
-                </div>
-
-                <!-- Submit Button -->
-                <div class="d-grid gap-2 mt-4">
-                  <button type="submit" class="btn btn-primary py-3 btn-lg">
-                    <i class="fas fa-save me-2"></i>Complete Your Profile
-                  </button>
-                </div>
-              </form>
-            </div>
-          {% endif %}
-        </div>
-        
-        <!-- Footer -->
-        <div class="card-footer bg-light p-3 text-center">
-          <small class="text-muted">
-            Last updated: <span class="fw-semibold">{% now "F j, Y" %}</span>
-          </small>
+<div class="max-w-6xl mx-auto space-y-6">
+  <!-- Header Section -->
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-doctor-dark-blue mb-2" data-translate="Profile">Practitioner Profile</h1>
+        <p class="text-doctor-dark-gray">Manage your professional information and settings</p>
+      </div>
+      <div class="hidden md:flex items-center space-x-4">
+        <div class="w-12 h-12 bg-gradient-to-br from-doctor-blue to-doctor-purple rounded-xl flex items-center justify-center">
+          <i class="fas fa-user-md text-white text-lg"></i>
         </div>
       </div>
     </div>
   </div>
+
+  {% if practitioner.photo or practitioner.price or practitioner.description %}
+    <!-- Profile Display Mode -->
+    <div id="profile-view" class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-0">
+        <!-- Profile Sidebar -->
+        <div class="lg:col-span-1 bg-gradient-to-br from-doctor-blue to-doctor-dark-blue p-8 text-white">
+          <div class="text-center">
+            <div class="w-40 h-40 mx-auto mb-6 rounded-full overflow-hidden border-4 border-white shadow-lg">
+              {% if practitioner.photo %}
+                <img src="{{ practitioner.photo.url }}" 
+                     alt="Profile Photo" 
+                     class="w-full h-full object-cover">
+              {% else %}
+                <div class="w-full h-full bg-white/20 flex items-center justify-center">
+                  <i class="fas fa-user text-white text-4xl"></i>
+                </div>
+              {% endif %}
+            </div>
+            
+            <h2 class="text-2xl font-bold mb-2">{{ practitioner.first_name }} {{ practitioner.last_name }}</h2>
+            <p class="text-blue-100 mb-4">{{ practitioner.get_specialty_display }}</p>
+            
+            {% if practitioner.price %}
+              <div class="inline-flex items-center px-4 py-2 bg-white/20 rounded-full text-sm font-medium mb-6">
+                <i class="fas fa-tag mr-2"></i>
+                ${{ practitioner.price }} per session
+              </div>
+            {% endif %}
+            
+            <button id="edit-profile-btn" class="w-full bg-white text-doctor-blue px-6 py-3 rounded-xl font-medium hover:bg-gray-50 transition-colors">
+              <i class="fas fa-edit mr-2"></i>Edit Profile
+            </button>
+          </div>
+        </div>
+        
+        <!-- Profile Content -->
+        <div class="lg:col-span-2 p-8">
+          <div class="space-y-8">
+            <!-- Basic Information -->
+            <div>
+              <h3 class="text-xl font-bold text-doctor-dark-blue mb-6 flex items-center">
+                <i class="fas fa-info-circle text-doctor-blue mr-3"></i>
+                Profile Information
+              </h3>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-gray-50 p-6 rounded-xl border-l-4 border-doctor-blue">
+                  <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2 block">Email Address</label>
+                  <div class="flex items-center">
+                    <i class="fas fa-envelope text-doctor-blue mr-3"></i>
+                    <span class="font-medium text-doctor-dark-blue">{{ practitioner.email }}</span>
+                  </div>
+                </div>
+                
+                <div class="bg-gray-50 p-6 rounded-xl border-l-4 border-doctor-green">
+                  <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2 block">Specialty</label>
+                  <div class="flex items-center">
+                    <i class="fas fa-stethoscope text-doctor-green mr-3"></i>
+                    <span class="font-medium text-doctor-dark-blue">{{ practitioner.get_specialty_display }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {% if practitioner.description %}
+            <!-- Professional Bio -->
+            <div>
+              <h3 class="text-xl font-bold text-doctor-dark-blue mb-6 flex items-center">
+                <i class="fas fa-user-circle text-doctor-blue mr-3"></i>
+                Professional Bio
+              </h3>
+              
+              <div class="bg-blue-50 p-6 rounded-xl border-l-4 border-doctor-blue">
+                <p class="text-doctor-dark-gray leading-relaxed">{{ practitioner.description }}</p>
+              </div>
+            </div>
+            {% endif %}
+            
+            <!-- Pro Tip -->
+            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-200">
+              <div class="flex items-start">
+                <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mr-4 flex-shrink-0">
+                  <i class="fas fa-lightbulb text-blue-600 text-lg"></i>
+                </div>
+                <div>
+                  <h4 class="font-semibold text-blue-900 mb-2">Pro Tip</h4>
+                  <p class="text-blue-700 text-sm">Keep your profile information up-to-date to attract more clients and build trust with potential patients.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Edit Profile Form (Hidden by Default) -->
+    <div id="edit-profile-form" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 hidden">
+      <div class="flex items-center justify-between mb-8">
+        <h2 class="text-2xl font-bold text-doctor-dark-blue flex items-center">
+          <i class="fas fa-edit text-doctor-blue mr-3"></i>
+          Edit Your Profile
+        </h2>
+        <button id="cancel-edit-btn" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+          <i class="fas fa-times mr-2"></i>Cancel
+        </button>
+      </div>
+      
+      <form method="POST" enctype="multipart/form-data" action="" class="space-y-8">
+        {% csrf_token %}
+
+        <!-- Current Photo Display -->
+        <div class="text-center">
+          <div class="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden border-4 border-gray-200">
+            {% if practitioner.photo %}
+              <img src="{{ practitioner.photo.url }}" 
+                   alt="Current Profile Photo" 
+                   class="w-full h-full object-cover">
+            {% else %}
+              <div class="w-full h-full bg-gray-100 flex items-center justify-center">
+                <i class="fas fa-user text-gray-400 text-2xl"></i>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <!-- Photo Upload -->
+          <div class="lg:col-span-2">
+            <label class="block text-sm font-semibold text-doctor-dark-blue mb-3">
+              <i class="fas fa-camera mr-2 text-doctor-blue"></i>Update Profile Photo
+            </label>
+            <div class="relative">
+              <input type="file" id="photo" name="photo" accept="image/*" class="hidden">
+              <label for="photo" class="flex items-center justify-center w-full px-6 py-4 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-doctor-blue hover:bg-blue-50 transition-colors">
+                <div class="text-center">
+                  <i class="fas fa-upload text-gray-400 text-2xl mb-2"></i>
+                  <p class="text-sm text-gray-600">Click to upload new photo</p>
+                  <p class="text-xs text-gray-500 mt-1">Leave empty to keep current photo</p>
+                </div>
+              </label>
+            </div>
+          </div>
+          
+          <!-- Price -->
+          <div>
+            <label for="price" class="block text-sm font-semibold text-doctor-dark-blue mb-3">
+              <i class="fas fa-dollar-sign mr-2 text-doctor-green"></i>Session Price
+            </label>
+            <div class="relative">
+              <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
+              <input type="number" step="0.01" id="price" name="price" 
+                     class="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-doctor-blue focus:border-doctor-blue transition-colors" 
+                     placeholder="0.00" value="{{ practitioner.price|default_if_none:'' }}">
+            </div>
+          </div>
+          
+          <!-- Specialty (Read-only) -->
+          <div>
+            <label class="block text-sm font-semibold text-doctor-dark-blue mb-3">
+              <i class="fas fa-stethoscope mr-2 text-doctor-purple"></i>Your Specialty
+            </label>
+            <input type="text" 
+                   class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-700" 
+                   value="{{ practitioner.get_specialty_display }}" readonly>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div>
+          <label for="description" class="block text-sm font-semibold text-doctor-dark-blue mb-3">
+            <i class="fas fa-pen-fancy mr-2 text-doctor-teal"></i>Professional Bio
+          </label>
+          <textarea id="description" name="description" rows="6" 
+                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-doctor-blue focus:border-doctor-blue transition-colors resize-none" 
+                    placeholder="Describe your expertise, qualifications, and approach to treatment">{{ practitioner.description|default_if_none:'' }}</textarea>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="flex justify-end">
+          <button type="submit" class="px-8 py-3 bg-gradient-to-r from-doctor-blue to-doctor-dark-blue text-white rounded-xl font-medium hover:shadow-lg transition-all duration-300">
+            <i class="fas fa-save mr-2"></i>Update Profile
+          </button>
+        </div>
+      </form>
+    </div>
+    
+  {% else %}
+    <!-- Initial Profile Setup -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+      <div class="text-center mb-8">
+        <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-user-plus text-doctor-blue text-2xl"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-doctor-dark-blue mb-2">Complete Your Profile</h2>
+        <p class="text-doctor-dark-gray">Add your professional information to be visible to potential clients</p>
+      </div>
+      
+      <form method="POST" enctype="multipart/form-data" action="" class="space-y-8 max-w-2xl mx-auto">
+        {% csrf_token %}
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <!-- Photo Upload -->
+          <div class="lg:col-span-2">
+            <label class="block text-sm font-semibold text-doctor-dark-blue mb-3">
+              <i class="fas fa-camera mr-2 text-doctor-blue"></i>Profile Photo
+            </label>
+            <div class="relative">
+              <input type="file" id="photo" name="photo" accept="image/*" class="hidden">
+              <label for="photo" class="flex items-center justify-center w-full px-6 py-8 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-doctor-blue hover:bg-blue-50 transition-colors">
+                <div class="text-center">
+                  <i class="fas fa-upload text-gray-400 text-3xl mb-4"></i>
+                  <p class="text-lg font-medium text-gray-700 mb-2">Upload Your Photo</p>
+                  <p class="text-sm text-gray-500">Recommended: Square image, at least 300x300 pixels</p>
+                </div>
+              </label>
+            </div>
+          </div>
+          
+          <!-- Price -->
+          <div>
+            <label for="price" class="block text-sm font-semibold text-doctor-dark-blue mb-3">
+              <i class="fas fa-dollar-sign mr-2 text-doctor-green"></i>Session Price
+            </label>
+            <div class="relative">
+              <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
+              <input type="number" step="0.01" id="price" name="price" 
+                     class="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-doctor-blue focus:border-doctor-blue transition-colors" 
+                     placeholder="0.00">
+            </div>
+            <p class="text-xs text-gray-500 mt-2">Set a competitive rate based on your experience</p>
+          </div>
+          
+          <!-- Specialty (Read-only) -->
+          <div>
+            <label class="block text-sm font-semibold text-doctor-dark-blue mb-3">
+              <i class="fas fa-stethoscope mr-2 text-doctor-purple"></i>Your Specialty
+            </label>
+            <input type="text" 
+                   class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-700" 
+                   value="{{ practitioner.get_specialty_display }}" readonly>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div>
+          <label for="description" class="block text-sm font-semibold text-doctor-dark-blue mb-3">
+            <i class="fas fa-pen-fancy mr-2 text-doctor-teal"></i>Professional Bio
+          </label>
+          <textarea id="description" name="description" rows="6" 
+                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-doctor-blue focus:border-doctor-blue transition-colors resize-none" 
+                    placeholder="Describe your expertise, qualifications, and approach to treatment"></textarea>
+          <p class="text-xs text-gray-500 mt-2">A compelling bio helps clients understand your practice style</p>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="text-center">
+          <button type="submit" class="px-12 py-4 bg-gradient-to-r from-doctor-blue to-doctor-dark-blue text-white rounded-xl font-medium text-lg hover:shadow-lg transition-all duration-300">
+            <i class="fas fa-save mr-3"></i>Complete Your Profile
+          </button>
+        </div>
+      </form>
+    </div>
+  {% endif %}
+  
+  <!-- Last Updated Footer -->
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 text-center">
+    <p class="text-sm text-gray-500">
+      Last updated: <span class="font-medium text-doctor-dark-blue">{% now "F j, Y" %}</span>
+    </p>
+  </div>
 </div>
 
-<!-- JavaScript -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // Form validation
-    const forms = document.querySelectorAll('.needs-validation');
-    Array.from(forms).forEach(form => {
-      form.addEventListener('submit', event => {
-        if (!form.checkValidity()) {
-          event.preventDefault();
-          event.stopPropagation();
-        }
-        form.classList.add('was-validated');
-      }, false);
+document.addEventListener('DOMContentLoaded', function() {
+  // Edit profile toggle
+  const editProfileBtn = document.getElementById('edit-profile-btn');
+  const cancelEditBtn = document.getElementById('cancel-edit-btn');
+  const profileView = document.getElementById('profile-view');
+  const editProfileForm = document.getElementById('edit-profile-form');
+  
+  if (editProfileBtn && cancelEditBtn) {
+    editProfileBtn.addEventListener('click', function() {
+      profileView.classList.add('hidden');
+      editProfileForm.classList.remove('hidden');
     });
     
-    // Edit profile toggle
-    const editProfileBtn = document.getElementById('edit-profile-btn');
-    const cancelEditBtn = document.getElementById('cancel-edit-btn');
-    const profileView = document.getElementById('profile-view');
-    const editProfileForm = document.getElementById('edit-profile-form');
-    
-    if (editProfileBtn && cancelEditBtn) {
-      editProfileBtn.addEventListener('click', function() {
-        profileView.style.display = 'none';
-        editProfileForm.style.display = 'block';
-      });
-      
-      cancelEditBtn.addEventListener('click', function() {
-        profileView.style.display = 'block';
-        editProfileForm.style.display = 'none';
-      });
+    cancelEditBtn.addEventListener('click', function() {
+      profileView.classList.remove('hidden');
+      editProfileForm.classList.add('hidden');
+    });
+  }
+  
+  // File upload preview
+  const photoInput = document.getElementById('photo');
+  if (photoInput) {
+    photoInput.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          // Update preview if exists
+          const preview = document.querySelector('img[alt*="Profile"]');
+          if (preview) {
+            preview.src = e.target.result;
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+  
+  // Success/Error messages
+  {% if error_message %}
+    showNotification('error', '{{ error_message|escapejs }}');
+  {% endif %}
+
+  {% if success_message %}
+    showNotification('success', '{{ success_message|escapejs }}');
+  {% endif %}
+});
+
+function showNotification(type, message) {
+  const notification = document.createElement('div');
+  notification.className = `fixed top-4 right-4 z-50 p-4 rounded-xl shadow-lg max-w-sm ${
+    type === 'success' ? 'bg-green-50 border border-green-200 text-green-800' : 'bg-red-50 border border-red-200 text-red-800'
+  }`;
+  notification.innerHTML = `
+    <div class="flex items-center">
+      <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} mr-3"></i>
+      <span>${message}</span>
+      <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-gray-500 hover:text-gray-700">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  `;
+  document.body.appendChild(notification);
+  
+  setTimeout(() => {
+    if (notification.parentElement) {
+      notification.remove();
     }
-    
-    // SweetAlert notifications
-    {% if error_message %}
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: '{{ error_message|escapejs }}',
-        confirmButtonText: 'Okay',
-        confirmButtonColor: '#0d6efd'
-      });
-    {% endif %}
-
-    {% if success_message %}
-      Swal.fire({
-        icon: 'success',
-        title: 'Profile Updated!',
-        text: '{{ success_message|escapejs }}',
-        confirmButtonText: 'Great',
-        confirmButtonColor: '#0d6efd'
-      });
-    {% endif %}
-  });
+  }, 5000);
+}
 </script>
+
 {% endblock content %}
-
-
-
-
-

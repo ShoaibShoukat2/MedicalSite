@@ -1,177 +1,207 @@
 {% extends 'patientdashboard/patient_base.html' %}
 {% load static %}
 
-{% block title %}{{ specialty_name }} Doctors{% endblock %}
-{% block extra_css %}
-<style>
-    .card {
-        border: none;
-        border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        margin-bottom: 20px;
-        transform: translateY(20px);
-        opacity: 0;
-        animation: fadeInUp 0.6s forwards;
-        transition: all 0.3s ease;
-        background-color:#c4e0ff;
-    }
-    
-    /* Staggered animation delays */
-    .col-md-6:nth-child(1) .card { animation-delay: 0.1s; }
-    .col-md-6:nth-child(2) .card { animation-delay: 0.2s; }
-    .col-md-6:nth-child(3) .card { animation-delay: 0.3s; }
-    .col-md-6:nth-child(4) .card { animation-delay: 0.4s; }
-    .col-md-6:nth-child(5) .card { animation-delay: 0.5s; }
-    .col-md-6:nth-child(6) .card { animation-delay: 0.6s; }
-    
-    @keyframes fadeInUp {
-        to {
-            transform: translateY(0);
-            opacity: 1;
-        }
-    }
-    
-    .card:hover {
-        transform: translateY(-5px) !important;
-        box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-    }
-    
-    .doctor-name {
-        font-weight: 600;
-        margin-bottom: 5px;
-        transition: color 0.3s;
-    }
-    
-    .card:hover .doctor-name {
-        color: #007bff;
-    }
-    
-    .doctor-info {
-        color: #666;
-        margin-bottom: 5px;
-    }
-    
-    .price {
-        font-weight: bold;
-        color: #28a745;
-        margin-bottom: 15px;
-        transition: transform 0.3s;
-    }
-    
-    .card:hover .price {
-        transform: scale(1.05);
-    }
-    
-    .btn-profile {
-        background: white;
-        color: #007bff;
-        border: 1px solid #007bff;
-        font-weight: bold;
-        text-transform: uppercase;
-        margin-right: 10px;
-        transition: all 0.3s;
-    }
-    
-    .btn-profile:hover {
-        background: #f8f9fa;
-        transform: translateY(-2px);
-    }
-    
-    .btn-book {
-        background: #007bff;
-        color: white;
-        font-weight: bold;
-        text-transform: uppercase;
-        transition: all 0.3s;
-    }
-    
-    .btn-book:hover {
-        background: #0069d9;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0,123,255,0.3);
-    }
-    
-    .doctor-photo {
-        width: 80px;
-        height: 80px;
-        object-fit: cover;
-        border-radius: 50%;
-        transition: all 0.3s;
-        border: 3px solid transparent;
-    }
-    
-    .card:hover .doctor-photo {
-        transform: scale(1.05);
-        border-color: rgba(0,123,255,0.2);
-    }
-    
-    .buttons-container {
-        display: flex;
-        align-items: center;
-    }
-    
-    .alert {
-        animation: fadeIn 0.5s;
-    }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-</style>
-{% endblock %}
+{% block title %}{{ specialty_name }} Doctors - Patient Dashboard{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'patientdashboard:specialty_selection' %}">Specialties</a></li>
-            <li class="breadcrumb-item active">{{ specialty_name }}</li>
-        </ol>
-    </nav>
-
-    <h4 class="mb-4">Available {{ specialty_name }} ({{ practitioners|length }} practitioners)</h4>
-    
-    {% if practitioners %}
-    <div class="row">
-        {% for practitioner in practitioners %}
-        <div class="col-md-6 mb-4">
-            <div class="card">
-                <div class="card-body">
-                    <div class="d-flex">
-                        <div class="flex-shrink-0 me-3">
-                            <img src="{% if practitioner.photo %}{{ practitioner.photo.url }}{% else %}{% static 'img/default-doctor.jpg' %}{% endif %}" 
-                                 class="doctor-photo" 
-                                 alt="Dr. {{ practitioner.first_name }}">
-                        </div>
-                        <div class="flex-grow-1">
-                            <h5 class="doctor-name">Dr. {{ practitioner.first_name }} {{ practitioner.last_name }}</h5>
-                            <p class="doctor-info">{{ practitioner.experience }} years experience</p>
-                            <p class="price">${{ practitioner.price|default:"Not specified" }}</p>
-                            
-                            <div class="buttons-container">
-                                <a href="{% url 'patientdashboard:practitioner_profile' practitioner.id %}" 
-                                   class="btn btn-profile">
-                                    VIEW PROFILE
-                                </a>
-                                <a href="{% url 'patientdashboard:available_slots' practitioner.id %}" 
-                                   class="btn btn-book">
-                                    BOOK APPOINTMENT
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+<!-- Modern Header with Breadcrumb -->
+<div class="bg-gradient-to-r from-patient-green to-green-600 rounded-2xl p-6 mb-8 text-white">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+        <div>
+            <!-- Breadcrumb -->
+            <nav class="mb-4">
+                <ol class="flex items-center space-x-2 text-sm text-white/80">
+                    <li><a href="{% url 'patientdashboard:specialty_selection' %}" class="hover:text-white transition-colors">Specialties</a></li>
+                    <li><i class="fas fa-chevron-right text-xs"></i></li>
+                    <li class="text-white font-medium">{{ specialty_name }}</li>
+                </ol>
+            </nav>
+            
+            <h1 class="text-2xl md:text-3xl font-bold mb-2">{{ specialty_name }}</h1>
+            <p class="text-white/90">Choose from {{ practitioners|length }} available specialists</p>
+        </div>
+        <div class="mt-4 md:mt-0">
+            <div class="flex items-center space-x-4">
+                <div class="text-center">
+                    <div class="text-2xl font-bold">{{ practitioners|length }}</div>
+                    <div class="text-sm text-white/80">Doctors</div>
+                </div>
+                <div class="w-px h-12 bg-white/20"></div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold">24/7</div>
+                    <div class="text-sm text-white/80">Available</div>
                 </div>
             </div>
         </div>
-        {% endfor %}
     </div>
-    {% else %}
-    <div class="alert alert-info">
-        <i class="fas fa-info-circle me-2"></i>
-        No {{ specialty_name }} specialists available at this time.
-        <a href="{% url 'patientdashboard:specialty_selection' %}" class="alert-link">Browse other specialties</a>
-    </div>
-    {% endif %}
 </div>
+
+<!-- Practitioners Grid -->
+{% if practitioners %}
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    {% for practitioner in practitioners %}
+    <div class="practitioner-card bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+        <div class="p-6">
+            <div class="flex items-start space-x-4">
+                <!-- Doctor Photo -->
+                <div class="flex-shrink-0">
+                    <div class="relative">
+                        {% if practitioner.photo %}
+                            <img src="{{ practitioner.photo.url }}" 
+                                 alt="Dr. {{ practitioner.first_name }}" 
+                                 class="w-20 h-20 rounded-full object-cover border-4 border-patient-blue/20">
+                        {% else %}
+                            <div class="w-20 h-20 rounded-full bg-gradient-to-br from-patient-blue to-patient-dark-blue flex items-center justify-center border-4 border-patient-blue/20">
+                                <i class="fas fa-user-md text-white text-2xl"></i>
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Online Status -->
+                        <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-patient-green rounded-full border-2 border-white flex items-center justify-center">
+                            <i class="fas fa-check text-white text-xs"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Doctor Info -->
+                <div class="flex-1 min-w-0">
+                    <h3 class="text-xl font-bold text-patient-dark-blue mb-1">
+                        Dr. {{ practitioner.first_name }} {{ practitioner.last_name }}
+                    </h3>
+                    
+                    <div class="flex flex-wrap items-center gap-2 mb-3">
+                        <span class="px-3 py-1 bg-patient-blue/10 text-patient-blue rounded-full text-sm font-medium">
+                            {{ specialty_name }}
+                        </span>
+                        {% if practitioner.experience %}
+                        <span class="px-3 py-1 bg-patient-green/10 text-patient-green rounded-full text-sm font-medium">
+                            {{ practitioner.experience }} years exp.
+                        </span>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Rating and Reviews -->
+                    <div class="flex items-center space-x-4 mb-3 text-sm text-patient-dark-gray">
+                        <div class="flex items-center space-x-1">
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span class="font-medium">4.9</span>
+                            <span>(127 reviews)</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Price -->
+                    {% if practitioner.price %}
+                    <div class="mb-4">
+                        <span class="text-2xl font-bold text-patient-green">${{ practitioner.price }}</span>
+                        <span class="text-patient-dark-gray text-sm">/ consultation</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row gap-3 mt-6">
+                <a href="{% url 'patientdashboard:practitioner_profile' practitioner.id %}" 
+                   class="flex-1 px-4 py-3 border-2 border-patient-blue text-patient-blue rounded-xl hover:bg-patient-blue hover:text-white transition-all duration-300 font-semibold text-center">
+                    <i class="fas fa-user mr-2"></i>View Profile
+                </a>
+                <a href="{% url 'patientdashboard:available_slots' practitioner.id %}" 
+                   class="flex-1 px-4 py-3 bg-patient-blue text-white rounded-xl hover:bg-patient-dark-blue transition-all duration-300 font-semibold text-center shadow-lg">
+                    <i class="fas fa-calendar-plus mr-2"></i>Book Appointment
+                </a>
+            </div>
+        </div>
+        
+        <!-- Quick Info Footer -->
+        <div class="bg-patient-gray px-6 py-3">
+            <div class="flex items-center justify-between text-sm text-patient-dark-gray">
+                <div class="flex items-center space-x-4">
+                    <span><i class="fas fa-clock mr-1"></i>Next available: Today</span>
+                    <span><i class="fas fa-video mr-1"></i>Video consultation</span>
+                </div>
+                <div class="flex items-center space-x-1">
+                    <i class="fas fa-shield-alt text-patient-green"></i>
+                    <span class="text-patient-green font-medium">Verified</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Load More Button (if needed) -->
+{% if practitioners|length > 6 %}
+<div class="text-center mt-8">
+    <button class="px-8 py-3 bg-white border-2 border-patient-blue text-patient-blue rounded-xl hover:bg-patient-blue hover:text-white transition-all duration-300 font-semibold">
+        <i class="fas fa-plus mr-2"></i>Load More Doctors
+    </button>
+</div>
+{% endif %}
+
+{% else %}
+<!-- Empty State -->
+<div class="text-center py-16">
+    <div class="w-24 h-24 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
+        <i class="fas fa-user-md text-orange-500 text-4xl"></i>
+    </div>
+    <h3 class="text-2xl font-semibold text-patient-dark-blue mb-4">No {{ specialty_name }} Available</h3>
+    <p class="text-patient-dark-gray mb-8 max-w-md mx-auto">
+        We don't have any {{ specialty_name }} specialists available at this time. 
+        Please try another specialty or contact support for assistance.
+    </p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="{% url 'patientdashboard:specialty_selection' %}" 
+           class="inline-flex items-center px-6 py-3 bg-patient-blue text-white rounded-xl hover:bg-patient-dark-blue transition-colors font-semibold">
+            <i class="fas fa-arrow-left mr-2"></i>Browse Other Specialties
+        </a>
+        <a href="#" 
+           class="inline-flex items-center px-6 py-3 border-2 border-patient-blue text-patient-blue rounded-xl hover:bg-patient-blue hover:text-white transition-colors font-semibold">
+            <i class="fas fa-phone mr-2"></i>Contact Support
+        </a>
+    </div>
+</div>
+{% endif %}
+
+<!-- Filter and Sort Options (Optional Enhancement) -->
+<div class="fixed bottom-6 right-6 z-40">
+    <button class="w-14 h-14 bg-patient-blue text-white rounded-full shadow-lg hover:bg-patient-dark-blue transition-colors flex items-center justify-center">
+        <i class="fas fa-filter"></i>
+    </button>
+</div>
+
+<script>
+// Initialize practitioner cards animation
+document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('.practitioner-card');
+    cards.forEach((card, index) => {
+        // Initial state
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        card.style.transition = 'all 0.6s ease';
+        
+        // Animate in with stagger
+        setTimeout(() => {
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 150);
+    });
+});
+
+// Enhanced hover effects
+document.querySelectorAll('.practitioner-card').forEach(card => {
+    card.addEventListener('mouseenter', function() {
+        this.style.transform = 'translateY(-8px) scale(1.02)';
+    });
+    
+    card.addEventListener('mouseleave', function() {
+        this.style.transform = 'translateY(0) scale(1)';
+    });
+});
+</script>
 {% endblock %}

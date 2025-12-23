@@ -5,296 +5,403 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Practitioner Portal | Login</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.3.1/mdb.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'medical-blue': '#1e40af',
+                        'medical-teal': '#0891b2',
+                        'medical-green': '#059669',
+                        'medical-gray': '#374151',
+                        'light-blue': '#dbeafe',
+                        'light-teal': '#cffafe',
+                    },
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'bounce-slow': 'bounce 2s infinite',
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.6s ease-out',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(30px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
     <style>
-        :root {
-            --primary-blue: #e0f4ff;
-            --secondary-pink: #ffd6e6;
-            --accent-blue: #a5d8ff;
-            --accent-pink: #ffb6d9;
-            --text-color: #4a5568;
-            --background-color: #f8fbff;
-        }
-
         body {
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-pink) 100%);
-            font-family: 'Roboto', sans-serif;
-            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
         }
-
-        .page-wrapper {
-            min-height: 100vh;
-            padding: 2rem 0;
-            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.2'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        
+        .stethoscope-animation {
+            animation: float 6s ease-in-out infinite;
         }
-
-        .container {
-            max-width: 1000px;
+        
+        .medical-pattern {
+            background-image: 
+                radial-gradient(circle at 25px 25px, rgba(30, 64, 175, 0.1) 2px, transparent 2px),
+                radial-gradient(circle at 75px 75px, rgba(8, 145, 178, 0.1) 2px, transparent 2px);
+            background-size: 100px 100px;
         }
-
-        .card {
-            border: none;
-            border-radius: 30px;
-            overflow: hidden;
-            box-shadow: 0 15px 35px rgba(165, 216, 255, 0.2);
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+        
+        .glass-effect {
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
         }
-
-        .left-image {
-            position: relative;
-            overflow: hidden;
+        
+        .input-focus:focus {
+            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
         }
-
-        .left-image::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(165, 216, 255, 0.9), rgba(255, 182, 217, 0.9));
-            z-index: 1;
-        }
-
-        .left-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transform: scale(1.1);
-            transition: transform 0.3s ease;
-        }
-
-        .overlay-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-            z-index: 2;
-            text-align: center;
-            width: 80%;
-        }
-
-        .form-container {
-            padding: 3rem;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.9));
-        }
-
-        .form-title {
-            font-size: 2.2rem;
-            font-weight: 700;
-            color: var(--text-color);
-            margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, var(--accent-blue), var(--accent-pink));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .form-outline {
-            background: white;
-            border-radius: 15px;
-            margin-bottom: 1.5rem;
-            border: 1px solid rgba(165, 216, 255, 0.3);
-        }
-
-        .form-outline input {
-            border-radius: 15px;
-        }
-
-        .form-outline.focused {
-            box-shadow: 0 0 0 2px var(--accent-blue);
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--accent-blue), var(--accent-pink));
-            padding: 1rem;
-            border-radius: 15px;
-            font-weight: 500;
-            letter-spacing: 0.5px;
-            transition: all 0.3s ease;
-            border: none;
-        }
-
-        .btn-primary:hover {
+        
+        .btn-hover:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(165, 216, 255, 0.4);
-            background: linear-gradient(135deg, var(--accent-pink), var(--accent-blue));
+            box-shadow: 0 10px 25px rgba(30, 64, 175, 0.3);
         }
-
-        .home-redirect {
-            position: fixed;
-            top: 2rem;
-            right: 2rem;
-            z-index: 1000;
-            background: linear-gradient(135deg, var(--accent-blue), var(--accent-pink));
-            color: white;
-            padding: 1rem;
-            border-radius: 50%;
-            box-shadow: 0 4px 15px rgba(165, 216, 255, 0.4);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 50px;
-            height: 50px;
-        }
-
-        .home-redirect:hover {
-            transform: translateX(5px);
-            background: linear-gradient(135deg, var(--accent-pink), var(--accent-blue));
-            color: white;
-        }
-
-        .home-redirect i {
-            font-size: 1.5rem;
-        }
-
-        .logo {
-            position: fixed;
-            top: 2rem;
-            left: 2rem;
-            z-index: 1000;
-        }
-
-        .logo img {
-            height: 60px;
-            filter: brightness(0) invert(1);
-            transition: transform 0.3s ease;
-        }
-
-        .logo:hover img {
-            transform: scale(1.05);
-        }
-
-        a {
-            color: var(--accent-blue);
-            transition: color 0.3s ease;
-        }
-
-        a:hover {
-            color: var(--accent-pink);
-        }
-
-        @media (max-width: 768px) {
-            .form-container {
-                padding: 2rem;
-            }
-
-            .left-image {
-                height: 200px;
-            }
-
-            .form-title {
-                font-size: 1.8rem;
-            }
-
-            .home-redirect {
-                top: 1rem;
-                right: 1rem;
-                width: 40px;
-                height: 40px;
-            }
-
-            .home-redirect i {
-                font-size: 1.2rem;
-            }
-
-            .logo {
-                top: 1rem;
-                left: 1rem;
-            }
-
-            .logo img {
-                height: 40px;
-            }
+        
+        .medical-icon {
+            filter: drop-shadow(0 4px 8px rgba(30, 64, 175, 0.2));
         }
     </style>
 </head>
-<body>
-    <!-- Logo -->
-    
+<body class="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50 medical-pattern">
+    <!-- Back Arrow Button -->
+    <button onclick="window.history.back()" 
+            class="fixed top-4 left-4 z-50 bg-white hover:bg-gray-50 text-medical-blue p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group">
+        <i class="fas fa-arrow-left text-lg group-hover:-translate-x-1 transition-transform duration-300"></i>
+    </button>
 
-    <!-- Home Redirect Button -->
-    <a href="/" class="home-redirect" title="Back to Home">
-        <i class="fas fa-home"></i>
-    </a>
+    <!-- Support Button -->
+    <button onclick="showSupport()" 
+            class="fixed top-4 right-4 z-50 bg-medical-teal hover:bg-teal-600 text-white p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group">
+        <i class="fas fa-headset text-lg group-hover:scale-110 transition-transform duration-300"></i>
+    </button>
 
-    <div class="page-wrapper d-flex justify-content-center align-items-center">
-        <div class="container">
-            <div class="card d-flex flex-md-row">
-                <div class="col-md-6 left-image">
-                    <img src="{% static 'logo.png' %}" alt="Medical Care">
-                    <div class="overlay-text">
-                        <h2 class="h3 mb-3">Welcome to Practitioner Portal</h2>
-                        <p class="mb-0">Access your dashboard, manage appointments, and provide exceptional care.</p>
-                    </div>
-                </div>
-
-                <div class="col-md-6 form-container">
-                    <h3 class="form-title">Practitioner Login</h3>
-                    <p class="text-muted mb-4">Access your professional healthcare dashboard</p>
-
-                    <form method="post" action="{% url 'frontend:practitioner_login' %}" id="loginForm">
-                        {% csrf_token %}
+    <div class="min-h-screen flex items-center justify-center p-4">
+        <div class="w-full max-w-6xl mx-auto">
+            <div class="bg-white/80 glass-effect rounded-3xl shadow-2xl overflow-hidden animate-fade-in">
+                <div class="flex flex-col lg:flex-row min-h-[600px]">
+                    <!-- Left Side - Professional Features -->
+                    <div class="lg:w-1/2 bg-gradient-to-br from-medical-blue to-medical-teal p-8 lg:p-12 text-white relative overflow-hidden">
+                        <!-- Background Pattern -->
+                        <div class="absolute inset-0 opacity-10">
+                            <div class="absolute top-10 left-10 w-20 h-20 border-2 border-white rounded-full"></div>
+                            <div class="absolute top-32 right-16 w-16 h-16 border-2 border-white rounded-full"></div>
+                            <div class="absolute bottom-20 left-20 w-12 h-12 border-2 border-white rounded-full"></div>
+                            <div class="absolute bottom-32 right-8 w-24 h-24 border-2 border-white rounded-full"></div>
+                        </div>
                         
-                        <div class="form-outline">
-                            <input type="email" id="email" name="email" class="form-control" required>
-                            <label class="form-label" for="email">Professional Email</label>
+                        <div class="relative z-10 h-full flex flex-col justify-center">
+                            <!-- Animated Stethoscope Icon -->
+                            <div class="text-center mb-8">
+                                <div class="inline-block stethoscope-animation">
+                                    <i class="fas fa-stethoscope text-6xl lg:text-7xl medical-icon"></i>
+                                </div>
+                            </div>
+                            
+                            <h1 class="text-3xl lg:text-4xl font-bold mb-4 text-center">
+                                Practitioner Portal
+                            </h1>
+                            <p class="text-lg lg:text-xl text-center mb-8 text-blue-100">
+                                Professional Healthcare Management System
+                            </p>
+                            
+                            <!-- Professional Features -->
+                            <div class="space-y-4">
+                                <div class="flex items-center space-x-3 animate-slide-up" style="animation-delay: 0.1s">
+                                    <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-calendar-check text-lg"></i>
+                                    </div>
+                                    <span class="text-lg">Advanced Appointment Management</span>
+                                </div>
+                                
+                                <div class="flex items-center space-x-3 animate-slide-up" style="animation-delay: 0.2s">
+                                    <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-chart-line text-lg"></i>
+                                    </div>
+                                    <span class="text-lg">Comprehensive Analytics Dashboard</span>
+                                </div>
+                                
+                                <div class="flex items-center space-x-3 animate-slide-up" style="animation-delay: 0.3s">
+                                    <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-shield-alt text-lg"></i>
+                                    </div>
+                                    <span class="text-lg">HIPAA Compliant Security</span>
+                                </div>
+                                
+                                <div class="flex items-center space-x-3 animate-slide-up" style="animation-delay: 0.4s">
+                                    <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-users text-lg"></i>
+                                    </div>
+                                    <span class="text-lg">Patient Management System</span>
+                                </div>
+                            </div>
+                            
+                            <!-- HIPAA Compliance Notice -->
+                            <div class="mt-8 p-4 bg-white/10 rounded-xl border border-white/20">
+                                <div class="flex items-center space-x-2 mb-2">
+                                    <i class="fas fa-lock text-yellow-300"></i>
+                                    <span class="font-semibold text-yellow-300">HIPAA Compliant</span>
+                                </div>
+                                <p class="text-sm text-blue-100">
+                                    Your data is protected with enterprise-grade security and encryption standards.
+                                </p>
+                            </div>
                         </div>
-
-                        <div class="form-outline">
-                            <input type="password" id="password" name="password" class="form-control" required>
-                            <label class="form-label" for="password">Password</label>
+                    </div>
+                    
+                    <!-- Right Side - Login Form -->
+                    <div class="lg:w-1/2 p-8 lg:p-12 flex flex-col justify-center">
+                        <div class="max-w-md mx-auto w-full">
+                            <!-- Header -->
+                            <div class="text-center mb-8">
+                                <h2 class="text-3xl lg:text-4xl font-bold text-medical-gray mb-2">
+                                    Welcome Back
+                                </h2>
+                                <p class="text-gray-600 text-lg">
+                                    Sign in to your practitioner dashboard
+                                </p>
+                            </div>
+                            
+                            <!-- Login Form -->
+                            <form method="post" action="{% url 'frontend:practitioner_login' %}" id="loginForm" class="space-y-6">
+                                {% csrf_token %}
+                                
+                                <!-- Email Field -->
+                                <div class="space-y-2">
+                                    <label for="email" class="block text-sm font-semibold text-medical-gray">
+                                        Professional Email Address
+                                    </label>
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                            <i class="fas fa-envelope text-gray-400"></i>
+                                        </div>
+                                        <input type="email" 
+                                               id="email" 
+                                               name="email" 
+                                               required
+                                               class="w-full pl-12 pr-4 py-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-medical-blue focus:border-transparent input-focus transition-all duration-300 text-lg"
+                                               placeholder="doctor@hospital.com">
+                                    </div>
+                                </div>
+                                
+                                <!-- Password Field -->
+                                <div class="space-y-2">
+                                    <label for="password" class="block text-sm font-semibold text-medical-gray">
+                                        Password
+                                    </label>
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                            <i class="fas fa-lock text-gray-400"></i>
+                                        </div>
+                                        <input type="password" 
+                                               id="password" 
+                                               name="password" 
+                                               required
+                                               class="w-full pl-12 pr-12 py-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-medical-blue focus:border-transparent input-focus transition-all duration-300 text-lg"
+                                               placeholder="Enter your password">
+                                        <button type="button" 
+                                                onclick="togglePassword()" 
+                                                class="absolute inset-y-0 right-0 pr-4 flex items-center">
+                                            <i id="passwordToggle" class="fas fa-eye text-gray-400 hover:text-medical-blue transition-colors duration-300"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Forgot Password Link -->
+                                <div class="flex justify-end">
+                                    <a href="{% url 'frontend:practitioner_forgot_password' %}" 
+                                       class="text-medical-blue hover:text-medical-teal font-medium transition-colors duration-300">
+                                        Forgot your password?
+                                    </a>
+                                </div>
+                                
+                                <!-- Login Button -->
+                                <button type="submit" 
+                                        id="loginBtn"
+                                        class="w-full bg-gradient-to-r from-medical-blue to-medical-teal text-white py-4 px-6 rounded-xl font-semibold text-lg hover:shadow-lg btn-hover transition-all duration-300 flex items-center justify-center space-x-2">
+                                    <span id="loginText">Sign In to Dashboard</span>
+                                    <i id="loginIcon" class="fas fa-arrow-right"></i>
+                                    <div id="loginSpinner" class="hidden">
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                    </div>
+                                </button>
+                            </form>
+                            
+                            <!-- Register Link -->
+                            <div class="mt-8 text-center">
+                                <p class="text-gray-600">
+                                    New to our platform? 
+                                    <a href="{% url 'frontend:practitioner_signup' %}" 
+                                       class="text-medical-blue hover:text-medical-teal font-semibold transition-colors duration-300">
+                                        Register as Practitioner
+                                    </a>
+                                </p>
+                            </div>
+                            
+                            <!-- Professional Notice -->
+                            <div class="mt-6 p-4 bg-blue-50 rounded-xl border border-blue-200">
+                                <div class="flex items-start space-x-3">
+                                    <i class="fas fa-info-circle text-medical-blue mt-1"></i>
+                                    <div>
+                                        <p class="text-sm text-medical-gray">
+                                            <strong>Professional Access:</strong> This portal is exclusively for licensed healthcare practitioners. 
+                                            All activities are logged for compliance and security purposes.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-
-                        <div class="d-flex justify-content-end mb-4">
-                            <a href="{% url 'frontend:practitioner_forgot_password' %}">Forgot Password?</a>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary btn-block">
-                            <i class="fas fa-sign-in-alt me-2"></i>Login to Dashboard
-                        </button>
-                    </form>
-
-                    <p class="text-center text-muted mt-4">
-                        New practitioner? <a href="{% url 'frontend:practitioner_signup' %}">Register here</a>
-                    </p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.3.1/mdb.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
-
     <script>
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
+        // Password Toggle Functionality
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const passwordToggle = document.getElementById('passwordToggle');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                passwordToggle.classList.remove('fa-eye');
+                passwordToggle.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                passwordToggle.classList.remove('fa-eye-slash');
+                passwordToggle.classList.add('fa-eye');
+            }
+        }
 
+        // Support Function
+        function showSupport() {
+            Swal.fire({
+                title: 'Professional Support',
+                html: `
+                    <div class="text-left space-y-4">
+                        <div class="flex items-center space-x-3">
+                            <i class="fas fa-phone text-medical-blue"></i>
+                            <span><strong>Emergency:</strong> +1 (555) 911-HELP</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <i class="fas fa-envelope text-medical-blue"></i>
+                            <span><strong>Email:</strong> support@medicalpro.com</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <i class="fas fa-clock text-medical-blue"></i>
+                            <span><strong>Hours:</strong> 24/7 Professional Support</span>
+                        </div>
+                        <div class="mt-4 p-3 bg-blue-50 rounded-lg">
+                            <p class="text-sm text-gray-600">
+                                <i class="fas fa-shield-alt text-medical-blue mr-2"></i>
+                                HIPAA-compliant support available for all technical issues
+                            </p>
+                        </div>
+                    </div>
+                `,
+                showCloseButton: true,
+                showConfirmButton: false,
+                width: '500px'
+            });
+        }
+
+        // Form Submission with Loading State
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const loginBtn = document.getElementById('loginBtn');
+            const loginText = document.getElementById('loginText');
+            const loginIcon = document.getElementById('loginIcon');
+            const loginSpinner = document.getElementById('loginSpinner');
+
+            // Validation
             if (!email || !password) {
                 e.preventDefault();
                 Swal.fire({
                     icon: 'error',
                     title: 'Required Fields Missing',
                     text: 'Please fill in all required fields.',
-                    confirmButtonColor: '#a5d8ff'
+                    confirmButtonColor: '#1e40af'
                 });
+                return;
             }
+
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Email',
+                    text: 'Please enter a valid email address.',
+                    confirmButtonColor: '#1e40af'
+                });
+                return;
+            }
+
+            // Show loading state
+            loginBtn.disabled = true;
+            loginBtn.classList.add('opacity-75');
+            loginText.textContent = 'Signing In...';
+            loginIcon.classList.add('hidden');
+            loginSpinner.classList.remove('hidden');
         });
 
+        // Django Messages
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == 'error' %}
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Login Failed',
+                        text: '{{ message }}',
+                        confirmButtonText: 'Try Again',
+                        confirmButtonColor: '#1e40af'
+                    });
+                {% elif message.tags == 'success' %}
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Welcome Back!',
+                        text: '{{ message }}',
+                        confirmButtonText: 'Continue',
+                        confirmButtonColor: '#1e40af'
+                    });
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
+        // Legacy support for error_message and success_message
         {% if error_message %}
             Swal.fire({
                 icon: 'error',
                 title: 'Login Failed',
                 text: '{{ error_message }}',
                 confirmButtonText: 'Try Again',
-                confirmButtonColor: '#a5d8ff'
+                confirmButtonColor: '#1e40af'
             });
         {% endif %}
 
@@ -304,9 +411,20 @@
                 title: 'Welcome Back!',
                 text: '{{ success_message }}',
                 confirmButtonText: 'Continue',
-                confirmButtonColor: '#a5d8ff'
+                confirmButtonColor: '#1e40af'
             });
         {% endif %}
+
+        // Add focus effects to inputs
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('ring-2', 'ring-medical-blue');
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.classList.remove('ring-2', 'ring-medical-blue');
+            });
+        });
     </script>
 </body>
 </html>

@@ -1026,6 +1026,98 @@ def delete_symptom(request, symptom_id):
     return redirect('patientdashboard:symptoms_list')
 
 
+@csrf_exempt
+def mark_notifications_read(request):
+    """Mark all notifications as read for the current patient"""
+    if request.method == 'POST':
+        patient_id = request.session.get('patient_id')
+        if not patient_id:
+            return JsonResponse({'success': False, 'error': 'Not authenticated'})
+        
+        try:
+            patient = Patient.objects.get(id=patient_id)
+            # Mark all notifications as read
+            Notification.objects.filter(recipient=patient, is_read=False).update(is_read=True)
+            return JsonResponse({'success': True})
+        except Patient.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Patient not found'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+
+@csrf_exempt
+def mark_notification_read(request):
+    """Mark a specific notification as read"""
+    if request.method == 'POST':
+        patient_id = request.session.get('patient_id')
+        if not patient_id:
+            return JsonResponse({'success': False, 'error': 'Not authenticated'})
+        
+        try:
+            import json
+            data = json.loads(request.body)
+            notification_id = data.get('notification_id')
+            
+            patient = Patient.objects.get(id=patient_id)
+            
+            # Try to find and mark the notification as read
+            try:
+                notification = Notification.objects.get(id=notification_id, recipient=patient)
+                notification.is_read = True
+                notification.save()
+                return JsonResponse({'success': True})
+            except Notification.DoesNotExist:
+                # If it's not a database notification, just return success
+                # (it might be a generated notification from appointments, etc.)
+                return JsonResponse({'success': True})
+                
+        except Patient.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Patient not found'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+
+def all_notifications(request):
+    """View all notifications for the patient"""
+    patient_id = request.session.get('patient_id')
+    if not patient_id:
+        return redirect('frontend:patient_login')
+    
+    try:
+        patient = Patient.objects.get(id=patient_id)
+        
+        # Get all notifications from database
+        db_notifications = Notification.objects.filter(recipient=patient).order_by('-created_at')
+        
+        # Get recent appointments for notifications
+        recent_appointments = Appointment.objects.filter(
+            patient=patient,
+            created_at__gte=timezone.now() - timedelta(days=30)
+        ).select_related('practitioner', 'slot').order_by('-created_at')
+        
+        # Get recent prescriptions
+        recent_prescriptions = Prescription.objects.filter(
+            patient=patient,
+            created_at__gte=timezone.now() - timedelta(days=30)
+        ).select_related('practitioner').order_by('-created_at')
+        
+        context = {
+            'patient': patient,
+            'db_notifications': db_notifications,
+            'recent_appointments': recent_appointments,
+            'recent_prescriptions': recent_prescriptions,
+        }
+        
+        return render(request, 'patientdashboard/all_notifications.html', context)
+        
+    except Patient.DoesNotExist:
+        return redirect('frontend:patient_login')
+
+
 
 
 

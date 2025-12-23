@@ -1,0 +1,365 @@
+{% load static %}
+
+<!-- D-ID Standing Avatar (Event-Driven Video Swapping) -->
+<div id="ai-avatar-container">
+    <!-- Main Avatar Video (Transparent WebM) -->
+    <video id="avatar-video" 
+           autoplay 
+           muted 
+           playsinline 
+           loop
+           style="display: none;">
+        <source src="" type="video/webm">
+        Your browser does not support the video tag.
+    </video>
+    
+    <!-- Fallback Static Image -->
+    <img id="ai-avatar-img" 
+         src="https://res.cloudinary.com/dovwzsl4v/image/upload/v1752823658/avatar_zfdfcr.jpg" 
+         alt="AI Assistant" />
+    
+    <!-- Loading State -->
+    <div id="avatar-loading" style="display: none;">
+        <div class="loading-spinner"></div>
+        <span>Thinking...</span>
+    </div>
+</div>
+
+<!-- Avatar Speech Display -->
+<div id="avatar-speech-display">
+    <div id="speech-text">
+        <span id="speech-content">Hi! I'm your AI medical assistant. Click me to start chatting!</span>
+    </div>
+    <div id="speech-indicator">
+        <span class="speech-dot"></span>
+        <span class="speech-dot"></span>
+        <span class="speech-dot"></span>
+    </div>
+</div>
+
+<!-- Chatbot Window -->
+<div id="chatbot-window">
+    <div class="chat-header">
+        <span>AI Medical Assistant</span>
+        <button onclick="toggleChatbot()">&times;</button>
+    </div>
+    
+    <div class="chat-body" id="chat-messages">
+        <div class="bot-message">Hello! I'm your AI medical assistant. How can I help you today?</div>
+    </div>
+
+    <div class="chat-footer">
+        <input type="text" id="chat-input" placeholder="Type a message..." onkeypress="handleKeyPress(event)">
+        <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+    </div>
+</div>
+
+<!-- Chatbot Button -->
+<button id="chatbot-btn" onclick="toggleChatbot()">
+    <i class="fas fa-comment"></i> Chat with AI
+</button>
+
+<script>
+let chatSocket;
+let selectedVoice = null;
+
+function initializeVoice() {
+    const maleVoiceNames = [
+        "Google US English Male",
+        "Microsoft David Desktop",
+        "Alex", "Daniel", "Fred",
+        "Microsoft Mark", "Microsoft Eric",
+        "English (America) - Male"
+    ];
+
+    speechSynthesis.onvoiceschanged = function() {
+        const voices = speechSynthesis.getVoices();
+        selectedVoice = voices.find(voice => 
+            maleVoiceNames.some(name => voice.name.includes(name)) ||
+            voices.find(voice => 
+                voice.lang.includes('en') && 
+                (voice.name.toLowerCase().includes('male') || 
+                 voice.name.toLowerCase().includes('david') ||
+                 voice.name.toLowerCase().includes('mark'))
+        ));
+        
+        if (!selectedVoice) {
+            selectedVoice = voices.find(voice => voice.lang.includes('en')) || voices[0];
+        }
+    };
+    
+    if (speechSynthesis.getVoices().length > 0) {
+        speechSynthesis.onvoiceschanged();
+    }
+}
+
+function toggleChatbot() {
+    let chatbotWindow = document.getElementById("chatbot-window");
+    let avatarContainer = document.getElementById("ai-avatar-container");
+    
+    if (!chatbotWindow) {
+        console.error("Chatbot window not found!");
+        return;
+    }
+    
+    if (chatbotWindow.style.display === "none" || chatbotWindow.style.display === "") {
+        chatbotWindow.style.display = "flex";
+        chatbotWindow.style.zIndex = "1001";
+        
+        if (avatarContainer) {
+            avatarContainer.classList.add("attention");
+            setTimeout(() => {
+                avatarContainer.classList.remove("attention");
+            }, 2000);
+        }
+    } else {
+        chatbotWindow.style.display = "none";
+        speechSynthesis.cancel();
+        if (avatarContainer) {
+            avatarContainer.classList.remove("talking");
+            avatarContainer.classList.remove("attention");
+        }
+    }
+}
+
+function connectWebSocket() {
+    chatSocket = new WebSocket("ws://" + window.location.host + "/ws/ai-chat/");
+
+    chatSocket.onopen = function () {
+        console.log("AI Chatbot WebSocket connected.");
+    };
+
+    chatSocket.onmessage = function(event) {
+        let data = JSON.parse(event.data);
+        let botMessage = data.message;
+        
+        displayMessage(botMessage, "bot");
+        avatarGetAttention();
+        setTimeout(() => {
+            didAvatarManager.generateAndPlayVideo(botMessage);
+        }, 500);
+    };
+
+    chatSocket.onerror = function (error) {
+        console.error("WebSocket Error:", error);
+    };
+
+    chatSocket.onclose = function(event) {
+        console.log("WebSocket closed. Reconnecting in 3 seconds...");
+        setTimeout(connectWebSocket, 3000);
+    };
+}
+
+function sendMessage() {
+    let userInput = document.getElementById("chat-input").value;
+    if (userInput.trim() === "") return;
+
+    displayMessage(userInput, "user");
+
+    chatSocket.send(JSON.stringify({ 
+        "message": userInput,
+        "patient_id": "{{ request.session.patient_id|default:'' }}"  
+    }));
+
+    document.getElementById("chat-input").value = "";
+}
+
+function handleKeyPress(event) {
+    if (event.key === "Enter") {
+        sendMessage();
+    }
+}
+
+function displayMessage(message, sender) {
+    let chatMessages = document.getElementById("chat-messages");
+    let messageDiv = document.createElement("div");
+    messageDiv.classList.add(sender === "bot" ? "bot-message" : "user-message");
+    messageDiv.textContent = message;
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;  
+}
+
+// D-ID Avatar Video Management
+class DIDAvatarManager {
+    constructor() {
+        this.avatarVideo = document.getElementById("avatar-video");
+        this.avatarImg = document.getElementById("ai-avatar-img");
+        this.avatarLoading = document.getElementById("avatar-loading");
+        this.speechDisplay = document.getElementById("avatar-speech-display");
+        this.speechContent = document.getElementById("speech-content");
+        this.isGenerating = false;
+        this.currentVideoUrl = null;
+    }
+    
+    showLoading() {
+        this.avatarLoading.style.display = "block";
+        this.avatarImg.style.opacity = "0.3";
+    }
+    
+    hideLoading() {
+        this.avatarLoading.style.display = "none";
+        this.avatarImg.style.opacity = "1";
+    }
+    
+    showSpeechText(text) {
+        this.speechContent.textContent = text;
+        this.speechDisplay.classList.add("active");
+        this.speechDisplay.classList.add("speaking");
+    }
+    
+    hideSpeechText() {
+        this.speechDisplay.classList.remove("speaking");
+        setTimeout(() => {
+            this.speechDisplay.classList.remove("active");
+            this.speechContent.textContent = "Hi! I'm your AI medical assistant. Click me to start chatting!";
+        }, 3000);
+    }
+    
+    async generateAndPlayVideo(text) {
+        if (this.isGenerating) {
+            console.log("Already generating video, please wait...");
+            return;
+        }
+        
+        this.isGenerating = true;
+        this.showLoading();
+        this.showSpeechText(text);
+        
+        try {
+            console.log("Generating D-ID avatar video for:", text);
+            
+            const response = await fetch('/generate-avatar-response/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]')?.value || ''
+                },
+                body: JSON.stringify({ message: text })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success && data.avatar_video) {
+                await this.playAvatarVideo(data.avatar_video);
+                console.log("D-ID video played successfully");
+            } else {
+                console.log("Video generation failed, using TTS fallback");
+                this.fallbackToTTS(data.response_text || text);
+            }
+            
+        } catch (error) {
+            console.error("Avatar generation error:", error);
+            this.fallbackToTTS(text);
+        } finally {
+            this.isGenerating = false;
+            this.hideLoading();
+        }
+    }
+    
+    async playAvatarVideo(videoUrl) {
+        return new Promise((resolve, reject) => {
+            this.avatarImg.style.display = "none";
+            this.avatarVideo.src = videoUrl;
+            this.avatarVideo.style.display = "block";
+            
+            this.avatarVideo.onloadeddata = () => {
+                this.avatarVideo.play().then(() => {
+                    console.log("Avatar video started playing");
+                    resolve();
+                }).catch(reject);
+            };
+            
+            this.avatarVideo.onended = () => {
+                this.avatarVideo.style.display = "none";
+                this.avatarImg.style.display = "block";
+                this.hideSpeechText();
+                console.log("Avatar video ended");
+            };
+            
+            this.avatarVideo.onerror = (error) => {
+                console.error("Video playback error:", error);
+                this.avatarVideo.style.display = "none";
+                this.avatarImg.style.display = "block";
+                reject(error);
+            };
+        });
+    }
+    
+    fallbackToTTS(text) {
+        if (!selectedVoice) {
+            initializeVoice();
+        }
+
+        let speech = new SpeechSynthesisUtterance(text);
+        speech.lang = "en-US";
+        speech.pitch = 0.9;
+        speech.rate = 0.9;
+        
+        if (selectedVoice) {
+            speech.voice = selectedVoice;
+        }
+        
+        speech.onend = () => {
+            this.hideSpeechText();
+        };
+        
+        speechSynthesis.cancel();
+        speechSynthesis.speak(speech);
+    }
+}
+
+const didAvatarManager = new DIDAvatarManager();
+
+function avatarGetAttention() {
+    let avatarContainer = document.getElementById("ai-avatar-container");
+    avatarContainer.classList.add("attention");
+    
+    setTimeout(() => {
+        avatarContainer.classList.remove("attention");
+    }, 3000);
+}
+
+function avatarGreeting() {
+    const avatarContainer = document.getElementById("ai-avatar-container");
+    avatarContainer.classList.add("attention");
+    
+    const greetingText = "Hello! I'm your AI medical assistant. How can I help you today?";
+    
+    setTimeout(() => {
+        didAvatarManager.generateAndPlayVideo(greetingText);
+        avatarContainer.classList.remove("attention");
+    }, 1000);
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    initializeVoice();
+    
+    const chatbotWindow = document.getElementById("chatbot-window");
+    if (chatbotWindow) {
+        chatbotWindow.style.display = "none";
+    }
+    
+    const avatarContainer = document.getElementById("ai-avatar-container");
+    if (avatarContainer) {
+        avatarContainer.addEventListener("click", function() {
+            toggleChatbot();
+        });
+    }
+    
+    let hasGreeted = false;
+    if (avatarContainer) {
+        avatarContainer.addEventListener("click", function() {
+            if (!hasGreeted) {
+                setTimeout(() => {
+                    avatarGreeting();
+                }, 500);
+                hasGreeted = true;
+            }
+        });
+    }
+    
+    console.log("AI Avatar initialized - Standing avatar with face animation ready!");
+});
+
+connectWebSocket();
+</script>

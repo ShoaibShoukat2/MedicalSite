@@ -2,280 +2,381 @@
 {% load static %}
 
 {% block content %}
-<div class="container-fluid py-4">
-    <!-- Page Header -->
-    <div class="row mb-4">
-        <div class="col">
-            <h2 class="h2">Appointment History</h2>
-        </div>
-    </div>
-
-    <!-- Tabs -->
-    <ul class="nav nav-tabs mb-4" id="appointmentTabs" role="tablist">
-        <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="completed-tab" data-mdb-toggle="tab" data-mdb-target="#completed" type="button" role="tab" aria-controls="completed" aria-selected="true">
-                Completed Appointments
-            </button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="cancelled-tab" data-mdb-toggle="tab" data-mdb-target="#cancelled" type="button" role="tab" aria-controls="cancelled" aria-selected="false">
-                Cancelled Appointments
-            </button>
-        </li>
-    </ul>
-
-    <!-- Tab Content -->
-    <div class="tab-content" id="appointmentTabContent">
-        <!-- Completed Appointments Tab -->
-        <div class="tab-pane fade show active" id="completed" role="tabpanel" aria-labelledby="completed-tab">
-            <div class="card">
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead class="bg-light">
-                                <tr>
-                                    <th>Patient Name</th>
-                                    <th>Date</th>
-                                    <th>Time</th>
-                                    <th>Service</th>
-                                    <th>Duration</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>John Smith</td>
-                                    <td>Feb 13, 2025</td>
-                                    <td>10:00 AM</td>
-                                    <td>General Checkup</td>
-                                    <td>30 mins</td>
-                                    <td>
-                                        <span class="badge badge-success rounded-pill">Completed</span>
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-link btn-sm" data-mdb-toggle="modal" data-mdb-target="#viewDetailsModal1">
-                                            View Details
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Sarah Johnson</td>
-                                    <td>Feb 12, 2025</td>
-                                    <td>2:30 PM</td>
-                                    <td>Dental Cleaning</td>
-                                    <td>45 mins</td>
-                                    <td>
-                                        <span class="badge badge-success rounded-pill">Completed</span>
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-link btn-sm" data-mdb-toggle="modal" data-mdb-target="#viewDetailsModal2">
-                                            View Details
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Michael Brown</td>
-                                    <td>Feb 11, 2025</td>
-                                    <td>11:15 AM</td>
-                                    <td>Consultation</td>
-                                    <td>60 mins</td>
-                                    <td>
-                                        <span class="badge badge-success rounded-pill">Completed</span>
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-link btn-sm" data-mdb-toggle="modal" data-mdb-target="#viewDetailsModal3">
-                                            View Details
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+<div class="space-y-6">
+    <!-- Header Section -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-doctor-dark-blue mb-2" data-translate="Appointment History">Appointment History</h1>
+                <p class="text-doctor-dark-gray">View completed and cancelled appointments</p>
+            </div>
+            <div class="hidden md:flex items-center space-x-4">
+                <div class="w-12 h-12 bg-gradient-to-br from-doctor-blue to-doctor-purple rounded-xl flex items-center justify-center">
+                    <i class="fas fa-history text-white text-lg"></i>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Cancelled Appointments Tab -->
-        <div class="tab-pane fade" id="cancelled" role="tabpanel" aria-labelledby="cancelled-tab">
-            <div class="card">
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead class="bg-light">
-                                <tr>
-                                    <th>Patient Name</th>
-                                    <th>Date</th>
-                                    <th>Time</th>
-                                    <th>Cancellation Reason</th>
-                                    <th>Cancelled By</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for appointment in cancelled_appointments %}
-                                <tr>
-                                    <td>{{ appointment.patient.first_name }}</td>
-                                    <td>{{ appointment.get_formatted_date }}</td>
-                                    <td>{{ appointment.get_formatted_time }}</td>
+    <!-- Tabs Section -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <!-- Tab Navigation -->
+        <div class="border-b border-gray-200 bg-gray-50">
+            <nav class="flex space-x-8 px-6" id="appointmentTabs">
+                <button class="tab-button active py-4 px-2 border-b-2 border-doctor-blue text-doctor-blue font-medium transition-colors" data-tab="completed">
+                    <i class="fas fa-check-circle mr-2"></i>Completed Appointments
+                    <span class="ml-2 bg-doctor-green text-white text-xs px-2 py-1 rounded-full">3</span>
+                </button>
+                <button class="tab-button py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-doctor-blue font-medium transition-colors" data-tab="cancelled">
+                    <i class="fas fa-times-circle mr-2"></i>Cancelled Appointments
+                    <span class="ml-2 bg-doctor-red text-white text-xs px-2 py-1 rounded-full">{{ cancelled_appointments|length }}</span>
+                </button>
+            </nav>
+        </div>
 
-                                    <td>{{ appointment.cancellation_reason|default:"Patient Request" }}</td>
-                                    <td>{{ appointment.cancelled_by|default:"Patient" }}</td>
-                                    <td>
-                                        <button class="btn btn-link btn-sm" data-mdb-toggle="modal" data-mdb-target="#viewDetailsModal{{ appointment.id }}">
-                                            View Details
-                                        </button>
-                                    </td>
-                                </tr>
-
-                                <!-- Modal for each cancelled appointment -->
-                                <div class="modal fade" id="viewDetailsModal{{ appointment.id }}" tabindex="-1" aria-labelledby="viewDetailsModalLabel{{ appointment.id }}" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="viewDetailsModalLabel{{ appointment.id }}">Appointment Details</h5>
-                                                <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-
-
-                                            <div class="modal-body">
-                                                <div class="mb-3">
-                                                    <h6>Patient Information</h6>
-                                                    <p>Name: {{ appointment.patient.first_name }}</p>
-                                                    <p>Email: {{ appointment.patient.email }}</p>
-                                                    <p>Phone: {{ appointment.patient.mobile_phone }}</p>
-
-                                                </div>
-                                                <div class="mb-3">
-                                                    <h6>Appointment Information</h6>
-                                                    <p>Date: {{ appointment.get_formatted_date }}</p>
-                                                    <p>Time: {{ appointment.get_formatted_time }}</p>
-                                                    <p>Status: Cancelled</p>
-                                                    <p>Cancellation Reason: {{ appointment.cancellation_reason|default:"Patient Request" }}</p>
-                                                    <p>Cancelled By: {{ appointment.cancelled_by|default:"Patient" }}</p>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
-                                            </div>
+        <!-- Tab Content -->
+        <div class="p-6">
+            <!-- Completed Appointments Tab -->
+            <div class="tab-content active" id="completed">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="border-b border-gray-200">
+                                <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Patient Name</th>
+                                <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Date</th>
+                                <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Time</th>
+                                <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Service</th>
+                                <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Duration</th>
+                                <th class="text-center py-4 px-4 font-semibold text-doctor-dark-blue">Status</th>
+                                <th class="text-right py-4 px-4 font-semibold text-doctor-dark-blue">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            <tr class="hover:bg-gray-50 transition-colors">
+                                <td class="py-4 px-4">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 bg-gradient-to-br from-doctor-green to-emerald-600 rounded-full flex items-center justify-center">
+                                            <span class="text-white font-semibold text-sm">JS</span>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-doctor-dark-blue">John Smith</p>
+                                            <p class="text-sm text-doctor-dark-gray">john.smith@email.com</p>
                                         </div>
                                     </div>
-                                </div>
-                                {% empty %}
-                                <tr>
-                                    <td colspan="7" class="text-center">No cancelled appointments found.</td>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <p class="font-medium text-doctor-dark-blue">Feb 13, 2025</p>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <p class="text-sm text-doctor-blue">10:00 AM</p>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">General Checkup</span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <p class="text-sm text-doctor-dark-gray">30 mins</p>
+                                </td>
+                                <td class="py-4 px-4 text-center">
+                                    <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">Completed</span>
+                                </td>
+                                <td class="py-4 px-4 text-right">
+                                    <button onclick="openDetailsModal('completed', 'John Smith', 'john.smith@email.com', '(555) 123-4567', 'Feb 13, 2025', '10:00 AM', 'General Checkup', '30 mins', 'Completed', 'Regular checkup completed. Patient in good health. Follow-up in 6 months recommended.')" 
+                                            class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 transition-colors">
+                                <td class="py-4 px-4">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 bg-gradient-to-br from-doctor-purple to-purple-600 rounded-full flex items-center justify-center">
+                                            <span class="text-white font-semibold text-sm">SJ</span>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-doctor-dark-blue">Sarah Johnson</p>
+                                            <p class="text-sm text-doctor-dark-gray">sarah.johnson@email.com</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <p class="font-medium text-doctor-dark-blue">Feb 12, 2025</p>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <p class="text-sm text-doctor-blue">2:30 PM</p>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="px-3 py-1 bg-teal-100 text-teal-800 rounded-full text-sm font-medium">Dental Cleaning</span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <p class="text-sm text-doctor-dark-gray">45 mins</p>
+                                </td>
+                                <td class="py-4 px-4 text-center">
+                                    <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">Completed</span>
+                                </td>
+                                <td class="py-4 px-4 text-right">
+                                    <button onclick="openDetailsModal('completed', 'Sarah Johnson', 'sarah.johnson@email.com', '(555) 234-5678', 'Feb 12, 2025', '2:30 PM', 'Dental Cleaning', '45 mins', 'Completed', 'Routine cleaning completed. Recommended improved flossing technique.')" 
+                                            class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 transition-colors">
+                                <td class="py-4 px-4">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 bg-gradient-to-br from-doctor-orange to-orange-600 rounded-full flex items-center justify-center">
+                                            <span class="text-white font-semibold text-sm">MB</span>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-doctor-dark-blue">Michael Brown</p>
+                                            <p class="text-sm text-doctor-dark-gray">michael.brown@email.com</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <p class="font-medium text-doctor-dark-blue">Feb 11, 2025</p>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <p class="text-sm text-doctor-blue">11:15 AM</p>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm font-medium">Consultation</span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <p class="text-sm text-doctor-dark-gray">60 mins</p>
+                                </td>
+                                <td class="py-4 px-4 text-center">
+                                    <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">Completed</span>
+                                </td>
+                                <td class="py-4 px-4 text-right">
+                                    <button onclick="openDetailsModal('completed', 'Michael Brown', 'michael.brown@email.com', '(555) 345-6789', 'Feb 11, 2025', '11:15 AM', 'Consultation', '60 mins', 'Completed', 'Initial consultation completed. Treatment plan discussed and agreed upon.')" 
+                                            class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Cancelled Appointments Tab -->
+            <div class="tab-content hidden" id="cancelled">
+                {% if cancelled_appointments %}
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b border-gray-200">
+                                    <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Patient Name</th>
+                                    <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Date</th>
+                                    <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Time</th>
+                                    <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Reason</th>
+                                    <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Cancelled By</th>
+                                    <th class="text-right py-4 px-4 font-semibold text-doctor-dark-blue">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100">
+                                {% for appointment in cancelled_appointments %}
+                                <tr class="hover:bg-gray-50 transition-colors">
+                                    <td class="py-4 px-4">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 bg-gradient-to-br from-red-400 to-red-600 rounded-full flex items-center justify-center">
+                                                <span class="text-white font-semibold text-sm">{{ appointment.patient.first_name|slice:":1" }}{{ appointment.patient.last_name|slice:":1" }}</span>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium text-doctor-dark-blue">{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</p>
+                                                <p class="text-sm text-doctor-dark-gray">{{ appointment.patient.email }}</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="py-4 px-4">
+                                        <p class="font-medium text-doctor-dark-blue">{{ appointment.get_formatted_date }}</p>
+                                    </td>
+                                    <td class="py-4 px-4">
+                                        <p class="text-sm text-doctor-blue">{{ appointment.get_formatted_time }}</p>
+                                    </td>
+                                    <td class="py-4 px-4">
+                                        <span class="px-3 py-1 bg-red-100 text-red-800 rounded-full text-sm font-medium">{{ appointment.cancellation_reason|default:"Patient Request" }}</span>
+                                    </td>
+                                    <td class="py-4 px-4">
+                                        <p class="text-sm text-doctor-dark-gray">{{ appointment.cancelled_by|default:"Patient" }}</p>
+                                    </td>
+                                    <td class="py-4 px-4 text-right">
+                                        <button onclick="openDetailsModal('cancelled', '{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}', '{{ appointment.patient.email }}', '{{ appointment.patient.mobile_phone }}', '{{ appointment.get_formatted_date }}', '{{ appointment.get_formatted_time }}', 'Cancelled', '', 'Cancelled', '{{ appointment.cancellation_reason|default:"Patient Request" }}')" 
+                                                class="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Sample Modal for Completed Appointment -->
-    <div class="modal fade" id="viewDetailsModal1" tabindex="-1" aria-labelledby="viewDetailsModalLabel1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="viewDetailsModalLabel1">Appointment Details</h5>
-                    <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <h6>Patient Information</h6>
-                        <p>Name: John Smith</p>
-                        <p>Email: john.smith@email.com</p>
-                        <p>Phone: (555) 123-4567</p>
+                {% else %}
+                    <div class="text-center py-12">
+                        <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-calendar-times text-gray-400 text-3xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-doctor-dark-blue mb-2">No Cancelled Appointments</h3>
+                        <p class="text-doctor-dark-gray">Great! You have no cancelled appointments.</p>
                     </div>
-                    <div class="mb-3">
-                        <h6>Appointment Information</h6>
-                        <p>Date: Feb 13, 2025</p>
-                        <p>Time: 10:00 AM</p>
-                        <p>Service: General Checkup</p>
-                        <p>Duration: 30 mins</p>
-                        <p>Status: Completed</p>
-                    </div>
-                    <div class="mb-3">
-                        <h6>Notes</h6>
-                        <p>Regular checkup completed. Patient in good health. Follow-up in 6 months recommended.</p>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- More sample modals for the other completed appointments -->
-    <div class="modal fade" id="viewDetailsModal2" tabindex="-1" aria-labelledby="viewDetailsModalLabel2" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="viewDetailsModalLabel2">Appointment Details</h5>
-                    <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <h6>Patient Information</h6>
-                        <p>Name: Sarah Johnson</p>
-                        <p>Email: sarah.johnson@email.com</p>
-                        <p>Phone: (555) 234-5678</p>
-                    </div>
-                    <div class="mb-3">
-                        <h6>Appointment Information</h6>
-                        <p>Date: Feb 12, 2025</p>
-                        <p>Time: 2:30 PM</p>
-                        <p>Service: Dental Cleaning</p>
-                        <p>Duration: 45 mins</p>
-                        <p>Status: Completed</p>
-                    </div>
-                    <div class="mb-3">
-                        <h6>Notes</h6>
-                        <p>Routine cleaning completed. Recommended improved flossing technique.</p>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="viewDetailsModal3" tabindex="-1" aria-labelledby="viewDetailsModalLabel3" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="viewDetailsModalLabel3">Appointment Details</h5>
-                    <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <h6>Patient Information</h6>
-                        <p>Name: Michael Brown</p>
-                        <p>Email: michael.brown@email.com</p>
-                        <p>Phone: (555) 345-6789</p>
-                    </div>
-                    <div class="mb-3">
-                        <h6>Appointment Information</h6>
-                        <p>Date: Feb 11, 2025</p>
-                        <p>Time: 11:15 AM</p>
-                        <p>Service: Consultation</p>
-                        <p>Duration: 60 mins</p>
-                        <p>Status: Completed</p>
-                    </div>
-                    <div class="mb-3">
-                        <h6>Notes</h6>
-                        <p>Initial consultation completed. Treatment plan discussed and agreed upon.</p>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
-                </div>
+                {% endif %}
             </div>
         </div>
     </div>
 </div>
+
+<!-- Appointment Details Modal -->
+<div id="appointmentDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="p-6 border-b border-gray-200">
+            <div class="flex items-center justify-between">
+                <h2 class="text-2xl font-bold text-doctor-dark-blue">
+                    <i class="fas fa-calendar-alt mr-3 text-doctor-blue"></i>Appointment Details
+                </h2>
+                <button onclick="closeDetailsModal()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                    <i class="fas fa-times text-gray-500"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="p-6 space-y-6">
+            <!-- Patient Information -->
+            <div>
+                <h3 class="text-lg font-semibold text-doctor-dark-blue mb-4 flex items-center">
+                    <i class="fas fa-user text-doctor-blue mr-2"></i>
+                    Patient Information
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-gray-50 p-4 rounded-xl border-l-4 border-doctor-blue">
+                        <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Name</label>
+                        <p id="modalPatientName" class="font-medium text-doctor-dark-blue mt-1"></p>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-xl border-l-4 border-doctor-green">
+                        <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Email</label>
+                        <p id="modalPatientEmail" class="font-medium text-doctor-dark-blue mt-1"></p>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-xl border-l-4 border-doctor-purple">
+                        <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Phone</label>
+                        <p id="modalPatientPhone" class="font-medium text-doctor-dark-blue mt-1"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Appointment Information -->
+            <div>
+                <h3 class="text-lg font-semibold text-doctor-dark-blue mb-4 flex items-center">
+                    <i class="fas fa-calendar-check text-doctor-blue mr-2"></i>
+                    Appointment Information
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-gray-50 p-4 rounded-xl border-l-4 border-doctor-orange">
+                        <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Date</label>
+                        <p id="modalAppointmentDate" class="font-medium text-doctor-dark-blue mt-1"></p>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-xl border-l-4 border-doctor-teal">
+                        <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Time</label>
+                        <p id="modalAppointmentTime" class="font-medium text-doctor-dark-blue mt-1"></p>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-xl border-l-4 border-indigo-500" id="serviceSection">
+                        <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Service</label>
+                        <p id="modalAppointmentService" class="font-medium text-doctor-dark-blue mt-1"></p>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-xl border-l-4 border-pink-500" id="durationSection">
+                        <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Duration</label>
+                        <p id="modalAppointmentDuration" class="font-medium text-doctor-dark-blue mt-1"></p>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-xl border-l-4 border-gray-500">
+                        <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</label>
+                        <p id="modalAppointmentStatus" class="font-medium text-doctor-dark-blue mt-1"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notes/Reason -->
+            <div id="notesSection">
+                <h3 class="text-lg font-semibold text-doctor-dark-blue mb-4 flex items-center">
+                    <i class="fas fa-sticky-note text-doctor-blue mr-2"></i>
+                    <span id="notesTitle">Notes</span>
+                </h3>
+                <div class="bg-blue-50 p-4 rounded-xl border-l-4 border-doctor-blue">
+                    <p id="modalAppointmentNotes" class="text-doctor-dark-gray"></p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="p-6 border-t border-gray-200 flex justify-end">
+            <button onclick="closeDetailsModal()" class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+                <i class="fas fa-times mr-2"></i>Close
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+// Tab functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const targetTab = button.getAttribute('data-tab');
+            
+            // Remove active class from all buttons and contents
+            tabButtons.forEach(btn => {
+                btn.classList.remove('active', 'border-doctor-blue', 'text-doctor-blue');
+                btn.classList.add('border-transparent', 'text-gray-500');
+            });
+            tabContents.forEach(content => {
+                content.classList.add('hidden');
+                content.classList.remove('active');
+            });
+            
+            // Add active class to clicked button and corresponding content
+            button.classList.add('active', 'border-doctor-blue', 'text-doctor-blue');
+            button.classList.remove('border-transparent', 'text-gray-500');
+            document.getElementById(targetTab).classList.remove('hidden');
+            document.getElementById(targetTab).classList.add('active');
+        });
+    });
+});
+
+// Modal functions
+function openDetailsModal(type, name, email, phone, date, time, service, duration, status, notes) {
+    document.getElementById('modalPatientName').textContent = name;
+    document.getElementById('modalPatientEmail').textContent = email;
+    document.getElementById('modalPatientPhone').textContent = phone;
+    document.getElementById('modalAppointmentDate').textContent = date;
+    document.getElementById('modalAppointmentTime').textContent = time;
+    document.getElementById('modalAppointmentStatus').textContent = status;
+    document.getElementById('modalAppointmentNotes').textContent = notes;
+    
+    // Handle service and duration for completed appointments
+    if (type === 'completed') {
+        document.getElementById('modalAppointmentService').textContent = service;
+        document.getElementById('modalAppointmentDuration').textContent = duration;
+        document.getElementById('serviceSection').style.display = 'block';
+        document.getElementById('durationSection').style.display = 'block';
+        document.getElementById('notesTitle').textContent = 'Notes';
+    } else {
+        document.getElementById('serviceSection').style.display = 'none';
+        document.getElementById('durationSection').style.display = 'none';
+        document.getElementById('notesTitle').textContent = 'Cancellation Reason';
+    }
+    
+    document.getElementById('appointmentDetailsModal').classList.remove('hidden');
+}
+
+function closeDetailsModal() {
+    document.getElementById('appointmentDetailsModal').classList.add('hidden');
+}
+
+// Close modal when clicking outside
+document.getElementById('appointmentDetailsModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeDetailsModal();
+    }
+});
+</script>
+
 {% endblock content %}

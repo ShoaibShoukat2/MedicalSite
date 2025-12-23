@@ -9,19 +9,34 @@ logger = logging.getLogger(__name__)
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        self.room_id = self.scope['url_route']['kwargs']['room_id']
-        self.room_group_name = f'chat_{self.room_id}'
-        
-        session = self.scope.get('session', {})
-        self.user_id = session.get('patient_id') or session.get('practitioner_id')
-        self.user_type = 'patient' if session.get('patient_id') else 'practitioner'
-        
-        if not self.user_id or not await self.verify_room_access():
-            await self.close()
-            return
+        try:
+            self.room_id = self.scope['url_route']['kwargs']['room_id']
+            self.room_group_name = f'chat_{self.room_id}'
             
-        await self.channel_layer.group_add(self.room_group_name, self.channel_name)
-        await self.accept()
+            # Get session data
+            session = self.scope.get('session', {})
+            self.user_id = session.get('patient_id') or session.get('practitioner_id')
+            self.user_type = 'patient' if session.get('patient_id') else 'practitioner'
+            
+            # Log connection attempt
+            logger.info(f"WebSocket connection attempt - Room: {self.room_id}, User: {self.user_id}, Type: {self.user_type}")
+            
+            if not self.user_id:
+                logger.warning("No user_id found in session")
+                await self.close()
+                return
+                
+            if not await self.verify_room_access():
+                logger.warning(f"User {self.user_id} denied access to room {self.room_id}")
+                await self.close()
+                return
+                
+            await self.channel_layer.group_add(self.room_group_name, self.channel_name)
+            await self.accept()
+            logger.info(f"WebSocket connected successfully - Room: {self.room_id}, User: {self.user_id}")
+        except Exception as e:
+            logger.error(f"Error in connect: {str(e)}")
+            await self.close()
 
     @database_sync_to_async
     def verify_room_access(self):

@@ -1,85 +1,194 @@
 {% extends 'patientdashboard/patient_base.html' %}
 {% load static %}
 
-{% block title %}Select Specialty{% endblock %}
-{% block extra_css %}
-
-
-
-<style>
-    .card {
-        transition: transform 0.3s;
-        border: 1px solid #e0e0e0;
-        transform: translateY(50px);
-        opacity: 0;
-        animation: slideUp 0.5s forwards;
-    }
-    
-    /* Delay each card's animation */
-    .card:nth-child(1) { animation-delay: 0.1s; }
-    .card:nth-child(2) { animation-delay: 0.2s; }
-    .card:nth-child(3) { animation-delay: 0.3s; }
-    .card:nth-child(4) { animation-delay: 0.4s; }
-    .card:nth-child(5) { animation-delay: 0.5s; }
-    .card:nth-child(6) { animation-delay: 0.6s; }
-    .card:nth-child(7) { animation-delay: 0.7s; }
-    .card:nth-child(8) { animation-delay: 0.8s; }
-    
-    @keyframes slideUp {
-        to {
-            transform: translateY(0);
-            opacity: 1;
-        }
-    }
-    
-    .card:hover {
-        transform: translateY(-5px) !important;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    }
-</style>
-{% endblock %}
+{% block title %}Select Specialty - Patient Dashboard{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-    <div class="row mb-4">
-        <div class="col-12 text-center">
-            <h1>Book Appointment</h1>
-            <p class="lead">Select a specialty to find available doctors</p>
+<!-- Modern Specialty Selection Header -->
+<div class="bg-gradient-to-r from-patient-blue to-patient-dark-blue rounded-2xl p-6 mb-8 text-white">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+        <div>
+            <h1 class="text-2xl md:text-3xl font-bold mb-2" data-translate="Book Appointment">Book Appointment</h1>
+            <p class="text-white/90">Select a specialty to find available doctors and schedule your consultation</p>
         </div>
-    </div>
-
-    <div class="row">
-        {% for key, value in specialties %}
-        <div class="col-md-4 mb-4">
-            <a href="{% url 'patientdashboard:practitioners_list' specialty=key %}" class="card h-100 text-decoration-none">
-                <div class="card-body text-center">
-                    {# Different icons for each specialty #}
-                    {% if key == 'occupational_therapist' %}
-                        <i class="fas fa-hands-helping fa-3x text-primary mb-3"></i>
-                    {% elif key == 'physiotherapist' %}
-                        <i class="fas fa-running fa-3x text-primary mb-3"></i>
-                    {% elif key == 'neuropsychologist' %}
-                        <i class="fas fa-brain fa-3x text-primary mb-3"></i>
-                    {% elif key == 'speech_therapist' %}
-                        <i class="fas fa-comment-medical fa-3x text-primary mb-3"></i>
-                    {% elif key == 'psychologist' %}
-                        <i class="fas fa-head-side-virus fa-3x text-primary mb-3"></i>
-                    {% elif key == 'chiropractor' %}
-                        <i class="fas fa-bone fa-3x text-primary mb-3"></i>
-                    {% elif key == 'nutritionist' %}
-                        <i class="fas fa-apple-alt fa-3x text-primary mb-3"></i>
-                    {% elif key == 'general_practitioner' %}
-                        <i class="fas fa-user-md fa-3x text-primary mb-3"></i>
-                    {% else %}
-                        <i class="fas fa-video fa-3x text-primary mb-3"></i>
-                    {% endif %}
-                    <h4>{{ value }}</h4>
+        <div class="mt-4 md:mt-0">
+            <div class="flex items-center space-x-4">
+                <div class="text-center">
+                    <div class="text-2xl font-bold">{{ specialties|length }}</div>
+                    <div class="text-sm text-white/80">Specialties</div>
                 </div>
-            </a>
+                <div class="w-px h-12 bg-white/20"></div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold">50+</div>
+                    <div class="text-sm text-white/80">Doctors</div>
+                </div>
+            </div>
         </div>
-        {% endfor %}
     </div>
 </div>
+
+<!-- Specialties Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    {% for key, value in specialties %}
+    <a href="{% url 'patientdashboard:practitioners_list' specialty=key %}" 
+       class="specialty-card bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 group">
+        
+        <!-- Card Header with Icon -->
+        <div class="relative h-32 bg-gradient-to-br 
+            {% if key == 'occupational_therapist' %}from-blue-100 to-blue-200
+            {% elif key == 'physiotherapist' %}from-green-100 to-green-200
+            {% elif key == 'neuropsychologist' %}from-purple-100 to-purple-200
+            {% elif key == 'speech_therapist' %}from-pink-100 to-pink-200
+            {% elif key == 'psychologist' %}from-indigo-100 to-indigo-200
+            {% elif key == 'chiropractor' %}from-orange-100 to-orange-200
+            {% elif key == 'nutritionist' %}from-emerald-100 to-emerald-200
+            {% elif key == 'general_practitioner' %}from-patient-light-blue to-patient-blue/20
+            {% else %}from-gray-100 to-gray-200{% endif %} 
+            flex items-center justify-center overflow-hidden">
+            
+            <!-- Background Pattern -->
+            <div class="absolute inset-0 opacity-10">
+                <div class="w-full h-full bg-gradient-to-br from-transparent via-white to-transparent transform rotate-12"></div>
+            </div>
+            
+            <!-- Icon -->
+            <div class="relative z-10 transform group-hover:scale-110 transition-transform duration-300">
+                {% if key == 'occupational_therapist' %}
+                    <i class="fas fa-hands-helping text-5xl text-blue-600"></i>
+                {% elif key == 'physiotherapist' %}
+                    <i class="fas fa-running text-5xl text-green-600"></i>
+                {% elif key == 'neuropsychologist' %}
+                    <i class="fas fa-brain text-5xl text-purple-600"></i>
+                {% elif key == 'speech_therapist' %}
+                    <i class="fas fa-comment-medical text-5xl text-pink-600"></i>
+                {% elif key == 'psychologist' %}
+                    <i class="fas fa-head-side-virus text-5xl text-indigo-600"></i>
+                {% elif key == 'chiropractor' %}
+                    <i class="fas fa-bone text-5xl text-orange-600"></i>
+                {% elif key == 'nutritionist' %}
+                    <i class="fas fa-apple-alt text-5xl text-emerald-600"></i>
+                {% elif key == 'general_practitioner' %}
+                    <i class="fas fa-user-md text-5xl text-patient-blue"></i>
+                {% else %}
+                    <i class="fas fa-stethoscope text-5xl text-gray-600"></i>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Card Content -->
+        <div class="p-6">
+            <h3 class="text-lg font-bold text-patient-dark-blue mb-2 group-hover:text-patient-blue transition-colors">
+                {{ value }}
+            </h3>
+            <p class="text-sm text-patient-dark-gray mb-4">
+                {% if key == 'occupational_therapist' %}
+                    Helping you regain daily living skills and independence
+                {% elif key == 'physiotherapist' %}
+                    Physical rehabilitation and movement therapy
+                {% elif key == 'neuropsychologist' %}
+                    Brain function assessment and cognitive therapy
+                {% elif key == 'speech_therapist' %}
+                    Communication and swallowing disorder treatment
+                {% elif key == 'psychologist' %}
+                    Mental health counseling and therapy
+                {% elif key == 'chiropractor' %}
+                    Spine and musculoskeletal system care
+                {% elif key == 'nutritionist' %}
+                    Diet planning and nutritional guidance
+                {% elif key == 'general_practitioner' %}
+                    Primary healthcare and general medical care
+                {% else %}
+                    Professional healthcare consultation
+                {% endif %}
+            </p>
+            
+            <!-- Action Button -->
+            <div class="flex items-center justify-between">
+                <span class="text-sm font-medium text-patient-blue">View Doctors</span>
+                <div class="w-8 h-8 bg-patient-blue/10 rounded-full flex items-center justify-center group-hover:bg-patient-blue group-hover:text-white transition-all duration-300">
+                    <i class="fas fa-arrow-right text-sm"></i>
+                </div>
+            </div>
+        </div>
+    </a>
+    {% empty %}
+    <!-- Empty State -->
+    <div class="col-span-full text-center py-16">
+        <div class="w-24 h-24 bg-patient-light-blue rounded-full flex items-center justify-center mx-auto mb-6">
+            <i class="fas fa-stethoscope text-patient-blue text-4xl"></i>
+        </div>
+        <h3 class="text-2xl font-semibold text-patient-dark-blue mb-4">No Specialties Available</h3>
+        <p class="text-patient-dark-gray">Please contact support for assistance with booking appointments.</p>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Quick Actions -->
+<div class="mt-12 bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+    <h2 class="text-xl font-bold text-patient-dark-blue mb-4">Need Help Choosing?</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="flex items-center space-x-3 p-4 bg-patient-gray rounded-xl">
+            <div class="w-12 h-12 bg-patient-blue/10 rounded-full flex items-center justify-center">
+                <i class="fas fa-phone text-patient-blue"></i>
+            </div>
+            <div>
+                <h4 class="font-semibold text-patient-dark-blue">Call Support</h4>
+                <p class="text-sm text-patient-dark-gray">Get help choosing the right specialist</p>
+            </div>
+        </div>
+        
+        <div class="flex items-center space-x-3 p-4 bg-patient-gray rounded-xl">
+            <div class="w-12 h-12 bg-patient-green/10 rounded-full flex items-center justify-center">
+                <i class="fas fa-comments text-patient-green"></i>
+            </div>
+            <div>
+                <h4 class="font-semibold text-patient-dark-blue">Live Chat</h4>
+                <p class="text-sm text-patient-dark-gray">Chat with our medical advisors</p>
+            </div>
+        </div>
+        
+        <div class="flex items-center space-x-3 p-4 bg-patient-gray rounded-xl">
+            <div class="w-12 h-12 bg-patient-purple/10 rounded-full flex items-center justify-center">
+                <i class="fas fa-question-circle text-patient-purple"></i>
+            </div>
+            <div>
+                <h4 class="font-semibold text-patient-dark-blue">FAQ</h4>
+                <p class="text-sm text-patient-dark-gray">Find answers to common questions</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Initialize specialty cards animation
+document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('.specialty-card');
+    cards.forEach((card, index) => {
+        // Initial state
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        card.style.transition = 'all 0.6s ease';
+        
+        // Animate in with stagger
+        setTimeout(() => {
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 100);
+    });
+});
+
+// Add hover sound effect (optional)
+document.querySelectorAll('.specialty-card').forEach(card => {
+    card.addEventListener('mouseenter', function() {
+        // Optional: Add subtle hover feedback
+        this.style.transform = 'translateY(-8px) scale(1.02)';
+    });
+    
+    card.addEventListener('mouseleave', function() {
+        this.style.transform = 'translateY(0) scale(1)';
+    });
+});
+</script>
 {% endblock content %}
 
 

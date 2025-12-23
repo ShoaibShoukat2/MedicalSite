@@ -2,258 +2,318 @@
 {% load static %}
 
 {% block content %}
-<div class="container-fluid py-4">
-    <!-- Dashboard Header -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card bg-gradient-primary text-white shadow-lg border-0 rounded-4">
-                <div class="card-body py-4">
-                    <h2 class="text-center m-0 fw-bold">
-                        <i class="fa fa-calendar-check me-2"></i>Patient Appointments
-                    </h2>
+<div class="space-y-6">
+    <!-- Header Section -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-doctor-dark-blue mb-2" data-translate="My Patients">My Patients</h1>
+                <p class="text-doctor-dark-gray">Manage your patient appointments and prescriptions</p>
+            </div>
+            <div class="hidden md:flex items-center space-x-4">
+                <div class="text-right">
+                    <p class="text-sm text-doctor-dark-gray">Total Patients</p>
+                    <p class="text-2xl font-bold text-doctor-blue">{{ patients|length }}</p>
+                </div>
+                <div class="w-12 h-12 bg-gradient-to-br from-doctor-blue to-doctor-purple rounded-xl flex items-center justify-center">
+                    <i class="fas fa-users text-white text-lg"></i>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Patients Grid -->
-    <div class="row g-4">
-        {% for patient in patients %}
-        <div class="col-sm-6 col-md-4 col-lg-3">
-
-
-            <div class="card h-100 shadow-lg border-0 rounded-4 hover-elevate">
-                <!-- Card Header with Patient Photo -->
-                <div class="card-header bg-light text-center p-3 border-0">
-                    <div class="position-relative mx-auto mb-2">
-                        <img src="{% if patient.profile_photo %}{{ patient.profile_photo.url }}{% else %}{% static 'assets/img/default-profile.jpg' %}{% endif %}" 
-                             class="rounded-circle border border-3 border-white shadow-lg" 
-                             alt="{{ patient.first_name }}" width="110" height="110">
+    {% if patients %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {% for patient in patients %}
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden doctor-card hover:shadow-lg transition-all duration-300">
+                <!-- Patient Header -->
+                <div class="bg-gradient-to-br from-doctor-blue to-doctor-dark-blue p-6 text-white text-center relative">
+                    <div class="relative inline-block mb-4">
+                        <div class="w-24 h-24 rounded-full overflow-hidden border-4 border-white shadow-lg mx-auto">
+                            {% if patient.profile_photo %}
+                                <img src="{{ patient.profile_photo.url }}" 
+                                     alt="{{ patient.first_name }}" 
+                                     class="w-full h-full object-cover">
+                            {% else %}
+                                <div class="w-full h-full bg-white/20 flex items-center justify-center">
+                                    <i class="fas fa-user text-white text-2xl"></i>
+                                </div>
+                            {% endif %}
+                        </div>
                         {% for appointment in patient.appointments.all %}
-                            <span class="position-absolute bottom-0 end-0 badge rounded-pill bg-success p-2 border border-2 border-white" 
-                                  data-bs-toggle="tooltip" data-bs-placement="top" 
-                                  title="{{ appointment.slot.start_time|date:'h:i A' }} - {{ appointment.slot.end_time|date:'h:i A' }}">
-                                <i class="fa fa-clock"></i>
-                            </span>
+                            <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-doctor-green rounded-full border-2 border-white flex items-center justify-center">
+                                <i class="fas fa-clock text-white text-xs"></i>
+                            </div>
                         {% endfor %}
                     </div>
-                    <h4 class="card-title mb-0 fw-bold">
-                        {{ patient.greeting }} {{ patient.first_name }} {{ patient.last_name }}
-                    </h4>
-                    <p class="text-muted small mb-0">
-                        <span class="badge bg-light text-dark border">ID: {{ patient.id }}</span>
-                    </p>
+                    <h3 class="text-lg font-bold mb-1">{{ patient.greeting }} {{ patient.first_name }} {{ patient.last_name }}</h3>
+                    <p class="text-blue-100 text-sm">ID: {{ patient.id }}</p>
                 </div>
-                <!-- Card Body -->
-                <div class="card-body p-4">
-                    <!-- Patient Details -->
-                    <div class="d-flex flex-column gap-2 mb-3">
-                        <div class="d-flex align-items-center">
-                            <div class="icon-box bg-light rounded-circle me-2 text-primary">
-                                <i class="fa fa-phone-alt"></i>
+
+                <!-- Patient Details -->
+                <div class="p-6 space-y-4">
+                    <!-- Basic Info -->
+                    <div class="space-y-3">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-phone text-doctor-blue text-sm"></i>
                             </div>
-                            <span>{{ patient.mobile_phone }}</span>
+                            <span class="text-sm text-doctor-dark-gray">{{ patient.mobile_phone }}</span>
                         </div>
-                        <div class="d-flex align-items-center">
-                            <div class="icon-box bg-light rounded-circle me-2 text-primary">
-                                <i class="fa fa-calendar-alt"></i>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-calendar text-doctor-green text-sm"></i>
                             </div>
-                            <span>Age: {{ patient.date_of_birth|date:"Y" }}</span>
+                            <span class="text-sm text-doctor-dark-gray">Age: {{ patient.date_of_birth|date:"Y" }}</span>
                         </div>
-                        <div class="d-flex align-items-center">
-                            <div class="icon-box bg-light rounded-circle me-2 text-primary">
-                                <i class="fa fa-venus-mars"></i>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-venus-mars text-doctor-purple text-sm"></i>
                             </div>
-                            <span>{{ patient.get_gender_display }}</span>
+                            <span class="text-sm text-doctor-dark-gray">{{ patient.get_gender_display }}</span>
                         </div>
                     </div>
-                    
-                    <!-- Appointment Section -->
-                    <div class="appointment-info mb-3">
-                        <h6 class="fw-bold text-primary border-bottom pb-2">
-                            <i class="fa fa-calendar-check me-1"></i> Appointment Details
-                        </h6>
+
+                    <!-- Appointment Details -->
+                    <div class="border-t border-gray-100 pt-4">
+                        <h4 class="font-semibold text-doctor-dark-blue mb-3 flex items-center">
+                            <i class="fas fa-calendar-check text-doctor-blue mr-2"></i>
+                            Appointments
+                        </h4>
                         {% for appointment in patient.appointments.all %}
-                            <div class="appointment-time d-flex align-items-center mb-2">
-                                <div class="me-2">
-                                    <span class="badge bg-success text-white p-2 rounded-3">
+                            <div class="bg-green-50 p-3 rounded-xl border border-green-200 mb-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm font-medium text-green-800">
                                         {{ appointment.slot.start_time|date:"h:i A" }} - {{ appointment.slot.end_time|date:"h:i A" }}
                                     </span>
+                                    <span class="text-xs text-green-600">{{ appointment.slot.get_day_of_week_display }}</span>
                                 </div>
-                                <div>
-                                    <small class="text-muted">{{ appointment.slot.get_day_of_week_display }}</small>
-
-
-                                </div>
-
                             </div>
                         {% empty %}
-                            <p class="text-muted fst-italic small">No appointments scheduled</p>
+                            <p class="text-sm text-gray-500 italic">No appointments scheduled</p>
                         {% endfor %}
                     </div>
-                    
-                    <!-- Prescription Section -->
-                    <div class="prescription-info mb-3">
-                        <h6 class="fw-bold text-primary border-bottom pb-2">
-                            <i class="fa fa-file-medical me-1"></i> Prescriptions
-                        </h6>
+
+                    <!-- Prescriptions -->
+                    <div class="border-t border-gray-100 pt-4">
+                        <h4 class="font-semibold text-doctor-dark-blue mb-3 flex items-center">
+                            <i class="fas fa-file-medical text-doctor-teal mr-2"></i>
+                            Prescriptions
+                        </h4>
                         {% if patient.prescriptions.all %}
-                            <ul class="list-group list-group-flush rounded-3 mb-2">
+                            <div class="space-y-2 max-h-32 overflow-y-auto custom-scrollbar">
                                 {% for prescription in patient.prescriptions.all %}
-                                    <li class="list-group-item bg-light p-2 d-flex justify-content-between align-items-center">
-                                        <div class="text-truncate me-2">
-                                            <small class="fw-semibold">{{ prescription.text }}</small>
+                                    <div class="bg-blue-50 p-3 rounded-xl border border-blue-200 flex items-center justify-between">
+                                        <div class="flex-1 min-w-0">
+                                            <p class="text-sm font-medium text-blue-800 truncate">{{ prescription.text }}</p>
                                         </div>
                                         {% if prescription.file %}
-                                            <a href="{{ prescription.file.url }}" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill">
-                                                <i class="fa fa-file-download"></i>
+                                            <a href="{{ prescription.file.url }}" target="_blank" 
+                                               class="ml-2 w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center hover:bg-blue-200 transition-colors">
+                                                <i class="fas fa-download text-blue-600 text-xs"></i>
                                             </a>
                                         {% else %}
-                                            <i class="fa fa-check-circle text-success"></i>
+                                            <div class="ml-2 w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                                                <i class="fas fa-check text-green-600 text-xs"></i>
+                                            </div>
                                         {% endif %}
-                                    </li>
+                                    </div>
                                 {% endfor %}
-                            </ul>
+                            </div>
                         {% else %}
-                            <p class="text-muted fst-italic small">No prescriptions issued</p>
+                            <p class="text-sm text-gray-500 italic">No prescriptions issued</p>
                         {% endif %}
                     </div>
                 </div>
 
+                <!-- Action Buttons -->
+                <div class="p-6 pt-0 space-y-3">
+                    {% with appointment=patient.appointments.all.0 %}
+                        {% if appointment.video_call_link %}
+                            <a href="{{ appointment.video_call_link }}" target="_blank" 
+                               class="w-full bg-gradient-to-r from-doctor-blue to-doctor-dark-blue text-white py-3 px-4 rounded-xl font-medium text-center block hover:shadow-lg transition-all duration-300">
+                                <i class="fas fa-video mr-2"></i>Start Video Call
+                            </a>
+                        {% else %}
+                            <button class="w-full bg-gray-100 text-gray-500 py-3 px-4 rounded-xl font-medium cursor-not-allowed">
+                                <i class="fas fa-video-slash mr-2"></i>No Video Link
+                            </button>
+                        {% endif %}
+                    {% endwith %}
 
-                <!-- Card Footer with Actions -->   
-                <div class="card-footer bg-white border-0 p-3">
-                    <div class="d-grid gap-2">
-                      {% with appointment=patient.appointments.all.0 %}
-                            {% if appointment.video_call_link %}
-                                <a href="{{ appointment.video_call_link }}" class="btn btn-primary rounded-pill" target="_blank">
-                                    <i class="fa fa-video me-1"></i> Start Video Call
-                                </a>
-                            {% else %}
-                                <button class="btn btn-secondary rounded-pill disabled">
-                                    <i class="fa fa-video-slash me-1"></i> No Video Link
-                                </button>
-                            {% endif %}
-                        {% endwith %}
-
-                        <button class="btn btn-success rounded-pill" data-bs-toggle="modal" data-bs-target="#prescriptionModal{{ patient.id }}">
-                            <i class="fa fa-plus me-1"></i> Add Prescription
-                        </button>
-                    </div>
-
+                    <button onclick="openPrescriptionModal('{{ patient.id }}', '{{ patient.first_name }} {{ patient.last_name }}')" 
+                            class="w-full bg-gradient-to-r from-doctor-green to-emerald-600 text-white py-3 px-4 rounded-xl font-medium hover:shadow-lg transition-all duration-300">
+                        <i class="fas fa-plus mr-2"></i>Add Prescription
+                    </button>
                 </div>
             </div>
+            {% endfor %}
         </div>
-
-
-        {% empty %}
-        <div class="col-12">
-            <div class="alert alert-info text-center py-5">
-                <i class="fa fa-info-circle fa-3x mb-3"></i>
-                <h4>No patients found</h4>
-                <p class="mb-0">There are currently no patients scheduled with appointments.</p>
+    {% else %}
+        <!-- Empty State -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center">
+            <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-users text-gray-400 text-4xl"></i>
             </div>
+            <h3 class="text-2xl font-bold text-doctor-dark-blue mb-4">No Patients Found</h3>
+            <p class="text-doctor-dark-gray mb-6">There are currently no patients scheduled with appointments.</p>
+            <button class="px-6 py-3 bg-gradient-to-r from-doctor-blue to-doctor-dark-blue text-white rounded-xl font-medium hover:shadow-lg transition-all duration-300">
+                <i class="fas fa-calendar-plus mr-2"></i>Schedule Appointment
+            </button>
         </div>
-        {% endfor %}
-    </div>
+    {% endif %}
 </div>
 
-<!-- Prescription Modals -->
-{% for patient in patients %}
-<div class="modal fade" id="prescriptionModal{{ patient.id }}" tabindex="-1" aria-labelledby="prescriptionModalLabel{{ patient.id }}" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg rounded-4">
-            <div class="modal-header bg-gradient-primary text-white border-0">
-                <h5 class="modal-title" id="prescriptionModalLabel{{ patient.id }}">
-                    <i class="fa fa-file-prescription me-2"></i>New Prescription: {{ patient.first_name }} {{ patient.last_name }}
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+<!-- Prescription Modal -->
+<div id="prescriptionModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+        <div class="p-6 border-b border-gray-200">
+            <div class="flex items-center justify-between">
+                <h2 class="text-2xl font-bold text-doctor-dark-blue">
+                    <i class="fas fa-file-prescription mr-3 text-doctor-blue"></i>New Prescription
+                </h2>
+                <button onclick="closePrescriptionModal()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                    <i class="fas fa-times text-gray-500"></i>
+                </button>
             </div>
-            <div class="modal-body p-4">
-                <form method="post" action="{% url 'practitioner_dashboard:add_prescription' patient.id %}" enctype="multipart/form-data" class="needs-validation" novalidate>
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label class="form-label fw-bold"><i class="fa fa-prescription me-1"></i>Prescription Details</label>
-                        <textarea name="text" class="form-control form-control-lg rounded-3" rows="4" placeholder="Enter complete prescription details" required></textarea>
-                        <div class="invalid-feedback">Please enter prescription details</div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-bold"><i class="fa fa-file-upload me-1"></i>Upload Document</label>
-                        <div class="input-group">
-                            <input type="file" name="prescription_file" class="form-control rounded-start" accept=".jpg,.jpeg,.png,.pdf,.doc,.docx">
-                            <span class="input-group-text bg-light text-muted rounded-end">Optional</span>
+            <p id="modalPatientName" class="text-doctor-dark-gray mt-2"></p>
+        </div>
+        
+        <form id="prescriptionForm" method="post" enctype="multipart/form-data" class="p-6 space-y-6">
+            {% csrf_token %}
+            <div>
+                <label class="block text-sm font-semibold text-doctor-dark-blue mb-3">
+                    <i class="fas fa-prescription mr-2 text-doctor-blue"></i>Prescription Details
+                </label>
+                <textarea name="text" rows="4" required
+                          class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-doctor-blue focus:border-doctor-blue transition-colors resize-none" 
+                          placeholder="Enter complete prescription details..."></textarea>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-semibold text-doctor-dark-blue mb-3">
+                    <i class="fas fa-file-upload mr-2 text-doctor-green"></i>Upload Document (Optional)
+                </label>
+                <div class="relative">
+                    <input type="file" name="prescription_file" id="prescriptionFile" 
+                           accept=".jpg,.jpeg,.png,.pdf,.doc,.docx" class="hidden">
+                    <label for="prescriptionFile" 
+                           class="flex items-center justify-center w-full px-6 py-4 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-doctor-blue hover:bg-blue-50 transition-colors">
+                        <div class="text-center">
+                            <i class="fas fa-upload text-gray-400 text-2xl mb-2"></i>
+                            <p class="text-sm text-gray-600">Click to upload document</p>
+                            <p class="text-xs text-gray-500 mt-1">Images, PDF, Word documents</p>
                         </div>
-                        <div class="form-text">Accepted formats: Images, PDF, Word documents</div>
-                    </div>
-                    <div class="d-flex justify-content-end gap-2 mt-4">
-                        <button type="button" class="btn btn-outline-secondary px-4 rounded-pill" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary px-4 rounded-pill">
-                            <i class="fa fa-save me-1"></i>Save Prescription
-                        </button>
-                    </div>
-                </form>
+                    </label>
+                </div>
             </div>
-        </div>
+            
+            <div class="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+                <button type="button" onclick="closePrescriptionModal()" 
+                        class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+                    Cancel
+                </button>
+                <button type="submit" 
+                        class="px-6 py-2 bg-gradient-to-r from-doctor-blue to-doctor-dark-blue text-white rounded-lg hover:shadow-lg transition-all duration-300">
+                    <i class="fas fa-save mr-2"></i>Save Prescription
+                </button>
+            </div>
+        </form>
     </div>
 </div>
-{% endfor %}
 
-<!-- Custom Styles -->
-<style>
-    .hover-elevate {
-        transition: transform 0.2s ease-in-out;
-    }
-    .hover-elevate:hover {
-        transform: translateY(-5px);
-    }
-    .icon-box {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 32px;
-        height: 32px;
-    }
-    .bg-gradient-primary {
-        background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
-    }
-</style>
-
-<!-- Bootstrap, FontAwesome & SweetAlert2 JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        // Initialize tooltips
-        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl);
-        });
-        
-        // Form validation
-        const forms = document.querySelectorAll('.needs-validation');
-        Array.from(forms).forEach(form => {
-            form.addEventListener('submit', event => {
-                if (!form.checkValidity()) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                }
-                form.classList.add('was-validated');
-            }, false);
-        });
-        
-        // SweetAlert for messages
-        {% for message in messages %}
-            Swal.fire({
-                title: "{% if message.tags == 'success' %}Success!{% elif message.tags == 'error' %}Error{% else %}Notification{% endif %}",
-                text: "{{ message }}",
-                icon: "{{ message.tags }}",
-                confirmButtonText: "OK",
-                confirmButtonColor: "#4e73df"
-            });
-        {% endfor %}
+let currentPatientId = null;
+
+function openPrescriptionModal(patientId, patientName) {
+    currentPatientId = patientId;
+    document.getElementById('modalPatientName').textContent = `For: ${patientName}`;
+    document.getElementById('prescriptionForm').action = `/practitioner-dashboard/add-prescription/${patientId}/`;
+    document.getElementById('prescriptionModal').classList.remove('hidden');
+}
+
+function closePrescriptionModal() {
+    document.getElementById('prescriptionModal').classList.add('hidden');
+    document.getElementById('prescriptionForm').reset();
+    currentPatientId = null;
+}
+
+// File upload preview
+document.getElementById('prescriptionFile').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    const label = e.target.nextElementSibling;
+    
+    if (file) {
+        label.innerHTML = `
+            <div class="text-center">
+                <i class="fas fa-file text-doctor-blue text-2xl mb-2"></i>
+                <p class="text-sm text-doctor-blue font-medium">${file.name}</p>
+                <p class="text-xs text-gray-500 mt-1">${(file.size / 1024).toFixed(1)} KB</p>
+            </div>
+        `;
+        label.classList.add('border-doctor-blue', 'bg-blue-50');
+    }
+});
+
+// Form submission
+document.getElementById('prescriptionForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    
+    fetch(this.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('success', 'Prescription added successfully!');
+            closePrescriptionModal();
+            // Reload page to show updated prescription
+            setTimeout(() => location.reload(), 1000);
+        } else {
+            showNotification('error', data.error || 'Failed to add prescription');
+        }
+    })
+    .catch(error => {
+        showNotification('error', 'An error occurred. Please try again.');
     });
+});
+
+function showNotification(type, message) {
+    const notification = document.createElement('div');
+    notification.className = `fixed top-4 right-4 z-50 p-4 rounded-xl shadow-lg max-w-sm ${
+        type === 'success' ? 'bg-green-50 border border-green-200 text-green-800' : 'bg-red-50 border border-red-200 text-red-800'
+    }`;
+    notification.innerHTML = `
+        <div class="flex items-center">
+            <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} mr-3"></i>
+            <span>${message}</span>
+            <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    `;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        if (notification.parentElement) {
+            notification.remove();
+        }
+    }, 5000);
+}
+
+// Handle messages from Django
+document.addEventListener('DOMContentLoaded', function() {
+    {% for message in messages %}
+        showNotification('{{ message.tags }}', '{{ message|escapejs }}');
+    {% endfor %}
+});
 </script>
+
 {% endblock content %}
-
-
-
