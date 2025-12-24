@@ -38,7 +38,7 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1','michdmp.pythonanywhere.com','localhost','69.62.108.86','reeducavie.com']
+ALLOWED_HOSTS = ['127.0.0.1','michdmp.pythonanywhere.com','localhost','69.62.108.86','reeducavie.com','72.60.44.132']
 
 
 
