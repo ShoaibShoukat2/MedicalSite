@@ -5,716 +5,299 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Messages - Medical Chat</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/medical-theme.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'medical-blue': '#0e5274',
+                        'medical-light-blue': '#1a6a8f',
+                        'medical-green': '#28a745',
+                        'medical-gray': '#f8f9fa',
+                        'medical-dark': '#212529',
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.3s ease-out',
+                        'bounce-gentle': 'bounceGentle 0.6s ease-out',
+                        'pulse-gentle': 'pulseGentle 2s infinite',
+                        'typing': 'typing 1.4s infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        bounceGentle: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-5px)' }
+                        },
+                        pulseGentle: {
+                            '0%, 100%': { opacity: '1' },
+                            '50%': { opacity: '0.7' }
+                        },
+                        typing: {
+                            '0%, 60%, 100%': { transform: 'translateY(0)', opacity: '0.4' },
+                            '30%': { transform: 'translateY(-8px)', opacity: '1' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #0e5274 0%, #1a6a8f 100%);
-            height: 100vh;
-            overflow: hidden;
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
         }
-
-        /* Main Container */
-        .chat-container {
-            display: flex;
-            height: 100vh;
-            max-width: 1600px;
-            margin: 0 auto;
-            background: white;
-            box-shadow: 0 0 50px rgba(0,0,0,0.2);
+        .gradient-border {
+            background: linear-gradient(white, white) padding-box,
+                        linear-gradient(135deg, #0e5274, #1a6a8f) border-box;
+            border: 2px solid transparent;
         }
-
-        /* Sidebar */
-        .chat-sidebar {
-            width: 380px;
-            background: white;
-            border-right: 1px solid #e9ecef;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Header */
-        .chat-sidebar-header {
-            padding: 24px;
+        .message-bubble-sent {
             background: linear-gradient(135deg, #0e5274, #1a6a8f);
-            color: white;
         }
-
-        .chat-sidebar-header h1 {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .chat-sidebar-header p {
-            font-size: 14px;
-            opacity: 0.9;
-        }
-
-        /* User Info */
-        .user-info-card {
-            padding: 16px 24px;
-            background: rgba(14, 82, 116, 0.05);
-            border-bottom: 1px solid #e9ecef;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .user-avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #0e5274, #1a6a8f);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 700;
-            font-size: 18px;
-        }
-
-        .user-details h3 {
-            font-size: 16px;
-            font-weight: 600;
-            color: #0e5274;
-            margin-bottom: 2px;
-        }
-
-        .user-details p {
-            font-size: 13px;
-            color: #6c757d;
-        }
-
-        /* Search */
-        .search-container {
-            padding: 16px 24px;
-            border-bottom: 1px solid #e9ecef;
-        }
-
-        .search-box {
-            position: relative;
-        }
-
-        .search-box input {
-            width: 100%;
-            padding: 12px 16px 12px 44px;
-            border: 2px solid #e9ecef;
-            border-radius: 12px;
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
-
-        .search-box input:focus {
-            outline: none;
-            border-color: #0e5274;
-            box-shadow: 0 0 0 3px rgba(14, 82, 116, 0.1);
-        }
-
-        .search-box i {
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #6c757d;
-        }
-
-        /* Chat List */
-        .chat-list {
-            flex: 1;
-            overflow-y: auto;
-            padding: 8px;
-        }
-
-        .chat-list::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .chat-list::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .chat-list::-webkit-scrollbar-thumb {
-            background: rgba(14, 82, 116, 0.2);
-            border-radius: 10px;
-        }
-
-        /* Chat Item */
-        .chat-item {
-            display: flex;
-            align-items: center;
-            padding: 16px;
-            margin: 4px 0;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            color: inherit;
-            position: relative;
-        }
-
-        .chat-item:hover {
-            background: rgba(14, 82, 116, 0.05);
-            transform: translateX(4px);
-        }
-
-        .chat-item.active {
-            background: linear-gradient(135deg, rgba(14, 82, 116, 0.1), rgba(26, 106, 143, 0.1));
-            border-left: 4px solid #0e5274;
-        }
-
-        .chat-item-avatar {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            margin-right: 16px;
-            position: relative;
-            flex-shrink: 0;
-        }
-
-        .chat-item-avatar img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid white;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .online-indicator {
-            position: absolute;
-            bottom: 2px;
-            right: 2px;
-            width: 14px;
-            height: 14px;
-            background: #28a745;
-            border: 3px solid white;
-            border-radius: 50%;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .chat-item-content {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .chat-item-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 6px;
-        }
-
-        .chat-item-name {
-            font-weight: 600;
-            font-size: 15px;
-            color: #0e5274;
-        }
-
-        .chat-item-time {
-            font-size: 12px;
-            color: #6c757d;
-        }
-
-        .chat-item-message {
-            font-size: 14px;
-            color: #6c757d;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .unread-badge {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: linear-gradient(135deg, #0e5274, #1a6a8f);
-            color: white;
-            border-radius: 12px;
-            padding: 4px 10px;
-            font-size: 11px;
-            font-weight: 700;
-        }
-
-        /* Chat Area */
-        .chat-area {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background: #f8f9fa;
-        }
-
-        /* Chat Header */
-        .chat-area-header {
-            padding: 20px 24px;
-            background: white;
-            border-bottom: 1px solid #e9ecef;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .chat-area-user {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .chat-area-avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #0e5274;
-        }
-
-        .chat-area-user-info h2 {
-            font-size: 18px;
-            font-weight: 600;
-            color: #0e5274;
-            margin-bottom: 2px;
-        }
-
-        .chat-area-user-info p {
-            font-size: 13px;
-            color: #28a745;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .chat-area-user-info p::before {
-            content: '';
-            width: 8px;
-            height: 8px;
-            background: #28a745;
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .chat-area-actions {
-            display: flex;
-            gap: 12px;
-        }
-
-        .action-btn {
-            width: 40px;
-            height: 40px;
-            border: none;
-            border-radius: 50%;
-            background: rgba(14, 82, 116, 0.1);
-            color: #0e5274;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .action-btn:hover {
-            background: #0e5274;
-            color: white;
-            transform: scale(1.1);
-        }
-
-        /* Messages Area */
-        .messages-area {
-            flex: 1;
-            padding: 24px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .messages-area::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .messages-area::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .messages-area::-webkit-scrollbar-thumb {
-            background: rgba(14, 82, 116, 0.2);
-            border-radius: 10px;
-        }
-
-        /* Message */
-        .message {
-            display: flex;
-            gap: 12px;
-            animation: messageSlide 0.3s ease-out;
-        }
-
-        @keyframes messageSlide {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .message.sent {
-            flex-direction: row-reverse;
-        }
-
-        .message-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
-
-        .message-content {
-            max-width: 60%;
-        }
-
-        .message.sent .message-content {
-            align-items: flex-end;
-        }
-
-        .message-bubble {
-            padding: 12px 16px;
-            border-radius: 16px;
-            margin-bottom: 4px;
-            word-wrap: break-word;
-        }
-
-        .message.received .message-bubble {
-            background: white;
-            color: #212529;
-            border-bottom-left-radius: 4px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
-
-        .message.sent .message-bubble {
-            background: linear-gradient(135deg, #0e5274, #1a6a8f);
-            color: white;
-            border-bottom-right-radius: 4px;
-            box-shadow: 0 2px 8px rgba(14, 82, 116, 0.3);
-        }
-
-        .message-time {
-            font-size: 11px;
-            color: #6c757d;
-            padding: 0 4px;
-        }
-
-        /* Input Area */
-        .chat-input-area {
-            padding: 20px 24px;
-            background: white;
-            border-top: 1px solid #e9ecef;
-        }
-
-        .chat-input-container {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-
-        .chat-input {
-            flex: 1;
-            padding: 14px 20px;
-            border: 2px solid #e9ecef;
-            border-radius: 24px;
-            font-size: 14px;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .chat-input:focus {
-            border-color: #0e5274;
-            box-shadow: 0 0 0 3px rgba(14, 82, 116, 0.1);
-        }
-
-        .send-btn {
-            width: 48px;
-            height: 48px;
-            border: none;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #0e5274, #1a6a8f);
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-        }
-
-        .send-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 4px 12px rgba(14, 82, 116, 0.4);
-        }
-
-        .send-btn:active {
-            transform: scale(0.95);
-        }
-
-        /* Empty State */
-        .empty-state {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 40px;
-            text-align: center;
-        }
-
-        .empty-state i {
-            font-size: 80px;
-            color: #e9ecef;
-            margin-bottom: 24px;
-        }
-
-        .empty-state h3 {
-            font-size: 24px;
-            color: #0e5274;
-            margin-bottom: 12px;
-        }
-
-        .empty-state p {
-            font-size: 16px;
-            color: #6c757d;
-            margin-bottom: 24px;
-        }
-
-        .empty-state .btn {
-            padding: 12px 32px;
-            background: linear-gradient(135deg, #0e5274, #1a6a8f);
-            color: white;
-            border: none;
-            border-radius: 24px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .empty-state .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(14, 82, 116, 0.3);
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .chat-sidebar {
-                width: 100%;
-                position: absolute;
-                z-index: 10;
-                transform: translateX(-100%);
-                transition: transform 0.3s ease;
-            }
-
-            .chat-sidebar.show {
-                transform: translateX(0);
-            }
-
-            .chat-area {
-                width: 100%;
-            }
-
-            .message-content {
-                max-width: 80%;
-            }
-        }
-
-        /* Typing Indicator */
-        .typing-indicator {
-            display: flex;
-            gap: 4px;
-            padding: 12px 16px;
-            background: white;
-            border-radius: 16px;
-            width: fit-content;
-        }
-
-        .typing-dot {
-            width: 8px;
-            height: 8px;
-            background: #6c757d;
-            border-radius: 50%;
-            animation: typing 1.4s infinite;
-        }
-
-        .typing-dot:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .typing-dot:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-
-        @keyframes typing {
-            0%, 60%, 100% {
-                transform: translateY(0);
-                opacity: 0.4;
-            }
-            30% {
-                transform: translateY(-8px);
-                opacity: 1;
-            }
+        .message-bubble-received {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
         }
     </style>
 </head>
-<body>
-    <div class="chat-container">
+<body class="bg-gradient-to-br from-medical-blue via-blue-600 to-medical-light-blue min-h-screen">
+    <div class="flex h-screen max-w-7xl mx-auto bg-white shadow-2xl rounded-lg overflow-hidden">
         <!-- Sidebar -->
-        <div class="chat-sidebar">
+        <div class="w-full md:w-96 bg-white border-r border-gray-200 flex flex-col" id="chat-sidebar">
             <!-- Header -->
-            <div class="chat-sidebar-header">
-                <h1>
-                    <i class="fas fa-comments"></i>
-                    Messages
-                </h1>
-                <p>Stay connected with your healthcare team</p>
-            </div>
-
-            <!-- User Info -->
-            <div class="user-info-card">
-                <div class="user-avatar">
-                    {{ user.first_name|slice:":1"|upper }}
+            <div class="bg-gradient-to-r from-medical-blue to-medical-light-blue text-white p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                            <i class="fas fa-comments text-lg"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-xl font-bold">Messages</h1>
+                            <p class="text-white/80 text-sm">Stay connected with your healthcare team</p>
+                        </div>
+                    </div>
+                    <button class="md:hidden w-8 h-8 bg-white/20 rounded-full flex items-center justify-center" onclick="toggleSidebar()">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
-                <div class="user-details">
-                    <h3>{{ user.first_name }} {{ user.last_name }}</h3>
-                    <p>{{ user_type|title }}</p>
+                
+                <!-- User Info Card -->
+                <div class="bg-white/10 rounded-xl p-4 backdrop-blur-sm">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center text-lg font-bold">
+                            {% if user_type == 'patient' %}
+                                {{ user.first_name|slice:":1"|upper }}
+                            {% else %}
+                                Dr
+                            {% endif %}
+                        </div>
+                        <div>
+                            <h3 class="font-semibold">
+                                {% if user_type == 'patient' %}
+                                    {{ user.first_name }} {{ user.last_name }}
+                                {% else %}
+                                    Dr. {{ user.first_name }} {{ user.last_name }}
+                                {% endif %}
+                            </h3>
+                            <p class="text-white/70 text-sm capitalize">{{ user_type }}</p>
+                        </div>
+                        <div class="ml-auto">
+                            <div class="w-3 h-3 bg-medical-green rounded-full animate-pulse-gentle"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <!-- Search -->
-            <div class="search-container">
-                <div class="search-box">
-                    <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Search conversations..." class="search-input">
+            <div class="p-4 border-b border-gray-100">
+                <div class="relative">
+                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    <input type="text" 
+                           placeholder="Search conversations..." 
+                           class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-medical-blue/20 focus:border-medical-blue transition-all duration-300"
+                           id="search-input">
                 </div>
             </div>
 
             <!-- Chat List -->
-            <div class="chat-list">
+            <div class="flex-1 overflow-y-auto scrollbar-hide">
                 {% if chat_rooms %}
-                    {% for room in chat_rooms %}
-                    <a href="{% url 'chat:chat_room' room.id %}" class="chat-item {% if room.id == active_room_id %}active{% endif %}">
-                        <div class="chat-item-avatar">
-                            {% if user_type == 'patient' %}
-                                {% if room.practitioner.photo %}
-                                    <img src="{{ room.practitioner.photo.url }}" alt="{{ room.practitioner.first_name }}">
-                                {% else %}
-                                    <img src="https://ui-avatars.com/api/?name={{ room.practitioner.first_name }}+{{ room.practitioner.last_name }}&size=56&background=0e5274&color=fff" alt="Avatar">
-                                {% endif %}
-                            {% else %}
-                                {% if room.patient.profile_photo %}
-                                    <img src="{{ room.patient.profile_photo.url }}" alt="{{ room.patient.first_name }}">
-                                {% else %}
-                                    <img src="https://ui-avatars.com/api/?name={{ room.patient.first_name }}+{{ room.patient.last_name }}&size=56&background=0e5274&color=fff" alt="Avatar">
-                                {% endif %}
-                            {% endif %}
-                            <div class="online-indicator"></div>
-                        </div>
-                        <div class="chat-item-content">
-                            <div class="chat-item-header">
-                                <span class="chat-item-name">
-                                    {% if user_type == 'patient' %}
-                                        Dr. {{ room.practitioner.first_name }} {{ room.practitioner.last_name }}
+                    <div class="p-2 space-y-1">
+                        {% for room in chat_rooms %}
+                        <a href="{% url 'chat:chat_room' room.id %}" 
+                           class="chat-item flex items-center p-4 rounded-xl hover:bg-gray-50 transition-all duration-300 group {% if room.id == active_room_id %}bg-medical-blue/5 border-l-4 border-medical-blue{% endif %}"
+                           data-room-id="{{ room.id }}">
+                            <div class="relative flex-shrink-0">
+                                {% if user_type == 'patient' %}
+                                    {% if room.practitioner.photo %}
+                                        <img src="{{ room.practitioner.photo.url }}" 
+                                             alt="{{ room.practitioner.first_name }}"
+                                             class="w-14 h-14 rounded-full object-cover border-2 border-white shadow-lg">
                                     {% else %}
-                                        {{ room.patient.first_name }} {{ room.patient.last_name }}
+                                        <div class="w-14 h-14 bg-gradient-to-br from-medical-blue to-medical-light-blue rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg">
+                                            {{ room.practitioner.first_name|slice:":1"|upper }}
+                                        </div>
                                     {% endif %}
-                                </span>
+                                {% else %}
+                                    {% if room.patient.profile_photo %}
+                                        <img src="{{ room.patient.profile_photo.url }}" 
+                                             alt="{{ room.patient.first_name }}"
+                                             class="w-14 h-14 rounded-full object-cover border-2 border-white shadow-lg">
+                                    {% else %}
+                                        <div class="w-14 h-14 bg-gradient-to-br from-gray-400 to-gray-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg">
+                                            {{ room.patient.first_name|slice:":1"|upper }}
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+                                <div class="absolute -bottom-1 -right-1 w-5 h-5 bg-medical-green rounded-full border-2 border-white animate-pulse-gentle"></div>
+                            </div>
+                            
+                            <div class="ml-4 flex-1 min-w-0">
+                                <div class="flex items-center justify-between mb-1">
+                                    <h3 class="font-semibold text-gray-900 truncate group-hover:text-medical-blue transition-colors">
+                                        {% if user_type == 'patient' %}
+                                            Dr. {{ room.practitioner.first_name }} {{ room.practitioner.last_name }}
+                                        {% else %}
+                                            {{ room.patient.first_name }} {{ room.patient.last_name }}
+                                        {% endif %}
+                                    </h3>
+                                    {% with last_message=room.last_messages.0 %}
+                                        {% if last_message %}
+                                            <span class="text-xs text-gray-500">{{ last_message.timestamp|timesince }} ago</span>
+                                        {% endif %}
+                                    {% endwith %}
+                                </div>
                                 {% with last_message=room.last_messages.0 %}
                                     {% if last_message %}
-                                        <span class="chat-item-time">{{ last_message.timestamp|timesince }} ago</span>
+                                        <p class="text-sm text-gray-600 truncate">{{ last_message.content }}</p>
+                                    {% else %}
+                                        <p class="text-sm text-gray-400 italic">Start your conversation...</p>
                                     {% endif %}
                                 {% endwith %}
                             </div>
-                            {% with last_message=room.last_messages.0 %}
-                                {% if last_message %}
-                                    <div class="chat-item-message">{{ last_message.content }}</div>
-                                {% else %}
-                                    <div class="chat-item-message">Start your conversation...</div>
-                                {% endif %}
-                            {% endwith %}
-                        </div>
-                        {% if room.unread_count > 0 %}
-                            <span class="unread-badge">{{ room.unread_count }}</span>
-                        {% endif %}
-                    </a>
-                    {% endfor %}
+                            
+                            {% if room.unread_count > 0 %}
+                                <div class="ml-2 flex-shrink-0">
+                                    <span class="inline-flex items-center justify-center w-6 h-6 bg-medical-blue text-white text-xs font-bold rounded-full animate-bounce-gentle">
+                                        {{ room.unread_count }}
+                                    </span>
+                                </div>
+                            {% endif %}
+                        </a>
+                        {% endfor %}
+                    </div>
                 {% else %}
-                    <div class="empty-state">
-                        <i class="fas fa-comments"></i>
-                        <h3>No Conversations Yet</h3>
-                        <p>Start chatting with your healthcare providers</p>
+                    <div class="flex flex-col items-center justify-center h-full p-8 text-center">
+                        <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                            <i class="fas fa-comments text-3xl text-gray-400"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">No Conversations Yet</h3>
+                        <p class="text-gray-500 text-sm">Start chatting with your healthcare providers</p>
                     </div>
                 {% endif %}
             </div>
         </div>
 
         <!-- Chat Area -->
-        <div class="chat-area" id="chat-room-container">
+        <div class="flex-1 flex flex-col bg-gray-50" id="chat-area">
             {% if active_room_id %}
-                {% include "chat/chat_room_content.html" %}
+                <div id="chat-room-container" class="flex-1 flex flex-col">
+                    {% include "chat/chat_room_content.html" %}
+                </div>
             {% else %}
-                <div class="empty-state">
-                    <i class="fas fa-comment-medical"></i>
-                    <h3>Welcome to Medical Chat</h3>
-                    <p>Select a conversation from the left to start messaging</p>
-                    <p style="font-size: 14px; color: #adb5bd; margin-top: 16px;">
-                        <i class="fas fa-shield-alt"></i> Your conversations are secure and private
-                    </p>
+                <div class="flex-1 flex flex-col items-center justify-center p-8 text-center">
+                    <div class="w-32 h-32 bg-gradient-to-br from-medical-blue to-medical-light-blue rounded-full flex items-center justify-center mb-6 shadow-2xl">
+                        <i class="fas fa-comment-medical text-4xl text-white"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-900 mb-3">Welcome to Medical Chat</h2>
+                    <p class="text-gray-600 mb-6 max-w-md">Select a conversation from the left to start messaging with your healthcare team</p>
+                    <div class="flex items-center space-x-2 text-sm text-gray-500">
+                        <i class="fas fa-shield-alt text-medical-green"></i>
+                        <span>Your conversations are secure and private</span>
+                    </div>
                 </div>
             {% endif %}
         </div>
     </div>
 
+    <!-- Mobile Sidebar Toggle -->
+    <button class="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-medical-blue text-white rounded-full shadow-lg flex items-center justify-center z-50" 
+            onclick="toggleSidebar()" id="mobile-toggle">
+        <i class="fas fa-comments text-xl"></i>
+    </button>
+
     <script>
+        // Mobile sidebar toggle
+        function toggleSidebar() {
+            const sidebar = document.getElementById('chat-sidebar');
+            const chatArea = document.getElementById('chat-area');
+            const mobileToggle = document.getElementById('mobile-toggle');
+            
+            if (window.innerWidth < 768) {
+                sidebar.classList.toggle('hidden');
+                if (sidebar.classList.contains('hidden')) {
+                    chatArea.classList.remove('hidden');
+                    mobileToggle.innerHTML = '<i class="fas fa-comments text-xl"></i>';
+                } else {
+                    chatArea.classList.add('hidden');
+                    mobileToggle.innerHTML = '<i class="fas fa-times text-xl"></i>';
+                }
+            }
+        }
+
         // Search functionality
-        document.querySelector('.search-input').addEventListener('input', function(e) {
+        document.getElementById('search-input').addEventListener('input', function(e) {
             const searchTerm = e.target.value.toLowerCase();
             const chatItems = document.querySelectorAll('.chat-item');
             
             chatItems.forEach(item => {
-                const name = item.querySelector('.chat-item-name').textContent.toLowerCase();
-                const message = item.querySelector('.chat-item-message').textContent.toLowerCase();
+                const name = item.querySelector('h3').textContent.toLowerCase();
+                const message = item.querySelector('p').textContent.toLowerCase();
                 
                 if (name.includes(searchTerm) || message.includes(searchTerm)) {
                     item.style.display = 'flex';
+                    item.classList.add('animate-fade-in');
                 } else {
                     item.style.display = 'none';
                 }
             });
         });
 
-        // Load chat room
+        // Chat room loading
         document.querySelectorAll('.chat-item').forEach(item => {
             item.addEventListener('click', async function(e) {
                 e.preventDefault();
                 
                 // Update active state
-                document.querySelectorAll('.chat-item').forEach(i => i.classList.remove('active'));
-                this.classList.add('active');
+                document.querySelectorAll('.chat-item').forEach(i => {
+                    i.classList.remove('bg-medical-blue/5', 'border-l-4', 'border-medical-blue');
+                });
+                this.classList.add('bg-medical-blue/5', 'border-l-4', 'border-medical-blue');
                 
-                // Load chat room
+                // Show loading state
                 const chatContainer = document.getElementById('chat-room-container');
-                chatContainer.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><h3>Loading...</h3></div>';
+                if (chatContainer) {
+                    chatContainer.innerHTML = `
+                        <div class="flex-1 flex items-center justify-center">
+                            <div class="text-center">
+                                <div class="w-12 h-12 border-4 border-medical-blue border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                                <p class="text-gray-600">Loading conversation...</p>
+                            </div>
+                        </div>
+                    `;
+                }
                 
                 try {
                     const response = await fetch(this.href, {
@@ -726,33 +309,59 @@
                     if (!response.ok) throw new Error('Network response was not ok');
                     
                     const html = await response.text();
-                    chatContainer.innerHTML = html;
-                    window.history.pushState({}, '', this.href);
+                    if (chatContainer) {
+                        chatContainer.innerHTML = html;
+                        window.history.pushState({}, '', this.href);
+                        
+                        // Initialize chat functionality
+                        initializeChatRoom();
+                    }
                     
-                    // Scroll to bottom
-                    const messagesArea = chatContainer.querySelector('.messages-area');
-                    if (messagesArea) {
-                        messagesArea.scrollTop = messagesArea.scrollHeight;
+                    // Hide sidebar on mobile after selection
+                    if (window.innerWidth < 768) {
+                        toggleSidebar();
                     }
                 } catch (error) {
                     console.error('Error:', error);
-                    chatContainer.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle" style="color: #dc3545;"></i><h3>Error Loading Chat</h3><p>Please try again</p></div>';
+                    if (chatContainer) {
+                        chatContainer.innerHTML = `
+                            <div class="flex-1 flex items-center justify-center">
+                                <div class="text-center">
+                                    <i class="fas fa-exclamation-triangle text-4xl text-red-500 mb-4"></i>
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Error Loading Chat</h3>
+                                    <p class="text-gray-600">Please try again</p>
+                                </div>
+                            </div>
+                        `;
+                    }
                 }
             });
         });
 
-        // Mobile sidebar toggle
-        if (window.innerWidth <= 768) {
-            const sidebar = document.querySelector('.chat-sidebar');
-            const toggleBtn = document.createElement('button');
-            toggleBtn.innerHTML = '<i class="fas fa-bars"></i>';
-            toggleBtn.style.cssText = 'position: fixed; top: 20px; left: 20px; z-index: 20; width: 40px; height: 40px; border: none; border-radius: 50%; background: #0e5274; color: white; cursor: pointer;';
-            document.body.appendChild(toggleBtn);
-            
-            toggleBtn.addEventListener('click', () => {
-                sidebar.classList.toggle('show');
-            });
+        // Initialize chat room functionality
+        function initializeChatRoom() {
+            // This will be called when a chat room is loaded
+            console.log('Chat room initialized');
         }
+
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            if (window.innerWidth >= 768) {
+                const sidebar = document.getElementById('chat-sidebar');
+                const chatArea = document.getElementById('chat-area');
+                sidebar.classList.remove('hidden');
+                chatArea.classList.remove('hidden');
+            }
+        });
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add animation classes to chat items
+            document.querySelectorAll('.chat-item').forEach((item, index) => {
+                item.style.animationDelay = `${index * 0.1}s`;
+                item.classList.add('animate-slide-up');
+            });
+        });
     </script>
 </body>
 </html>

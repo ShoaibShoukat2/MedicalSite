@@ -28,12 +28,24 @@ from django.contrib.contenttypes.models import ContentType
 from django.views.decorators.csrf import csrf_exempt
 
 # Zoom API Configuration
-ZOOM_API_KEY = getattr(settings, 'ZOOM_API_KEY', 'your_zoom_api_key')
-ZOOM_API_SECRET = getattr(settings, 'ZOOM_API_SECRET', 'your_zoom_api_secret')
-ZOOM_JWT_TOKEN = getattr(settings, 'ZOOM_JWT_TOKEN', 'your_zoom_jwt_token')
+ZOOM_API_KEY = getattr(settings, 'ZOOM_API_KEY', None)
+ZOOM_API_SECRET = getattr(settings, 'ZOOM_API_SECRET', None)
+ZOOM_JWT_TOKEN = getattr(settings, 'ZOOM_JWT_TOKEN', None)
+
+# Check if Zoom is properly configured
+ZOOM_CONFIGURED = all([ZOOM_API_KEY, ZOOM_API_SECRET, ZOOM_JWT_TOKEN]) and \
+                  ZOOM_API_KEY != 'your_zoom_api_key' and \
+                  ZOOM_API_SECRET != 'your_zoom_api_secret' and \
+                  ZOOM_JWT_TOKEN != 'your_zoom_jwt_token'
 
 def create_zoom_meeting(topic, start_time, duration=60):
     """Create a Zoom meeting and return meeting details"""
+    if not ZOOM_CONFIGURED:
+        return {
+            'success': False,
+            'error': 'Zoom API not configured. Please set up Zoom credentials in settings.'
+        }
+    
     try:
         # Zoom API endpoint
         url = "https://api.zoom.us/v2/users/me/meetings"
@@ -65,7 +77,7 @@ def create_zoom_meeting(topic, start_time, duration=60):
         }
         
         # Make API request
-        response = requests.post(url, headers=headers, json=meeting_data)
+        response = requests.post(url, headers=headers, json=meeting_data, timeout=10)
         
         if response.status_code == 201:
             meeting_info = response.json()
@@ -81,9 +93,20 @@ def create_zoom_meeting(topic, start_time, duration=60):
             print(f"Zoom API Error: {response.status_code} - {response.text}")
             return {
                 'success': False,
-                'error': f"Failed to create Zoom meeting: {response.text}"
+                'error': f"Zoom API Error: {response.status_code} - {response.text}"
             }
             
+    except requests.exceptions.Timeout:
+        return {
+            'success': False,
+            'error': "Zoom API request timed out"
+        }
+    except requests.exceptions.RequestException as e:
+        print(f"Zoom API Request Error: {str(e)}")
+        return {
+            'success': False,
+            'error': f"Zoom API Request Error: {str(e)}"
+        }
     except Exception as e:
         print(f"Error creating Zoom meeting: {str(e)}")
         return {
@@ -91,8 +114,32 @@ def create_zoom_meeting(topic, start_time, duration=60):
             'error': f"Error creating Zoom meeting: {str(e)}"
         }
 
+def create_fallback_meeting(appointment):
+    """Create a fallback meeting link using Jitsi Meet"""
+    try:
+        # Create a unique meeting room name
+        meeting_id = f"medical-{appointment.id}-{appointment.patient.id}-{appointment.practitioner.id}"
+        
+        # Create Jitsi Meet URL
+        join_url = f"https://meet.jit.si/{meeting_id}"
+        
+        return {
+            'success': True,
+            'meeting_id': meeting_id,
+            'join_url': join_url,
+            'start_url': join_url,  # Same URL for host and participant in Jitsi
+            'password': '',
+            'provider': 'jitsi'
+        }
+    except Exception as e:
+        print(f"Error creating fallback meeting: {str(e)}")
+        return {
+            'success': False,
+            'error': f"Error creating fallback meeting: {str(e)}"
+        }
+
 def generate_zoom_meeting_for_appointment(appointment):
-    """Generate Zoom meeting for an appointment"""
+    """Generate meeting for an appointment (Zoom or fallback)"""
     try:
         # Create meeting topic
         topic = f"Medical Consultation - Dr. {appointment.practitioner.first_name} {appointment.practitioner.last_name} & {appointment.patient.first_name} {appointment.patient.last_name}"
@@ -100,31 +147,62 @@ def generate_zoom_meeting_for_appointment(appointment):
         # Use appointment slot time
         start_time = appointment.slot.start_time
         
-        # Create Zoom meeting
-        zoom_result = create_zoom_meeting(topic, start_time, duration=60)
+        # Try Zoom first if configured
+        if ZOOM_CONFIGURED:
+            print(f"🔄 Attempting to create Zoom meeting for appointment {appointment.id}")
+            zoom_result = create_zoom_meeting(topic, start_time, duration=60)
+            
+            if zoom_result['success']:
+                print(f"✅ Zoom meeting created successfully for appointment {appointment.id}")
+                # Save meeting details to appointment
+                appointment.video_call_link = zoom_result['join_url']
+                appointment.meeting_id = zoom_result['meeting_id']
+                appointment.meeting_password = zoom_result['password']
+                appointment.host_start_url = zoom_result['start_url']
+                appointment.save()
+                
+                return {
+                    'success': True,
+                    'join_url': zoom_result['join_url'],
+                    'meeting_id': zoom_result['meeting_id'],
+                    'password': zoom_result['password'],
+                    'start_url': zoom_result['start_url'],
+                    'provider': 'zoom'
+                }
+            else:
+                print(f"⚠️ Zoom meeting creation failed: {zoom_result['error']}")
+        else:
+            print(f"⚠️ Zoom not configured, using fallback for appointment {appointment.id}")
         
-        if zoom_result['success']:
+        # Use fallback meeting system
+        print(f"🔄 Creating fallback meeting for appointment {appointment.id}")
+        fallback_result = create_fallback_meeting(appointment)
+        
+        if fallback_result['success']:
+            print(f"✅ Fallback meeting created successfully for appointment {appointment.id}")
             # Save meeting details to appointment
-            appointment.video_call_link = zoom_result['join_url']
-            appointment.meeting_id = zoom_result['meeting_id']
-            appointment.meeting_password = zoom_result['password']
-            appointment.host_start_url = zoom_result['start_url']
+            appointment.video_call_link = fallback_result['join_url']
+            appointment.meeting_id = fallback_result['meeting_id']
+            appointment.meeting_password = fallback_result['password']
+            appointment.host_start_url = fallback_result['start_url']
             appointment.save()
             
             return {
                 'success': True,
-                'join_url': zoom_result['join_url'],
-                'meeting_id': zoom_result['meeting_id'],
-                'password': zoom_result['password'],
-                'start_url': zoom_result['start_url']
+                'join_url': fallback_result['join_url'],
+                'meeting_id': fallback_result['meeting_id'],
+                'password': fallback_result['password'],
+                'start_url': fallback_result['start_url'],
+                'provider': 'jitsi'
             }
         else:
-            return zoom_result
+            return fallback_result
             
     except Exception as e:
+        print(f"❌ Error in generate_zoom_meeting_for_appointment: {str(e)}")
         return {
             'success': False,
-            'error': f"Error generating Zoom meeting: {str(e)}"
+            'error': f"Error generating meeting: {str(e)}"
         }
 
 # Create your views here.
@@ -243,38 +321,57 @@ from django.contrib import messages
 
 
 def accept_appointment(request, appointment_id):
-    """Accept appointment with enhanced notifications, Zoom meeting setup, and chat room creation"""
+    """Accept appointment with enhanced notifications, meeting setup, and chat room creation"""
     appointment = get_object_or_404(Appointment, id=appointment_id)
     appointment.status = "Accepted"
     
-    # Generate Zoom meeting if not exists
-    if not appointment.video_call_link:
-        zoom_result = generate_zoom_meeting_for_appointment(appointment)
-        if not zoom_result['success']:
-            messages.error(request, f"Appointment accepted but failed to create Zoom meeting: {zoom_result['error']}")
-            appointment.save()
-            return redirect('practitioner_dashboard:dashboard')
-    
+    # Always save the appointment status first
     appointment.save()
+    print(f"✅ Appointment {appointment_id} status set to Accepted")
+    
+    # Generate meeting if not exists
+    if not appointment.video_call_link:
+        meeting_result = generate_zoom_meeting_for_appointment(appointment)
+        if meeting_result['success']:
+            provider = meeting_result.get('provider', 'unknown')
+            print(f"✅ {provider.title()} meeting created for appointment {appointment_id}")
+            if provider == 'zoom':
+                messages.success(request, "Appointment accepted successfully! Zoom meeting created.")
+            else:
+                messages.success(request, "Appointment accepted successfully! Video meeting created.")
+        else:
+            print(f"⚠️ Failed to create meeting for appointment {appointment_id}: {meeting_result['error']}")
+            messages.warning(request, "Appointment accepted successfully! Video call will be available shortly.")
 
     # Create chat room when appointment is accepted
     from chat.models import ChatRoom
-    chat_room, created = ChatRoom.objects.get_or_create(
-        patient=appointment.patient,
-        practitioner=appointment.practitioner
-    )
-    
-    if created:
-        print(f"✅ Chat room created for {appointment.patient.first_name} and Dr. {appointment.practitioner.first_name}")
+    try:
+        chat_room, created = ChatRoom.objects.get_or_create(
+            patient=appointment.patient,
+            practitioner=appointment.practitioner
+        )
+        
+        if created:
+            print(f"✅ Chat room created for {appointment.patient.first_name} and Dr. {appointment.practitioner.first_name}")
+        else:
+            print(f"✅ Chat room already exists for {appointment.patient.first_name} and Dr. {appointment.practitioner.first_name}")
+    except Exception as e:
+        print(f"⚠️ Failed to create chat room: {str(e)}")
 
     # Import notification functions
-    from .notifications import notify_appointment_accepted
-    
-    # Send comprehensive notifications
-    notify_appointment_accepted(appointment)
+    try:
+        from .notifications import notify_appointment_accepted
+        # Send comprehensive notifications
+        notify_appointment_accepted(appointment)
+        print(f"✅ Notifications sent for appointment {appointment_id}")
+    except Exception as e:
+        print(f"⚠️ Failed to send notifications: {str(e)}")
 
     # Add frontend notification
-    messages.success(request, "Appointment accepted successfully! Zoom meeting created and chat enabled.")
+    if appointment.video_call_link:
+        messages.success(request, "Appointment accepted successfully! Video call and chat are now available.")
+    else:
+        messages.success(request, "Appointment accepted successfully! Chat is now available. Video call will be ready shortly.")
 
     return redirect('practitioner_dashboard:dashboard')
 
@@ -640,32 +737,44 @@ def start_video_call(request, patient_id):
             if not appointment:
                 return JsonResponse({"error": "No accepted appointment found for this patient."}, status=404)
 
-            # Generate Zoom meeting if not exists
+            # Generate meeting if not exists
             if not appointment.video_call_link:
-                zoom_result = generate_zoom_meeting_for_appointment(appointment)
-                if not zoom_result['success']:
-                    return JsonResponse({"error": f"Failed to create Zoom meeting: {zoom_result['error']}"}, status=500)
+                meeting_result = generate_zoom_meeting_for_appointment(appointment)
+                if not meeting_result['success']:
+                    return JsonResponse({"error": f"Failed to create video meeting: {meeting_result['error']}"}, status=500)
 
             # Send a notification to the patient
-            Notification.objects.create(
-                recipient=patient,
-                message=f"Your doctor has started a video call. Click here to join: {appointment.video_call_link}",
-                url=appointment.video_call_link
-            )
+            try:
+                Notification.objects.create(
+                    recipient=patient,
+                    message=f"Your doctor has started a video call. Click here to join: {appointment.video_call_link}",
+                    url=appointment.video_call_link
+                )
+            except Exception as e:
+                print(f"⚠️ Failed to create notification: {str(e)}")
+
+            # Determine meeting provider
+            provider = "Video meeting"
+            if "zoom.us" in appointment.video_call_link:
+                provider = "Zoom meeting"
+            elif "meet.jit.si" in appointment.video_call_link:
+                provider = "Jitsi meeting"
 
             return JsonResponse({
                 "success": True, 
-                "message": "Zoom meeting ready!", 
+                "message": f"{provider} ready!", 
                 "join_url": appointment.video_call_link,
-                "start_url": appointment.host_start_url,
+                "start_url": appointment.host_start_url or appointment.video_call_link,
                 "meeting_id": appointment.meeting_id,
-                "password": appointment.meeting_password
+                "password": appointment.meeting_password or "",
+                "provider": provider
             }, status=200)
 
         except Exception as e:
+            print(f"❌ Error in start_video_call: {str(e)}")
             return JsonResponse({"error": f"An error occurred: {str(e)}"}, status=500)
 
-    return JsonResponse({"error": "Invalid request"}, status=400)
+    return JsonResponse({"error": "Invalid request method"}, status=405)
 
 
 

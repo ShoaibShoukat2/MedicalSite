@@ -369,6 +369,10 @@ def appointments_patients(request):
 
         appointments = Appointment.objects.filter(patient=patient).select_related('practitioner', 'slot')
 
+        # Debug: Print appointment details
+        for appointment in appointments:
+            print(f"🔍 Appointment {appointment.id}: Status={appointment.status}, Video Link={appointment.video_call_link}, Meeting ID={appointment.meeting_id}")
+
         prescriptions = Prescription.objects.filter(patient=patient)
         
         billing_records = Billing.objects.filter(appointment__patient_id=patient_id)

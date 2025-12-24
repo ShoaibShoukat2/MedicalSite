@@ -98,18 +98,18 @@
                         <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center space-y-4 lg:space-y-0">
                             <div class="flex items-center space-x-4">
                                 <div class="w-16 h-16 bg-gradient-to-br from-patient-blue to-patient-dark-blue rounded-xl flex items-center justify-center">
-                                    {% if appointment.practitioner.profile_photo %}
-                                        <img src="{{ appointment.practitioner.profile_photo.url }}" alt="Doctor" class="w-16 h-16 rounded-xl object-cover">
+                                    {% if appointment.practitioner.photo %}
+                                        <img src="{{ appointment.practitioner.photo.url }}" alt="Doctor" class="w-16 h-16 rounded-xl object-cover">
                                     {% else %}
                                         <i class="fas fa-user-md text-white text-xl"></i>
                                     {% endif %}
                                 </div>
                                 <div>
-                                    <h3 class="font-bold text-lg text-patient-dark-blue">Dr. {{ appointment.practitioner.user.first_name }} {{ appointment.practitioner.user.last_name }}</h3>
-                                    <p class="text-patient-dark-gray">{{ appointment.practitioner.specialization|default:"General Practice" }}</p>
+                                    <h3 class="font-bold text-lg text-patient-dark-blue">Dr. {{ appointment.practitioner.first_name }} {{ appointment.practitioner.last_name }}</h3>
+                                    <p class="text-patient-dark-gray">{{ appointment.practitioner.get_specialty_display|default:"General Practice" }}</p>
                                     <div class="flex items-center space-x-4 mt-2 text-sm text-patient-dark-gray">
-                                        <span><i class="fas fa-calendar mr-1"></i>{{ appointment.date }}</span>
-                                        <span><i class="fas fa-clock mr-1"></i>{{ appointment.time }}</span>
+                                        <span><i class="fas fa-calendar mr-1"></i>{{ appointment.slot.date }}</span>
+                                        <span><i class="fas fa-clock mr-1"></i>{{ appointment.slot.start_time|time:"H:i" }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -118,23 +118,38 @@
                                 <span class="px-3 py-1 bg-patient-green/10 text-patient-green rounded-full text-sm font-medium">
                                     {{ appointment.status|title }}
                                 </span>
-                                {% if appointment.status == 'Accepted' and appointment.video_call_link %}
-                                    <button onclick="joinVideoCall('{{ appointment.video_call_link }}', 'Dr. {{ appointment.practitioner.user.first_name }} {{ appointment.practitioner.user.last_name }}')" 
-                                            class="px-4 py-2 bg-patient-blue text-white rounded-lg hover:bg-patient-dark-blue transition-colors">
-                                        <i class="fas fa-video mr-2"></i>Join Call
-                                    </button>
-                                    <!-- Chat Button for Accepted Appointments -->
-                                    <button onclick="openPatientChat({{ appointment.practitioner.id }}, 'Dr. {{ appointment.practitioner.user.first_name }} {{ appointment.practitioner.user.last_name }}')" 
-                                            class="px-4 py-2 bg-patient-teal text-white rounded-lg hover:bg-teal-600 transition-colors">
+                                
+                                {% if appointment.status == 'Accepted' %}
+                                    <!-- Chat Button - Always show for accepted appointments -->
+                                    <button class="patient-chat-btn px-4 py-2 bg-patient-teal text-white rounded-lg hover:bg-teal-600 transition-colors"
+                                            data-practitioner-id="{{ appointment.practitioner.id }}"
+                                            data-doctor-name="Dr. {{ appointment.practitioner.first_name }} {{ appointment.practitioner.last_name }}">
                                         <i class="fas fa-comments mr-2"></i>Chat
                                     </button>
+                                    
+                                    <!-- Video Call Button - Show only if video link exists -->
+                                    {% if appointment.video_call_link %}
+                                        <button class="video-call-btn px-4 py-2 bg-patient-blue text-white rounded-lg hover:bg-patient-dark-blue transition-colors"
+                                                data-meeting-link="{{ appointment.video_call_link }}"
+                                                data-doctor-name="Dr. {{ appointment.practitioner.first_name }} {{ appointment.practitioner.last_name }}">
+                                            <i class="fas fa-video mr-2"></i>Join Call
+                                        </button>
+                                    {% else %}
+                                        <button class="px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed" title="Video call will be available soon">
+                                            <i class="fas fa-video mr-2"></i>Call Preparing...
+                                        </button>
+                                    {% endif %}
                                 {% else %}
                                     <button disabled class="px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed">
                                         <i class="fas fa-video mr-2"></i>Call Not Available
                                     </button>
+                                    <button disabled class="px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed">
+                                        <i class="fas fa-comments mr-2"></i>Chat Not Available
+                                    </button>
                                 {% endif %}
+                                
                                 {% if appointment.status == 'Pending' %}
-                                    <button onclick="openSymptomModal({{ appointment.id }})" class="px-4 py-2 bg-patient-teal text-white rounded-lg hover:bg-teal-600 transition-colors">
+                                    <button class="symptom-btn px-4 py-2 bg-patient-teal text-white rounded-lg hover:bg-teal-600 transition-colors" data-appointment-id="{{ appointment.id }}">
                                         <i class="fas fa-notes-medical mr-2"></i>Add Symptoms
                                     </button>
                                 {% endif %}
@@ -254,6 +269,35 @@ function openPatientChat(practitionerId, practitionerName) {
         showNotification('Error opening chat', 'error');
     });
 }
+
+// Event listeners for video call and chat buttons
+document.addEventListener('DOMContentLoaded', function() {
+    // Video call buttons
+    document.querySelectorAll('.video-call-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const meetingLink = this.getAttribute('data-meeting-link');
+            const doctorName = this.getAttribute('data-doctor-name');
+            joinVideoCall(meetingLink, doctorName);
+        });
+    });
+    
+    // Patient chat buttons
+    document.querySelectorAll('.patient-chat-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const practitionerId = this.getAttribute('data-practitioner-id');
+            const doctorName = this.getAttribute('data-doctor-name');
+            openPatientChat(practitionerId, doctorName);
+        });
+    });
+    
+    // Symptom modal buttons
+    document.querySelectorAll('.symptom-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const appointmentId = this.getAttribute('data-appointment-id');
+            openSymptomModal(appointmentId);
+        });
+    });
+});
 
 // Get CSRF token
 function getCookie(name) {
