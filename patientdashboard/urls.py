@@ -76,6 +76,9 @@ urlpatterns = [
     path('mark-notification-read/', views.mark_notification_read, name='mark_notification_read'),
     path('notifications/', views.all_notifications, name='all_notifications'),
     
+    # Chat API
+    path('api/chat-room/', views.get_chat_room_api, name='get_chat_room_api'),
+    
 
 ]
 

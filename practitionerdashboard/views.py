@@ -1,4 +1,9 @@
 import uuid
+import requests
+import json
+import base64
+from datetime import datetime, timedelta
+from django.conf import settings
 from django.shortcuts import render, redirect,get_object_or_404
 from user_account.models import Patient, Practitioner
 from datetime import date, datetime, timedelta
@@ -21,6 +26,106 @@ from django.contrib import messages
 from patientdashboard.models import Review, Reply
 from django.contrib.contenttypes.models import ContentType
 from django.views.decorators.csrf import csrf_exempt
+
+# Zoom API Configuration
+ZOOM_API_KEY = getattr(settings, 'ZOOM_API_KEY', 'your_zoom_api_key')
+ZOOM_API_SECRET = getattr(settings, 'ZOOM_API_SECRET', 'your_zoom_api_secret')
+ZOOM_JWT_TOKEN = getattr(settings, 'ZOOM_JWT_TOKEN', 'your_zoom_jwt_token')
+
+def create_zoom_meeting(topic, start_time, duration=60):
+    """Create a Zoom meeting and return meeting details"""
+    try:
+        # Zoom API endpoint
+        url = "https://api.zoom.us/v2/users/me/meetings"
+        
+        # Headers
+        headers = {
+            'Authorization': f'Bearer {ZOOM_JWT_TOKEN}',
+            'Content-Type': 'application/json'
+        }
+        
+        # Meeting data
+        meeting_data = {
+            "topic": topic,
+            "type": 2,  # Scheduled meeting
+            "start_time": start_time.strftime('%Y-%m-%dT%H:%M:%SZ'),
+            "duration": duration,
+            "timezone": "UTC",
+            "settings": {
+                "host_video": True,
+                "participant_video": True,
+                "join_before_host": False,
+                "mute_upon_entry": True,
+                "watermark": False,
+                "use_pmi": False,
+                "approval_type": 0,
+                "audio": "both",
+                "auto_recording": "none"
+            }
+        }
+        
+        # Make API request
+        response = requests.post(url, headers=headers, json=meeting_data)
+        
+        if response.status_code == 201:
+            meeting_info = response.json()
+            return {
+                'success': True,
+                'meeting_id': meeting_info['id'],
+                'join_url': meeting_info['join_url'],
+                'start_url': meeting_info['start_url'],
+                'password': meeting_info.get('password', ''),
+                'meeting_data': meeting_info
+            }
+        else:
+            print(f"Zoom API Error: {response.status_code} - {response.text}")
+            return {
+                'success': False,
+                'error': f"Failed to create Zoom meeting: {response.text}"
+            }
+            
+    except Exception as e:
+        print(f"Error creating Zoom meeting: {str(e)}")
+        return {
+            'success': False,
+            'error': f"Error creating Zoom meeting: {str(e)}"
+        }
+
+def generate_zoom_meeting_for_appointment(appointment):
+    """Generate Zoom meeting for an appointment"""
+    try:
+        # Create meeting topic
+        topic = f"Medical Consultation - Dr. {appointment.practitioner.first_name} {appointment.practitioner.last_name} & {appointment.patient.first_name} {appointment.patient.last_name}"
+        
+        # Use appointment slot time
+        start_time = appointment.slot.start_time
+        
+        # Create Zoom meeting
+        zoom_result = create_zoom_meeting(topic, start_time, duration=60)
+        
+        if zoom_result['success']:
+            # Save meeting details to appointment
+            appointment.video_call_link = zoom_result['join_url']
+            appointment.meeting_id = zoom_result['meeting_id']
+            appointment.meeting_password = zoom_result['password']
+            appointment.host_start_url = zoom_result['start_url']
+            appointment.save()
+            
+            return {
+                'success': True,
+                'join_url': zoom_result['join_url'],
+                'meeting_id': zoom_result['meeting_id'],
+                'password': zoom_result['password'],
+                'start_url': zoom_result['start_url']
+            }
+        else:
+            return zoom_result
+            
+    except Exception as e:
+        return {
+            'success': False,
+            'error': f"Error generating Zoom meeting: {str(e)}"
+        }
 
 # Create your views here.
 
@@ -79,11 +184,17 @@ def dashboard_view(request):
     # 24 hours from now
     twenty_four_hours_later = now_time + timedelta(hours=24)
 
-    # Today's appointments (appointments for today with any status)
+    # Today's appointments (appointments for today excluding cancelled)
     today_appointments = Appointment.objects.filter(
         slot__start_time__range=(today_start, today_end),
         practitioner_id=practitioner_id,
-    ).order_by('slot__start_time')
+    ).exclude(status='Cancelled').order_by('slot__start_time')
+    
+    # Today's pending appointments
+    today_pending_appointments = today_appointments.filter(status='Pending')
+    
+    # Today's accepted appointments
+    today_accepted_appointments = today_appointments.filter(status='Accepted')
     
     # Accepted appointments (status = Accepted)
     accepted_appointments = Appointment.objects.filter(
@@ -109,6 +220,8 @@ def dashboard_view(request):
     return render(request, 'practitionerdashboard/dashboard.html', {
         'practitioner': practitioner,
         'today_appointments': today_appointments,
+        'today_pending_appointments': today_pending_appointments,
+        'today_accepted_appointments': today_accepted_appointments,
         'waiting_list_appointments': waiting_list_appointments,
         'accepted_appointments': accepted_appointments,
         'pending_appointments_list': pending_appointments_list,
@@ -130,10 +243,29 @@ from django.contrib import messages
 
 
 def accept_appointment(request, appointment_id):
-    """Accept appointment with enhanced notifications"""
+    """Accept appointment with enhanced notifications, Zoom meeting setup, and chat room creation"""
     appointment = get_object_or_404(Appointment, id=appointment_id)
     appointment.status = "Accepted"
+    
+    # Generate Zoom meeting if not exists
+    if not appointment.video_call_link:
+        zoom_result = generate_zoom_meeting_for_appointment(appointment)
+        if not zoom_result['success']:
+            messages.error(request, f"Appointment accepted but failed to create Zoom meeting: {zoom_result['error']}")
+            appointment.save()
+            return redirect('practitioner_dashboard:dashboard')
+    
     appointment.save()
+
+    # Create chat room when appointment is accepted
+    from chat.models import ChatRoom
+    chat_room, created = ChatRoom.objects.get_or_create(
+        patient=appointment.patient,
+        practitioner=appointment.practitioner
+    )
+    
+    if created:
+        print(f"✅ Chat room created for {appointment.patient.first_name} and Dr. {appointment.practitioner.first_name}")
 
     # Import notification functions
     from .notifications import notify_appointment_accepted
@@ -142,7 +274,7 @@ def accept_appointment(request, appointment_id):
     notify_appointment_accepted(appointment)
 
     # Add frontend notification
-    messages.success(request, "Appointment accepted successfully! Patient has been notified via email and SMS.")
+    messages.success(request, "Appointment accepted successfully! Zoom meeting created and chat enabled.")
 
     return redirect('practitioner_dashboard:dashboard')
 
@@ -498,33 +630,37 @@ def start_video_call(request, patient_id):
             practitioner = get_object_or_404(Practitioner, id=practitioner_id)
             patient = get_object_or_404(Patient, id=patient_id)
 
-            # Get the latest appointment (or the first if multiple exist)
-            appointment = Appointment.objects.filter(patient=patient, practitioner=practitioner).order_by('-created_at').first()
-
+            # Get the latest accepted appointment
+            appointment = Appointment.objects.filter(
+                patient=patient, 
+                practitioner=practitioner,
+                status='Accepted'
+            ).order_by('-created_at').first()
 
             if not appointment:
-                return JsonResponse({"error": "No appointment found for this patient."}, status=404)
+                return JsonResponse({"error": "No accepted appointment found for this patient."}, status=404)
 
-            # Generate a unique Jitsi Meet link
-            meeting_id = f"{uuid.uuid4()}-{patient.id}-{practitioner.id}"
-            jitsi_link = f"https://meet.jit.si/{meeting_id}"
-            
-
-
-            # Save the video call link in the most recent appointment
-            appointment.video_call_link = jitsi_link
-
-
-            appointment.save()
+            # Generate Zoom meeting if not exists
+            if not appointment.video_call_link:
+                zoom_result = generate_zoom_meeting_for_appointment(appointment)
+                if not zoom_result['success']:
+                    return JsonResponse({"error": f"Failed to create Zoom meeting: {zoom_result['error']}"}, status=500)
 
             # Send a notification to the patient
             Notification.objects.create(
                 recipient=patient,
-                message=f"Your doctor has started a video call. Click here to join: {jitsi_link}",
-                url=jitsi_link
+                message=f"Your doctor has started a video call. Click here to join: {appointment.video_call_link}",
+                url=appointment.video_call_link
             )
 
-            return JsonResponse({"success": True, "message": "Video call started!", "jitsi_link": jitsi_link}, status=200)
+            return JsonResponse({
+                "success": True, 
+                "message": "Zoom meeting ready!", 
+                "join_url": appointment.video_call_link,
+                "start_url": appointment.host_start_url,
+                "meeting_id": appointment.meeting_id,
+                "password": appointment.meeting_password
+            }, status=200)
 
         except Exception as e:
             return JsonResponse({"error": f"An error occurred: {str(e)}"}, status=500)
@@ -607,6 +743,95 @@ def Cancel_Complete(request):
 
 
 
+def get_pending_appointments_api(request):
+    """API endpoint to get pending appointments for alert bell"""
+    practitioner_id = request.session.get('practitioner_id')
+    
+    if not practitioner_id:
+        return JsonResponse({'success': False, 'error': 'Not authenticated'}, status=403)
+    
+    try:
+        # Get pending appointments for this practitioner
+        pending_appointments = Appointment.objects.filter(
+            practitioner_id=practitioner_id,
+            status='Pending'
+        ).select_related('patient', 'slot').order_by('slot__start_time')[:10]  # Limit to 10 most recent
+        
+        appointments_data = []
+        for appointment in pending_appointments:
+            appointments_data.append({
+                'id': appointment.id,
+                'patient_name': f"{appointment.patient.first_name} {appointment.patient.last_name}",
+                'patient_email': appointment.patient.email,
+                'patient_initial': appointment.patient.first_name[0].upper() if appointment.patient.first_name else 'P',
+                'date': appointment.slot.date.strftime('%b %d, %Y'),
+                'time': appointment.slot.start_time.strftime('%I:%M %p'),
+                'amount': str(appointment.amount),
+                'created_at': appointment.created_at.strftime('%Y-%m-%d %H:%M:%S')
+            })
+        
+        return JsonResponse({
+            'success': True,
+            'appointments': appointments_data,
+            'count': len(appointments_data)
+        })
+        
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+def update_appointment_status_api(request, appointment_id, status):
+    """API endpoint to update appointment status (Accept/Cancel)"""
+    practitioner_id = request.session.get('practitioner_id')
+    
+    if not practitioner_id:
+        return JsonResponse({'success': False, 'error': 'Not authenticated'}, status=403)
+    
+    if status not in ['Accepted', 'Cancelled']:
+        return JsonResponse({'success': False, 'error': 'Invalid status'}, status=400)
+    
+    try:
+        appointment = get_object_or_404(Appointment, id=appointment_id, practitioner_id=practitioner_id)
+        appointment.status = status
+        appointment.save()
+        
+        # Send notifications
+        if status == 'Accepted':
+            # Generate Zoom meeting if not exists
+            if not appointment.video_call_link:
+                zoom_result = generate_zoom_meeting_for_appointment(appointment)
+                if not zoom_result['success']:
+                    return JsonResponse({
+                        'success': False, 
+                        'error': f"Appointment accepted but failed to create Zoom meeting: {zoom_result['error']}"
+                    }, status=500)
+            
+            # Create chat room when appointment is accepted
+            from chat.models import ChatRoom
+            chat_room, created = ChatRoom.objects.get_or_create(
+                patient=appointment.patient,
+                practitioner=appointment.practitioner
+            )
+            
+            from .notifications import notify_appointment_accepted
+            notify_appointment_accepted(appointment)
+            message = 'Appointment accepted successfully! Zoom meeting and chat enabled.'
+        else:
+            from .notifications import notify_appointment_cancelled
+            notify_appointment_cancelled(appointment, 'Cancelled by practitioner')
+            message = 'Appointment cancelled successfully!'
+        
+        return JsonResponse({
+            'success': True,
+            'message': message,
+            'appointment_id': appointment_id,
+            'new_status': status
+        })
+        
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
 def practitioner_reviews(request):
     # Get practitioner_id from session
     practitioner_id = request.session.get('practitioner_id')
@@ -656,6 +881,124 @@ def practitioner_reviews(request):
 
     # Return rendered template with reviews
     return render(request, 'practitionerdashboard/reviews.html', {'reviews': reviews})
+
+
+def update_existing_appointments_to_zoom():
+    """Update existing appointments from Jitsi to Zoom meetings"""
+    try:
+        # Get all accepted appointments that have Jitsi links
+        appointments_to_update = Appointment.objects.filter(
+            status='Accepted',
+            video_call_link__icontains='meet.jit.si'
+        )
+        
+        updated_count = 0
+        failed_count = 0
+        
+        for appointment in appointments_to_update:
+            # Generate Zoom meeting for this appointment
+            zoom_result = generate_zoom_meeting_for_appointment(appointment)
+            
+            if zoom_result['success']:
+                updated_count += 1
+                print(f"✅ Updated appointment {appointment.id} - {appointment.patient.first_name} {appointment.patient.last_name}")
+            else:
+                failed_count += 1
+                print(f"❌ Failed to update appointment {appointment.id}: {zoom_result['error']}")
+        
+        return {
+            'success': True,
+            'updated': updated_count,
+            'failed': failed_count,
+            'total': appointments_to_update.count()
+        }
+        
+    except Exception as e:
+        return {
+            'success': False,
+            'error': str(e)
+        }
+
+def get_chat_room_api(request):
+    """API endpoint to get or create chat room for practitioner-patient pair"""
+    practitioner_id = request.session.get('practitioner_id')
+    
+    if not practitioner_id:
+        return JsonResponse({'success': False, 'error': 'Not authenticated'}, status=403)
+    
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            patient_id = data.get('patient_id')
+            
+            if not patient_id:
+                return JsonResponse({'success': False, 'error': 'Patient ID required'}, status=400)
+            
+            # Check if there's an accepted appointment between them
+            from patientdashboard.models import Appointment
+            accepted_appointment = Appointment.objects.filter(
+                patient_id=patient_id,
+                practitioner_id=practitioner_id,
+                status='Accepted'
+            ).exists()
+            
+            if not accepted_appointment:
+                return JsonResponse({
+                    'success': False, 
+                    'error': 'No accepted appointment found. Chat is only available for accepted appointments.'
+                }, status=403)
+            
+            # Get or create chat room
+            from chat.models import ChatRoom
+            from user_account.models import Patient, Practitioner
+            
+            patient = get_object_or_404(Patient, id=patient_id)
+            practitioner = get_object_or_404(Practitioner, id=practitioner_id)
+            
+            chat_room, created = ChatRoom.objects.get_or_create(
+                patient=patient,
+                practitioner=practitioner
+            )
+            
+            return JsonResponse({
+                'success': True,
+                'chat_room_id': chat_room.id,
+                'created': created,
+                'patient_name': f"{patient.first_name} {patient.last_name}",
+                'practitioner_name': f"Dr. {practitioner.first_name} {practitioner.last_name}"
+            })
+            
+        except json.JSONDecodeError:
+            return JsonResponse({'success': False, 'error': 'Invalid JSON'}, status=400)
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=500)
+    
+    return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=405)
+
+
+def migrate_jitsi_to_zoom_view(request):
+    """Admin view to migrate existing Jitsi appointments to Zoom"""
+    practitioner_id = request.session.get('practitioner_id')
+    
+    if not practitioner_id:
+        return JsonResponse({'success': False, 'error': 'Not authenticated'}, status=403)
+    
+    if request.method == 'POST':
+        # Run the migration
+        result = update_existing_appointments_to_zoom()
+        return JsonResponse(result)
+    
+    # Get count of appointments that need migration
+    jitsi_appointments = Appointment.objects.filter(
+        practitioner_id=practitioner_id,
+        status='Accepted',
+        video_call_link__icontains='meet.jit.si'
+    ).count()
+    
+    return JsonResponse({
+        'success': True,
+        'jitsi_appointments_count': jitsi_appointments
+    })
 
 
 

@@ -115,6 +115,14 @@ def notify_appointment_accepted(appointment):
     title = "Appointment Confirmed"
     message = f"Your appointment with Dr. {appointment.practitioner.first_name} {appointment.practitioner.last_name} has been confirmed for {appointment.slot.start_time.strftime('%B %d, %Y at %I:%M %p')}."
     
+    # Add Zoom meeting info if available
+    if appointment.video_call_link:
+        message += f" Zoom meeting link: {appointment.video_call_link}"
+        if appointment.meeting_id:
+            message += f" Meeting ID: {appointment.meeting_id}"
+        if appointment.meeting_password:
+            message += f" Password: {appointment.meeting_password}"
+    
     create_notification(
         user_type='patient',
         user_id=appointment.patient.id,
@@ -133,13 +141,20 @@ def notify_appointment_accepted(appointment):
                 'patient': appointment.patient,
                 'practitioner': appointment.practitioner,
                 'appointment': appointment,
-                'appointment_time': appointment.slot.start_time
+                'appointment_time': appointment.slot.start_time,
+                'zoom_join_url': appointment.video_call_link,
+                'zoom_meeting_id': appointment.meeting_id,
+                'zoom_password': appointment.meeting_password
             }
         )
     
     # Send SMS if phone number available
     if hasattr(appointment.patient, 'phone') and appointment.patient.phone:
         sms_message = f"Appointment confirmed with Dr. {appointment.practitioner.first_name} {appointment.practitioner.last_name} on {appointment.slot.start_time.strftime('%m/%d/%Y at %I:%M %p')}."
+        if appointment.video_call_link:
+            sms_message += f" Zoom: {appointment.video_call_link}"
+            if appointment.meeting_id:
+                sms_message += f" ID: {appointment.meeting_id}"
         send_sms_notification(appointment.patient.phone, sms_message)
 
 def notify_appointment_cancelled(appointment, reason=""):

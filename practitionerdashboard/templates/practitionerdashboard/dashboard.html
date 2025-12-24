@@ -119,6 +119,27 @@
     </div>
   {% endif %}
 
+  <!-- Migration Section for Existing Appointments -->
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
+    <div class="flex items-center justify-between">
+      <div>
+        <h2 class="text-xl font-bold text-doctor-dark-blue mb-2">
+          <i class="fas fa-sync-alt mr-3 text-doctor-blue"></i>Migrate to Zoom
+        </h2>
+        <p class="text-doctor-dark-gray">Convert existing Jitsi Meet appointments to Zoom meetings</p>
+      </div>
+      <div class="flex items-center space-x-4">
+        <div id="migrationStatus" class="text-sm text-gray-600"></div>
+        <button onclick="checkMigrationStatus()" class="px-4 py-2 bg-doctor-blue text-white rounded-lg hover:bg-doctor-dark-blue transition-colors">
+          <i class="fas fa-search mr-2"></i>Check Status
+        </button>
+        <button onclick="migrateToZoom()" id="migrateBtn" class="px-4 py-2 bg-doctor-green text-white rounded-lg hover:bg-green-700 transition-colors">
+          <i class="fas fa-sync-alt mr-2"></i>Migrate to Zoom
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Appointments Management Section -->
   <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
     <!-- Header -->
@@ -160,69 +181,160 @@
       <!-- Today's Appointments Tab -->
       <div class="tab-content active" id="today">
         {% if today_appointments %}
-          <div class="overflow-x-auto">
-            <table class="w-full">
-              <thead>
-                <tr class="border-b border-gray-200">
-                  <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Patient</th>
-                  <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Time</th>
-                  <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Amount</th>
-                  <th class="text-center py-4 px-4 font-semibold text-doctor-dark-blue">Status</th>
-                  <th class="text-center py-4 px-4 font-semibold text-doctor-dark-blue">Symptoms</th>
-                  <th class="text-right py-4 px-4 font-semibold text-doctor-dark-blue">Actions</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-gray-100">
-                {% for appointment in today_appointments %}
-                <tr class="appointment-row hover:bg-gray-50 transition-colors" data-id="{{ appointment.id }}">
-                  <td class="py-4 px-4">
-                    <div class="flex items-center space-x-3">
-                      <div class="w-10 h-10 bg-gradient-to-br from-doctor-blue to-doctor-purple rounded-full flex items-center justify-center">
-                        <span class="text-white font-semibold text-sm">{{ appointment.patient.first_name|slice:":1" }}</span>
-                      </div>
-                      <div>
-                        <p class="font-medium text-doctor-dark-blue">{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</p>
-                        <p class="text-sm text-doctor-dark-gray">{{ appointment.patient.email }}</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="py-4 px-4">
-                    <div>
-                      <p class="font-medium text-doctor-dark-blue">{{ appointment.slot.start_time|date:"M d, Y" }}</p>
-                      <p class="text-sm text-doctor-blue">{{ appointment.slot.start_time|time:"h:i A" }}</p>
-                    </div>
-                  </td>
-                  <td class="py-4 px-4">
-                    <span class="px-3 py-1 bg-gray-100 text-doctor-dark-blue rounded-full text-sm font-medium">
-                      ${{ appointment.practitioner.price|floatformat:0 }}
-                    </span>
-                  </td>
-                  <td class="py-4 px-4 text-center">
-                    <span class="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm font-medium">Pending</span>
-                  </td>
-                  <td class="py-4 px-4 text-center">
-                    <button class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors" onclick="openSymptomModal('{{ appointment.id }}', '{{ appointment.patient.first_name }}', '{{ appointment.symptom_details|default:"No symptoms submitted" }}')">
-                      <i class="fas fa-clipboard-list"></i>
-                    </button>
-                  </td>
-                  <td class="py-4 px-4 text-right">
-                    <div class="flex items-center justify-end space-x-2">
-                      <button class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors view-btn">
-                        <i class="fas fa-eye"></i>
-                      </button>
-                      <button class="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition-colors accept-btn">
-                        <i class="fas fa-check"></i>
-                      </button>
-                      <button class="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors cancel-btn">
-                        <i class="fas fa-times"></i>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
+          <!-- Today's Pending Appointments -->
+          {% if today_pending_appointments %}
+            <div class="mb-8">
+              <h4 class="text-lg font-semibold text-doctor-dark-blue mb-4 flex items-center">
+                <i class="fas fa-hourglass-half text-orange-500 mr-2"></i>
+                Pending Today ({{ today_pending_appointments|length }})
+              </h4>
+              <div class="overflow-x-auto">
+                <table class="w-full">
+                  <thead>
+                    <tr class="border-b border-gray-200">
+                      <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Patient</th>
+                      <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Time</th>
+                      <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Amount</th>
+                      <th class="text-center py-4 px-4 font-semibold text-doctor-dark-blue">Status</th>
+                      <th class="text-center py-4 px-4 font-semibold text-doctor-dark-blue">Symptoms</th>
+                      <th class="text-right py-4 px-4 font-semibold text-doctor-dark-blue">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-gray-100">
+                    {% for appointment in today_pending_appointments %}
+                    <tr class="appointment-row hover:bg-orange-50 transition-colors" data-id="{{ appointment.id }}">
+                      <td class="py-4 px-4">
+                        <div class="flex items-center space-x-3">
+                          <div class="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center">
+                            <span class="text-white font-semibold text-sm">{{ appointment.patient.first_name|slice:":1" }}</span>
+                          </div>
+                          <div>
+                            <p class="font-medium text-doctor-dark-blue">{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</p>
+                            <p class="text-sm text-doctor-dark-gray">{{ appointment.patient.email }}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="py-4 px-4">
+                        <div>
+                          <p class="font-medium text-doctor-dark-blue">{{ appointment.slot.start_time|date:"M d, Y" }}</p>
+                          <p class="text-sm text-doctor-blue">{{ appointment.slot.start_time|time:"h:i A" }}</p>
+                        </div>
+                      </td>
+                      <td class="py-4 px-4">
+                        <span class="px-3 py-1 bg-gray-100 text-doctor-dark-blue rounded-full text-sm font-medium">
+                          ${{ appointment.practitioner.price|floatformat:0 }}
+                        </span>
+                      </td>
+                      <td class="py-4 px-4 text-center">
+                        <span class="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm font-medium">Pending</span>
+                      </td>
+                      <td class="py-4 px-4 text-center">
+                        <button class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors" onclick="openSymptomModal('{{ appointment.id }}', '{{ appointment.patient.first_name }}', '{{ appointment.symptom_details|default:"No symptoms submitted" }}')">
+                          <i class="fas fa-clipboard-list"></i>
+                        </button>
+                      </td>
+                      <td class="py-4 px-4 text-right">
+                        <div class="flex items-center justify-end space-x-2">
+                          <button class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors view-btn">
+                            <i class="fas fa-eye"></i>
+                          </button>
+                          <button class="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition-colors accept-btn">
+                            <i class="fas fa-check"></i>
+                          </button>
+                          <button class="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors cancel-btn">
+                            <i class="fas fa-times"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          {% endif %}
+
+          <!-- Today's Accepted Appointments -->
+          {% if today_accepted_appointments %}
+            <div class="mb-8">
+              <h4 class="text-lg font-semibold text-doctor-dark-blue mb-4 flex items-center">
+                <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                Accepted Today ({{ today_accepted_appointments|length }})
+              </h4>
+              <div class="overflow-x-auto">
+                <table class="w-full">
+                  <thead>
+                    <tr class="border-b border-gray-200">
+                      <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Patient</th>
+                      <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Time</th>
+                      <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Amount</th>
+                      <th class="text-center py-4 px-4 font-semibold text-doctor-dark-blue">Status</th>
+                      <th class="text-center py-4 px-4 font-semibold text-doctor-dark-blue">Symptoms</th>
+                      <th class="text-right py-4 px-4 font-semibold text-doctor-dark-blue">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-gray-100">
+                    {% for appointment in today_accepted_appointments %}
+                    <tr class="appointment-row hover:bg-green-50 transition-colors" data-id="{{ appointment.id }}">
+                      <td class="py-4 px-4">
+                        <div class="flex items-center space-x-3">
+                          <div class="w-10 h-10 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center">
+                            <span class="text-white font-semibold text-sm">{{ appointment.patient.first_name|slice:":1" }}</span>
+                          </div>
+                          <div>
+                            <p class="font-medium text-doctor-dark-blue">{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</p>
+                            <p class="text-sm text-doctor-dark-gray">{{ appointment.patient.email }}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="py-4 px-4">
+                        <div>
+                          <p class="font-medium text-doctor-dark-blue">{{ appointment.slot.start_time|date:"M d, Y" }}</p>
+                          <p class="text-sm text-doctor-blue">{{ appointment.slot.start_time|time:"h:i A" }}</p>
+                        </div>
+                      </td>
+                      <td class="py-4 px-4">
+                        <span class="px-3 py-1 bg-gray-100 text-doctor-dark-blue rounded-full text-sm font-medium">
+                          ${{ appointment.practitioner.price|floatformat:0 }}
+                        </span>
+                      </td>
+                      <td class="py-4 px-4 text-center">
+                        <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">Accepted</span>
+                      </td>
+                      <td class="py-4 px-4 text-center">
+                        <button class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors" onclick="openSymptomModal('{{ appointment.id }}', '{{ appointment.patient.first_name }}', '{{ appointment.symptom_details|default:"No symptoms submitted" }}')">
+                          <i class="fas fa-clipboard-list"></i>
+                        </button>
+                      </td>
+                      <td class="py-4 px-4 text-right">
+                        <div class="flex items-center justify-end space-x-2">
+                          <button class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors view-btn">
+                            <i class="fas fa-eye"></i>
+                          </button>
+                          <!-- Video Call Button for Accepted Appointments -->
+                          <button onclick="startVideoCall({{ appointment.patient.id }}, '{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}')" 
+                                  class="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition-colors video-call-btn"
+                                  title="Start Zoom Meeting">
+                            <i class="fas fa-video"></i>
+                          </button>
+                          <!-- Chat Button for Accepted Appointments -->
+                          <button onclick="openChat({{ appointment.patient.id }}, '{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}')" 
+                                  class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors chat-btn"
+                                  title="Chat with Patient">
+                            <i class="fas fa-comments"></i>
+                          </button>
+                          <button class="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors cancel-btn">
+                            <i class="fas fa-times"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          {% endif %}
         {% else %}
           <div class="text-center py-12">
             <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -441,6 +553,18 @@
                       <button class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors view-btn">
                         <i class="fas fa-eye"></i>
                       </button>
+                      <!-- Video Call Button for Accepted Appointments -->
+                      <button onclick="startVideoCall({{ appointment.patient.id }}, '{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}')" 
+                              class="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition-colors video-call-btn"
+                              title="Start Video Call">
+                        <i class="fas fa-video"></i>
+                      </button>
+                      <!-- Chat Button for Accepted Appointments -->
+                      <button onclick="openChat({{ appointment.patient.id }}, '{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}')" 
+                              class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors chat-btn"
+                              title="Chat with Patient">
+                        <i class="fas fa-comments"></i>
+                      </button>
                       <button class="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors cancel-btn">
                         <i class="fas fa-times"></i>
                       </button>
@@ -592,6 +716,9 @@ function closePatientModal() {
 
 // Appointment actions
 document.addEventListener('DOMContentLoaded', function() {
+    // Check migration status on page load
+    checkMigrationStatus();
+    
     // Handle Accept and Cancel buttons
     document.querySelectorAll('.accept-btn, .cancel-btn').forEach(button => {
         button.addEventListener('click', function() {
@@ -644,6 +771,290 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+// Chat Function
+function openChat(patientId, patientName) {
+    // Find or create chat room for this patient-practitioner pair
+    fetch('/practitioner-dashboard/api/get-chat-room/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({
+            'patient_id': patientId
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Open chat in new window or redirect
+            const chatUrl = `/chat/room/${data.chat_room_id}/`;
+            window.open(chatUrl, 'ChatWindow', 'width=800,height=600,scrollbars=yes,resizable=yes');
+        } else {
+            showNotification('Error opening chat: ' + data.error, 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Error opening chat', 'error');
+    });
+}
+
+// Migration Functions
+function checkMigrationStatus() {
+    fetch('/practitioner-dashboard/api/migrate-to-zoom/')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const statusDiv = document.getElementById('migrationStatus');
+                if (data.jitsi_appointments_count > 0) {
+                    statusDiv.innerHTML = `<span class="text-orange-600"><i class="fas fa-exclamation-triangle mr-1"></i>${data.jitsi_appointments_count} appointments need migration</span>`;
+                    document.getElementById('migrateBtn').style.display = 'inline-block';
+                } else {
+                    statusDiv.innerHTML = `<span class="text-green-600"><i class="fas fa-check-circle mr-1"></i>All appointments are using Zoom</span>`;
+                    document.getElementById('migrateBtn').style.display = 'none';
+                }
+            } else {
+                showNotification('Error checking migration status', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Error checking migration status', 'error');
+        });
+}
+
+function migrateToZoom() {
+    if (confirm('This will convert all existing Jitsi Meet appointments to Zoom meetings. Continue?')) {
+        // Show loading state
+        const migrateBtn = document.getElementById('migrateBtn');
+        const originalText = migrateBtn.innerHTML;
+        migrateBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Migrating...';
+        migrateBtn.disabled = true;
+        
+        fetch('/practitioner-dashboard/api/migrate-to-zoom/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Reset button
+            migrateBtn.innerHTML = originalText;
+            migrateBtn.disabled = false;
+            
+            if (data.success) {
+                showNotification(`Migration completed! Updated: ${data.updated}, Failed: ${data.failed}, Total: ${data.total}`, 'success');
+                
+                // Update status
+                checkMigrationStatus();
+                
+                // Show detailed results
+                showMigrationResultsModal(data);
+            } else {
+                showNotification(`Migration failed: ${data.error}`, 'error');
+            }
+        })
+        .catch(error => {
+            // Reset button
+            migrateBtn.innerHTML = originalText;
+            migrateBtn.disabled = false;
+            
+            console.error('Error:', error);
+            showNotification('Error during migration', 'error');
+        });
+    }
+}
+
+function showMigrationResultsModal(results) {
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4';
+    modal.innerHTML = `
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-check-circle text-green-600 text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-doctor-dark-blue mb-4">Migration Complete</h3>
+                
+                <div class="bg-gray-50 rounded-lg p-4 mb-6 text-left">
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span class="font-medium text-gray-600">Total Appointments:</span>
+                            <span class="font-semibold text-gray-800">${results.total}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="font-medium text-green-600">Successfully Updated:</span>
+                            <span class="font-semibold text-green-800">${results.updated}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="font-medium text-red-600">Failed:</span>
+                            <span class="font-semibold text-red-800">${results.failed}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <button onclick="closeMigrationResultsModal()" 
+                        class="w-full bg-doctor-blue text-white py-3 px-6 rounded-lg hover:bg-doctor-dark-blue transition-colors">
+                    Close
+                </button>
+                
+                <div class="mt-4 p-3 bg-blue-50 rounded-lg">
+                    <p class="text-xs text-blue-600">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        All patients have been notified about the new Zoom meeting links
+                    </p>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Close modal function
+    window.closeMigrationResultsModal = function() {
+        if (document.body.contains(modal)) {
+            document.body.removeChild(modal);
+        }
+    };
+    
+    // Close on outside click
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeMigrationResultsModal();
+        }
+    });
+}
+
+// Video Call Function for Zoom
+function startVideoCall(patientId, patientName) {
+    if (confirm(`Start Zoom meeting with ${patientName}?`)) {
+        // Show loading state
+        const loadingNotification = showNotification('Creating Zoom meeting...', 'info');
+        
+        fetch(`/practitioner-dashboard/start-video-call/${patientId}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Remove loading notification
+            if (document.body.contains(loadingNotification)) {
+                document.body.removeChild(loadingNotification);
+            }
+            
+            if (data.success) {
+                showNotification('Zoom meeting created! Opening meeting...', 'success');
+                
+                // Show Zoom meeting modal with details
+                showZoomMeetingModal(data, patientName);
+            } else {
+                showNotification(data.error || 'Failed to create Zoom meeting', 'error');
+            }
+        })
+        .catch(error => {
+            // Remove loading notification
+            if (document.body.contains(loadingNotification)) {
+                document.body.removeChild(loadingNotification);
+            }
+            
+            console.error('Error:', error);
+            showNotification('Error creating Zoom meeting', 'error');
+        });
+    }
+}
+
+// Show Zoom meeting modal with meeting details
+function showZoomMeetingModal(meetingData, patientName) {
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4';
+    modal.innerHTML = `
+        <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-video text-blue-600 text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-doctor-dark-blue mb-2">Zoom Meeting Ready</h3>
+                <p class="text-gray-600 mb-6">Zoom meeting with ${patientName} is ready. Use the host link to start the meeting.</p>
+                
+                <div class="bg-gray-50 rounded-lg p-4 mb-6 text-left">
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span class="font-medium text-gray-600">Meeting ID:</span>
+                            <span class="font-mono text-gray-800">${meetingData.meeting_id || 'N/A'}</span>
+                        </div>
+                        ${meetingData.password ? `
+                        <div class="flex justify-between">
+                            <span class="font-medium text-gray-600">Password:</span>
+                            <span class="font-mono text-gray-800">${meetingData.password}</span>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+                
+                <div class="space-y-3">
+                    <a href="${meetingData.start_url || meetingData.join_url}" target="_blank" 
+                       class="block w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                        <i class="fas fa-video mr-2"></i>Start Zoom Meeting (Host)
+                    </a>
+                    <a href="${meetingData.join_url}" target="_blank" 
+                       class="block w-full bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 transition-colors font-medium">
+                        <i class="fas fa-sign-in-alt mr-2"></i>Join as Participant
+                    </a>
+                    <button onclick="closeZoomMeetingModal()" 
+                            class="block w-full bg-gray-100 text-gray-700 py-3 px-6 rounded-lg hover:bg-gray-200 transition-colors">
+                        Close
+                    </button>
+                </div>
+                
+                <div class="mt-4 p-3 bg-blue-50 rounded-lg">
+                    <p class="text-xs text-blue-600">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Patient has been notified and will receive the meeting link via email/SMS
+                    </p>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Close modal function
+    window.closeZoomMeetingModal = function() {
+        if (document.body.contains(modal)) {
+            document.body.removeChild(modal);
+        }
+    };
+    
+    // Close on outside click
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeZoomMeetingModal();
+        }
+    });
+}
+
+// Get CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
 
 // Profile validation
 document.addEventListener("DOMContentLoaded", function () {

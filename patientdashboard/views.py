@@ -1128,3 +1128,58 @@ def all_notifications(request):
 
 
 
+
+def get_chat_room_api(request):
+    """API endpoint to get or create chat room for patient-practitioner pair"""
+    patient_id = request.session.get('patient_id')
+    
+    if not patient_id:
+        return JsonResponse({'success': False, 'error': 'Not authenticated'}, status=403)
+    
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            practitioner_id = data.get('practitioner_id')
+            
+            if not practitioner_id:
+                return JsonResponse({'success': False, 'error': 'Practitioner ID required'}, status=400)
+            
+            # Check if there's an accepted appointment between them
+            accepted_appointment = Appointment.objects.filter(
+                patient_id=patient_id,
+                practitioner_id=practitioner_id,
+                status='Accepted'
+            ).exists()
+            
+            if not accepted_appointment:
+                return JsonResponse({
+                    'success': False, 
+                    'error': 'No accepted appointment found. Chat is only available for accepted appointments.'
+                }, status=403)
+            
+            # Get or create chat room
+            from chat.models import ChatRoom
+            from user_account.models import Practitioner
+            
+            patient = get_object_or_404(Patient, id=patient_id)
+            practitioner = get_object_or_404(Practitioner, id=practitioner_id)
+            
+            chat_room, created = ChatRoom.objects.get_or_create(
+                patient=patient,
+                practitioner=practitioner
+            )
+            
+            return JsonResponse({
+                'success': True,
+                'chat_room_id': chat_room.id,
+                'created': created,
+                'patient_name': f"{patient.first_name} {patient.last_name}",
+                'practitioner_name': f"Dr. {practitioner.first_name} {practitioner.last_name}"
+            })
+            
+        except json.JSONDecodeError:
+            return JsonResponse({'success': False, 'error': 'Invalid JSON'}, status=400)
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=500)
+    
+    return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=405)

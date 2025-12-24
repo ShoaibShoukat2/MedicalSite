@@ -118,12 +118,31 @@
                                 <span class="px-3 py-1 bg-patient-green/10 text-patient-green rounded-full text-sm font-medium">
                                     {{ appointment.status|title }}
                                 </span>
-                                <button class="px-4 py-2 bg-patient-blue text-white rounded-lg hover:bg-patient-dark-blue transition-colors">
-                                    <i class="fas fa-video mr-2"></i>Join Call
-                                </button>
-                                <button class="px-4 py-2 border border-patient-red text-patient-red rounded-lg hover:bg-patient-red hover:text-white transition-colors">
-                                    <i class="fas fa-times mr-2"></i>Cancel
-                                </button>
+                                {% if appointment.status == 'Accepted' and appointment.video_call_link %}
+                                    <button onclick="joinVideoCall('{{ appointment.video_call_link }}', 'Dr. {{ appointment.practitioner.user.first_name }} {{ appointment.practitioner.user.last_name }}')" 
+                                            class="px-4 py-2 bg-patient-blue text-white rounded-lg hover:bg-patient-dark-blue transition-colors">
+                                        <i class="fas fa-video mr-2"></i>Join Call
+                                    </button>
+                                    <!-- Chat Button for Accepted Appointments -->
+                                    <button onclick="openPatientChat({{ appointment.practitioner.id }}, 'Dr. {{ appointment.practitioner.user.first_name }} {{ appointment.practitioner.user.last_name }}')" 
+                                            class="px-4 py-2 bg-patient-teal text-white rounded-lg hover:bg-teal-600 transition-colors">
+                                        <i class="fas fa-comments mr-2"></i>Chat
+                                    </button>
+                                {% else %}
+                                    <button disabled class="px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed">
+                                        <i class="fas fa-video mr-2"></i>Call Not Available
+                                    </button>
+                                {% endif %}
+                                {% if appointment.status == 'Pending' %}
+                                    <button onclick="openSymptomModal({{ appointment.id }})" class="px-4 py-2 bg-patient-teal text-white rounded-lg hover:bg-teal-600 transition-colors">
+                                        <i class="fas fa-notes-medical mr-2"></i>Add Symptoms
+                                    </button>
+                                {% endif %}
+                                {% if appointment.status != 'Cancelled' %}
+                                    <button class="cancel-btn px-4 py-2 border border-patient-red text-patient-red rounded-lg hover:bg-patient-red hover:text-white transition-colors" data-id="{{ appointment.id }}">
+                                        <i class="fas fa-times mr-2"></i>Cancel
+                                    </button>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -207,6 +226,156 @@
 </div>
 
 <script>
+// Patient Chat Function
+function openPatientChat(practitionerId, practitionerName) {
+    // Find or create chat room for this patient-practitioner pair
+    fetch('/patient-dashboard/api/chat-room/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({
+            'practitioner_id': practitionerId
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Open chat in new window or redirect
+            const chatUrl = `/chat/room/${data.chat_room_id}/`;
+            window.open(chatUrl, 'ChatWindow', 'width=800,height=600,scrollbars=yes,resizable=yes');
+        } else {
+            showNotification('Error opening chat: ' + data.error, 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Error opening chat', 'error');
+    });
+}
+
+// Get CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// Join Zoom Meeting Function
+function joinVideoCall(meetingLink, doctorName) {
+    if (confirm(`Join Zoom meeting with ${doctorName}?`)) {
+        // Open Zoom meeting in new window
+        const meetingWindow = window.open(
+            meetingLink, 
+            'ZoomMeeting', 
+            'width=1200,height=800,scrollbars=yes,resizable=yes'
+        );
+        
+        // Focus on the new window
+        if (meetingWindow) {
+            meetingWindow.focus();
+            
+            // Show success message
+            showNotification('Joining Zoom meeting...', 'success');
+        } else {
+            // If popup blocked, show modal with link
+            showZoomJoinModal(meetingLink, doctorName);
+        }
+    }
+}
+
+// Show Zoom join modal if popup is blocked
+function showZoomJoinModal(meetingLink, doctorName) {
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4';
+    modal.innerHTML = `
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-patient-blue rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-video text-white text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-patient-dark-blue mb-2">Join Zoom Meeting</h3>
+                <p class="text-gray-600 mb-6">Ready to join Zoom meeting with ${doctorName}. Click the button below to join.</p>
+                
+                <div class="space-y-3">
+                    <a href="${meetingLink}" target="_blank" 
+                       class="block w-full bg-patient-blue text-white py-3 px-6 rounded-lg hover:bg-patient-dark-blue transition-colors font-medium">
+                        <i class="fas fa-video mr-2"></i>Join Zoom Meeting
+                    </a>
+                    <button onclick="closeZoomJoinModal()" 
+                            class="block w-full bg-gray-100 text-gray-700 py-3 px-6 rounded-lg hover:bg-gray-200 transition-colors">
+                        Close
+                    </button>
+                </div>
+                
+                <div class="mt-4 p-3 bg-blue-50 rounded-lg">
+                    <p class="text-xs text-blue-600">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Make sure you have Zoom app installed or use web browser
+                    </p>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Close modal function
+    window.closeZoomJoinModal = function() {
+        if (document.body.contains(modal)) {
+            document.body.removeChild(modal);
+        }
+    };
+    
+    // Close on outside click
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeZoomJoinModal();
+        }
+    });
+}
+
+// Show notification
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    const bgColor = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
+    
+    notification.className = `fixed top-4 right-4 ${bgColor} text-white px-6 py-3 rounded-xl shadow-lg z-50 transform translate-x-full transition-transform duration-300`;
+    notification.innerHTML = `
+        <div class="flex items-center space-x-3">
+            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'} text-lg"></i>
+            <span class="font-medium">${message}</span>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Animate in
+    setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+    }, 100);
+    
+    // Animate out and remove
+    setTimeout(() => {
+        notification.style.transform = 'translateX(100%)';
+        setTimeout(() => {
+            if (document.body.contains(notification)) {
+                document.body.removeChild(notification);
+            }
+        }, 300);
+    }, 3000);
+}
+
 // Tab functionality
 function showTab(tabName) {
     // Hide all tab contents

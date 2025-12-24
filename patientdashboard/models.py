@@ -30,6 +30,12 @@ class Appointment(models.Model):
     practitioner = models.ForeignKey(Practitioner, on_delete=models.CASCADE, related_name="appointments", default=1)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
     video_call_link = models.URLField(null=True, blank=True)
+    
+    # Zoom Meeting Fields
+    meeting_id = models.CharField(max_length=100, blank=True, null=True)
+    meeting_password = models.CharField(max_length=50, blank=True, null=True)
+    host_start_url = models.URLField(blank=True, null=True)
+    
     created_at = models.DateTimeField(auto_now_add=True)
     PAYMENT_STATUS_CHOICES = [
         ('Unpaid', 'Unpaid'),
@@ -51,11 +57,7 @@ class Appointment(models.Model):
     
 
     def save(self, *args, **kwargs):
-        """Generate video call link if it doesn't exist"""
-        if not self.video_call_link:
-            meeting_id = f"{uuid.uuid4()}-{self.patient.id}-{self.practitioner.id}"
-            self.video_call_link = f"https://meet.jit.si/{meeting_id}"
-        
+        """Save appointment without auto-generating video call link"""
         # Mark the slot as booked when appointment is created
         if not self.pk:  # Only for new appointments
             self.slot.status = 'booked'

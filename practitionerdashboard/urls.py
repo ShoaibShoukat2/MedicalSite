@@ -34,6 +34,16 @@ urlpatterns = [
     # Patient details
     path('patient/<int:appointment_id>/', views.get_patient_details, name='get_patient_details'),
     
+    # API endpoints for alert bell
+    path('api/pending-appointments/', views.get_pending_appointments_api, name='pending_appointments_api'),
+    path('appointments/<int:appointment_id>/<str:status>/', views.update_appointment_status_api, name='update_appointment_status_api'),
+    
+    # Chat room API
+    path('api/get-chat-room/', views.get_chat_room_api, name='get_chat_room_api'),
+    
+    # Migration endpoint
+    path('api/migrate-to-zoom/', views.migrate_jitsi_to_zoom_view, name='migrate_to_zoom'),
+    
     # Completion pages
     path('cancellation-completion/', views.Cancel_Complete, name="cancellation_completion"),        
 ]
