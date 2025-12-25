@@ -665,7 +665,8 @@
             }
         }
         
-        .language-dropdown .dropdown-item {
+        /* Language Dropdown Styles */
+        .language-dropdown a {
             padding: 0.75rem 1.5rem;
             transition: all 0.3s ease;
             display: flex;
@@ -677,7 +678,7 @@
             background: transparent !important;
         }
         
-        .language-dropdown .dropdown-item:hover {
+        .language-dropdown a:hover {
             background: linear-gradient(135deg, var(--primary-blue), var(--primary-dark)) !important;
             color: white !important;
             transform: translateX(5px);
@@ -691,36 +692,14 @@
             text-align: center;
         }
         
-        /* Bootstrap Dropdown Override for Language Selector */
-        .nav-item.dropdown {
-            position: relative;
-        }
-        
-        .nav-item.dropdown .dropdown-menu {
-            position: absolute !important;
-            top: 100% !important;
-            left: 0 !important;
-            z-index: 9999 !important;
-            transform: none !important;
-            margin-top: 0.5rem !important;
-        }
-        
-        .nav-item.dropdown .dropdown-menu.show {
-            display: block !important;
-            opacity: 1 !important;
-            visibility: visible !important;
-        }
+
         
         /* RTL Support */
         [dir="rtl"] {
             text-align: right;
         }
         
-        [dir="rtl"] .navbar-nav {
-            flex-direction: row-reverse;
-        }
-        
-        [dir="rtl"] .language-dropdown .dropdown-item:hover {
+        [dir="rtl"] .language-dropdown a:hover {
             transform: translateX(-5px);
         }
 
@@ -778,6 +757,66 @@
             .language-selector {
                 padding: 0.4rem 0.8rem;
                 font-size: 0.9rem;
+            }
+        }
+        
+        /* Force hide mobile menu on desktop */
+        @media (min-width: 1024px) {
+            #mobile-menu {
+                display: none !important;
+            }
+        }
+        
+        /* Search Results Styling */
+        .search-results-section {
+            background: linear-gradient(135deg, #f8fafc 0%, #e6f3ff 100%);
+        }
+        
+        .practitioner-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(0, 102, 204, 0.1);
+        }
+        
+        .practitioner-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 102, 204, 0.15);
+            border-color: rgba(0, 102, 204, 0.3);
+        }
+        
+        .search-suggestion-tag {
+            transition: all 0.2s ease;
+        }
+        
+        .search-suggestion-tag:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Authentication Modal Styles */
+        #auth-alert-modal {
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        #modal-content {
+            animation: slideInUp 0.3s ease-out;
+        }
+        
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
             }
         }
         
@@ -957,78 +996,7 @@
                 </div>
             </div>
         </nav>
-                                <li><a class="dropdown-item" href="#" onclick="changeLanguage('zh')">
-                                    <span class="flag-icon">🇨🇳</span> 中文
-                                </a></li>
-                            </ul>
-                        </li>
-                        {% get_practitioner_name request as practitioner_name %}
-                        {% get_patient_name request as patient_name %}
-                
-                        {% if practitioner_name %}
-                        <li class="nav-item">
-                            <span class="nav-link">Welcome, {{ practitioner_name }}</span>
-                        </li>
-                        <li class="nav-item">
-                            <!-- Practitioner Dashboard Button -->
-                            <a href="{% url 'practitioner_dashboard:dashboard' %}" class="btn btn-appointment text-white"
-                               style="background-color: #007bff; border-radius: 25px; padding: 10px 20px; font-size: 14px; text-decoration: none; font-weight: bold;">
-                               Practitioner Dashboard
-                            </a>
-                        </li>
-                        <li class="nav-item ms-3">
-                            <a class="btn btn-danger text-white"
-                               href="{% url 'frontend:logout' %}"
-                               style="border-radius: 25px; padding: 10px 20px; font-size: 14px; text-decoration: none; font-weight: bold;"
-                               data-translate="Logout">
-                               Logout
-                            </a>
-                        </li>
-                        {% elif patient_name %}
-                        <li class="nav-item">
-                            <span class="nav-link">Welcome, {{ patient_name }}</span>
-                        </li>
-                        <li class="nav-item">
-                            <!-- Patient Dashboard Button -->
-                            <a href="{% url 'patient_dashboard:appointments_patients' %}" class="btn btn-appointment text-white"
-                               style="background-color: #f76c5e; border-radius: 25px; padding: 10px 20px; font-size: 14px; text-decoration: none; font-weight: bold;">
-                               Patient Dashboard
-                            </a>
 
-
-                        </li>
-                        <li class="nav-item ms-3">
-                            <a class="btn btn-danger text-white"
-                               href="{% url 'frontend:logout' %}"
-                               style="border-radius: 25px; padding: 10px 20px; font-size: 14px; text-decoration: none; font-weight: bold;"
-                               data-translate="Logout">
-                               Logout
-                            </a>
-                        </li>
-                        {% else %}
-                        <div class="d-flex">
-                            <a href="{% url 'frontend:patient_login' %}" class="btn btn-appointment text-white"
-                               style="background-color: #f76c5e; border-radius: 25px; padding: 10px 20px; font-size: 14px; text-decoration: none; font-weight: bold;"
-                               data-translate="Patient Login">
-                               Patient Login
-                            </a>
-                            <a href="{% url 'frontend:practitioner_login' %}" class="btn btn-appointment ms-3"
-                               style="color: #007bff; border: 2px solid #007bff; border-radius: 25px; padding: 10px 20px; font-size: 14px; text-decoration: none; font-weight: bold; background-color: white;"
-                               data-translate="Practitioner Login">
-                               Practitioner Login
-                            </a>
-                        </div>
-                        {% endif %}
-                    </ul>
-                </div>
-                
-
-
-
-
-
-            </div>
-        </nav>
 
         <!-- Hero Section -->
         {% block temp_content %}
@@ -1161,6 +1129,10 @@
     
     <!-- Professional Enhancement Scripts -->
     <script>
+        // Global authentication status
+        window.isPatientLoggedIn = {% if request.session.patient_id %}true{% else %}false{% endif %};
+        window.isPractitionerLoggedIn = {% if request.session.practitioner_id %}true{% else %}false{% endif %};
+        
         // Ensure global scope
         console.log('Loading language system...');
         
@@ -1473,7 +1445,7 @@
         
         // Add event listeners as backup for language switching
         document.addEventListener('DOMContentLoaded', function() {
-            const languageDropdownItems = document.querySelectorAll('.language-dropdown .dropdown-item');
+            const languageDropdownItems = document.querySelectorAll('.language-dropdown a');
             languageDropdownItems.forEach(item => {
                 item.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -1634,6 +1606,12 @@
 
         // Initialize language on page load
         document.addEventListener('DOMContentLoaded', function() {
+            // Initialize mobile menu state
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (mobileMenu && window.innerWidth >= 1024) {
+                mobileMenu.classList.add('hidden');
+            }
+            
             try {
                 console.log('Initializing language system...');
                 
@@ -1786,8 +1764,20 @@
         // Mobile Menu Toggle
         window.toggleMobileMenu = function() {
             const mobileMenu = document.getElementById('mobile-menu');
-            mobileMenu.classList.toggle('hidden');
+            
+            // Only toggle on mobile screens (less than 1024px)
+            if (window.innerWidth < 1024) {
+                mobileMenu.classList.toggle('hidden');
+            }
         };
+        
+        // Handle window resize to hide mobile menu on desktop
+        window.addEventListener('resize', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (window.innerWidth >= 1024) {
+                mobileMenu.classList.add('hidden');
+            }
+        });
         
         // Language Dropdown Toggle
         window.toggleLanguageDropdown = function() {
@@ -1820,8 +1810,8 @@
                 languageDropdown.classList.add('hidden');
             }
             
-            // Close mobile menu if clicking outside
-            if (!mobileMenu.contains(event.target) && !event.target.closest('[onclick="toggleMobileMenu()"]')) {
+            // Close mobile menu if clicking outside (only on mobile)
+            if (window.innerWidth < 1024 && !mobileMenu.contains(event.target) && !event.target.closest('[onclick="toggleMobileMenu()"]')) {
                 mobileMenu.classList.add('hidden');
             }
         });
@@ -1866,6 +1856,276 @@
         }
         
         console.log('🏥 Modern Medical Platform Loaded Successfully!');
+        
+        // Additional authentication function for browse specialists
+        window.checkAuthAndBrowseSpecialists = function() {
+            if (window.isPatientLoggedIn) {
+                // Patient is logged in, redirect to specialty selection
+                window.location.href = "{% url 'patient_dashboard:specialty_selection' %}";
+            } else if (window.isPractitionerLoggedIn) {
+                // Practitioner is logged in, show message that they need patient account
+                showAuthAlert(
+                    'Patient Account Required',
+                    'You are logged in as a practitioner. To browse specialists and book appointments, please log in with a patient account.',
+                    [
+                        {
+                            text: 'Patient Login',
+                            action: () => window.location.href = "{% url 'frontend:patient_login' %}",
+                            class: 'bg-medical-green hover:bg-green-600'
+                        },
+                        {
+                            text: 'Create Patient Account',
+                            action: () => window.location.href = "{% url 'frontend:patient_signup' %}",
+                            class: 'border-2 border-medical-blue text-medical-blue hover:bg-medical-blue hover:text-white'
+                        }
+                    ]
+                );
+            } else {
+                // No one is logged in, show login options
+                showAuthAlert(
+                    'Login Required',
+                    'Please log in to your patient account to browse specialists and book appointments. If you don\'t have an account, you can create one for free.',
+                    [
+                        {
+                            text: 'Patient Login',
+                            action: () => window.location.href = "{% url 'frontend:patient_login' %}",
+                            class: 'bg-medical-green hover:bg-green-600'
+                        },
+                        {
+                            text: 'Create Account',
+                            action: () => window.location.href = "{% url 'frontend:patient_signup' %}",
+                            class: 'border-2 border-medical-blue text-medical-blue hover:bg-medical-blue hover:text-white'
+                        }
+                    ]
+                );
+            }
+        };
+        
+        // Search functionality
+        window.searchFor = function(term) {
+            const searchInput = document.querySelector('input[name="q"]');
+            if (searchInput) {
+                searchInput.value = term;
+                searchInput.form.submit();
+            }
+        };
+        
+        // Authentication check functions
+        window.checkAuthAndBookAppointment = function() {
+            if (window.isPatientLoggedIn) {
+                // Patient is logged in, redirect to specialty selection
+                window.location.href = "{% url 'patient_dashboard:specialty_selection' %}";
+            } else if (window.isPractitionerLoggedIn) {
+                // Practitioner is logged in, show message that they need patient account
+                showAuthAlert(
+                    'Patient Account Required',
+                    'You are logged in as a practitioner. To book appointments, please log in with a patient account or create a new patient account.',
+                    [
+                        {
+                            text: 'Patient Login',
+                            action: () => window.location.href = "{% url 'frontend:patient_login' %}",
+                            class: 'bg-medical-green hover:bg-green-600'
+                        },
+                        {
+                            text: 'Create Patient Account',
+                            action: () => window.location.href = "{% url 'frontend:patient_signup' %}",
+                            class: 'border-2 border-medical-blue text-medical-blue hover:bg-medical-blue hover:text-white'
+                        }
+                    ]
+                );
+            } else {
+                // No one is logged in, show login options
+                showAuthAlert(
+                    'Login Required',
+                    'Please log in to your patient account to book appointments. If you don\'t have an account, you can create one for free.',
+                    [
+                        {
+                            text: 'Patient Login',
+                            action: () => window.location.href = "{% url 'frontend:patient_login' %}",
+                            class: 'bg-medical-green hover:bg-green-600'
+                        },
+                        {
+                            text: 'Create Account',
+                            action: () => window.location.href = "{% url 'frontend:patient_signup' %}",
+                            class: 'border-2 border-medical-blue text-medical-blue hover:bg-medical-blue hover:text-white'
+                        }
+                    ]
+                );
+            }
+        };
+        
+        window.checkAuthAndViewProfile = function(practitionerId) {
+            if (window.isPatientLoggedIn) {
+                // Patient is logged in, redirect to practitioner profile
+                window.location.href = `/patient-dashboard/practitioner/${practitionerId}/`;
+            } else if (window.isPractitionerLoggedIn) {
+                // Practitioner is logged in, show message that they need patient account
+                showAuthAlert(
+                    'Patient Account Required',
+                    'You are logged in as a practitioner. To view practitioner profiles and book appointments, please log in with a patient account.',
+                    [
+                        {
+                            text: 'Patient Login',
+                            action: () => window.location.href = "{% url 'frontend:patient_login' %}",
+                            class: 'bg-medical-green hover:bg-green-600'
+                        },
+                        {
+                            text: 'Create Patient Account',
+                            action: () => window.location.href = "{% url 'frontend:patient_signup' %}",
+                            class: 'border-2 border-medical-blue text-medical-blue hover:bg-medical-blue hover:text-white'
+                        }
+                    ]
+                );
+            } else {
+                // No one is logged in, show login options
+                showAuthAlert(
+                    'Login Required',
+                    'Please log in to your patient account to view practitioner profiles. If you don\'t have an account, you can create one for free.',
+                    [
+                        {
+                            text: 'Patient Login',
+                            action: () => window.location.href = "{% url 'frontend:patient_login' %}",
+                            class: 'bg-medical-green hover:bg-green-600'
+                        },
+                        {
+                            text: 'Create Account',
+                            action: () => window.location.href = "{% url 'frontend:patient_signup' %}",
+                            class: 'border-2 border-medical-blue text-medical-blue hover:bg-medical-blue hover:text-white'
+                        }
+                    ]
+                );
+            }
+        };
+        
+        // Modern alert modal function
+        window.showAuthAlert = function(title, message, buttons) {
+            // Remove existing modal if any
+            const existingModal = document.getElementById('auth-alert-modal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+            
+            // Create modal HTML
+            const modal = document.createElement('div');
+            modal.id = 'auth-alert-modal';
+            modal.className = 'fixed inset-0 z-50 flex items-center justify-center p-4';
+            modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+            modal.style.backdropFilter = 'blur(5px)';
+            
+            modal.innerHTML = `
+                <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 transform transition-all duration-300 scale-95 opacity-0" id="modal-content">
+                    <div class="p-6 text-center">
+                        <div class="w-16 h-16 bg-medical-light-blue rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-user-lock text-2xl text-medical-blue"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-medical-dark-blue mb-3">${title}</h3>
+                        <p class="text-medical-dark-gray mb-6 leading-relaxed">${message}</p>
+                        <div class="flex flex-col sm:flex-row gap-3 justify-center" id="modal-buttons">
+                        </div>
+                        <button onclick="closeAuthAlert()" class="mt-4 text-medical-dark-gray hover:text-medical-dark-blue transition-colors text-sm">
+                            <i class="fas fa-times mr-1"></i>Close
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Add buttons with proper event listeners
+            const buttonsContainer = document.getElementById('modal-buttons');
+            buttons.forEach((button, index) => {
+                const btn = document.createElement('button');
+                btn.className = `px-6 py-3 rounded-lg font-medium transition-colors ${button.class}`;
+                btn.textContent = button.text;
+                btn.addEventListener('click', button.action);
+                buttonsContainer.appendChild(btn);
+            });
+            
+            // Animate in
+            setTimeout(() => {
+                const content = document.getElementById('modal-content');
+                if (content) {
+                    content.style.transform = 'scale(1)';
+                    content.style.opacity = '1';
+                }
+            }, 10);
+            
+            // Close on backdrop click
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closeAuthAlert();
+                }
+            });
+            
+            // Close on ESC key
+            const handleEscKey = function(e) {
+                if (e.key === 'Escape') {
+                    closeAuthAlert();
+                    document.removeEventListener('keydown', handleEscKey);
+                }
+            };
+            document.addEventListener('keydown', handleEscKey);
+        };
+        
+        window.closeAuthAlert = function() {
+            const modal = document.getElementById('auth-alert-modal');
+            if (modal) {
+                const content = document.getElementById('modal-content');
+                if (content) {
+                    content.style.transform = 'scale(0.95)';
+                    content.style.opacity = '0';
+                }
+                setTimeout(() => {
+                    modal.remove();
+                }, 300);
+            }
+        };
+        
+        // Enhanced search with suggestions
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('search-input');
+            const suggestionsContainer = document.getElementById('search-suggestions');
+            
+            if (searchInput && suggestionsContainer) {
+                const commonSearches = [
+                    'Cardiology', 'Neurology', 'Orthopedics', 'Pediatrics', 
+                    'Dentistry', 'Dermatology', 'Gynecology', 'Psychiatry',
+                    'General Practice', 'Internal Medicine'
+                ];
+                
+                searchInput.addEventListener('input', function() {
+                    const query = this.value.toLowerCase();
+                    if (query.length > 0) {
+                        const matches = commonSearches.filter(item => 
+                            item.toLowerCase().includes(query)
+                        );
+                        
+                        if (matches.length > 0) {
+                            suggestionsContainer.innerHTML = matches.map(match => 
+                                `<div class="px-4 py-2 hover:bg-medical-light-blue cursor-pointer transition-colors" onclick="searchFor('${match}')">${match}</div>`
+                            ).join('');
+                            suggestionsContainer.classList.remove('hidden');
+                        } else {
+                            suggestionsContainer.classList.add('hidden');
+                        }
+                    } else {
+                        suggestionsContainer.classList.add('hidden');
+                    }
+                });
+                
+                // Hide suggestions when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!searchInput.contains(e.target) && !suggestionsContainer.contains(e.target)) {
+                        suggestionsContainer.classList.add('hidden');
+                    }
+                });
+            }
+        });
+        
+        window.viewPractitionerProfile = function(practitionerId) {
+            // For now, show an alert. Later this can be expanded to show a modal or redirect
+            alert(`Viewing profile for practitioner ID: ${practitionerId}. This feature will be implemented soon.`);
+        };
         console.log('💬 Language system ready. Use testLanguageSwitch() to debug.');
         
         // Final verification and backup
@@ -1969,11 +2229,6 @@
         [dir="rtl"] .specialty-card,
         [dir="rtl"] .step-card {
             text-align: right;
-        }
-        
-        [dir="rtl"] .navbar-nav {
-            margin-left: 0;
-            margin-right: auto;
         }
         
         [dir="rtl"] .btn-appointment {

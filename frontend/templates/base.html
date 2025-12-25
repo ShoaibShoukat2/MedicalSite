@@ -38,6 +38,35 @@
             top: 0;
             width: 100%;
             height: 60px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .navbar-nav .nav-item {
+            margin: 0 5px;
+        }
+
+        .navbar-nav .nav-link {
+            color: #333 !important;
+            font-weight: 500;
+            padding: 8px 12px !important;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-nav .nav-link:hover {
+            background-color: #f8f9fa;
+            color: #007bff !important;
+        }
+
+        .navbar-nav .btn {
+            margin: 0 3px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .navbar-nav .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
 
         .dropdown-menu {
@@ -108,7 +137,8 @@
 
         @media (max-width: 991px) {
             .main-wrapper {
-                margin-top: auto;
+                margin-top: 60px;
+                flex-direction: column;
             }
         }
 
@@ -124,10 +154,28 @@
             overflow-y: auto;
             transition: transform 0.3s ease;
             padding-top: 20px;
-            display: none;
+            transform: translateX(-250px); /* Hide sidebar by default */
+            display: block;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
         }
 
         #sidebar.show {
+            transform: translateX(0);
+        }
+
+        /* Sidebar overlay for mobile */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1025;
+            display: none;
+        }
+
+        .sidebar-overlay.show {
             display: block;
         }
 
@@ -149,14 +197,23 @@
             flex: 1;
             min-width: 0;
             padding: 20px;
-            margin-left: 250px;
+            margin-left: 0; /* No margin by default since sidebar is hidden */
             width: 100%;
+            transition: margin-left 0.3s ease;
+        }
+
+        .content-area.sidebar-open {
+            margin-left: 250px;
         }
 
         @media (max-width: 991px) {
             .content-area {
                 margin-left: 0;
                 width: 100%;
+            }
+            
+            .content-area.sidebar-open {
+                margin-left: 0;
             }
         }
 
@@ -356,11 +413,28 @@
             .navbar-nav .nav-link {
                 padding: 8px 15px !important;
                 margin: 5px 0;
+                text-align: center;
             }
 
             .navbar-nav .btn {
                 width: 90%;
                 margin: 8px auto !important;
+                display: block;
+                text-align: center;
+            }
+
+            .navbar-nav .nav-item {
+                text-align: center;
+                margin: 5px 0;
+            }
+
+            .navbar-nav .nav-item span {
+                display: block;
+                padding: 8px 15px;
+                margin: 5px 0;
+                background-color: #f8f9fa;
+                border-radius: 5px;
+                color: #333 !important;
             }
         }
 
@@ -373,9 +447,10 @@
             #sidebar {
                 position: fixed;
                 transform: translateX(-250px);
+                z-index: 1040;
             }
 
-            #sidebar.active {
+            #sidebar.show {
                 transform: translateX(0);
             }
 
@@ -394,6 +469,12 @@
             .navbar-toggler-icon {
                 width: 20px;
                 height: 20px;
+            }
+
+            .navbar-nav .btn {
+                font-size: 13px;
+                padding: 10px 15px !important;
+                margin: 8px auto !important;
             }
         }
 
@@ -427,6 +508,12 @@
             .navbar-nav .btn {
                 font-size: 12px;
                 padding: 8px 12px !important;
+                margin: 6px auto !important;
+            }
+
+            .navbar-nav .nav-item span {
+                font-size: 14px;
+                padding: 6px 12px;
             }
         }
 
@@ -440,12 +527,20 @@
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
         }
     </style>
+
+
+
 </head>
 
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light fixed-top">
         <div class="container-fluid">
+            <!-- Menu Toggle Button (for sidebar) -->
+            <button class="btn btn-outline-secondary btn-sm me-2 d-none d-lg-block" onclick="toggleSidebar()" title="Menu">
+                <i class="fas fa-bars"></i>
+            </button>
+            
             <a class="navbar-brand" href="/">
                 <img src="{% static 'MedicalSiteLogo.svg' %}" alt="Logo" style="max-height: 50px;">
             </a>
@@ -461,39 +556,50 @@
                     {% get_patient_name request as patient_name %}
     
                     {% if practitioner_name %}
-                    <li class="nav-item">
-                        <span class="nav-link">Welcome, {{ practitioner_name }}</span>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'frontend:logout' %}">Logout</a>
-                    </li>
+                        <li class="nav-item me-3">
+                            <span class="nav-link text-dark fw-semibold">Welcome, {{ practitioner_name }}</span>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-outline-danger btn-sm" href="{% url 'practitioner_dashboard:dashboard' %}">
+                                <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item ms-2">
+                            <a class="btn btn-danger btn-sm" href="{% url 'frontend:logout' %}">
+                                <i class="fas fa-sign-out-alt me-1"></i>Logout
+                            </a>
+                        </li>
                     {% elif patient_name %}
-                    <li class="nav-item">
-                        <span class="nav-link">Welcome, {{ patient_name }}</span>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'frontend:logout' %}">Logout</a>
-                    </li>
+                        <li class="nav-item me-3">
+                            <span class="nav-link text-dark fw-semibold">Welcome, {{ patient_name }}</span>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-outline-primary btn-sm" href="{% url 'patientdashboard:appointments_patients' %}">
+                                <i class="fas fa-user me-1"></i>Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item ms-2">
+                            <a class="btn btn-danger btn-sm" href="{% url 'frontend:logout' %}">
+                                <i class="fas fa-sign-out-alt me-1"></i>Logout
+                            </a>
+                        </li>
                     {% else %}
-                    
-                    <li class="nav-item">
-                    </li>
-                    <li class="nav-item">
-                        <!-- Patient Login Button -->
-                        <a class="btn text-white"
-                           href="{% url 'frontend:patient_login' %}"
-                           style="background-color: #f76c5e; border-radius: 25px; padding: 10px 20px; font-size: 14px; text-decoration: none; font-weight: bold;">
-                           Patient Login
-                        </a>
-                    </li>
-                    <li class="nav-item ms-3">
-                        <!-- Practitioner Login Button -->
-                        <a class="btn"
-                           href="{% url 'frontend:practitioner_login' %}"
-                           style="color: #007bff; border: 2px solid #007bff; border-radius: 25px; padding: 10px 20px; font-size: 14px; text-decoration: none; font-weight: bold; background-color: white;">
-                           Practitioner Login
-                        </a>
-                    </li>
+                        <li class="nav-item me-2">
+                            <!-- Patient Login Button -->
+                            <a class="btn text-white btn-sm"
+                               href="{% url 'frontend:patient_login' %}"
+                               style="background-color: #f76c5e; border-radius: 25px; padding: 8px 16px; font-size: 14px; text-decoration: none; font-weight: bold;">
+                               <i class="fas fa-user me-1"></i>Patient Login
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <!-- Practitioner Login Button -->
+                            <a class="btn btn-sm"
+                               href="{% url 'frontend:practitioner_login' %}"
+                               style="color: #007bff; border: 2px solid #007bff; border-radius: 25px; padding: 8px 16px; font-size: 14px; text-decoration: none; font-weight: bold; background-color: white;">
+                               <i class="fas fa-user-md me-1"></i>Practitioner Login
+                            </a>
+                        </li>
                     {% endif %}
                 </ul>
             </div>
@@ -502,6 +608,9 @@
     
 
     <div class="main-wrapper">
+        <!-- Sidebar Overlay -->
+        <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+        
         <div id="sidebar">
             <h5 class="fw-bold my-4 text-center">Menu</h5>
         
@@ -668,6 +777,34 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
+});
+
+// Sidebar toggle function
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const contentArea = document.querySelector('.content-area');
+    const overlay = document.getElementById('sidebarOverlay');
+    
+    if (sidebar && contentArea && overlay) {
+        sidebar.classList.toggle('show');
+        contentArea.classList.toggle('sidebar-open');
+        overlay.classList.toggle('show');
+    }
+}
+
+// Close sidebar when clicking outside
+document.addEventListener('click', function(e) {
+    const sidebar = document.getElementById('sidebar');
+    const menuButton = document.querySelector('[onclick="toggleSidebar()"]');
+    const overlay = document.getElementById('sidebarOverlay');
+    
+    if (sidebar && sidebar.classList.contains('show')) {
+        if (!sidebar.contains(e.target) && menuButton && !menuButton.contains(e.target)) {
+            sidebar.classList.remove('show');
+            document.querySelector('.content-area').classList.remove('sidebar-open');
+            if (overlay) overlay.classList.remove('show');
+        }
+    }
 });
 
 // Initialize Slick carousel if it exists

@@ -46,10 +46,11 @@
                             <input type="text" 
                                    name="q" 
                                    class="w-full px-4 sm:px-6 py-3 sm:py-4 text-base sm:text-lg border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-medical-blue/50 placeholder-gray-500" 
-                                   placeholder="Search doctors, specialties..." 
+                                   placeholder="Search doctors by name, specialty (e.g., Cardiology, Neurology)..." 
                                    data-translate="Search by practitioner name, specialty, or location..."
                                    value="{{ request.GET.q }}"
-                                   autocomplete="off">
+                                   autocomplete="off"
+                                   id="search-input">
                             <i class="fas fa-search absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm sm:text-base"></i>
                         </div>
                         <button type="submit" class="px-6 sm:px-8 py-3 sm:py-4 bg-medical-green text-white rounded-xl hover:bg-green-600 transition-all duration-300 font-semibold text-base sm:text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 whitespace-nowrap">
@@ -97,6 +98,137 @@
 {% endblock temp_content %}
 
 {% block temp_index %}
+<!-- Search Results Section -->
+{% if request.GET.q %}
+<section class="py-16 search-results-section">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Search Results Header -->
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold text-medical-dark-blue mb-4">
+                Search Results for "<span class="text-medical-blue">{{ request.GET.q }}</span>"
+            </h2>
+            <p class="text-lg text-medical-dark-gray">
+                {% if practitioners %}
+                    Found {{ practitioners|length }} practitioner{{ practitioners|length|pluralize }} matching your search
+                {% else %}
+                    No practitioners found matching your search criteria
+                {% endif %}
+            </p>
+        </div>
+
+        {% if practitioners %}
+        <!-- Practitioners Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+            {% for practitioner in practitioners %}
+            <div class="practitioner-card group medical-card-hover bg-white rounded-2xl p-6 shadow-lg">
+                <!-- Practitioner Photo -->
+                <div class="text-center mb-6">
+                    {% if practitioner.profile_photo %}
+                        <img src="{{ practitioner.profile_photo.url }}" 
+                             alt="Dr. {{ practitioner.first_name }} {{ practitioner.last_name }}" 
+                             class="w-24 h-24 rounded-full mx-auto object-cover border-4 border-medical-light-blue group-hover:border-medical-blue transition-colors">
+                    {% else %}
+                        <div class="w-24 h-24 bg-gradient-to-br from-medical-blue to-medical-dark-blue rounded-full flex items-center justify-center mx-auto group-hover:scale-110 transition-transform duration-300">
+                            <i class="fas fa-user-md text-3xl text-white"></i>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Practitioner Info -->
+                <div class="text-center">
+                    <h4 class="text-xl font-bold text-medical-dark-blue mb-2">
+                        {{ practitioner.civility }} {{ practitioner.first_name }} {{ practitioner.last_name }}
+                    </h4>
+                    <p class="text-medical-blue font-medium mb-2">{{ practitioner.specialty }}</p>
+                    <p class="text-medical-dark-gray text-sm mb-4">{{ practitioner.doctor_type }}</p>
+                    
+                    <!-- Contact Info -->
+                    {% if practitioner.email %}
+                    <div class="flex items-center justify-center text-sm text-medical-dark-gray mb-2">
+                        <i class="fas fa-envelope mr-2 text-medical-blue"></i>
+                        <span>{{ practitioner.email }}</span>
+                    </div>
+                    {% endif %}
+                    
+                    {% if practitioner.phone %}
+                    <div class="flex items-center justify-center text-sm text-medical-dark-gray mb-4">
+                        <i class="fas fa-phone mr-2 text-medical-blue"></i>
+                        <span>{{ practitioner.phone }}</span>
+                    </div>
+                    {% endif %}
+
+                    <!-- Action Buttons -->
+                    <div class="space-y-2">
+                        <button onclick="checkAuthAndBookAppointment()" 
+                                class="block w-full px-4 py-2 bg-medical-green text-white rounded-lg hover:bg-green-600 transition-colors font-medium">
+                            <i class="fas fa-calendar-plus mr-2"></i>Book Appointment
+                        </button>
+                        <button onclick="checkAuthAndViewProfile({{ practitioner.id }})" 
+                                class="block w-full px-4 py-2 border-2 border-medical-blue text-medical-blue rounded-lg hover:bg-medical-blue hover:text-white transition-colors font-medium">
+                            <i class="fas fa-user mr-2"></i>View Profile
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Search Again Section -->
+        <div class="text-center bg-white rounded-2xl p-8 shadow-lg">
+            <h3 class="text-2xl font-bold text-medical-dark-blue mb-4">Didn't find what you're looking for?</h3>
+            <p class="text-medical-dark-gray mb-6">Try searching with different keywords or browse all our specialists</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="{% url 'frontend:index' %}" 
+                   class="px-6 py-3 bg-medical-blue text-white rounded-lg hover:bg-medical-dark-blue transition-colors font-medium">
+                    <i class="fas fa-search mr-2"></i>New Search
+                </a>
+                <button onclick="checkAuthAndBrowseSpecialists()" 
+                        class="px-6 py-3 border-2 border-medical-blue text-medical-blue rounded-lg hover:bg-medical-blue hover:text-white transition-colors font-medium">
+                    <i class="fas fa-list mr-2"></i>Browse All Specialists
+                </button>
+            </div>
+        </div>
+
+        {% else %}
+        <!-- No Results Found -->
+        <div class="text-center bg-white rounded-2xl p-12 shadow-lg">
+            <div class="w-24 h-24 bg-medical-blue rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-search text-3xl text-white"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-medical-dark-blue mb-4">No practitioners found</h3>
+            <p class="text-medical-dark-gray mb-6 max-w-2xl mx-auto">
+                We couldn't find any practitioners matching "<strong>{{ request.GET.q }}</strong>". 
+                Try searching with different keywords, check your spelling, or browse our specialists by category.
+            </p>
+            
+            <!-- Search Suggestions -->
+            <div class="mb-8">
+                <h4 class="text-lg font-semibold text-medical-dark-blue mb-4">Try searching for:</h4>
+                <div class="flex flex-wrap justify-center gap-2">
+                    <span class="search-suggestion-tag px-3 py-1 bg-medical-light-blue text-medical-blue rounded-full text-sm cursor-pointer hover:bg-medical-blue hover:text-white transition-colors" onclick="searchFor('Cardiology')">Cardiology</span>
+                    <span class="search-suggestion-tag px-3 py-1 bg-medical-light-blue text-medical-blue rounded-full text-sm cursor-pointer hover:bg-medical-blue hover:text-white transition-colors" onclick="searchFor('Neurology')">Neurology</span>
+                    <span class="search-suggestion-tag px-3 py-1 bg-medical-light-blue text-medical-blue rounded-full text-sm cursor-pointer hover:bg-medical-blue hover:text-white transition-colors" onclick="searchFor('Orthopedics')">Orthopedics</span>
+                    <span class="search-suggestion-tag px-3 py-1 bg-medical-light-blue text-medical-blue rounded-full text-sm cursor-pointer hover:bg-medical-blue hover:text-white transition-colors" onclick="searchFor('Pediatrics')">Pediatrics</span>
+                    <span class="search-suggestion-tag px-3 py-1 bg-medical-light-blue text-medical-blue rounded-full text-sm cursor-pointer hover:bg-medical-blue hover:text-white transition-colors" onclick="searchFor('Dentistry')">Dentistry</span>
+                </div>
+            </div>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="{% url 'frontend:index' %}" 
+                   class="px-6 py-3 bg-medical-blue text-white rounded-lg hover:bg-medical-dark-blue transition-colors font-medium">
+                    <i class="fas fa-search mr-2"></i>Try New Search
+                </a>
+                <button onclick="checkAuthAndBrowseSpecialists()" 
+                        class="px-6 py-3 border-2 border-medical-blue text-medical-blue rounded-lg hover:bg-medical-blue hover:text-white transition-colors font-medium">
+                    <i class="fas fa-list mr-2"></i>Browse All Specialists
+                </button>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endif %}
+
 <!-- Modern Features Section -->
 <section class="py-20 bg-gradient-to-br from-medical-gray to-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

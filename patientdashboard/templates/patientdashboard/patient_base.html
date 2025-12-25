@@ -223,36 +223,12 @@
         }
         
         /* Language Dropdown Specific Styles */
-        #languageDropdown {
-            z-index: 99999 !important;
-            position: absolute !important;
-            right: 0 !important;
-            top: calc(100% + 0.5rem) !important;
-            width: 14rem !important;
-            background: rgba(255, 255, 255, 0.95) !important;
-            backdrop-filter: blur(10px) !important;
-            border-radius: 1rem !important;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
-            border: 1px solid rgba(229, 231, 235, 0.5) !important;
-            transform-origin: top right !important;
+        .language-selector-container {
+            position: relative !important;
+            z-index: 10000 !important;
+            display: inline-block !important;
         }
         
-        /* Fix dropdown positioning on small screens */
-        @media (max-width: 640px) {
-            #languageDropdown {
-                right: -2rem !important;
-                width: calc(100vw - 4rem) !important;
-                max-width: 20rem !important;
-            }
-        }
-        
-        /* Language option hover effects */
-        .language-option:hover {
-            transform: translateX(4px);
-            transition: all 0.2s ease;
-        }
-        
-        /* Language selector button effects */
         #languageSelector {
             position: relative !important;
             z-index: 10000 !important;
@@ -261,17 +237,75 @@
             min-width: 44px !important;
             min-height: 44px !important;
             box-shadow: 0 4px 15px rgba(0, 102, 204, 0.2) !important;
+            transition: all 0.3s ease !important;
         }
         
         #languageSelector:hover {
             box-shadow: 0 8px 25px rgba(0, 102, 204, 0.3) !important;
+            transform: translateY(-1px) !important;
         }
         
-        /* Ensure language selector container has proper positioning */
-        .language-selector-container {
-            position: relative !important;
-            z-index: 10000 !important;
-            display: inline-block !important;
+        #languageDropdown {
+            position: absolute !important;
+            top: calc(100% + 0.75rem) !important;
+            right: 0 !important;
+            left: auto !important;
+            z-index: 99999 !important;
+            width: 16rem !important;
+            max-width: calc(100vw - 2rem) !important;
+            background: rgba(255, 255, 255, 0.98) !important;
+            backdrop-filter: blur(20px) !important;
+            border-radius: 1rem !important;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
+            border: 1px solid rgba(229, 231, 235, 0.5) !important;
+            transform-origin: top right !important;
+            opacity: 0 !important;
+            transform: scale(0.95) translateY(-10px) !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            pointer-events: none !important;
+        }
+        
+        #languageDropdown:not(.hidden) {
+            opacity: 1 !important;
+            transform: scale(1) translateY(0) !important;
+            pointer-events: auto !important;
+        }
+        
+        /* Language option hover effects */
+        .language-option {
+            transition: all 0.2s ease !important;
+            border-radius: 0.75rem !important;
+            margin: 0.25rem !important;
+        }
+        
+        .language-option:hover {
+            transform: translateX(4px) !important;
+            background: linear-gradient(135deg, #E6F3FF 0%, #F0F8FF 100%) !important;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            #languageDropdown {
+                right: -1rem !important;
+                width: calc(100vw - 2rem) !important;
+                max-width: 20rem !important;
+            }
+            
+            #languageSelector {
+                padding: 0.5rem !important;
+                min-width: 40px !important;
+            }
+            
+            #languageSelector span {
+                display: none !important;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            #languageDropdown {
+                right: -0.5rem !important;
+                width: calc(100vw - 1rem) !important;
+            }
         }
         
         /* Responsive Design Improvements */
@@ -797,34 +831,7 @@
     <!-- Modern Patient Dashboard Layout -->
     <div class="flex h-screen overflow-hidden">
         
-        <!-- Modern Language Selector -->
-        <div class="fixed top-4 right-4 z-50">
-            <div class="relative">
-                <button onclick="toggleLanguageDropdown()" class="flex items-center space-x-2 px-4 py-2 bg-white/90 backdrop-blur-lg rounded-full shadow-lg border border-white/20 hover:bg-white transition-all duration-300">
-                    <i class="fas fa-globe text-patient-blue"></i>
-                    <span id="dashboard-current-language" class="text-sm font-medium text-patient-dark-blue">English</span>
-                    <i class="fas fa-chevron-down text-xs text-patient-blue"></i>
-                </button>
-                <div id="language-dropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 hidden z-50">
-                    <a href="#" onclick="changeDashboardLanguage('en')" class="flex items-center space-x-3 px-4 py-2 hover:bg-patient-light-blue transition-colors">
-                        <span class="text-lg">🇺🇸</span>
-                        <span class="text-sm font-medium">English</span>
-                    </a>
-                    <a href="#" onclick="changeDashboardLanguage('ur')" class="flex items-center space-x-3 px-4 py-2 hover:bg-patient-light-blue transition-colors">
-                        <span class="text-lg">🇵🇰</span>
-                        <span class="text-sm font-medium">اردو</span>
-                    </a>
-                    <a href="#" onclick="changeDashboardLanguage('ar')" class="flex items-center space-x-3 px-4 py-2 hover:bg-patient-light-blue transition-colors">
-                        <span class="text-lg">🇸🇦</span>
-                        <span class="text-sm font-medium">العربية</span>
-                    </a>
-                    <a href="#" onclick="changeDashboardLanguage('hi')" class="flex items-center space-x-3 px-4 py-2 hover:bg-patient-light-blue transition-colors">
-                        <span class="text-lg">🇮🇳</span>
-                        <span class="text-sm font-medium">हिन्दी</span>
-                    </a>
-                </div>
-            </div>
-        </div>
+
 
         <!-- Modern Sidebar -->
         <div id="sidebar" class="w-64 sm:w-72 lg:w-64 bg-gradient-to-b from-patient-blue to-patient-dark-blue shadow-2xl transform transition-transform duration-300 ease-in-out lg:translate-x-0 -translate-x-full fixed lg:relative z-40 h-full flex flex-col">
@@ -1016,7 +1023,7 @@
                                 <div class="max-h-96 overflow-y-auto custom-scrollbar">
                                     {% if recent_notifications %}
                                         {% for notification in recent_notifications %}
-                                        <div class="p-4 border-b border-gray-100 hover:bg-patient-light-blue/30 transition-colors cursor-pointer" onclick="viewNotification('{{ notification.type }}', {{ notification.id }})">
+                                        <div class="p-4 border-b border-gray-100 hover:bg-patient-light-blue/30 transition-colors cursor-pointer" onclick="viewNotification('{{ notification.type }}', '{{ notification.id }}')">>
                                             <div class="flex items-start space-x-3">
                                                 <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 notification-icon-{{ notification.color }}">
                                                     <i class="fas fa-{{ notification.icon }} notification-text-{{ notification.color }}"></i>
@@ -1598,39 +1605,10 @@ const dashboardLanguageNames = {
     'zh': '中文'
 };
 
-// Dashboard Language Change Function
+// Dashboard Language Change Function (unified with main language system)
 window.changeDashboardLanguage = function(langCode) {
-    try {
-        console.log('Changing dashboard language to:', langCode);
-        
-        // Update current language display
-        const currentLangElement = document.getElementById('dashboard-current-language');
-        if (currentLangElement) {
-            currentLangElement.textContent = dashboardLanguageNames[langCode];
-        }
-        
-        // Set document direction for RTL languages
-        if (langCode === 'ur' || langCode === 'ar') {
-            document.documentElement.setAttribute('dir', 'rtl');
-            document.documentElement.setAttribute('lang', langCode);
-        } else {
-            document.documentElement.setAttribute('dir', 'ltr');
-            document.documentElement.setAttribute('lang', langCode);
-        }
-        
-        // Store language preference
-        localStorage.setItem('selectedLanguage', langCode);
-        
-        // Translate dashboard content
-        translateDashboard(langCode);
-        
-        // Show success message
-        showDashboardLanguageMessage(dashboardLanguageNames[langCode]);
-        
-        console.log('Dashboard language changed successfully to:', langCode);
-    } catch (error) {
-        console.error('Error changing dashboard language:', error);
-    }
+    const langName = dashboardLanguageNames[langCode] || 'English';
+    changeLanguage(langCode, langName);
 };
 
 // Translate Dashboard Content
@@ -1664,65 +1642,7 @@ function translateDashboard(langCode) {
     }
 }
 
-// Show Language Change Message
-function showDashboardLanguageMessage(languageName) {
-    const message = document.createElement('div');
-    message.className = 'dashboard-language-notification';
-    message.innerHTML = `
-        <i class="fas fa-check-circle me-2"></i>
-        Language changed to ${languageName}
-    `;
-    message.style.cssText = `
-        position: fixed;
-        top: 80px;
-        right: 30px;
-        background: linear-gradient(135deg, #28a745, #20c997);
-        color: white;
-        padding: 1rem 1.5rem;
-        border-radius: 10px;
-        box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
-        z-index: 10002;
-        animation: slideInRight 0.3s ease-out;
-    `;
-    
-    document.body.appendChild(message);
-    
-    setTimeout(() => {
-        message.style.animation = 'slideOutRight 0.3s ease-out';
-        setTimeout(() => {
-            if (document.body.contains(message)) {
-                document.body.removeChild(message);
-            }
-        }, 300);
-    }, 3000);
-}
 
-// Initialize Dashboard Language System
-document.addEventListener('DOMContentLoaded', function() {
-    try {
-        console.log('Initializing patient dashboard language system...');
-        
-        const savedLanguage = localStorage.getItem('selectedLanguage') || 'en';
-        console.log('Saved language:', savedLanguage);
-        
-        // Update current language display
-        const currentLangElement = document.getElementById('dashboard-current-language');
-        if (currentLangElement) {
-            currentLangElement.textContent = dashboardLanguageNames[savedLanguage] || 'English';
-        }
-        
-        // Apply saved language if not English
-        if (savedLanguage !== 'en') {
-            setTimeout(() => {
-                changeDashboardLanguage(savedLanguage);
-            }, 100);
-        }
-        
-        console.log('Patient dashboard language system initialized successfully');
-    } catch (error) {
-        console.error('Error initializing patient dashboard language system:', error);
-    }
-});
 
 // Language Dropdown Functionality
 function toggleLanguageDropdown() {
@@ -1730,24 +1650,34 @@ function toggleLanguageDropdown() {
     const chevron = document.getElementById('languageChevron');
     const button = document.getElementById('languageSelector');
     
-    if (dropdown.classList.contains('hidden')) {
-        // Position dropdown properly
-        const rect = button.getBoundingClientRect();
-        const viewportWidth = window.innerWidth;
-        
-        // Reset any previous positioning
-        dropdown.style.left = 'auto';
-        dropdown.style.right = '0';
-        
-        // Check if dropdown would go off-screen
-        if (rect.right < 224) { // 224px = 14rem width
-            dropdown.style.right = 'auto';
-            dropdown.style.left = '0';
-        }
-        
+    if (!dropdown || !chevron || !button) {
+        console.error('Language dropdown elements not found');
+        return;
+    }
+    
+    const isHidden = dropdown.classList.contains('hidden');
+    
+    if (isHidden) {
+        // Show dropdown
         dropdown.classList.remove('hidden');
         chevron.style.transform = 'rotate(180deg)';
+        
+        // Position dropdown properly for mobile
+        if (window.innerWidth <= 768) {
+            const rect = button.getBoundingClientRect();
+            const viewportWidth = window.innerWidth;
+            
+            // Ensure dropdown doesn't go off-screen
+            if (rect.right < 256) { // 16rem = 256px
+                dropdown.style.right = 'auto';
+                dropdown.style.left = '0';
+            } else {
+                dropdown.style.right = '0';
+                dropdown.style.left = 'auto';
+            }
+        }
     } else {
+        // Hide dropdown
         dropdown.classList.add('hidden');
         chevron.style.transform = 'rotate(0deg)';
     }
@@ -1759,45 +1689,64 @@ document.addEventListener('click', function(event) {
     const languageDropdown = document.getElementById('languageDropdown');
     const chevron = document.getElementById('languageChevron');
     
-    if (languageSelector && !languageSelector.contains(event.target)) {
+    if (languageSelector && languageDropdown && !languageSelector.contains(event.target)) {
         languageDropdown.classList.add('hidden');
-        chevron.style.transform = 'rotate(0deg)';
+        if (chevron) {
+            chevron.style.transform = 'rotate(0deg)';
+        }
     }
 });
 
 // Enhanced Language Change Function with RTL Support
 function changeLanguage(langCode, langName) {
-    // Update current language display
-    document.getElementById('currentLanguage').textContent = langName;
-    
-    // Store language preference
-    localStorage.setItem('patientLanguage', langCode);
-    localStorage.setItem('patientLanguageName', langName);
-    localStorage.setItem('selectedLanguage', langCode);
-    
-    // Apply RTL for Arabic and Urdu
-    const rtlLanguages = ['ar', 'ur'];
-    const htmlElement = document.documentElement;
-    
-    if (rtlLanguages.includes(langCode)) {
-        htmlElement.setAttribute('dir', 'rtl');
-        htmlElement.setAttribute('lang', langCode);
-        document.body.classList.add('rtl-layout');
-    } else {
-        htmlElement.setAttribute('dir', 'ltr');
-        htmlElement.setAttribute('lang', langCode);
-        document.body.classList.remove('rtl-layout');
+    try {
+        console.log('Changing language to:', langCode, langName);
+        
+        // Update current language display
+        const currentLangElement = document.getElementById('currentLanguage');
+        if (currentLangElement) {
+            currentLangElement.textContent = langName;
+        }
+        
+        // Store language preference
+        localStorage.setItem('patientLanguage', langCode);
+        localStorage.setItem('patientLanguageName', langName);
+        localStorage.setItem('selectedLanguage', langCode);
+        
+        // Apply RTL for Arabic and Urdu
+        const rtlLanguages = ['ar', 'ur'];
+        const htmlElement = document.documentElement;
+        
+        if (rtlLanguages.includes(langCode)) {
+            htmlElement.setAttribute('dir', 'rtl');
+            htmlElement.setAttribute('lang', langCode);
+            document.body.classList.add('rtl-layout');
+        } else {
+            htmlElement.setAttribute('dir', 'ltr');
+            htmlElement.setAttribute('lang', langCode);
+            document.body.classList.remove('rtl-layout');
+        }
+        
+        // Translate all elements with data-translate attribute
+        translateDashboard(langCode);
+        
+        // Close dropdown
+        const dropdown = document.getElementById('languageDropdown');
+        const chevron = document.getElementById('languageChevron');
+        if (dropdown) {
+            dropdown.classList.add('hidden');
+        }
+        if (chevron) {
+            chevron.style.transform = 'rotate(0deg)';
+        }
+        
+        // Show success message
+        showLanguageChangeNotification(langName);
+        
+        console.log('Language changed successfully to:', langCode);
+    } catch (error) {
+        console.error('Error changing language:', error);
     }
-    
-    // Translate all elements with data-translate attribute
-    translateDashboard(langCode);
-    
-    // Close dropdown
-    document.getElementById('languageDropdown').classList.add('hidden');
-    document.getElementById('languageChevron').style.transform = 'rotate(0deg)';
-    
-    // Show success message
-    showLanguageChangeNotification(langName);
 }
 
 // Show language change notification
@@ -1833,12 +1782,19 @@ function showLanguageChangeNotification(langName) {
 
 // Load saved language on page load
 document.addEventListener('DOMContentLoaded', function() {
-    const savedLang = localStorage.getItem('patientLanguage') || localStorage.getItem('selectedLanguage');
-    const savedLangName = localStorage.getItem('patientLanguageName');
+    const savedLang = localStorage.getItem('patientLanguage') || localStorage.getItem('selectedLanguage') || 'en';
+    const savedLangName = localStorage.getItem('patientLanguageName') || dashboardLanguageNames[savedLang] || 'English';
     
-    if (savedLang && savedLangName) {
-        // Update display without showing notification
-        document.getElementById('currentLanguage').textContent = savedLangName;
+    console.log('Loading saved language:', savedLang, savedLangName);
+    
+    // Update display without showing notification
+    const currentLangElement = document.getElementById('currentLanguage');
+    if (currentLangElement) {
+        currentLangElement.textContent = savedLangName;
+    }
+    
+    // Apply language if not English
+    if (savedLang !== 'en') {
         translateDashboard(savedLang);
         
         // Apply RTL if needed
@@ -1919,31 +1875,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Modern Dashboard Functions
-window.toggleSidebar = function() {
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebar-overlay');
-    
-    sidebar.classList.toggle('-translate-x-full');
-    overlay.classList.toggle('hidden');
-};
 
-window.toggleLanguageDropdown = function() {
-    const dropdown = document.getElementById('language-dropdown');
-    if (dropdown) {
-        dropdown.classList.toggle('hidden');
-    }
-};
-
-// Close dropdowns when clicking outside
-document.addEventListener('click', function(event) {
-    const languageDropdown = document.getElementById('language-dropdown');
-    const languageButton = event.target.closest('[onclick="toggleLanguageDropdown()"]');
-    
-    if (!languageButton && !languageDropdown.contains(event.target)) {
-        languageDropdown.classList.add('hidden');
-    }
-});
 
 // Smooth animations for cards
 document.addEventListener('DOMContentLoaded', function() {
@@ -1966,7 +1898,7 @@ document.querySelectorAll('#sidebar a').forEach(link => {
 console.log('🏥 Modern Patient Dashboard Loaded Successfully!');
 
 // Notification System Functions
-let notificationCount = {{ notifications_count|default:0 }};
+let notificationCount = parseInt('{{ notifications_count|default:0 }}') || 0;
 let isNotificationOpen = false;
 
 function toggleNotifications() {

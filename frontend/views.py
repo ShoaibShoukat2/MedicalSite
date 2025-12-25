@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.hashers import make_password, check_password
 from user_account.models import Patient, Practitioner
 from django.contrib import messages
+from django.db.models import Q
 import random
 import string
 from django.core.mail import send_mail
@@ -24,24 +25,23 @@ from django.http import JsonResponse
 from django.shortcuts import render
 
 def index(request):
-
     query = request.GET.get('q', '')
-
+    
     if query:
+        # Search in multiple fields: first_name, last_name, specialty, doctor_type
         practitioners = Practitioner.objects.filter(
-            first_name__icontains=query
-        ) | Practitioner.objects.filter(
-            last_name__icontains=query
-        )
-
+            Q(first_name__icontains=query) |
+            Q(last_name__icontains=query) |
+            Q(specialty__icontains=query) |
+            Q(doctor_type__icontains=query)
+        ).distinct()
     else:
-
-
+        # Show first 3 practitioners when no search query
         practitioners = Practitioner.objects.all()[:3]
-
         
     context = {
         'practitioners': practitioners,
+        'query': query,
     }
     return render(request, 'temp_index.html', context)
 
