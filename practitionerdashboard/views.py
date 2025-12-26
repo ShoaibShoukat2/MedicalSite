@@ -512,7 +512,7 @@ def appointment(request):
     # Upcoming appointments (next 7 days)
     next_week = today + timedelta(days=7)
     upcoming_appointments = all_appointments.filter(
-        slot__start_time__date__range=(today, next_week),
+        slot__date__range=(today, next_week),
         status__in=['Pending', 'Accepted']
     )
     
@@ -531,6 +531,46 @@ def appointment(request):
     }
     
     return render(request, 'practitionerdashboard/appointment.html', context)
+
+
+def accepted_appointments_view(request):
+    """Dedicated view for accepted appointments - accessible from sidebar"""
+    practitioner_id = request.session.get('practitioner_id')
+    
+    if not practitioner_id:
+        return redirect('frontend:practitioner_login')
+    
+    practitioner = get_object_or_404(Practitioner, id=practitioner_id)
+    
+    # Get all accepted appointments for this practitioner
+    accepted_appointments = Appointment.objects.filter(
+        practitioner_id=practitioner_id,
+        status='Accepted'
+    ).select_related('patient', 'slot').order_by('-slot__date', '-slot__start_time')
+    
+    # Get current time for categorization
+    from django.utils import timezone as django_timezone
+    now_time = django_timezone.now()
+    today = django_timezone.localdate()
+    
+    # Categorize accepted appointments
+    upcoming_accepted = accepted_appointments.filter(slot__date__gte=today)
+    past_accepted = accepted_appointments.filter(slot__date__lt=today)
+    today_accepted = accepted_appointments.filter(slot__date=today)
+    
+    context = {
+        'practitioner': practitioner,
+        'accepted_appointments': accepted_appointments,
+        'upcoming_accepted': upcoming_accepted,
+        'past_accepted': past_accepted,
+        'today_accepted': today_accepted,
+        'total_accepted': accepted_appointments.count(),
+        'upcoming_count': upcoming_accepted.count(),
+        'past_count': past_accepted.count(),
+        'today_count': today_accepted.count(),
+    }
+    
+    return render(request, 'practitionerdashboard/accepted_appointments.html', context)
 
 
 def chat(request):

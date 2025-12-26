@@ -314,7 +314,7 @@
                     <span class="font-medium" data-translate="Schedule">Schedule Timings</span>
                 </a>
                 
-                <a href="{% url 'practitionerdashboard:dashboard' %}" class="flex items-center space-x-3 px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'appointment' %}bg-white/20 text-white{% endif %}">
+                <a href="{% url 'practitioner_dashboard:accepted_appointments' %}" class="flex items-center space-x-3 px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'accepted_appointments' %}bg-white/20 text-white{% endif %}">
                     <i class="fas fa-calendar-check text-lg"></i>
                     <span class="font-medium" data-translate="Appointments">Appointments</span>
                 </a>
@@ -332,11 +332,11 @@
                     </span>
                 </a>
                 
-                <a href="{% url 'chat:chat_list' %}" class="flex items-center space-x-3 px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200">
+                <!-- <a href="{% url 'chat:chat_list' %}" class="flex items-center space-x-3 px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200">
                     <i class="fas fa-comments text-lg"></i>
                     <span class="font-medium">Chat</span>
                     <span class="ml-auto bg-doctor-green text-white text-xs px-2 py-1 rounded-full notification-badge">5</span>
-                </a>
+                </a> -->
                 </div>
             </nav>
         </div>

@@ -8,6 +8,7 @@ urlpatterns = [
     
     # Main pages
     path('appointments/', views.appointment, name='appointments'),  # FIXED: Added missing appointment URL
+    path('accepted-appointments/', views.accepted_appointments_view, name='accepted_appointments'),  # NEW: Dedicated accepted appointments view
     path('telemedicine/', views.telemedicine, name='telemedicine'),
     path('mypatient/', views.mypatient, name='mypatient'),
     path('schedule-timming/', views.schedule_timming, name='schedule_timming'),

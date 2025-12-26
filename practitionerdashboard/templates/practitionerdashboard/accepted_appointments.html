@@ -1,0 +1,807 @@
+{% extends "practitionerdashboard/base.html" %} {% load static %}
+{% block content %}
+
+<!-- Accepted Appointments Page -->
+<div class="space-y-6">
+  <!-- Header Section -->
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-doctor-dark-blue mb-2" data-translate="Accepted Appointments">Accepted Appointments</h1>
+        <p class="text-doctor-dark-gray">Manage all your confirmed appointments and patient interactions.</p>
+      </div>
+      <div class="hidden md:flex items-center space-x-4">
+        <div class="text-right">
+          <p class="text-sm text-doctor-dark-gray">Total Accepted</p>
+          <p class="font-semibold text-doctor-green text-2xl">{{ total_accepted }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- Today's Accepted Card -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 doctor-card hover:shadow-lg transition-all duration-300">
+      <div class="flex items-center justify-between">
+        <div class="flex-1">
+          <div class="flex items-center space-x-3 mb-4">
+            <div class="w-12 h-12 bg-gradient-to-br from-doctor-green to-emerald-600 rounded-xl flex items-center justify-center">
+              <i class="fas fa-calendar-day text-white text-lg"></i>
+            </div>
+            <span class="px-3 py-1 bg-doctor-light-green text-doctor-green text-sm font-medium rounded-full">
+              Today
+            </span>
+          </div>
+          <h3 class="text-3xl font-bold text-doctor-dark-blue mb-1">{{ today_count }}</h3>
+          <p class="text-sm text-doctor-dark-gray">Today's appointments</p>
+        </div>
+        <div class="opacity-10">
+          <i class="fas fa-calendar-day text-6xl text-doctor-green"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Upcoming Accepted Card -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 doctor-card hover:shadow-lg transition-all duration-300">
+      <div class="flex items-center justify-between">
+        <div class="flex-1">
+          <div class="flex items-center space-x-3 mb-4">
+            <div class="w-12 h-12 bg-gradient-to-br from-doctor-blue to-blue-600 rounded-xl flex items-center justify-center">
+              <i class="fas fa-clock text-white text-lg"></i>
+            </div>
+            <span class="px-3 py-1 bg-doctor-light-blue text-doctor-blue text-sm font-medium rounded-full">
+              Upcoming
+            </span>
+          </div>
+          <h3 class="text-3xl font-bold text-doctor-dark-blue mb-1">{{ upcoming_count }}</h3>
+          <p class="text-sm text-doctor-dark-gray">Future appointments</p>
+        </div>
+        <div class="opacity-10">
+          <i class="fas fa-clock text-6xl text-doctor-blue"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Past Accepted Card -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 doctor-card hover:shadow-lg transition-all duration-300">
+      <div class="flex items-center justify-between">
+        <div class="flex-1">
+          <div class="flex items-center space-x-3 mb-4">
+            <div class="w-12 h-12 bg-gradient-to-br from-doctor-purple to-purple-600 rounded-xl flex items-center justify-center">
+              <i class="fas fa-history text-white text-lg"></i>
+            </div>
+            <span class="px-3 py-1 bg-purple-100 text-doctor-purple text-sm font-medium rounded-full">
+              Completed
+            </span>
+          </div>
+          <h3 class="text-3xl font-bold text-doctor-dark-blue mb-1">{{ past_count }}</h3>
+          <p class="text-sm text-doctor-dark-gray">Past appointments</p>
+        </div>
+        <div class="opacity-10">
+          <i class="fas fa-history text-6xl text-doctor-purple"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Accepted Appointments Management Section -->
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-doctor-green to-emerald-600 p-6 text-white">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-2xl font-bold mb-2">
+            <i class="fas fa-check-circle mr-3"></i>Accepted Appointments
+          </h2>
+          <p class="text-green-100">All confirmed appointments with video call and chat access</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="border-b border-gray-200 bg-gray-50">
+      <nav class="flex space-x-8 px-6" id="appointmentTabs">
+        <button class="tab-button active py-4 px-2 border-b-2 border-doctor-green text-doctor-green font-medium transition-colors" data-tab="today">
+          <i class="fas fa-calendar-day mr-2"></i>Today's Appointments
+          <span class="ml-2 bg-doctor-green text-white text-xs px-2 py-1 rounded-full">{{ today_count }}</span>
+        </button>
+        <button class="tab-button py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-doctor-green font-medium transition-colors" data-tab="upcoming">
+          <i class="fas fa-clock mr-2"></i>Upcoming
+          <span class="ml-2 bg-blue-500 text-white text-xs px-2 py-1 rounded-full">{{ upcoming_count }}</span>
+        </button>
+        <button class="tab-button py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-doctor-green font-medium transition-colors" data-tab="past">
+          <i class="fas fa-history mr-2"></i>Past Appointments
+          <span class="ml-2 bg-purple-500 text-white text-xs px-2 py-1 rounded-full">{{ past_count }}</span>
+        </button>
+        <button class="tab-button py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-doctor-green font-medium transition-colors" data-tab="all">
+          <i class="fas fa-list mr-2"></i>All Accepted
+          <span class="ml-2 bg-gray-500 text-white text-xs px-2 py-1 rounded-full">{{ total_accepted }}</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- Tab Content -->
+    <div class="p-6">
+      <!-- Today's Accepted Appointments Tab -->
+      <div class="tab-content active" id="today">
+        {% if today_accepted %}
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead>
+                <tr class="border-b border-gray-200">
+                  <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Patient</th>
+                  <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Time</th>
+                  <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Amount</th>
+                  <th class="text-center py-4 px-4 font-semibold text-doctor-dark-blue">Status</th>
+                  <th class="text-center py-4 px-4 font-semibold text-doctor-dark-blue">Symptoms</th>
+                  <th class="text-right py-4 px-4 font-semibold text-doctor-dark-blue">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-100">
+                {% for appointment in today_accepted %}
+                <tr class="appointment-row hover:bg-green-50 transition-colors" data-id="{{ appointment.id }}">
+                  <td class="py-4 px-4">
+                    <div class="flex items-center space-x-3">
+                      <div class="w-10 h-10 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center">
+                        <span class="text-white font-semibold text-sm">{{ appointment.patient.first_name|slice:":1" }}</span>
+                      </div>
+                      <div>
+                        <p class="font-medium text-doctor-dark-blue">{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</p>
+                        <p class="text-sm text-doctor-dark-gray">{{ appointment.patient.email }}</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="py-4 px-4">
+                    <div>
+                      <p class="font-medium text-doctor-dark-blue">{{ appointment.slot.start_time|date:"M d, Y" }}</p>
+                      <p class="text-sm text-doctor-blue">{{ appointment.slot.start_time|time:"h:i A" }}</p>
+                    </div>
+                  </td>
+                  <td class="py-4 px-4">
+                    <span class="px-3 py-1 bg-gray-100 text-doctor-dark-blue rounded-full text-sm font-medium">
+                      ${{ appointment.practitioner.price|floatformat:0 }}
+                    </span>
+                  </td>
+                  <td class="py-4 px-4 text-center">
+                    <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">Accepted</span>
+                  </td>
+                  <td class="py-4 px-4 text-center">
+                    <button class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors" onclick="openSymptomModal('{{ appointment.id }}', '{{ appointment.patient.first_name }}', '{{ appointment.symptom_details|default:"No symptoms submitted" }}')">
+                      <i class="fas fa-clipboard-list"></i>
+                    </button>
+                  </td>
+                  <td class="py-4 px-4 text-right">
+                    <div class="flex items-center justify-end space-x-2">
+                      <button class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors view-btn">
+                        <i class="fas fa-eye"></i>
+                      </button>
+                      <!-- Video Call Button -->
+                      <button onclick="startVideoCall({{ appointment.patient.id }}, '{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}')" 
+                              class="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition-colors video-call-btn"
+                              title="Start Video Call">
+                        <i class="fas fa-video"></i>
+                      </button>
+                      <!-- Chat Button -->
+                      <button onclick="openChat({{ appointment.patient.id }}, '{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}')" 
+                              class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors chat-btn"
+                              title="Chat with Patient">
+                        <i class="fas fa-comments"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="text-center py-12">
+            <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <i class="fas fa-calendar-day text-gray-400 text-3xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-doctor-dark-blue mb-2">No accepted appointments for today</h3>
+            <p class="text-doctor-dark-gray">Your schedule is clear for today!</p>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Upcoming Accepted Appointments Tab -->
+      <div class="tab-content hidden" id="upcoming">
+        {% if upcoming_accepted %}
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead>
+                <tr class="border-b border-gray-200">
+                  <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Patient</th>
+                  <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Date & Time</th>
+                  <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Amount</th>
+                  <th class="text-center py-4 px-4 font-semibold text-doctor-dark-blue">Status</th>
+                  <th class="text-center py-4 px-4 font-semibold text-doctor-dark-blue">Symptoms</th>
+                  <th class="text-right py-4 px-4 font-semibold text-doctor-dark-blue">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-100">
+                {% for appointment in upcoming_accepted %}
+                <tr class="appointment-row hover:bg-blue-50 transition-colors" data-id="{{ appointment.id }}">
+                  <td class="py-4 px-4">
+                    <div class="flex items-center space-x-3">
+                      <div class="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center">
+                        <span class="text-white font-semibold text-sm">{{ appointment.patient.first_name|slice:":1" }}</span>
+                      </div>
+                      <div>
+                        <p class="font-medium text-doctor-dark-blue">{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</p>
+                        <p class="text-sm text-doctor-dark-gray">{{ appointment.patient.email }}</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="py-4 px-4">
+                    <div>
+                      <p class="font-medium text-doctor-dark-blue">{{ appointment.slot.start_time|date:"M d, Y" }}</p>
+                      <p class="text-sm text-doctor-blue">{{ appointment.slot.start_time|time:"h:i A" }}</p>
+                    </div>
+                  </td>
+                  <td class="py-4 px-4">
+                    <span class="px-3 py-1 bg-gray-100 text-doctor-dark-blue rounded-full text-sm font-medium">
+                      ${{ appointment.practitioner.price|floatformat:0 }}
+                    </span>
+                  </td>
+                  <td class="py-4 px-4 text-center">
+                    <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">Accepted</span>
+                  </td>
+                  <td class="py-4 px-4 text-center">
+                    <button class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors" onclick="openSymptomModal('{{ appointment.id }}', '{{ appointment.patient.first_name }}', '{{ appointment.symptom_details|default:"No symptoms submitted" }}')">
+                      <i class="fas fa-clipboard-list"></i>
+                    </button>
+                  </td>
+                  <td class="py-4 px-4 text-right">
+                    <div class="flex items-center justify-end space-x-2">
+                      <button class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors view-btn">
+                        <i class="fas fa-eye"></i>
+                      </button>
+                      <!-- Video Call Button -->
+                      <button onclick="startVideoCall({{ appointment.patient.id }}, '{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}')" 
+                              class="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition-colors video-call-btn"
+                              title="Start Video Call">
+                        <i class="fas fa-video"></i>
+                      </button>
+                      <!-- Chat Button -->
+                      <button onclick="openChat({{ appointment.patient.id }}, '{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}')" 
+                              class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors chat-btn"
+                              title="Chat with Patient">
+                        <i class="fas fa-comments"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="text-center py-12">
+            <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <i class="fas fa-clock text-gray-400 text-3xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-doctor-dark-blue mb-2">No upcoming accepted appointments</h3>
+            <p class="text-doctor-dark-gray">No future appointments scheduled yet.</p>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Past Accepted Appointments Tab -->
+      <div class="tab-content hidden" id="past">
+        {% if past_accepted %}
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead>
+                <tr class="border-b border-gray-200">
+                  <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Patient</th>
+                  <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Date & Time</th>
+                  <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Amount</th>
+                  <th class="text-center py-4 px-4 font-semibold text-doctor-dark-blue">Status</th>
+                  <th class="text-center py-4 px-4 font-semibold text-doctor-dark-blue">Symptoms</th>
+                  <th class="text-right py-4 px-4 font-semibold text-doctor-dark-blue">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-100">
+                {% for appointment in past_accepted %}
+                <tr class="appointment-row hover:bg-purple-50 transition-colors" data-id="{{ appointment.id }}">
+                  <td class="py-4 px-4">
+                    <div class="flex items-center space-x-3">
+                      <div class="w-10 h-10 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center">
+                        <span class="text-white font-semibold text-sm">{{ appointment.patient.first_name|slice:":1" }}</span>
+                      </div>
+                      <div>
+                        <p class="font-medium text-doctor-dark-blue">{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</p>
+                        <p class="text-sm text-doctor-dark-gray">{{ appointment.patient.email }}</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="py-4 px-4">
+                    <div>
+                      <p class="font-medium text-doctor-dark-blue">{{ appointment.slot.start_time|date:"M d, Y" }}</p>
+                      <p class="text-sm text-doctor-blue">{{ appointment.slot.start_time|time:"h:i A" }}</p>
+                    </div>
+                  </td>
+                  <td class="py-4 px-4">
+                    <span class="px-3 py-1 bg-gray-100 text-doctor-dark-blue rounded-full text-sm font-medium">
+                      ${{ appointment.practitioner.price|floatformat:0 }}
+                    </span>
+                  </td>
+                  <td class="py-4 px-4 text-center">
+                    <span class="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm font-medium">Completed</span>
+                  </td>
+                  <td class="py-4 px-4 text-center">
+                    <button class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors" onclick="openSymptomModal('{{ appointment.id }}', '{{ appointment.patient.first_name }}', '{{ appointment.symptom_details|default:"No symptoms submitted" }}')">
+                      <i class="fas fa-clipboard-list"></i>
+                    </button>
+                  </td>
+                  <td class="py-4 px-4 text-right">
+                    <div class="flex items-center justify-end space-x-2">
+                      <button class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors view-btn">
+                        <i class="fas fa-eye"></i>
+                      </button>
+                      <!-- Chat Button (still available for past appointments) -->
+                      <button onclick="openChat({{ appointment.patient.id }}, '{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}')" 
+                              class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors chat-btn"
+                              title="Chat with Patient">
+                        <i class="fas fa-comments"></i>
+                      </button>
+                      <!-- Medical Records Button -->
+                      <button class="p-2 bg-purple-100 text-purple-600 rounded-lg hover:bg-purple-200 transition-colors"
+                              title="View Medical Records">
+                        <i class="fas fa-file-medical"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="text-center py-12">
+            <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <i class="fas fa-history text-gray-400 text-3xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-doctor-dark-blue mb-2">No past accepted appointments</h3>
+            <p class="text-doctor-dark-gray">No completed appointments yet.</p>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- All Accepted Appointments Tab -->
+      <div class="tab-content hidden" id="all">
+        {% if accepted_appointments %}
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead>
+                <tr class="border-b border-gray-200">
+                  <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Patient</th>
+                  <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Date & Time</th>
+                  <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Amount</th>
+                  <th class="text-center py-4 px-4 font-semibold text-doctor-dark-blue">Status</th>
+                  <th class="text-center py-4 px-4 font-semibold text-doctor-dark-blue">Symptoms</th>
+                  <th class="text-right py-4 px-4 font-semibold text-doctor-dark-blue">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-100">
+                {% for appointment in accepted_appointments %}
+                <tr class="appointment-row hover:bg-gray-50 transition-colors" data-id="{{ appointment.id }}">
+                  <td class="py-4 px-4">
+                    <div class="flex items-center space-x-3">
+                      <div class="w-10 h-10 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center">
+                        <span class="text-white font-semibold text-sm">{{ appointment.patient.first_name|slice:":1" }}</span>
+                      </div>
+                      <div>
+                        <p class="font-medium text-doctor-dark-blue">{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</p>
+                        <p class="text-sm text-doctor-dark-gray">{{ appointment.patient.email }}</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="py-4 px-4">
+                    <div>
+                      <p class="font-medium text-doctor-dark-blue">{{ appointment.slot.start_time|date:"M d, Y" }}</p>
+                      <p class="text-sm text-doctor-blue">{{ appointment.slot.start_time|time:"h:i A" }}</p>
+                    </div>
+                  </td>
+                  <td class="py-4 px-4">
+                    <span class="px-3 py-1 bg-gray-100 text-doctor-dark-blue rounded-full text-sm font-medium">
+                      ${{ appointment.practitioner.price|floatformat:0 }}
+                    </span>
+                  </td>
+                  <td class="py-4 px-4 text-center">
+                    <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">Accepted</span>
+                  </td>
+                  <td class="py-4 px-4 text-center">
+                    <button class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors" onclick="openSymptomModal('{{ appointment.id }}', '{{ appointment.patient.first_name }}', '{{ appointment.symptom_details|default:"No symptoms submitted" }}')">
+                      <i class="fas fa-clipboard-list"></i>
+                    </button>
+                  </td>
+                  <td class="py-4 px-4 text-right">
+                    <div class="flex items-center justify-end space-x-2">
+                      <button class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors view-btn">
+                        <i class="fas fa-eye"></i>
+                      </button>
+                      <!-- Video Call Button -->
+                      <button onclick="startVideoCall({{ appointment.patient.id }}, '{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}')" 
+                              class="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition-colors video-call-btn"
+                              title="Start Video Call">
+                        <i class="fas fa-video"></i>
+                      </button>
+                      <!-- Chat Button -->
+                      <button onclick="openChat({{ appointment.patient.id }}, '{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}')" 
+                              class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors chat-btn"
+                              title="Chat with Patient">
+                        <i class="fas fa-comments"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="text-center py-12">
+            <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <i class="fas fa-check-circle text-gray-400 text-3xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-doctor-dark-blue mb-2">No accepted appointments</h3>
+            <p class="text-doctor-dark-gray">No appointments have been accepted yet.</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Patient Details Modal -->
+<div id="patientModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+    <div class="p-6 border-b border-gray-200">
+      <div class="flex items-center justify-between">
+        <h2 class="text-2xl font-bold text-doctor-dark-blue">
+          <i class="fas fa-user-circle mr-3 text-doctor-blue"></i>Patient Information
+        </h2>
+        <button onclick="closePatientModal()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+          <i class="fas fa-times text-gray-500"></i>
+        </button>
+      </div>
+    </div>
+    <div class="p-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="text-center">
+          <div class="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden bg-gray-100">
+            <img id="patientPhoto" src="" alt="Profile Photo" class="w-full h-full object-cover"/>
+          </div>
+        </div>
+        <div class="md:col-span-2 space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-gray-50 p-4 rounded-xl border-l-4 border-doctor-blue">
+              <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Full Name</label>
+              <p id="patientName" class="font-medium text-doctor-dark-blue mt-1"></p>
+            </div>
+            <div class="bg-gray-50 p-4 rounded-xl border-l-4 border-doctor-green">
+              <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Gender</label>
+              <p id="patientGender" class="font-medium text-doctor-dark-blue mt-1"></p>
+            </div>
+            <div class="bg-gray-50 p-4 rounded-xl border-l-4 border-doctor-purple">
+              <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Phone</label>
+              <p id="patientPhone" class="font-medium text-doctor-dark-blue mt-1"></p>
+            </div>
+            <div class="bg-gray-50 p-4 rounded-xl border-l-4 border-doctor-orange">
+              <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Date of Birth</label>
+              <p id="patientDob" class="font-medium text-doctor-dark-blue mt-1"></p>
+            </div>
+            <div class="md:col-span-2 bg-gray-50 p-4 rounded-xl border-l-4 border-doctor-teal">
+              <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Email</label>
+              <p id="patientEmail" class="font-medium text-doctor-dark-blue mt-1"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="p-6 border-t border-gray-200 flex justify-end">
+      <button onclick="closePatientModal()" class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+        <i class="fas fa-times mr-2"></i>Close
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Symptom Modal -->
+<div id="symptomModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full">
+    <div class="p-6 border-b border-gray-200">
+      <div class="flex items-center justify-between">
+        <h2 class="text-xl font-bold text-doctor-dark-blue">
+          <i class="fas fa-clipboard-list mr-3 text-doctor-blue"></i>Patient Symptoms
+        </h2>
+        <button onclick="closeSymptomModal()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+          <i class="fas fa-times text-gray-500"></i>
+        </button>
+      </div>
+    </div>
+    <div class="p-6">
+      <div class="bg-blue-50 p-4 rounded-xl border-l-4 border-doctor-blue">
+        <h3 id="symptomPatientName" class="font-semibold text-doctor-dark-blue mb-2"></h3>
+        <p id="symptomDetails" class="text-doctor-dark-gray"></p>
+      </div>
+    </div>
+    <div class="p-6 border-t border-gray-200 flex justify-end">
+      <button onclick="closeSymptomModal()" class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+        Close
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Tab functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const targetTab = button.getAttribute('data-tab');
+            
+            // Remove active class from all buttons and contents
+            tabButtons.forEach(btn => {
+                btn.classList.remove('active', 'border-doctor-green', 'text-doctor-green');
+                btn.classList.add('border-transparent', 'text-gray-500');
+            });
+            tabContents.forEach(content => {
+                content.classList.add('hidden');
+                content.classList.remove('active');
+            });
+            
+            // Add active class to clicked button and corresponding content
+            button.classList.add('active', 'border-doctor-green', 'text-doctor-green');
+            button.classList.remove('border-transparent', 'text-gray-500');
+            document.getElementById(targetTab).classList.remove('hidden');
+            document.getElementById(targetTab).classList.add('active');
+        });
+    });
+});
+
+// Modal functions
+function openSymptomModal(appointmentId, patientName, symptoms) {
+    document.getElementById('symptomPatientName').textContent = patientName + "'s Symptoms";
+    document.getElementById('symptomDetails').textContent = symptoms;
+    document.getElementById('symptomModal').classList.remove('hidden');
+}
+
+function closeSymptomModal() {
+    document.getElementById('symptomModal').classList.add('hidden');
+}
+
+function closePatientModal() {
+    document.getElementById('patientModal').classList.add('hidden');
+}
+
+// Patient details view
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle View button
+    document.querySelectorAll('.view-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const appointmentRow = this.closest('tr');
+            const appointmentId = appointmentRow.getAttribute('data-id');
+            
+            fetch(`/practitioner-dashboard/patient/${appointmentId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    const patient = data.patient;
+                    
+                    document.getElementById('patientName').textContent = `${patient.first_name} ${patient.last_name}`;
+                    document.getElementById('patientGender').textContent = patient.gender;
+                    document.getElementById('patientPhone').textContent = patient.mobile_phone;
+                    document.getElementById('patientDob').textContent = patient.date_of_birth;
+                    document.getElementById('patientEmail').textContent = patient.email;
+                    
+                    if (patient.profile_photo) {
+                        document.getElementById('patientPhoto').src = patient.profile_photo;
+                    }
+                    
+                    document.getElementById('patientModal').classList.remove('hidden');
+                })
+                .catch(error => {
+                    alert('Failed to load patient details.');
+                });
+        });
+    });
+});
+
+// Chat Function
+function openChat(patientId, patientName) {
+    // Find or create chat room for this patient-practitioner pair
+    fetch('/practitioner-dashboard/api/get-chat-room/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({
+            'patient_id': patientId
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Open chat in new window or redirect
+            const chatUrl = `/chat/room/${data.chat_room_id}/`;
+            window.open(chatUrl, 'ChatWindow', 'width=800,height=600,scrollbars=yes,resizable=yes');
+        } else {
+            showNotification('Error opening chat: ' + data.error, 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Error opening chat', 'error');
+    });
+}
+
+// Video Call Function for Zoom
+function startVideoCall(patientId, patientName) {
+    if (confirm(`Start video meeting with ${patientName}?`)) {
+        // Show loading state
+        const loadingNotification = showNotification('Creating video meeting...', 'info');
+        
+        fetch(`/practitioner-dashboard/start-video-call/${patientId}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Remove loading notification
+            if (document.body.contains(loadingNotification)) {
+                document.body.removeChild(loadingNotification);
+            }
+            
+            if (data.success) {
+                showNotification('Video meeting created! Opening meeting...', 'success');
+                
+                // Show meeting modal with details
+                showVideoMeetingModal(data, patientName);
+            } else {
+                showNotification(data.error || 'Failed to create video meeting', 'error');
+            }
+        })
+        .catch(error => {
+            // Remove loading notification
+            if (document.body.contains(loadingNotification)) {
+                document.body.removeChild(loadingNotification);
+            }
+            
+            console.error('Error:', error);
+            showNotification('Error creating video meeting', 'error');
+        });
+    }
+}
+
+// Show video meeting modal with meeting details
+function showVideoMeetingModal(meetingData, patientName) {
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4';
+    modal.innerHTML = `
+        <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-video text-green-600 text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-doctor-dark-blue mb-2">Video Meeting Ready</h3>
+                <p class="text-gray-600 mb-6">Video meeting with ${patientName} is ready. Use the host link to start the meeting.</p>
+                
+                <div class="bg-gray-50 rounded-lg p-4 mb-6 text-left">
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span class="font-medium text-gray-600">Meeting ID:</span>
+                            <span class="font-mono text-gray-800">${meetingData.meeting_id || 'N/A'}</span>
+                        </div>
+                        ${meetingData.password ? `
+                        <div class="flex justify-between">
+                            <span class="font-medium text-gray-600">Password:</span>
+                            <span class="font-mono text-gray-800">${meetingData.password}</span>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+                
+                <div class="space-y-3">
+                    <a href="${meetingData.start_url || meetingData.join_url}" target="_blank" 
+                       class="block w-full bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 transition-colors font-medium">
+                        <i class="fas fa-video mr-2"></i>Start Video Meeting (Host)
+                    </a>
+                    <a href="${meetingData.join_url}" target="_blank" 
+                       class="block w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                        <i class="fas fa-sign-in-alt mr-2"></i>Join as Participant
+                    </a>
+                    <button onclick="closeVideoMeetingModal()" 
+                            class="block w-full bg-gray-100 text-gray-700 py-3 px-6 rounded-lg hover:bg-gray-200 transition-colors">
+                        Close
+                    </button>
+                </div>
+                
+                <div class="mt-4 p-3 bg-green-50 rounded-lg">
+                    <p class="text-xs text-green-600">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Patient has been notified and will receive the meeting link
+                    </p>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Close modal function
+    window.closeVideoMeetingModal = function() {
+        if (document.body.contains(modal)) {
+            document.body.removeChild(modal);
+        }
+    };
+    
+    // Close on outside click
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeVideoMeetingModal();
+        }
+    });
+}
+
+// Get CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// Show notification message
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    const bgColor = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
+    
+    notification.className = `fixed top-4 right-4 ${bgColor} text-white px-6 py-3 rounded-xl shadow-lg z-50 transform translate-x-full transition-transform duration-300`;
+    notification.innerHTML = `
+        <div class="flex items-center space-x-3">
+            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'} text-lg"></i>
+            <span class="font-medium">${message}</span>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Animate in
+    setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+    }, 100);
+    
+    // Animate out and remove
+    setTimeout(() => {
+        notification.style.transform = 'translateX(100%)';
+        setTimeout(() => {
+            if (document.body.contains(notification)) {
+                document.body.removeChild(notification);
+            }
+        }, 300);
+    }, 3000);
+    
+    return notification;
+}
+</script>
+
+{% endblock content %}
