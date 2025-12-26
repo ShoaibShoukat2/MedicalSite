@@ -1,0 +1,298 @@
+{% extends 'patientdashboard/patient_base.html' %}
+{% load static %}
+
+{% block title %}Message Doctors - Patient Dashboard{% endblock %}
+
+{% block content %}
+<!-- Modern Header -->
+<div class="bg-gradient-to-r from-patient-blue to-patient-dark-blue rounded-2xl p-6 mb-8 text-white">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+        <div>
+            <h1 class="text-2xl md:text-3xl font-bold mb-2">Message Doctors</h1>
+            <p class="text-white/90">Connect with healthcare professionals directly</p>
+        </div>
+        <div class="mt-4 md:mt-0">
+            <a href="{% url 'chat:chat_list' %}" class="inline-flex items-center px-6 py-3 bg-white text-patient-blue rounded-xl hover:bg-patient-light-blue transition-all duration-300 font-semibold shadow-lg">
+                <i class="fas fa-comments mr-2"></i>
+                <span>My Conversations</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Search and Filter -->
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-8">
+    <div class="flex flex-col md:flex-row gap-4">
+        <div class="flex-1">
+            <div class="relative">
+                <input type="text" id="searchDoctors" placeholder="Search doctors by name or specialty..." 
+                       class="w-full px-4 py-3 pl-12 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-patient-blue/50 focus:border-patient-blue">
+                <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+            </div>
+        </div>
+        <div class="md:w-48">
+            <select id="specialtyFilter" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-patient-blue/50 focus:border-patient-blue">
+                <option value="">All Specialties</option>
+                <option value="General Practice">General Practice</option>
+                <option value="Cardiology">Cardiology</option>
+                <option value="Dermatology">Dermatology</option>
+                <option value="Pediatrics">Pediatrics</option>
+                <option value="Orthopedics">Orthopedics</option>
+                <option value="Neurology">Neurology</option>
+                <option value="Psychiatry">Psychiatry</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<!-- Practitioners Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="practitionersGrid">
+    {% for practitioner in practitioners %}
+    <div class="practitioner-card bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300" 
+         data-name="{{ practitioner.first_name }} {{ practitioner.last_name }}" 
+         data-specialty="{{ practitioner.doctor_type|default:'General Practice' }}">
+        
+        <!-- Doctor Photo -->
+        <div class="relative">
+            <div class="h-48 bg-gradient-to-br from-patient-blue to-patient-dark-blue flex items-center justify-center">
+                {% if practitioner.photo %}
+                    <img src="{{ practitioner.photo.url }}" alt="Dr. {{ practitioner.first_name }}" 
+                         class="w-full h-full object-cover">
+                {% else %}
+                    <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center">
+                        <i class="fas fa-user-md text-white text-2xl"></i>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Online Status -->
+            <div class="absolute top-4 right-4">
+                <div class="w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
+            </div>
+            
+            <!-- Unread Messages Badge -->
+            {% if practitioner.unread_count > 0 %}
+            <div class="absolute top-4 left-4">
+                <span class="bg-red-500 text-white text-xs px-2 py-1 rounded-full font-semibold">
+                    {{ practitioner.unread_count }} new
+                </span>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Doctor Info -->
+        <div class="p-6">
+            <div class="mb-4">
+                <h3 class="text-xl font-bold text-patient-dark-blue mb-1">
+                    Dr. {{ practitioner.first_name }} {{ practitioner.last_name }}
+                </h3>
+                <p class="text-patient-blue font-medium">{{ practitioner.doctor_type|default:"General Practice" }}</p>
+            </div>
+            
+            <!-- Rating and Experience -->
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center space-x-1">
+                    <div class="flex text-yellow-400">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <span class="text-sm text-gray-600 ml-2">4.8 (120 reviews)</span>
+                </div>
+                <div class="text-right">
+                    <p class="text-lg font-bold text-patient-green">${{ practitioner.price|floatformat:0 }}</p>
+                    <p class="text-xs text-gray-500">per consultation</p>
+                </div>
+            </div>
+            
+            <!-- Description -->
+            <p class="text-gray-600 text-sm mb-4 line-clamp-2">
+                {{ practitioner.description|truncatewords:15 }}
+            </p>
+            
+            <!-- Action Buttons -->
+            <div class="flex gap-3">
+                {% if practitioner.has_chat %}
+                    <!-- Continue Chat Button -->
+                    <button onclick="openExistingChat({{ practitioner.chat_room_id }}, 'Dr. {{ practitioner.first_name }} {{ practitioner.last_name }}')"
+                            class="flex-1 bg-patient-green text-white py-3 px-4 rounded-xl hover:bg-green-600 transition-colors font-semibold">
+                        <i class="fas fa-comments mr-2"></i>Continue Chat
+                    </button>
+                {% else %}
+                    <!-- Start Chat Button -->
+                    <button onclick="startNewChat({{ practitioner.id }}, 'Dr. {{ practitioner.first_name }} {{ practitioner.last_name }}')"
+                            class="flex-1 bg-patient-blue text-white py-3 px-4 rounded-xl hover:bg-patient-dark-blue transition-colors font-semibold">
+                        <i class="fas fa-comment-medical mr-2"></i>Start Chat
+                    </button>
+                {% endif %}
+                
+                <!-- View Profile Button -->
+                <button onclick="viewDoctorProfile({{ practitioner.id }})"
+                        class="px-4 py-3 border border-patient-blue text-patient-blue rounded-xl hover:bg-patient-light-blue transition-colors">
+                    <i class="fas fa-user"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-span-full text-center py-12">
+        <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-user-md text-gray-400 text-3xl"></i>
+        </div>
+        <h3 class="text-xl font-semibold text-patient-dark-blue mb-2">No doctors available</h3>
+        <p class="text-gray-600">Please check back later for available healthcare professionals.</p>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Loading Modal -->
+<div id="loadingModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+    <div class="bg-white rounded-2xl p-8 text-center">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-patient-blue mx-auto mb-4"></div>
+        <p class="text-patient-dark-blue font-semibold">Starting conversation...</p>
+    </div>
+</div>
+
+<script>
+// Search and Filter Functionality
+document.getElementById('searchDoctors').addEventListener('input', filterPractitioners);
+document.getElementById('specialtyFilter').addEventListener('change', filterPractitioners);
+
+function filterPractitioners() {
+    const searchTerm = document.getElementById('searchDoctors').value.toLowerCase();
+    const selectedSpecialty = document.getElementById('specialtyFilter').value.toLowerCase();
+    const cards = document.querySelectorAll('.practitioner-card');
+    
+    cards.forEach(card => {
+        const name = card.dataset.name.toLowerCase();
+        const specialty = card.dataset.specialty.toLowerCase();
+        
+        const matchesSearch = name.includes(searchTerm);
+        const matchesSpecialty = !selectedSpecialty || specialty.includes(selectedSpecialty);
+        
+        if (matchesSearch && matchesSpecialty) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
+
+// Start new chat with practitioner
+function startNewChat(practitionerId, practitionerName) {
+    showLoadingModal();
+    
+    fetch('{% url "chat:start_chat_with_practitioner" %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({
+            'practitioner_id': practitionerId
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        hideLoadingModal();
+        
+        if (data.success) {
+            showNotification(`Chat started with ${practitionerName}!`, 'success');
+            // Redirect to chat room
+            window.location.href = `/chat/room/${data.chat_room_id}/`;
+        } else {
+            showNotification('Error starting chat: ' + data.error, 'error');
+        }
+    })
+    .catch(error => {
+        hideLoadingModal();
+        console.error('Error:', error);
+        showNotification('Error starting chat', 'error');
+    });
+}
+
+// Open existing chat
+function openExistingChat(chatRoomId, practitionerName) {
+    window.location.href = `/chat/room/${chatRoomId}/`;
+}
+
+// View doctor profile
+function viewDoctorProfile(practitionerId) {
+    window.location.href = `/patient-dashboard/doctor-profile/${practitionerId}/`;
+}
+
+// Utility functions
+function showLoadingModal() {
+    document.getElementById('loadingModal').classList.remove('hidden');
+}
+
+function hideLoadingModal() {
+    document.getElementById('loadingModal').classList.add('hidden');
+}
+
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    const bgColor = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
+    
+    notification.className = `fixed top-4 right-4 ${bgColor} text-white px-6 py-3 rounded-xl shadow-lg z-50 transform translate-x-full transition-transform duration-300`;
+    notification.innerHTML = `
+        <div class="flex items-center space-x-3">
+            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'} text-lg"></i>
+            <span class="font-medium">${message}</span>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Animate in
+    setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+    }, 100);
+    
+    // Animate out and remove
+    setTimeout(() => {
+        notification.style.transform = 'translateX(100%)';
+        setTimeout(() => {
+            if (document.body.contains(notification)) {
+                document.body.removeChild(notification);
+            }
+        }, 300);
+    }, 3000);
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+
+<style>
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.practitioner-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.practitioner-card:hover {
+    transform: translateY(-4px);
+}
+</style>
+
+{% endblock content %}

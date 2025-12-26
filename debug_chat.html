@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Debug Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Typing animation */
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+            30% { transform: translateY(-8px); opacity: 1; }
+        }
+
+        .animate-typing {
+            animation: typing 1.4s infinite;
+        }
+
+        /* Send button animation */
+        @keyframes sendPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .send-pulse {
+            animation: sendPulse 0.3s ease-in-out;
+        }
+
+        /* Message animations */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .animate-slide-up {
+            animation: slideInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Improved scrollbar */
+        .scrollbar-thin {
+            scrollbar-width: thin;
+            scrollbar-color: #CBD5E1 #F1F5F9;
+        }
+
+        .scrollbar-thin::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .scrollbar-thin::-webkit-scrollbar-track {
+            background: #F1F5F9;
+            border-radius: 3px;
+        }
+
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 3px;
+        }
+
+        .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+            background: #94A3B8;
+        }
+
+        /* Input focus effects */
+        .chat-input:focus {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            border-color: #3B82F6;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto p-4 max-w-4xl">
+        <h1 class="text-2xl font-bold mb-4 text-center">Chat Debug Test</h1>
+        
+        <!-- Chat Interface -->
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden" style="height: 600px;">
+            <div class="flex flex-col h-full">
+                <!-- Chat Header -->
+                <div class="bg-white border-b border-gray-200 p-4 flex items-center justify-between flex-shrink-0">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold shadow-lg">
+                            D
+                        </div>
+                        <div>
+                            <h2 class="font-bold text-lg text-gray-900">Dr. Test Doctor</h2>
+                            <div class="flex items-center space-x-2 text-sm">
+                                <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                                <span class="text-green-600 font-medium">Online</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-sm text-gray-500">
+                        Status: <span id="connection-status" class="font-semibold text-green-600">Connected</span>
+                    </div>
+                </div>
+
+                <!-- Messages Container -->
+                <div class="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin bg-gradient-to-b from-gray-50 to-white" id="messages-container">
+                    <!-- Sample messages will be added here -->
+                </div>
+
+                <!-- Typing Indicator -->
+                <div id="typing-indicator" class="hidden px-4 pb-2">
+                    <div class="flex justify-start">
+                        <div class="max-w-xs lg:max-w-md">
+                            <div class="bg-gray-200 rounded-2xl rounded-bl-md px-4 py-3 shadow-lg">
+                                <div class="flex space-x-1 items-center">
+                                    <div class="w-2 h-2 bg-gray-500 rounded-full animate-typing"></div>
+                                    <div class="w-2 h-2 bg-gray-500 rounded-full animate-typing" style="animation-delay: 0.2s"></div>
+                                    <div class="w-2 h-2 bg-gray-500 rounded-full animate-typing" style="animation-delay: 0.4s"></div>
+                                </div>
+                            </div>
+                            <div class="flex justify-start mt-1">
+                                <span class="text-xs text-gray-500 italic">typing...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Message Input -->
+                <div class="bg-white border-t border-gray-200 p-4 shadow-lg">
+                    <form id="chat-form" class="flex items-end space-x-3">
+                        <div class="flex-1 relative">
+                            <input type="text" 
+                                   id="message-input" 
+                                   placeholder="Type your message..." 
+                                   class="chat-input w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 text-base"
+                                   autocomplete="off"
+                                   maxlength="1000">
+                            <div class="absolute right-3 top-1/2 transform -translate-y-1/2">
+                                <span class="text-xs text-gray-400" id="char-counter">0/1000</span>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" 
+                                id="send-button"
+                                class="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full flex items-center justify-center hover:shadow-lg transform hover:scale-105 active:scale-95 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                            <i class="fas fa-paper-plane text-lg"></i>
+                        </button>
+                    </form>
+                    
+                    <!-- Quick Replies -->
+                    <div class="flex flex-wrap gap-2 mt-4">
+                        <button class="quick-reply-btn px-3 py-2 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-blue-500 hover:text-white transition-all duration-300 transform hover:scale-105" data-message="Thank you!">
+                            <i class="fas fa-thumbs-up mr-1"></i>Thank you!
+                        </button>
+                        <button class="quick-reply-btn px-3 py-2 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-green-500 hover:text-white transition-all duration-300 transform hover:scale-105" data-message="I understand">
+                            <i class="fas fa-check mr-1"></i>I understand
+                        </button>
+                        <button class="quick-reply-btn px-3 py-2 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-purple-500 hover:text-white transition-all duration-300 transform hover:scale-105" data-message="Can we schedule a call?">
+                            <i class="fas fa-phone mr-1"></i>Schedule call
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Debug Panel -->
+        <div class="mt-6 bg-white rounded-xl shadow-lg p-4">
+            <h3 class="text-lg font-semibold mb-3">Debug Panel</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <button onclick="addSampleMessage(true)" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+                    Add Sent Message
+                </button>
+                <button onclick="addSampleMessage(false)" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors">
+                    Add Received Message
+                </button>
+                <button onclick="showTypingIndicator()" class="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors">
+                    Show Typing
+                </button>
+                <button onclick="clearMessages()" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">
+                    Clear Messages
+                </button>
+                <button onclick="testAnimations()" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">
+                    Test Animations
+                </button>
+                <button onclick="simulateConnection()" class="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors">
+                    Test Connection
+                </button>
+            </div>
+            <div class="mt-4 p-3 bg-gray-50 rounded-lg">
+                <p class="text-sm text-gray-600">
+                    <strong>Message Count:</strong> <span id="message-count">0</span> |
+                    <strong>Last Action:</strong> <span id="last-action">None</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let messageCount = 0;
+        let isTyping = false;
+
+        // DOM elements
+        const chatForm = document.getElementById('chat-form');
+        const messageInput = document.getElementById('message-input');
+        const messagesContainer = document.getElementById('messages-container');
+        const sendButton = document.getElementById('send-button');
+        const charCounter = document.getElementById('char-counter');
+        const typingIndicator = document.getElementById('typing-indicator');
+        const connectionStatus = document.getElementById('connection-status');
+        const messageCountDisplay = document.getElementById('message-count');
+        const lastActionDisplay = document.getElementById('last-action');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('✅ Chat debug interface loaded');
+            updateLastAction('Interface loaded');
+            
+            // Add some sample messages
+            addSampleMessage(false, "Hello! How can I help you today?");
+            addSampleMessage(true, "Hi doctor, I have a question about my medication.");
+            addSampleMessage(false, "Of course! What would you like to know?");
+        });
+
+        // Character counter
+        messageInput.addEventListener('input', function() {
+            const length = this.value.length;
+            charCounter.textContent = `${length}/1000`;
+            charCounter.className = length > 900 ? 'text-xs text-red-500' : 'text-xs text-gray-400';
+        });
+
+        // Form submission
+        chatForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const message = messageInput.value.trim();
+            
+            if (message) {
+                addSampleMessage(true, message);
+                messageInput.value = '';
+                charCounter.textContent = '0/1000';
+                charCounter.className = 'text-xs text-gray-400';
+                
+                // Simulate response after delay
+                setTimeout(() => {
+                    showTypingIndicator();
+                    setTimeout(() => {
+                        hideTypingIndicator();
+                        addSampleMessage(false, "I understand. Let me help you with that.");
+                    }, 2000);
+                }, 500);
+            }
+        });
+
+        // Quick replies
+        document.querySelectorAll('.quick-reply-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const message = this.getAttribute('data-message');
+                if (message) {
+                    messageInput.value = message;
+                    messageInput.focus();
+                    setTimeout(() => {
+                        chatForm.dispatchEvent(new Event('submit'));
+                    }, 100);
+                }
+            });
+        });
+
+        // Enter key to send
+        messageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                chatForm.dispatchEvent(new Event('submit'));
+            }
+        });
+
+        // Debug functions
+        function addSampleMessage(isSent, customMessage = null) {
+            const messages = [
+                "How are you feeling today?",
+                "I'm doing much better, thank you!",
+                "That's great to hear. Any concerns?",
+                "Just a quick question about my prescription.",
+                "Of course, I'm here to help.",
+                "Thank you for your time, doctor."
+            ];
+            
+            const message = customMessage || messages[Math.floor(Math.random() * messages.length)];
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message-item animate-slide-up ${isSent ? 'flex justify-end' : 'flex justify-start'}`;
+            
+            const currentTime = new Date().toLocaleTimeString('en-US', { 
+                hour: 'numeric', 
+                minute: 'numeric', 
+                hour12: true 
+            });
+
+            messageDiv.innerHTML = `
+                <div class="max-w-xs lg:max-w-md">
+                    <div class="${isSent ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white' : 'bg-gray-50 border border-gray-200 text-gray-800'} rounded-2xl ${isSent ? 'rounded-br-md' : 'rounded-bl-md'} px-4 py-3 shadow-lg transform hover:scale-[1.02] transition-all duration-300">
+                        <p class="text-sm leading-relaxed break-words">${escapeHtml(message)}</p>
+                    </div>
+                    <div class="flex ${isSent ? 'justify-end' : 'justify-start'} mt-1 items-center space-x-1">
+                        <span class="text-xs text-gray-500">${currentTime}</span>
+                        ${isSent ? '<i class="fas fa-check-double text-blue-500 text-xs" title="Delivered"></i>' : ''}
+                    </div>
+                </div>
+            `;
+            
+            messagesContainer.appendChild(messageDiv);
+            scrollToBottom();
+            messageCount++;
+            updateMessageCount();
+            updateLastAction(`Added ${isSent ? 'sent' : 'received'} message`);
+        }
+
+        function showTypingIndicator() {
+            if (!isTyping) {
+                isTyping = true;
+                typingIndicator.classList.remove('hidden');
+                scrollToBottom();
+                updateLastAction('Showing typing indicator');
+            }
+        }
+
+        function hideTypingIndicator() {
+            if (isTyping) {
+                isTyping = false;
+                typingIndicator.classList.add('hidden');
+                updateLastAction('Hiding typing indicator');
+            }
+        }
+
+        function clearMessages() {
+            messagesContainer.innerHTML = '';
+            messageCount = 0;
+            updateMessageCount();
+            updateLastAction('Cleared all messages');
+        }
+
+        function testAnimations() {
+            // Test send button animation
+            sendButton.classList.add('send-pulse');
+            setTimeout(() => {
+                sendButton.classList.remove('send-pulse');
+            }, 300);
+            
+            // Test typing animation
+            showTypingIndicator();
+            setTimeout(() => {
+                hideTypingIndicator();
+            }, 3000);
+            
+            updateLastAction('Testing animations');
+        }
+
+        function simulateConnection() {
+            connectionStatus.textContent = 'Connecting...';
+            connectionStatus.className = 'font-semibold text-yellow-600';
+            
+            setTimeout(() => {
+                connectionStatus.textContent = 'Connected';
+                connectionStatus.className = 'font-semibold text-green-600';
+                updateLastAction('Connection test completed');
+            }, 2000);
+        }
+
+        // Utility functions
+        function scrollToBottom() {
+            messagesContainer.scrollTo({
+                top: messagesContainer.scrollHeight,
+                behavior: 'smooth'
+            });
+        }
+
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+        }
+
+        function updateMessageCount() {
+            messageCountDisplay.textContent = messageCount;
+        }
+
+        function updateLastAction(action) {
+            lastActionDisplay.textContent = action;
+            console.log(`🔧 Debug: ${action}`);
+        }
+    </script>
+</body>
+</html>

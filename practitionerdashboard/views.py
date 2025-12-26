@@ -236,6 +236,17 @@ def dashboard_view(request):
         practitioner_id=practitioner_id
     ).exclude(status="Cancelled").count()
 
+    # Get unread message count
+    from chat.models import ChatRoom, Message
+    try:
+        unread_messages_count = Message.objects.filter(
+            chat_room__practitioner_id=practitioner_id,
+            sender_type='patient',
+            is_read=False
+        ).count()
+    except:
+        unread_messages_count = 0
+
 
     
     
@@ -306,6 +317,7 @@ def dashboard_view(request):
         'total_patients': total_patients,
         'completed_appointments': completed_appointments,
         'pending_appointments': pending_appointments,
+        'unread_messages_count': unread_messages_count,
     })
 
 

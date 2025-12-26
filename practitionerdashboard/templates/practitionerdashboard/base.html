@@ -332,11 +332,13 @@
                     </span>
                 </a>
                 
-                <!-- <a href="{% url 'chat:chat_list' %}" class="flex items-center space-x-3 px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200">
+                <a href="{% url 'chat:chat_list' %}" class="flex items-center space-x-3 px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'chat_list' %}bg-white/20 text-white{% endif %}">
                     <i class="fas fa-comments text-lg"></i>
-                    <span class="font-medium">Chat</span>
-                    <span class="ml-auto bg-doctor-green text-white text-xs px-2 py-1 rounded-full notification-badge">5</span>
-                </a> -->
+                    <span class="font-medium" data-translate="Patient Messages">Patient Messages</span>
+                    {% if unread_messages_count > 0 %}
+                    <span class="ml-auto bg-doctor-red text-white text-xs px-2 py-1 rounded-full notification-badge">{{ unread_messages_count }}</span>
+                    {% endif %}
+                </a>
                 </div>
             </nav>
         </div>
@@ -437,10 +439,10 @@
                         </div>
                         
                         <!-- Chat -->
-                        <a href="{% url 'chat:chat_list' %}" class="p-2 text-doctor-blue hover:bg-doctor-light-blue rounded-lg transition-colors relative hidden sm:block">
+                        <!-- <a href="{% url 'chat:chat_list' %}" class="p-2 text-doctor-blue hover:bg-doctor-light-blue rounded-lg transition-colors relative hidden sm:block">
                             <i class="fas fa-comments text-lg"></i>
                             <span class="absolute -top-1 -right-1 bg-doctor-green text-white text-xs w-5 h-5 rounded-full flex items-center justify-center notification-badge">5</span>
-                        </a>
+                        </a> -->
                         
                         <!-- Profile -->
                         <div class="flex items-center space-x-2 sm:space-x-3">

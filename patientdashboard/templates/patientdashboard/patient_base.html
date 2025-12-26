@@ -879,11 +879,10 @@
                     <span class="font-medium text-sm sm:text-base" data-translate="Reviews">Reviews</span>
                 </a>
                 
-                <!-- <a href="{% url 'chat:chat_list' %}" class="flex items-center space-x-3 px-3 sm:px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200">
+                <a href="{% url 'chat:browse_practitioners' %}" class="flex items-center space-x-3 px-3 sm:px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'browse_practitioners' %}bg-white/20 text-white{% endif %}">
                     <i class="fas fa-comments text-base sm:text-lg"></i>
-                    <span class="font-medium text-sm sm:text-base">Chat</span>
-                    <span class="ml-auto bg-patient-green text-white text-xs px-2 py-1 rounded-full notification-badge">5</span>
-                </a> -->
+                    <span class="font-medium text-sm sm:text-base" data-translate="Message Doctors">Message Doctors</span>
+                </a>
                 </div>
             </nav>
         </div>
