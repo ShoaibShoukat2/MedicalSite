@@ -14,7 +14,8 @@ django.setup()
 
 from django.utils import timezone
 from datetime import timedelta
-from user_account.models import Patient, Practitioner, Appointment
+from user_account.models import Patient, Practitioner
+from patientdashboard.models import Appointment
 from practitionerdashboard.models import AvailableSlot
 from practitionerdashboard.notifications import (
     notify_appointment_booked,
@@ -150,8 +151,8 @@ def show_system_status():
     print("=" * 40)
     
     try:
-        from user_account.models import Patient, Practitioner, Appointment
-        from patientdashboard.models import Notification
+        from user_account.models import Patient, Practitioner
+        from patientdashboard.models import Notification, Appointment
         from practitionerdashboard.models import PractitionerNotification, AvailableSlot
         
         print(f"👥 Patients: {Patient.objects.count()}")

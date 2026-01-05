@@ -6,7 +6,7 @@ Run this command via cron job or task scheduler
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 from datetime import timedelta
-from user_account.models import Appointment
+from patientdashboard.models import Appointment
 from practitionerdashboard.notifications import notify_appointment_reminder
 
 class Command(BaseCommand):

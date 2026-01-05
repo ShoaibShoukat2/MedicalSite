@@ -8,7 +8,6 @@ from django.template.loader import render_to_string
 from django.conf import settings
 from patientdashboard.models import Notification
 from practitionerdashboard.models import PractitionerNotification
-from user_account.models import Appointment
 import requests
 import json
 from django.utils import timezone
@@ -284,6 +283,9 @@ def notify_appointment_modified(appointment, old_time=None, reason=""):
 def notify_new_availability(practitioner, new_slots):
     """Notify waiting list patients about new availability"""
     
+    # Import here to avoid circular imports
+    from patientdashboard.models import Appointment
+    
     # Get patients on waiting list for this practitioner
     waiting_appointments = Appointment.objects.filter(
         practitioner=practitioner,
@@ -368,6 +370,9 @@ def notify_appointment_reminder(appointment, hours_before=24):
 def send_bulk_availability_notifications(practitioner, new_slots):
     """Send notifications to multiple patients about new availability"""
     
+    # Import here to avoid circular imports
+    from patientdashboard.models import Appointment
+    
     # Get all patients who might be interested
     # This could include patients with pending appointments, past patients, etc.
     
@@ -416,6 +421,9 @@ def send_bulk_availability_notifications(practitioner, new_slots):
 # Utility functions for scheduled reminders
 def send_daily_reminders():
     """Send reminders for appointments happening in 24 hours"""
+    # Import here to avoid circular imports
+    from patientdashboard.models import Appointment
+    
     tomorrow = timezone.now() + timedelta(days=1)
     appointments = Appointment.objects.filter(
         slot__start_time__date=tomorrow.date(),
@@ -427,6 +435,9 @@ def send_daily_reminders():
 
 def send_hourly_reminders():
     """Send reminders for appointments happening in 2 hours"""
+    # Import here to avoid circular imports
+    from patientdashboard.models import Appointment
+    
     in_two_hours = timezone.now() + timedelta(hours=2)
     appointments = Appointment.objects.filter(
         slot__start_time__range=[

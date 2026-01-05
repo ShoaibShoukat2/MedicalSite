@@ -99,7 +99,7 @@ class Notification(models.Model):
     ]
     
     recipient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name="notifications")
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=200, default='Notification')
     message = models.TextField()
     notification_type = models.CharField(max_length=10, choices=NOTIFICATION_TYPES, default='info')
     url = models.URLField(null=True, blank=True)  
