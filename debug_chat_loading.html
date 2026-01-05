@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Chat Loading</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold mb-6">Chat Loading Debug Tool</h1>
+        
+        <!-- Debug Panel -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4">Debug Information</h2>
+            <div id="debug-info" class="space-y-2 text-sm font-mono bg-gray-50 p-4 rounded">
+                <div>Loading debug information...</div>
+            </div>
+        </div>
+        
+        <!-- Test Chat Interface -->
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden" style="height: 600px;">
+            <div class="flex h-full">
+                <!-- Sidebar -->
+                <div class="w-80 bg-gray-50 border-r border-gray-200 p-4">
+                    <h3 class="font-semibold mb-4">Test Patients</h3>
+                    <div class="space-y-2">
+                        <div class="chat-item bg-white p-3 rounded-lg cursor-pointer hover:bg-blue-50 border" 
+                             data-room-id="1" onclick="testLoadChatRoom(1)">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">
+                                    JS
+                                </div>
+                                <div>
+                                    <div class="font-semibold">John Smith</div>
+                                    <div class="text-sm text-gray-500">Test Patient 1</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="chat-item bg-white p-3 rounded-lg cursor-pointer hover:bg-blue-50 border" 
+                             data-room-id="2" onclick="testLoadChatRoom(2)">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">
+                                    SJ
+                                </div>
+                                <div>
+                                    <div class="font-semibold">Sarah Johnson</div>
+                                    <div class="text-sm text-gray-500">Test Patient 2</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Chat Area -->
+                <div class="flex-1 flex flex-col bg-white" id="chat-area">
+                    <div id="chat-room-container" class="flex-1 flex flex-col">
+                        <div class="flex-1 flex items-center justify-center p-8 text-center">
+                            <div>
+                                <i class="fas fa-comments text-6xl text-gray-300 mb-4"></i>
+                                <h3 class="text-xl font-semibold text-gray-600 mb-2">Select a patient to start chatting</h3>
+                                <p class="text-gray-500">Click on a patient from the left to test chat loading</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="mt-6 flex space-x-4">
+            <button onclick="clearDebugLog()" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
+                Clear Log
+            </button>
+            <button onclick="testFetchAPI()" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                Test Fetch API
+            </button>
+            <button onclick="checkElements()" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
+                Check Elements
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let debugLog = [];
+        
+        function addDebugLog(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `[${timestamp}] ${type.toUpperCase()}: ${message}`;
+            debugLog.push(logEntry);
+            updateDebugDisplay();
+            console.log(logEntry);
+        }
+        
+        function updateDebugDisplay() {
+            const debugInfo = document.getElementById('debug-info');
+            debugInfo.innerHTML = debugLog.slice(-20).map(log => `<div>${log}</div>`).join('');
+            debugInfo.scrollTop = debugInfo.scrollHeight;
+        }
+        
+        function clearDebugLog() {
+            debugLog = [];
+            updateDebugDisplay();
+        }
+        
+        function checkElements() {
+            addDebugLog('Checking page elements...');
+            const elements = [
+                'chat-area',
+                'chat-room-container',
+                'debug-info'
+            ];
+            
+            elements.forEach(id => {
+                const element = document.getElementById(id);
+                addDebugLog(`Element ${id}: ${element ? 'Found' : 'NOT FOUND'}`, element ? 'info' : 'error');
+            });
+            
+            const chatItems = document.querySelectorAll('.chat-item');
+            addDebugLog(`Chat items found: ${chatItems.length}`);
+        }
+        
+        function testFetchAPI() {
+            addDebugLog('Testing Fetch API...');
+            
+            // Test with a simple request
+            fetch('/chat/', {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => {
+                addDebugLog(`Fetch response status: ${response.status}`, response.ok ? 'info' : 'error');
+                return response.text();
+            })
+            .then(data => {
+                addDebugLog(`Fetch response length: ${data.length} characters`);
+            })
+            .catch(error => {
+                addDebugLog(`Fetch error: ${error.message}`, 'error');
+            });
+        }
+        
+        function testLoadChatRoom(roomId) {
+            addDebugLog(`Testing chat room load: ${roomId}`);
+            
+            // Update active state
+            document.querySelectorAll('.chat-item').forEach(item => {
+                item.classList.remove('bg-blue-50');
+            });
+            
+            const clickedItem = document.querySelector(`[data-room-id="${roomId}"]`);
+            if (clickedItem) {
+                clickedItem.classList.add('bg-blue-50');
+                addDebugLog(`Updated active state for room ${roomId}`);
+            }
+            
+            // Simulate loading
+            const chatContainer = document.getElementById('chat-room-container');
+            if (chatContainer) {
+                chatContainer.innerHTML = `
+                    <div class="flex-1 flex items-center justify-center">
+                        <div class="text-center">
+                            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+                            <p class="text-gray-600">Loading chat room ${roomId}...</p>
+                        </div>
+                    </div>
+                `;
+                addDebugLog(`Started loading animation for room ${roomId}`);
+                
+                // Simulate successful load after 2 seconds
+                setTimeout(() => {
+                    chatContainer.innerHTML = `
+                        <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4">
+                            <h2 class="font-bold text-lg">Test Patient ${roomId}</h2>
+                            <p class="text-sm opacity-90">Chat Room Loaded Successfully</p>
+                        </div>
+                        <div class="flex-1 p-4 bg-gray-50">
+                            <div class="bg-white rounded-lg p-4 mb-4 max-w-xs">
+                                <p class="text-sm">Hello doctor, this is a test message from patient ${roomId}.</p>
+                                <div class="text-xs text-gray-500 mt-1">2:30 PM</div>
+                            </div>
+                        </div>
+                        <div class="p-4 border-t border-gray-200">
+                            <div class="flex space-x-3">
+                                <input type="text" placeholder="Type your response..." class="flex-1 px-4 py-2 border border-gray-200 rounded-lg">
+                                <button class="px-4 py-2 bg-blue-500 text-white rounded-lg">Send</button>
+                            </div>
+                        </div>
+                    `;
+                    addDebugLog(`Successfully loaded chat room ${roomId}`, 'info');
+                }, 2000);
+            } else {
+                addDebugLog('Chat container not found!', 'error');
+            }
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            addDebugLog('Page loaded successfully');
+            checkElements();
+        });
+    </script>
+</body>
+</html>

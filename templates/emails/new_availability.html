@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Appointment Slots Available</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #059669, #10b981);
+            color: white;
+            padding: 20px;
+            border-radius: 10px 10px 0 0;
+            text-align: center;
+            margin: -30px -30px 30px -30px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .doctor-info {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .slots-container {
+            background: #fefbf3;
+            border: 1px solid #fed7aa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .slot-item {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            padding: 12px;
+            margin: 8px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .slot-date {
+            font-weight: bold;
+            color: #374151;
+        }
+        .slot-time {
+            color: #059669;
+            font-weight: bold;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        .btn {
+            display: inline-block;
+            background: #059669;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 6px;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        .btn:hover {
+            background: #047857;
+        }
+        .btn-secondary {
+            background: #1e40af;
+        }
+        .btn-secondary:hover {
+            background: #1e3a8a;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎉 New Slots Available!</h1>
+        </div>
+        
+        <p>Dear {{ patient.first_name }} {{ patient.last_name }},</p>
+        
+        <p>Great news! Dr. {{ practitioner.first_name }} {{ practitioner.last_name }} has added new appointment slots to their schedule.</p>
+        
+        <div class="doctor-info">
+            <h3 style="margin-top: 0; color: #059669;">👨‍⚕️ Doctor Information</h3>
+            <p><strong>Name:</strong> Dr. {{ practitioner.first_name }} {{ practitioner.last_name }}</p>
+            <p><strong>Specialty:</strong> {{ practitioner.get_specialty_display }}</p>
+            {% if practitioner.price %}
+            <p><strong>Consultation Fee:</strong> ${{ practitioner.price }} per session</p>
+            {% endif %}
+        </div>
+        
+        {% if new_slots %}
+        <div class="slots-container">
+            <h3 style="margin-top: 0; color: #ea580c;">📅 Available Time Slots</h3>
+            {% for slot in new_slots %}
+            <div class="slot-item">
+                <span class="slot-date">{{ slot.date|date:"F d, Y" }} ({{ slot.get_day_of_week_display }})</span>
+                <span class="slot-time">{{ slot.start_time|time:"g:i A" }} - {{ slot.end_time|time:"g:i A" }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        <p>Since you're on the waiting list or have shown interest in this doctor, we wanted to notify you first about these new openings.</p>
+        
+        <p><strong>You may be able to:</strong></p>
+        <ul>
+            <li>Book a new appointment if you don't have one scheduled</li>
+            <li>Reschedule your existing appointment to an earlier time</li>
+            <li>Choose a more convenient time slot</li>
+        </ul>
+        
+        <div style="text-align: center;">
+            <a href="http://{{ request.get_host }}/patient-dashboard/practitioner/{{ practitioner.id }}/slots/" class="btn">
+                📅 Book Appointment Now
+            </a>
+            <br>
+            <a href="http://{{ request.get_host }}/patient-dashboard/appointments/" class="btn btn-secondary">
+                📋 Manage My Appointments
+            </a>
+        </div>
+        
+        <p><em>Note: These slots are available on a first-come, first-served basis. We recommend booking as soon as possible to secure your preferred time.</em></p>
+        
+        <div class="footer">
+            <p><strong>Medical Platform</strong><br>
+            Your Health, Our Priority<br>
+            📧 {{ settings.DEFAULT_FROM_EMAIL }} | 📞 +1 (555) 123-4567</p>
+        </div>
+    </div>
+</body>
+</html>

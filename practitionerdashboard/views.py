@@ -651,6 +651,21 @@ def add_slot(request):
                 start_time=start_time,
                 end_time=end_time
             )
+            
+            # Send notifications to interested patients about new availability
+            try:
+                from .notifications import send_bulk_availability_notifications
+                # Get recently added slots for this practitioner
+                recent_slots = AvailableSlot.objects.filter(
+                    practitioner=practitioner,
+                    status='available',
+                    date__gte=datetime.now().date()
+                ).order_by('date', 'start_time')[:5]  # Get up to 5 recent slots
+                
+                send_bulk_availability_notifications(practitioner, recent_slots)
+                print(f"✅ Availability notifications sent for new slot: {slot_date} {start_time}-{end_time}")
+            except Exception as e:
+                print(f"⚠️ Failed to send availability notifications: {str(e)}")
 
             return JsonResponse({
                 'success': True,
@@ -920,6 +935,13 @@ def get_pending_appointments_api(request):
         
         appointments_data = []
         for appointment in pending_appointments:
+            # Determine urgency display
+            urgency_display = {
+                'emergency': {'text': 'Emergency', 'class': 'bg-red-100 text-red-800', 'icon': 'fas fa-exclamation-circle'},
+                'urgent': {'text': 'Urgent', 'class': 'bg-yellow-100 text-yellow-800', 'icon': 'fas fa-exclamation-triangle'},
+                'normal': {'text': 'Normal', 'class': 'bg-green-100 text-green-800', 'icon': 'fas fa-clock'}
+            }.get(appointment.urgency, {'text': 'Normal', 'class': 'bg-green-100 text-green-800', 'icon': 'fas fa-clock'})
+            
             appointments_data.append({
                 'id': appointment.id,
                 'patient_name': f"{appointment.patient.first_name} {appointment.patient.last_name}",
@@ -928,6 +950,9 @@ def get_pending_appointments_api(request):
                 'date': appointment.slot.date.strftime('%b %d, %Y'),
                 'time': appointment.slot.start_time.strftime('%I:%M %p'),
                 'amount': str(appointment.amount),
+                'reason': appointment.reason or 'No reason provided',
+                'urgency': appointment.urgency,
+                'urgency_display': urgency_display,
                 'created_at': appointment.created_at.strftime('%Y-%m-%d %H:%M:%S')
             })
         
@@ -1169,3 +1194,268 @@ def migrate_jitsi_to_zoom_view(request):
 
 
 
+
+# Notification Views
+from django.http import JsonResponse
+from django.views.decorators.http import require_http_methods
+from django.views.decorators.csrf import csrf_exempt
+from practitionerdashboard.models import PractitionerNotification
+from practitionerdashboard.notifications import (
+    notify_appointment_accepted, 
+    notify_appointment_cancelled, 
+    notify_appointment_modified,
+    send_bulk_availability_notifications
+)
+import json
+
+@require_http_methods(["GET"])
+def get_practitioner_notifications(request):
+    """Get notifications for the current practitioner"""
+    try:
+        practitioner_id = request.session.get('practitioner_id')
+        if not practitioner_id:
+            return JsonResponse({'success': False, 'error': 'Not authenticated'})
+        
+        practitioner = get_object_or_404(Practitioner, id=practitioner_id)
+        
+        # Get recent notifications
+        notifications = PractitionerNotification.objects.filter(
+            recipient=practitioner
+        ).order_by('-created_at')[:20]
+        
+        notifications_data = []
+        for notification in notifications:
+            notifications_data.append({
+                'id': notification.id,
+                'title': notification.title,
+                'message': notification.message,
+                'type': notification.notification_type,
+                'url': notification.url,
+                'is_read': notification.is_read,
+                'created_at': notification.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                'time_ago': get_time_ago(notification.created_at)
+            })
+        
+        # Count unread notifications
+        unread_count = PractitionerNotification.objects.filter(
+            recipient=practitioner,
+            is_read=False
+        ).count()
+        
+        return JsonResponse({
+            'success': True,
+            'notifications': notifications_data,
+            'unread_count': unread_count
+        })
+        
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
+
+@require_http_methods(["POST"])
+@csrf_exempt
+def mark_practitioner_notification_read(request):
+    """Mark a practitioner notification as read"""
+    try:
+        practitioner_id = request.session.get('practitioner_id')
+        if not practitioner_id:
+            return JsonResponse({'success': False, 'error': 'Not authenticated'})
+        
+        data = json.loads(request.body)
+        notification_id = data.get('notification_id')
+        
+        notification = get_object_or_404(
+            PractitionerNotification, 
+            id=notification_id, 
+            recipient_id=practitioner_id
+        )
+        
+        notification.is_read = True
+        notification.save()
+        
+        return JsonResponse({'success': True})
+        
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
+
+@require_http_methods(["POST"])
+@csrf_exempt
+def mark_all_practitioner_notifications_read(request):
+    """Mark all practitioner notifications as read"""
+    try:
+        practitioner_id = request.session.get('practitioner_id')
+        if not practitioner_id:
+            return JsonResponse({'success': False, 'error': 'Not authenticated'})
+        
+        PractitionerNotification.objects.filter(
+            recipient_id=practitioner_id,
+            is_read=False
+        ).update(is_read=True)
+        
+        return JsonResponse({'success': True})
+        
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
+
+@require_http_methods(["POST"])
+@csrf_exempt
+def handle_appointment_action(request, appointment_id, action):
+    """Handle appointment accept/decline actions with notifications"""
+    try:
+        practitioner_id = request.session.get('practitioner_id')
+        if not practitioner_id:
+            return JsonResponse({'success': False, 'error': 'Not authenticated'})
+        
+        appointment = get_object_or_404(
+            Appointment, 
+            id=appointment_id, 
+            practitioner_id=practitioner_id
+        )
+        
+        if action == 'accept':
+            appointment.status = 'Accepted'
+            appointment.save()
+            
+            # Create Zoom meeting if configured
+            if ZOOM_CONFIGURED:
+                zoom_result = create_zoom_meeting(
+                    topic=f"Medical Consultation - {appointment.patient.first_name} {appointment.patient.last_name}",
+                    start_time=appointment.slot.start_time,
+                    duration=60
+                )
+                
+                if zoom_result.get('success'):
+                    appointment.video_call_link = zoom_result['join_url']
+                    appointment.meeting_id = zoom_result['meeting_id']
+                    appointment.meeting_password = zoom_result.get('password', '')
+                    appointment.save()
+            
+            # Send notifications
+            notify_appointment_accepted(appointment)
+            
+            return JsonResponse({
+                'success': True, 
+                'message': 'Appointment accepted successfully',
+                'status': 'Accepted'
+            })
+            
+        elif action == 'decline':
+            appointment.status = 'Cancelled'
+            appointment.save()
+            
+            # Send notifications
+            notify_appointment_cancelled(appointment, reason="Declined by practitioner", cancelled_by="practitioner")
+            
+            return JsonResponse({
+                'success': True, 
+                'message': 'Appointment declined successfully',
+                'status': 'Cancelled'
+            })
+        
+        else:
+            return JsonResponse({'success': False, 'error': 'Invalid action'})
+            
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
+
+@require_http_methods(["POST"])
+@csrf_exempt
+def notify_availability_added(request):
+    """Notify patients when practitioner adds new availability"""
+    try:
+        practitioner_id = request.session.get('practitioner_id')
+        if not practitioner_id:
+            return JsonResponse({'success': False, 'error': 'Not authenticated'})
+        
+        practitioner = get_object_or_404(Practitioner, id=practitioner_id)
+        
+        # Get recently added slots (you can customize this logic)
+        from datetime import datetime, timedelta
+        recent_slots = AvailableSlot.objects.filter(
+            practitioner=practitioner,
+            status='available',
+            date__gte=datetime.now().date()
+        ).order_by('date', 'start_time')[:10]  # Get up to 10 recent slots
+        
+        if recent_slots.exists():
+            # Send bulk notifications
+            send_bulk_availability_notifications(practitioner, recent_slots)
+            
+            return JsonResponse({
+                'success': True,
+                'message': f'Notifications sent to interested patients about {recent_slots.count()} new slots'
+            })
+        else:
+            return JsonResponse({
+                'success': False,
+                'error': 'No available slots found to notify about'
+            })
+            
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
+
+def get_time_ago(created_at):
+    """Helper function to get human-readable time difference"""
+    from django.utils import timezone
+    
+    now = timezone.now()
+    diff = now - created_at
+    
+    if diff.days > 0:
+        return f"{diff.days} day{'s' if diff.days > 1 else ''} ago"
+    elif diff.seconds > 3600:
+        hours = diff.seconds // 3600
+        return f"{hours} hour{'s' if hours > 1 else ''} ago"
+    elif diff.seconds > 60:
+        minutes = diff.seconds // 60
+        return f"{minutes} minute{'s' if minutes > 1 else ''} ago"
+    else:
+        return "Just now"
+
+# Enhanced appointment management with notifications
+@require_http_methods(["POST"])
+@csrf_exempt
+def reschedule_appointment(request, appointment_id):
+    """Reschedule an appointment with notifications"""
+    try:
+        practitioner_id = request.session.get('practitioner_id')
+        if not practitioner_id:
+            return JsonResponse({'success': False, 'error': 'Not authenticated'})
+        
+        appointment = get_object_or_404(
+            Appointment, 
+            id=appointment_id, 
+            practitioner_id=practitioner_id
+        )
+        
+        data = json.loads(request.body)
+        new_slot_id = data.get('new_slot_id')
+        reason = data.get('reason', '')
+        
+        # Get the new slot
+        new_slot = get_object_or_404(AvailableSlot, id=new_slot_id, practitioner_id=practitioner_id)
+        
+        # Store old time for notification
+        old_time = appointment.slot.start_time
+        
+        # Update appointment
+        old_slot = appointment.slot
+        old_slot.status = 'available'  # Make old slot available again
+        old_slot.save()
+        
+        appointment.slot = new_slot
+        appointment.save()
+        
+        new_slot.status = 'booked'
+        new_slot.save()
+        
+        # Send modification notification
+        notify_appointment_modified(appointment, old_time=old_time, reason=reason)
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Appointment rescheduled successfully',
+            'new_time': new_slot.start_time.strftime('%Y-%m-%d %H:%M:%S')
+        })
+        
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})

@@ -1,0 +1,267 @@
+{% extends 'practitionerdashboard/base.html' %}
+{% load static %}
+
+{% block title %}
+    Patient Messages - Practitioner Dashboard
+{% endblock %}
+
+{% block content %}
+<style>
+/* Simple and clean styling */
+.chat-container {
+    height: 600px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.chat-sidebar {
+    background: #f8fafc;
+    border-right: 1px solid #e5e7eb;
+}
+
+.chat-item {
+    padding: 16px;
+    margin: 4px 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-left: 4px solid transparent;
+}
+
+.chat-item:hover {
+    background: #f1f5f9;
+    border-left-color: #3b82f6;
+}
+
+.chat-item.active {
+    background: #eff6ff;
+    border-left-color: #3b82f6;
+}
+
+.patient-avatar {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.chat-area {
+    background: white;
+}
+
+.loading-spinner {
+    border: 4px solid #f3f4f6;
+    border-top: 4px solid #3b82f6;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+</style>
+
+<!-- Header -->
+<div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+    <h1 class="text-2xl font-bold text-gray-800 mb-2">
+        <i class="fas fa-stethoscope text-blue-600 mr-3"></i>
+        Patient Messages
+    </h1>
+    <p class="text-gray-600">Secure communication with your patients</p>
+</div>
+
+<!-- Chat Interface -->
+<div class="chat-container">
+    <div class="flex h-full">
+        <!-- Patient List -->
+        <div class="w-80 chat-sidebar flex flex-col">
+            <!-- Search -->
+            <div class="p-4 border-b border-gray-200">
+                <input type="text" 
+                       placeholder="Search patients..." 
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                       id="search-input">
+            </div>
+
+            <!-- Patient List -->
+            <div class="flex-1 overflow-y-auto">
+                {% if chat_rooms %}
+                    {% for room in chat_rooms %}
+                    <div class="chat-item" data-room-id="{{ room.id }}">
+                        <div class="flex items-center space-x-3">
+                            <div class="patient-avatar w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                                {{ room.patient.first_name|slice:":1"|upper }}{{ room.patient.last_name|slice:":1"|upper }}
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h3 class="font-semibold text-gray-900 text-sm truncate">
+                                    {{ room.patient.first_name }} {{ room.patient.last_name }}
+                                </h3>
+                                {% with last_message=room.last_messages.0 %}
+                                    {% if last_message %}
+                                        <p class="text-xs text-gray-600 truncate">
+                                            {% if last_message.sender_type == 'practitioner' %}You: {% endif %}
+                                            {{ last_message.content }}
+                                        </p>
+                                    {% else %}
+                                        <p class="text-xs text-gray-400">No messages yet</p>
+                                    {% endif %}
+                                {% endwith %}
+                                {% if room.unread_count > 0 %}
+                                    <span class="inline-block bg-red-500 text-white text-xs px-2 py-1 rounded-full mt-1">
+                                        {{ room.unread_count }}
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="flex items-center justify-center h-full text-center p-8">
+                        <div>
+                            <i class="fas fa-inbox text-4xl text-gray-300 mb-4"></i>
+                            <p class="text-gray-500">No patient messages yet</p>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Chat Area -->
+        <div class="flex-1 chat-area flex flex-col" id="chat-area">
+            <div id="chat-content" class="flex-1 flex items-center justify-center">
+                <div class="text-center">
+                    <i class="fas fa-comments text-6xl text-gray-300 mb-4"></i>
+                    <h3 class="text-xl font-semibold text-gray-600 mb-2">Select a patient</h3>
+                    <p class="text-gray-500">Choose a patient from the left to start messaging</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+console.log('🏥 Simple Practitioner Chat Loading...');
+
+// Wait for page to load
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('✅ Page loaded');
+    
+    // Get all chat items
+    const chatItems = document.querySelectorAll('.chat-item');
+    console.log(`Found ${chatItems.length} chat items`);
+    
+    // Add click handlers
+    chatItems.forEach(function(item) {
+        const roomId = item.getAttribute('data-room-id');
+        console.log(`Adding click handler for room ${roomId}`);
+        
+        item.addEventListener('click', function() {
+            console.log(`Clicked on room ${roomId}`);
+            loadChat(roomId);
+        });
+    });
+    
+    console.log('✅ Chat system ready');
+});
+
+// Simple function to load chat
+function loadChat(roomId) {
+    console.log(`Loading chat room ${roomId}...`);
+    
+    // Remove active class from all items
+    document.querySelectorAll('.chat-item').forEach(function(item) {
+        item.classList.remove('active');
+    });
+    
+    // Add active class to clicked item
+    const clickedItem = document.querySelector(`[data-room-id="${roomId}"]`);
+    if (clickedItem) {
+        clickedItem.classList.add('active');
+    }
+    
+    // Show loading
+    const chatContent = document.getElementById('chat-content');
+    chatContent.innerHTML = `
+        <div class="text-center">
+            <div class="loading-spinner mx-auto mb-4"></div>
+            <p class="text-gray-600">Loading conversation...</p>
+        </div>
+    `;
+    
+    // Load chat content
+    fetch(`/chat/room/${roomId}/`, {
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(function(response) {
+        console.log(`Response status: ${response.status}`);
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+        return response.text();
+    })
+    .then(function(html) {
+        console.log(`Received HTML (${html.length} chars)`);
+        chatContent.innerHTML = html;
+        
+        // Scroll to bottom if messages container exists
+        const messagesContainer = document.getElementById('messages-container');
+        if (messagesContainer) {
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        // Focus on input if it exists
+        const messageInput = document.getElementById('chat-message-input');
+        if (messageInput) {
+            messageInput.focus();
+        }
+        
+        console.log('✅ Chat loaded successfully');
+    })
+    .catch(function(error) {
+        console.error('❌ Error loading chat:', error);
+        chatContent.innerHTML = `
+            <div class="text-center">
+                <i class="fas fa-exclamation-triangle text-4xl text-red-400 mb-4"></i>
+                <h3 class="text-lg font-semibold text-gray-700 mb-2">Failed to load chat</h3>
+                <p class="text-gray-500 mb-4">Please try again</p>
+                <button onclick="loadChat(${roomId})" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                    Retry
+                </button>
+            </div>
+        `;
+        
+        // Remove active state
+        if (clickedItem) {
+            clickedItem.classList.remove('active');
+        }
+    });
+}
+
+// Search functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('search-input');
+    if (searchInput) {
+        searchInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const chatItems = document.querySelectorAll('.chat-item');
+            
+            chatItems.forEach(function(item) {
+                const name = item.querySelector('h3').textContent.toLowerCase();
+                const message = item.querySelector('p').textContent.toLowerCase();
+                
+                if (name.includes(searchTerm) || message.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    }
+});
+</script>
+
+{% endblock content %}

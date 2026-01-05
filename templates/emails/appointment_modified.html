@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment Modified</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #ea580c, #f97316);
+            color: white;
+            padding: 20px;
+            border-radius: 10px 10px 0 0;
+            text-align: center;
+            margin: -30px -30px 30px -30px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .appointment-details {
+            background: #fefbf3;
+            border: 1px solid #fed7aa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #fed7aa;
+        }
+        .detail-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        .label {
+            font-weight: bold;
+            color: #ea580c;
+        }
+        .value {
+            color: #374151;
+        }
+        .old-time {
+            text-decoration: line-through;
+            color: #dc2626;
+        }
+        .new-time {
+            color: #059669;
+            font-weight: bold;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        .btn {
+            display: inline-block;
+            background: #1e40af;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 6px;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        .btn:hover {
+            background: #1e3a8a;
+        }
+        .change-highlight {
+            background: #dcfce7;
+            border: 1px solid #bbf7d0;
+            border-radius: 6px;
+            padding: 10px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📅 Appointment Modified</h1>
+        </div>
+        
+        <p>Dear {{ patient.first_name }} {{ patient.last_name }},</p>
+        
+        <p>Your appointment has been modified. Please review the updated details below:</p>
+        
+        <div class="appointment-details">
+            <h3 style="margin-top: 0; color: #ea580c;">Updated Appointment Details</h3>
+            <div class="detail-row">
+                <span class="label">Doctor:</span>
+                <span class="value">Dr. {{ practitioner.first_name }} {{ practitioner.last_name }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Specialty:</span>
+                <span class="value">{{ practitioner.get_specialty_display }}</span>
+            </div>
+            {% if old_time %}
+            <div class="detail-row">
+                <span class="label">Previous Time:</span>
+                <span class="value old-time">{{ old_time|date:"F d, Y" }} at {{ old_time|time:"g:i A" }}</span>
+            </div>
+            {% endif %}
+            <div class="detail-row">
+                <span class="label">New Date & Time:</span>
+                <span class="value new-time">{{ appointment_time|date:"F d, Y" }} at {{ appointment_time|time:"g:i A" }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Status:</span>
+                <span class="value" style="color: #059669; font-weight: bold;">CONFIRMED</span>
+            </div>
+        </div>
+        
+        {% if appointment.video_call_link %}
+        <div class="change-highlight">
+            <h4 style="margin-top: 0; color: #059669;">📹 Video Consultation Details:</h4>
+            <p><strong>Zoom Meeting Link:</strong> <a href="{{ appointment.video_call_link }}">{{ appointment.video_call_link }}</a></p>
+            {% if appointment.meeting_id %}
+            <p><strong>Meeting ID:</strong> {{ appointment.meeting_id }}</p>
+            {% endif %}
+            {% if appointment.meeting_password %}
+            <p><strong>Password:</strong> {{ appointment.meeting_password }}</p>
+            {% endif %}
+        </div>
+        {% endif %}
+        
+        {% if reason %}
+        <div style="background: #f3f4f6; border-radius: 8px; padding: 15px; margin: 20px 0;">
+            <h4 style="margin-top: 0; color: #374151;">Reason for Change:</h4>
+            <p style="margin-bottom: 0;">{{ reason }}</p>
+        </div>
+        {% endif %}
+        
+        <p>Please make note of the new appointment time. We recommend adding this to your calendar.</p>
+        
+        <div style="text-align: center;">
+            <a href="http://{{ request.get_host }}/patient-dashboard/appointments/" class="btn">
+                📋 View My Appointments
+            </a>
+        </div>
+        
+        <p>If you have any questions about this change, please contact us immediately.</p>
+        
+        <div class="footer">
+            <p><strong>Medical Platform</strong><br>
+            Your Health, Our Priority<br>
+            📧 {{ settings.DEFAULT_FROM_EMAIL }} | 📞 +1 (555) 123-4567</p>
+        </div>
+    </div>
+</body>
+</html>

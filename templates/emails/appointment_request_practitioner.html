@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Appointment Request</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            color: white;
+            padding: 20px;
+            border-radius: 10px 10px 0 0;
+            text-align: center;
+            margin: -30px -30px 30px -30px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .patient-info {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .appointment-details {
+            background: #fefbf3;
+            border: 1px solid #fed7aa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .detail-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        .label {
+            font-weight: bold;
+            color: #1e40af;
+        }
+        .value {
+            color: #374151;
+        }
+        .urgency-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .urgency-normal {
+            background: #d4edda;
+            color: #155724;
+        }
+        .urgency-urgent {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .urgency-emergency {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        .btn {
+            display: inline-block;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 6px;
+            margin: 10px 5px;
+            font-weight: bold;
+        }
+        .btn-accept {
+            background: #059669;
+        }
+        .btn-accept:hover {
+            background: #047857;
+        }
+        .btn-decline {
+            background: #dc2626;
+        }
+        .btn-decline:hover {
+            background: #b91c1c;
+        }
+        .btn-view {
+            background: #1e40af;
+        }
+        .btn-view:hover {
+            background: #1e3a8a;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 New Appointment Request</h1>
+        </div>
+        
+        <p>Dear Dr. {{ practitioner.first_name }} {{ practitioner.last_name }},</p>
+        
+        <p>You have received a new appointment request that requires your attention.</p>
+        
+        <div class="patient-info">
+            <h3 style="margin-top: 0; color: #1e40af;">👤 Patient Information</h3>
+            <div class="detail-row">
+                <span class="label">Name:</span>
+                <span class="value">{{ patient.first_name }} {{ patient.last_name }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Email:</span>
+                <span class="value">{{ patient.email }}</span>
+            </div>
+            {% if patient.phone %}
+            <div class="detail-row">
+                <span class="label">Phone:</span>
+                <span class="value">{{ patient.phone }}</span>
+            </div>
+            {% endif %}
+            {% if patient.date_of_birth %}
+            <div class="detail-row">
+                <span class="label">Age:</span>
+                <span class="value">{{ patient.age }} years old</span>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="appointment-details">
+            <h3 style="margin-top: 0; color: #ea580c;">📅 Appointment Details</h3>
+            <div class="detail-row">
+                <span class="label">Requested Date & Time:</span>
+                <span class="value">{{ appointment_time|date:"F d, Y" }} at {{ appointment_time|time:"g:i A" }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Day:</span>
+                <span class="value">{{ appointment_time|date:"l" }}</span>
+            </div>
+            {% if appointment.reason %}
+            <div class="detail-row">
+                <span class="label">Reason:</span>
+                <span class="value">{{ appointment.reason }}</span>
+            </div>
+            {% endif %}
+            {% if appointment.urgency %}
+            <div class="detail-row">
+                <span class="label">Urgency Level:</span>
+                <span class="value">
+                    <span class="urgency-badge urgency-{{ appointment.urgency }}">
+                        {{ appointment.get_urgency_display }}
+                    </span>
+                </span>
+            </div>
+            {% endif %}
+            <div class="detail-row">
+                <span class="label">Status:</span>
+                <span class="value" style="color: #ea580c; font-weight: bold;">PENDING YOUR RESPONSE</span>
+            </div>
+        </div>
+        
+        <p><strong>Please review this request and respond as soon as possible.</strong></p>
+        
+        <div style="text-align: center;">
+            <a href="http://{{ request.get_host }}/practitioner-dashboard/appointments/{{ appointment.id }}/accept/" class="btn btn-accept">
+                ✅ Accept Appointment
+            </a>
+            <a href="http://{{ request.get_host }}/practitioner-dashboard/appointments/{{ appointment.id }}/decline/" class="btn btn-decline">
+                ❌ Decline Appointment
+            </a>
+            <br>
+            <a href="http://{{ request.get_host }}/practitioner-dashboard/dashboard/" class="btn btn-view">
+                📊 View Dashboard
+            </a>
+        </div>
+        
+        <p><em>Note: The patient will be notified of your decision automatically. If you accept, you can set up the video consultation details from your dashboard.</em></p>
+        
+        <div class="footer">
+            <p><strong>Medical Platform</strong><br>
+            Professional Healthcare Management<br>
+            📧 {{ settings.DEFAULT_FROM_EMAIL }} | 📞 +1 (555) 123-4567</p>
+        </div>
+    </div>
+</body>
+</html>

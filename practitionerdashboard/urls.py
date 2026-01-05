@@ -46,7 +46,17 @@ urlpatterns = [
     path('api/migrate-to-zoom/', views.migrate_jitsi_to_zoom_view, name='migrate_to_zoom'),
     
     # Completion pages
-    path('cancellation-completion/', views.Cancel_Complete, name="cancellation_completion"),        
+    path('cancellation-completion/', views.Cancel_Complete, name="cancellation_completion"),
+    
+    # Notification endpoints
+    path('api/notifications/', views.get_practitioner_notifications, name='get_notifications'),
+    path('api/notifications/mark-read/', views.mark_practitioner_notification_read, name='mark_notification_read'),
+    path('api/notifications/mark-all-read/', views.mark_all_practitioner_notifications_read, name='mark_all_notifications_read'),
+    
+    # Enhanced appointment management with notifications
+    path('api/appointments/<int:appointment_id>/<str:action>/', views.handle_appointment_action, name='handle_appointment_action'),
+    path('api/appointments/<int:appointment_id>/reschedule/', views.reschedule_appointment, name='reschedule_appointment'),
+    path('api/notify-availability/', views.notify_availability_added, name='notify_availability_added'),        
 ]
 
 

@@ -230,6 +230,8 @@ def available_slots(request, practitioner_id):
 def book_appointment(request):
     if request.method == 'POST':
         slot_id = request.POST.get('slot_id')
+        reason = request.POST.get('reason', '').strip()
+        urgency = request.POST.get('urgency', 'normal')
         patient_id = request.session.get('patient_id')  # Ensure the patient is logged in
 
         if not patient_id:
@@ -239,10 +241,17 @@ def book_appointment(request):
             return render(request, 'patientdashboard/booking_failed.html', 
                           {'error': 'Invalid slot selection.'})  # Show error page
 
-        # Ensure patient exists
-    
+        # Validate reason is provided
+        if not reason:
+            return render(request, 'patientdashboard/booking_failed.html', 
+                          {'error': 'Please provide a reason for your appointment.'})
 
-        
+        # Validate urgency choice
+        valid_urgency_choices = ['normal', 'urgent', 'emergency']
+        if urgency not in valid_urgency_choices:
+            urgency = 'normal'  # Default to normal if invalid choice
+
+        # Ensure patient exists
         try:
             patient = Patient.objects.get(id=patient_id)
         except Patient.DoesNotExist:
@@ -275,16 +284,23 @@ def book_appointment(request):
             return render(request, 'patientdashboard/booking_failed.html', 
                           {'error': 'You have already booked this appointment.'})
 
-        # Create the appointment
+        # Create the appointment with reason and urgency
         try:
             appointment = Appointment.objects.create(
                 patient=patient,
                 slot=slot,
                 practitioner=practitioner,
+                reason=reason,
+                urgency=urgency,
                 payment_status="Pending"  # New appointments are unpaid by default
             )
             slot.status = 'booked'
             slot.save()
+            
+            # Send notifications to both patient and practitioner
+            from practitionerdashboard.notifications import notify_appointment_booked
+            notify_appointment_booked(appointment)
+            
         except Exception as e:
             return render(request, 'patientdashboard/booking_failed.html', 
                           {'error': f'Database error: {str(e)}'})
@@ -721,6 +737,21 @@ def book_video_consultation(request, slot_id):
             return JsonResponse({'error': 'User not logged in', 'redirect_url': '/patient/login/'}, status=401)
 
         try:
+            # Parse JSON data for reason and urgency
+            import json
+            data = json.loads(request.body) if request.body else {}
+            reason = data.get('reason', '').strip()
+            urgency = data.get('urgency', 'normal')
+            
+            # Validate reason
+            if not reason:
+                return JsonResponse({'error': 'Please provide a reason for your appointment'}, status=400)
+            
+            # Validate urgency
+            valid_urgency_choices = ['normal', 'urgent', 'emergency']
+            if urgency not in valid_urgency_choices:
+                urgency = 'normal'
+            
             patient = Patient.objects.get(id=patient_id)
             print(f"Patient found: {patient}")
             
@@ -730,6 +761,11 @@ def book_video_consultation(request, slot_id):
             if hasattr(slot, 'appointment'):
                 print("Slot is already booked")
                 return JsonResponse({'error': 'This time slot is already booked'}, status=400)
+
+            # Store reason and urgency in session for later use
+            request.session['booking_reason'] = reason
+            request.session['booking_urgency'] = urgency
+            request.session['booking_slot_id'] = slot_id
 
             print("Creating Stripe checkout session...")
             checkout_session = stripe.checkout.Session.create(
@@ -756,6 +792,10 @@ def book_video_consultation(request, slot_id):
             print("Patient profile not found")
             return JsonResponse({'error': 'Patient profile not found'}, status=404)
         
+        except json.JSONDecodeError:
+            print("Invalid JSON data")
+            return JsonResponse({'error': 'Invalid request data'}, status=400)
+        
         except Exception as e:
             print(f"An error occurred: {str(e)}")
             return JsonResponse({'error': f"An error occurred: {str(e)}"}, status=500)
@@ -773,14 +813,25 @@ def payment_success(request, slot_id):
 
         patient = Patient.objects.get(id=patient_id)
 
-        # Create appointment
+        # Get reason and urgency from session
+        reason = request.session.get('booking_reason', '')
+        urgency = request.session.get('booking_urgency', 'normal')
+
+        # Create appointment with reason and urgency
         appointment = Appointment.objects.create(
             patient=patient,
             slot=slot,
             practitioner=slot.practitioner,
             status='Pending',
-            amount=slot.practitioner.price,  # Assuming this is the price for the appointment
+            amount=slot.practitioner.price,
+            reason=reason,
+            urgency=urgency
         )
+
+        # Clear booking data from session
+        request.session.pop('booking_reason', None)
+        request.session.pop('booking_urgency', None)
+        request.session.pop('booking_slot_id', None)
 
         # Create billing record
         Billing.objects.create(
@@ -949,6 +1000,11 @@ def cancel_appointment(request, appointment_id):
     if appointment.status != "Cancelled":  # Prevent duplicate cancellations
         appointment.status = "Cancelled"
         appointment.save()
+        
+        # Send notifications to practitioner about patient cancellation
+        from practitionerdashboard.notifications import notify_appointment_cancelled
+        notify_appointment_cancelled(appointment, reason="Cancelled by patient", cancelled_by="patient")
+        
         messages.success(request, "Appointment has been cancelled.")
     
     return JsonResponse({"success": True, "message": "Appointment cancelled successfully"})

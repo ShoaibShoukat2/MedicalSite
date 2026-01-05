@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment Reminder</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+            color: white;
+            padding: 20px;
+            border-radius: 10px 10px 0 0;
+            text-align: center;
+            margin: -30px -30px 30px -30px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .reminder-box {
+            background: #faf5ff;
+            border: 2px solid #c4b5fd;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .appointment-details {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e0e7ff;
+        }
+        .detail-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        .label {
+            font-weight: bold;
+            color: #1e40af;
+        }
+        .value {
+            color: #374151;
+        }
+        .video-info {
+            background: #dcfce7;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        .btn {
+            display: inline-block;
+            background: #7c3aed;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 6px;
+            margin: 10px 5px;
+            font-weight: bold;
+        }
+        .btn:hover {
+            background: #6d28d9;
+        }
+        .btn-join {
+            background: #059669;
+        }
+        .btn-join:hover {
+            background: #047857;
+        }
+        .countdown {
+            font-size: 24px;
+            font-weight: bold;
+            color: #7c3aed;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⏰ Appointment Reminder</h1>
+        </div>
+        
+        <p>Dear {{ patient.first_name }} {{ patient.last_name }},</p>
+        
+        <div class="reminder-box">
+            <h2 style="margin-top: 0; color: #7c3aed;">🩺 Don't Forget!</h2>
+            <p style="font-size: 18px; margin-bottom: 0;">You have an appointment coming up in</p>
+            <div class="countdown">{{ hours_before }} hours</div>
+        </div>
+        
+        <div class="appointment-details">
+            <h3 style="margin-top: 0; color: #1e40af;">📋 Appointment Details</h3>
+            <div class="detail-row">
+                <span class="label">Doctor:</span>
+                <span class="value">Dr. {{ practitioner.first_name }} {{ practitioner.last_name }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Specialty:</span>
+                <span class="value">{{ practitioner.get_specialty_display }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Date & Time:</span>
+                <span class="value">{{ appointment_time|date:"F d, Y" }} at {{ appointment_time|time:"g:i A" }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Day:</span>
+                <span class="value">{{ appointment_time|date:"l" }}</span>
+            </div>
+            {% if appointment.reason %}
+            <div class="detail-row">
+                <span class="label">Reason:</span>
+                <span class="value">{{ appointment.reason }}</span>
+            </div>
+            {% endif %}
+        </div>
+        
+        {% if appointment.video_call_link %}
+        <div class="video-info">
+            <h4 style="margin-top: 0; color: #059669;">📹 Video Consultation Ready!</h4>
+            <p><strong>Join Link:</strong> <a href="{{ appointment.video_call_link }}">{{ appointment.video_call_link }}</a></p>
+            {% if appointment.meeting_id %}
+            <p><strong>Meeting ID:</strong> {{ appointment.meeting_id }}</p>
+            {% endif %}
+            {% if appointment.meeting_password %}
+            <p><strong>Password:</strong> {{ appointment.meeting_password }}</p>
+            {% endif %}
+            <p><em>💡 Tip: Test your camera and microphone before the appointment!</em></p>
+        </div>
+        {% endif %}
+        
+        <div style="background: #fef3c7; border: 1px solid #fbbf24; border-radius: 8px; padding: 15px; margin: 20px 0;">
+            <h4 style="margin-top: 0; color: #92400e;">📝 Preparation Checklist:</h4>
+            <ul style="margin-bottom: 0;">
+                <li>Have your medical history and current medications ready</li>
+                <li>Prepare any questions you want to ask</li>
+                <li>Ensure you have a stable internet connection (for video calls)</li>
+                <li>Find a quiet, private space for your consultation</li>
+                {% if appointment.reason %}
+                <li>Be ready to discuss: {{ appointment.reason }}</li>
+                {% endif %}
+            </ul>
+        </div>
+        
+        <div style="text-align: center;">
+            {% if appointment.video_call_link %}
+            <a href="{{ appointment.video_call_link }}" class="btn btn-join">
+                🎥 Join Video Call
+            </a>
+            {% endif %}
+            <a href="http://{{ request.get_host }}/patient-dashboard/appointments/" class="btn">
+                📋 View My Appointments
+            </a>
+        </div>
+        
+        <p>If you need to reschedule or cancel, please do so at least 2 hours before your appointment time.</p>
+        
+        <div class="footer">
+            <p><strong>Medical Platform</strong><br>
+            Your Health, Our Priority<br>
+            📧 {{ settings.DEFAULT_FROM_EMAIL }} | 📞 +1 (555) 123-4567</p>
+        </div>
+    </div>
+</body>
+</html>

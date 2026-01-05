@@ -24,11 +24,22 @@ class Appointment(models.Model):
         ('Accepted', 'Accepted'),
         ('Cancelled', 'Cancelled'),
     ]
+    
+    URGENCY_CHOICES = [
+        ('normal', 'Normal'),
+        ('urgent', 'Urgent'),
+        ('emergency', 'Emergency'),
+    ]
 
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name="appointments")
     slot = models.OneToOneField(AvailableSlot, on_delete=models.CASCADE)
     practitioner = models.ForeignKey(Practitioner, on_delete=models.CASCADE, related_name="appointments", default=1)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
+    
+    # New fields for appointment reason and urgency
+    reason = models.TextField(help_text="Reason for the appointment", blank=True, null=True)
+    urgency = models.CharField(max_length=10, choices=URGENCY_CHOICES, default='normal')
+    
     video_call_link = models.URLField(null=True, blank=True)
     
     # Zoom Meeting Fields
@@ -80,14 +91,26 @@ class Appointment(models.Model):
 
 
 class Notification(models.Model):
+    NOTIFICATION_TYPES = [
+        ('info', 'Info'),
+        ('success', 'Success'),
+        ('warning', 'Warning'),
+        ('error', 'Error'),
+    ]
+    
     recipient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name="notifications")
+    title = models.CharField(max_length=200)
     message = models.TextField()
+    notification_type = models.CharField(max_length=10, choices=NOTIFICATION_TYPES, default='info')
     url = models.URLField(null=True, blank=True)  
     is_read = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-created_at']
 
     def __str__(self):
-        return f"Notification for {self.recipient.first_name} {self.recipient.last_name}"
+        return f"Notification for {self.recipient.first_name} {self.recipient.last_name}: {self.title}"
 
 
 

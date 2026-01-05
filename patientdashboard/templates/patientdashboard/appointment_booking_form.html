@@ -1,0 +1,452 @@
+{% extends 'patientdashboard/patient_base.html' %}
+{% load static %}
+
+{% block title %}Book Appointment{% endblock %}
+
+{% block extra_css %}
+<style>
+.booking-form-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.appointment-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    padding: 30px;
+    margin-bottom: 20px;
+}
+
+.practitioner-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.practitioner-photo {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 20px;
+    border: 3px solid #3b82f6;
+}
+
+.practitioner-details h3 {
+    color: #1f2937;
+    margin-bottom: 5px;
+}
+
+.practitioner-details p {
+    color: #6b7280;
+    margin-bottom: 3px;
+}
+
+.appointment-details {
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.appointment-details h4 {
+    color: #1f2937;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.appointment-details h4 i {
+    margin-right: 10px;
+    color: #3b82f6;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding: 8px 0;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: #374151;
+}
+
+.detail-value {
+    color: #6b7280;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-control.textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.urgency-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.urgency-option {
+    position: relative;
+}
+
+.urgency-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+}
+
+.urgency-option label {
+    display: block;
+    padding: 15px 20px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.urgency-option input[type="radio"]:checked + label {
+    border-color: #3b82f6;
+    background-color: #eff6ff;
+}
+
+.urgency-normal label {
+    border-left: 4px solid #10b981;
+}
+
+.urgency-urgent label {
+    border-left: 4px solid #f59e0b;
+}
+
+.urgency-emergency label {
+    border-left: 4px solid #ef4444;
+}
+
+.urgency-option input[type="radio"]:checked + label.normal {
+    background-color: #ecfdf5;
+    border-color: #10b981;
+}
+
+.urgency-option input[type="radio"]:checked + label.urgent {
+    background-color: #fffbeb;
+    border-color: #f59e0b;
+}
+
+.urgency-option input[type="radio"]:checked + label.emergency {
+    background-color: #fef2f2;
+    border-color: #ef4444;
+}
+
+.urgency-title {
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.urgency-description {
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.booking-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.btn {
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex: 1;
+    text-align: center;
+}
+
+.btn-primary {
+    background-color: #3b82f6;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #2563eb;
+}
+
+.btn-secondary {
+    background-color: #6b7280;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #4b5563;
+}
+
+.required {
+    color: #ef4444;
+}
+
+.error-message {
+    color: #ef4444;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+@media (max-width: 768px) {
+    .booking-form-container {
+        padding: 15px;
+    }
+    
+    .appointment-card {
+        padding: 20px;
+    }
+    
+    .practitioner-info {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .practitioner-photo {
+        margin-right: 0;
+        margin-bottom: 15px;
+    }
+    
+    .urgency-options {
+        grid-template-columns: 1fr;
+    }
+    
+    .booking-actions {
+        flex-direction: column;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="booking-form-container">
+    <div class="appointment-card">
+        <!-- Practitioner Information -->
+        <div class="practitioner-info">
+            {% if practitioner.photo %}
+                <img src="{{ practitioner.photo.url }}" alt="{{ practitioner.first_name }}" class="practitioner-photo">
+            {% else %}
+                <div class="practitioner-photo" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; font-weight: bold;">
+                    {{ practitioner.first_name|slice:":1" }}{{ practitioner.last_name|slice:":1" }}
+                </div>
+            {% endif %}
+            <div class="practitioner-details">
+                <h3>{{ practitioner.get_civility_display }} {{ practitioner.first_name }} {{ practitioner.last_name }}</h3>
+                <p><i class="fas fa-user-md"></i> {{ practitioner.get_specialty_display }}</p>
+                <p><i class="fas fa-dollar-sign"></i> ${{ practitioner.price }}</p>
+                {% if practitioner.location %}
+                    <p><i class="fas fa-map-marker-alt"></i> {{ practitioner.location }}</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Appointment Details -->
+        <div class="appointment-details">
+            <h4><i class="fas fa-calendar-alt"></i> Appointment Details</h4>
+            <div class="detail-item">
+                <span class="detail-label">Date:</span>
+                <span class="detail-value">{{ slot.date|date:"l, F d, Y" }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Time:</span>
+                <span class="detail-value">{{ slot.start_time|time:"g:i A" }} - {{ slot.end_time|time:"g:i A" }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Duration:</span>
+                <span class="detail-value">{{ duration }} minutes</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Consultation Fee:</span>
+                <span class="detail-value">${{ practitioner.price }}</span>
+            </div>
+        </div>
+
+        <!-- Booking Form -->
+        <form method="POST" id="booking-form">
+            {% csrf_token %}
+            <input type="hidden" name="slot_id" value="{{ slot.id }}">
+            
+            <!-- Reason for Appointment -->
+            <div class="form-group">
+                <label for="reason" class="form-label">
+                    Reason for Appointment <span class="required">*</span>
+                </label>
+                <textarea 
+                    name="reason" 
+                    id="reason" 
+                    class="form-control textarea" 
+                    placeholder="Please describe your symptoms, concerns, or the reason for this appointment..."
+                    required
+                    maxlength="1000"></textarea>
+                <div class="error-message" id="reason-error"></div>
+                <small class="text-muted">Maximum 1000 characters</small>
+            </div>
+
+            <!-- Urgency Level -->
+            <div class="form-group">
+                <label class="form-label">
+                    Urgency Level <span class="required">*</span>
+                </label>
+                <div class="urgency-options">
+                    <div class="urgency-option urgency-normal">
+                        <input type="radio" name="urgency" value="normal" id="urgency-normal" checked>
+                        <label for="urgency-normal" class="normal">
+                            <div class="urgency-title">
+                                <i class="fas fa-clock text-success"></i> Normal
+                            </div>
+                            <div class="urgency-description">
+                                Regular consultation, no immediate concerns
+                            </div>
+                        </label>
+                    </div>
+                    
+                    <div class="urgency-option urgency-urgent">
+                        <input type="radio" name="urgency" value="urgent" id="urgency-urgent">
+                        <label for="urgency-urgent" class="urgent">
+                            <div class="urgency-title">
+                                <i class="fas fa-exclamation-triangle text-warning"></i> Urgent
+                            </div>
+                            <div class="urgency-description">
+                                Needs attention soon, concerning symptoms
+                            </div>
+                        </label>
+                    </div>
+                    
+                    <div class="urgency-option urgency-emergency">
+                        <input type="radio" name="urgency" value="emergency" id="urgency-emergency">
+                        <label for="urgency-emergency" class="emergency">
+                            <div class="urgency-title">
+                                <i class="fas fa-exclamation-circle text-danger"></i> Emergency
+                            </div>
+                            <div class="urgency-description">
+                                Severe symptoms, immediate attention needed
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                <div class="error-message" id="urgency-error"></div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="booking-actions">
+                <a href="{% url 'patientdashboard:available_slots' practitioner.id %}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Slots
+                </a>
+                <button type="submit" class="btn btn-primary" id="submit-btn">
+                    <i class="fas fa-calendar-check"></i> Book Appointment
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('booking-form');
+    const reasonTextarea = document.getElementById('reason');
+    const submitBtn = document.getElementById('submit-btn');
+    
+    // Character counter for reason
+    reasonTextarea.addEventListener('input', function() {
+        const length = this.value.length;
+        const maxLength = 1000;
+        
+        if (length > maxLength) {
+            this.value = this.value.substring(0, maxLength);
+        }
+        
+        // Update character count display
+        const small = this.parentNode.querySelector('small');
+        small.textContent = `${this.value.length}/${maxLength} characters`;
+        
+        if (this.value.length > maxLength * 0.9) {
+            small.style.color = '#ef4444';
+        } else {
+            small.style.color = '#6b7280';
+        }
+    });
+    
+    // Form validation
+    form.addEventListener('submit', function(e) {
+        let isValid = true;
+        
+        // Clear previous errors
+        document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+        
+        // Validate reason
+        const reason = reasonTextarea.value.trim();
+        if (!reason) {
+            document.getElementById('reason-error').textContent = 'Please provide a reason for your appointment.';
+            isValid = false;
+        } else if (reason.length < 10) {
+            document.getElementById('reason-error').textContent = 'Please provide a more detailed reason (at least 10 characters).';
+            isValid = false;
+        }
+        
+        // Validate urgency
+        const urgency = document.querySelector('input[name="urgency"]:checked');
+        if (!urgency) {
+            document.getElementById('urgency-error').textContent = 'Please select an urgency level.';
+            isValid = false;
+        }
+        
+        if (!isValid) {
+            e.preventDefault();
+            return false;
+        }
+        
+        // Show loading state
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Booking...';
+    });
+    
+    // Urgency selection feedback
+    document.querySelectorAll('input[name="urgency"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            // Clear any previous urgency error
+            document.getElementById('urgency-error').textContent = '';
+        });
+    });
+});
+</script>
+{% endblock %}
+</text>
+</invoke>

@@ -1,33 +1,57 @@
 """
-Notification System for Medical Platform
-Handles email and SMS notifications for appointments
+Enhanced Notification System for Medical Platform
+Handles email notifications and in-app notifications for appointments
 """
 
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.conf import settings
 from patientdashboard.models import Notification
+from practitionerdashboard.models import PractitionerNotification
+from user_account.models import Appointment
 import requests
 import json
+from django.utils import timezone
+from datetime import timedelta
 
-def create_notification(user_type, user_id, title, message, notification_type='info'):
-    """Create a notification in the database"""
+def create_patient_notification(patient, title, message, notification_type='info', url=None):
+    """Create a notification for a patient"""
     try:
         notification = Notification.objects.create(
-            user_type=user_type,
-            user_id=user_id,
+            recipient=patient,
             title=title,
             message=message,
-            notification_type=notification_type
+            notification_type=notification_type,
+            url=url
         )
         return notification
     except Exception as e:
-        print(f"Error creating notification: {str(e)}")
+        print(f"Error creating patient notification: {str(e)}")
+        return None
+
+def create_practitioner_notification(practitioner, title, message, notification_type='info', url=None):
+    """Create a notification for a practitioner"""
+    try:
+        notification = PractitionerNotification.objects.create(
+            recipient=practitioner,
+            title=title,
+            message=message,
+            notification_type=notification_type,
+            url=url
+        )
+        return notification
+    except Exception as e:
+        print(f"Error creating practitioner notification: {str(e)}")
         return None
 
 def send_email_notification(to_email, subject, template_name, context):
     """Send email notification"""
     try:
+        # Add request context for URLs
+        context.update({
+            'settings': settings,
+        })
+        
         html_message = render_to_string(template_name, context)
         
         send_mail(
@@ -38,9 +62,10 @@ def send_email_notification(to_email, subject, template_name, context):
             html_message=html_message,
             fail_silently=False,
         )
+        print(f"Email sent successfully to {to_email}")
         return True
     except Exception as e:
-        print(f"Error sending email: {str(e)}")
+        print(f"Error sending email to {to_email}: {str(e)}")
         return False
 
 def send_sms_notification(phone_number, message):
@@ -61,12 +86,12 @@ def notify_appointment_booked(appointment):
     patient_title = "Appointment Booked Successfully"
     patient_message = f"Your appointment with Dr. {appointment.practitioner.first_name} {appointment.practitioner.last_name} has been booked for {appointment.slot.start_time.strftime('%B %d, %Y at %I:%M %p')}."
     
-    create_notification(
-        user_type='patient',
-        user_id=appointment.patient.id,
+    create_patient_notification(
+        patient=appointment.patient,
         title=patient_title,
         message=patient_message,
-        notification_type='success'
+        notification_type='success',
+        url=f'/patient-dashboard/appointments/'
     )
     
     # Send email to patient
@@ -87,12 +112,12 @@ def notify_appointment_booked(appointment):
     practitioner_title = "New Appointment Request"
     practitioner_message = f"New appointment request from {appointment.patient.first_name} {appointment.patient.last_name} for {appointment.slot.start_time.strftime('%B %d, %Y at %I:%M %p')}."
     
-    create_notification(
-        user_type='practitioner',
-        user_id=appointment.practitioner.id,
+    create_practitioner_notification(
+        practitioner=appointment.practitioner,
         title=practitioner_title,
         message=practitioner_message,
-        notification_type='info'
+        notification_type='info',
+        url=f'/practitioner-dashboard/dashboard/'
     )
     
     # Send email to practitioner
@@ -117,18 +142,14 @@ def notify_appointment_accepted(appointment):
     
     # Add Zoom meeting info if available
     if appointment.video_call_link:
-        message += f" Zoom meeting link: {appointment.video_call_link}"
-        if appointment.meeting_id:
-            message += f" Meeting ID: {appointment.meeting_id}"
-        if appointment.meeting_password:
-            message += f" Password: {appointment.meeting_password}"
+        message += f" Video consultation link has been provided."
     
-    create_notification(
-        user_type='patient',
-        user_id=appointment.patient.id,
+    create_patient_notification(
+        patient=appointment.patient,
         title=title,
         message=message,
-        notification_type='success'
+        notification_type='success',
+        url=f'/patient-dashboard/appointments/'
     )
     
     # Send email
@@ -152,33 +173,32 @@ def notify_appointment_accepted(appointment):
     if hasattr(appointment.patient, 'phone') and appointment.patient.phone:
         sms_message = f"Appointment confirmed with Dr. {appointment.practitioner.first_name} {appointment.practitioner.last_name} on {appointment.slot.start_time.strftime('%m/%d/%Y at %I:%M %p')}."
         if appointment.video_call_link:
-            sms_message += f" Zoom: {appointment.video_call_link}"
-            if appointment.meeting_id:
-                sms_message += f" ID: {appointment.meeting_id}"
+            sms_message += f" Video link provided in email."
         send_sms_notification(appointment.patient.phone, sms_message)
 
-def notify_appointment_cancelled(appointment, reason=""):
-    """Notify patient when appointment is cancelled"""
+def notify_appointment_cancelled(appointment, reason="", cancelled_by="system"):
+    """Notify patient and practitioner when appointment is cancelled"""
     
-    title = "Appointment Cancelled"
-    message = f"Your appointment with Dr. {appointment.practitioner.first_name} {appointment.practitioner.last_name} scheduled for {appointment.slot.start_time.strftime('%B %d, %Y at %I:%M %p')} has been cancelled."
+    # Notify Patient
+    patient_title = "Appointment Cancelled"
+    patient_message = f"Your appointment with Dr. {appointment.practitioner.first_name} {appointment.practitioner.last_name} scheduled for {appointment.slot.start_time.strftime('%B %d, %Y at %I:%M %p')} has been cancelled."
     
     if reason:
-        message += f" Reason: {reason}"
+        patient_message += f" Reason: {reason}"
     
-    create_notification(
-        user_type='patient',
-        user_id=appointment.patient.id,
-        title=title,
-        message=message,
-        notification_type='warning'
+    create_patient_notification(
+        patient=appointment.patient,
+        title=patient_title,
+        message=patient_message,
+        notification_type='warning',
+        url=f'/patient-dashboard/appointments/'
     )
     
-    # Send email
+    # Send email to patient
     if appointment.patient.email:
         send_email_notification(
             to_email=appointment.patient.email,
-            subject=title,
+            subject=patient_title,
             template_name='emails/appointment_cancelled.html',
             context={
                 'patient': appointment.patient,
@@ -189,9 +209,76 @@ def notify_appointment_cancelled(appointment, reason=""):
             }
         )
     
-    # Send SMS
+    # Notify Practitioner (if cancelled by patient)
+    if cancelled_by == "patient":
+        practitioner_title = "Appointment Cancelled by Patient"
+        practitioner_message = f"Appointment with {appointment.patient.first_name} {appointment.patient.last_name} scheduled for {appointment.slot.start_time.strftime('%B %d, %Y at %I:%M %p')} has been cancelled by the patient."
+        
+        create_practitioner_notification(
+            practitioner=appointment.practitioner,
+            title=practitioner_title,
+            message=practitioner_message,
+            notification_type='info',
+            url=f'/practitioner-dashboard/dashboard/'
+        )
+        
+        # Send email to practitioner
+        if appointment.practitioner.email:
+            send_email_notification(
+                to_email=appointment.practitioner.email,
+                subject=practitioner_title,
+                template_name='emails/appointment_cancelled.html',
+                context={
+                    'patient': appointment.patient,
+                    'practitioner': appointment.practitioner,
+                    'appointment': appointment,
+                    'appointment_time': appointment.slot.start_time,
+                    'reason': reason,
+                    'cancelled_by': 'patient'
+                }
+            )
+    
+    # Send SMS to patient
     if hasattr(appointment.patient, 'phone') and appointment.patient.phone:
         sms_message = f"Appointment with Dr. {appointment.practitioner.first_name} {appointment.practitioner.last_name} on {appointment.slot.start_time.strftime('%m/%d/%Y at %I:%M %p')} has been cancelled."
+        send_sms_notification(appointment.patient.phone, sms_message)
+
+def notify_appointment_modified(appointment, old_time=None, reason=""):
+    """Notify patient when appointment is modified"""
+    
+    title = "Appointment Modified"
+    message = f"Your appointment with Dr. {appointment.practitioner.first_name} {appointment.practitioner.last_name} has been rescheduled to {appointment.slot.start_time.strftime('%B %d, %Y at %I:%M %p')}."
+    
+    if reason:
+        message += f" Reason: {reason}"
+    
+    create_patient_notification(
+        patient=appointment.patient,
+        title=title,
+        message=message,
+        notification_type='info',
+        url=f'/patient-dashboard/appointments/'
+    )
+    
+    # Send email
+    if appointment.patient.email:
+        send_email_notification(
+            to_email=appointment.patient.email,
+            subject=title,
+            template_name='emails/appointment_modified.html',
+            context={
+                'patient': appointment.patient,
+                'practitioner': appointment.practitioner,
+                'appointment': appointment,
+                'appointment_time': appointment.slot.start_time,
+                'old_time': old_time,
+                'reason': reason
+            }
+        )
+    
+    # Send SMS
+    if hasattr(appointment.patient, 'phone') and appointment.patient.phone:
+        sms_message = f"Appointment with Dr. {appointment.practitioner.first_name} {appointment.practitioner.last_name} rescheduled to {appointment.slot.start_time.strftime('%m/%d/%Y at %I:%M %p')}."
         send_sms_notification(appointment.patient.phone, sms_message)
 
 def notify_new_availability(practitioner, new_slots):
@@ -203,16 +290,21 @@ def notify_new_availability(practitioner, new_slots):
         status='Pending'
     ).select_related('patient')
     
+    # Also notify patients who have shown interest (you can customize this logic)
+    interested_patients = []
+    
+    all_patients = list(waiting_appointments.values_list('patient', flat=True)) + interested_patients
+    
     for appointment in waiting_appointments:
         title = "New Appointment Slots Available"
         message = f"Dr. {practitioner.first_name} {practitioner.last_name} has new available slots. You may be able to reschedule your appointment earlier."
         
-        create_notification(
-            user_type='patient',
-            user_id=appointment.patient.id,
+        create_patient_notification(
+            patient=appointment.patient,
             title=title,
             message=message,
-            notification_type='info'
+            notification_type='info',
+            url=f'/patient-dashboard/practitioner/{practitioner.id}/slots/'
         )
         
         # Send email
@@ -232,14 +324,23 @@ def notify_appointment_reminder(appointment, hours_before=24):
     """Send appointment reminder"""
     
     title = f"Appointment Reminder - {hours_before} hours"
-    message = f"Reminder: You have an appointment with Dr. {appointment.practitioner.first_name} {appointment.practitioner.last_name} tomorrow at {appointment.slot.start_time.strftime('%I:%M %p')}."
+    if hours_before == 24:
+        time_text = "tomorrow"
+    elif hours_before == 2:
+        time_text = "in 2 hours"
+    elif hours_before == 1:
+        time_text = "in 1 hour"
+    else:
+        time_text = f"in {hours_before} hours"
     
-    create_notification(
-        user_type='patient',
-        user_id=appointment.patient.id,
+    message = f"Reminder: You have an appointment with Dr. {appointment.practitioner.first_name} {appointment.practitioner.last_name} {time_text} at {appointment.slot.start_time.strftime('%I:%M %p')}."
+    
+    create_patient_notification(
+        patient=appointment.patient,
         title=title,
         message=message,
-        notification_type='info'
+        notification_type='info',
+        url=f'/patient-dashboard/appointments/'
     )
     
     # Send email
@@ -256,3 +357,84 @@ def notify_appointment_reminder(appointment, hours_before=24):
                 'hours_before': hours_before
             }
         )
+    
+    # Send SMS
+    if hasattr(appointment.patient, 'phone') and appointment.patient.phone:
+        sms_message = f"Reminder: Appointment with Dr. {appointment.practitioner.first_name} {appointment.practitioner.last_name} {time_text} at {appointment.slot.start_time.strftime('%I:%M %p')}."
+        if appointment.video_call_link:
+            sms_message += f" Video link in email."
+        send_sms_notification(appointment.patient.phone, sms_message)
+
+def send_bulk_availability_notifications(practitioner, new_slots):
+    """Send notifications to multiple patients about new availability"""
+    
+    # Get all patients who might be interested
+    # This could include patients with pending appointments, past patients, etc.
+    
+    # Patients with pending appointments for this practitioner
+    pending_patients = Appointment.objects.filter(
+        practitioner=practitioner,
+        status='Pending'
+    ).select_related('patient').values_list('patient', flat=True)
+    
+    # You could also add logic for:
+    # - Patients who have had appointments with this practitioner before
+    # - Patients who have shown interest in this specialty
+    # - Patients on a waiting list
+    
+    for patient_id in pending_patients:
+        try:
+            from user_account.models import Patient
+            patient = Patient.objects.get(id=patient_id)
+            
+            title = "New Appointment Slots Available"
+            message = f"Dr. {practitioner.first_name} {practitioner.last_name} has added new appointment slots. Book now to get an earlier appointment!"
+            
+            create_patient_notification(
+                patient=patient,
+                title=title,
+                message=message,
+                notification_type='info',
+                url=f'/patient-dashboard/practitioner/{practitioner.id}/slots/'
+            )
+            
+            # Send email
+            if patient.email:
+                send_email_notification(
+                    to_email=patient.email,
+                    subject=title,
+                    template_name='emails/new_availability.html',
+                    context={
+                        'patient': patient,
+                        'practitioner': practitioner,
+                        'new_slots': new_slots
+                    }
+                )
+        except Exception as e:
+            print(f"Error sending availability notification to patient {patient_id}: {str(e)}")
+
+# Utility functions for scheduled reminders
+def send_daily_reminders():
+    """Send reminders for appointments happening in 24 hours"""
+    tomorrow = timezone.now() + timedelta(days=1)
+    appointments = Appointment.objects.filter(
+        slot__start_time__date=tomorrow.date(),
+        status='Accepted'
+    ).select_related('patient', 'practitioner')
+    
+    for appointment in appointments:
+        notify_appointment_reminder(appointment, hours_before=24)
+
+def send_hourly_reminders():
+    """Send reminders for appointments happening in 2 hours"""
+    in_two_hours = timezone.now() + timedelta(hours=2)
+    appointments = Appointment.objects.filter(
+        slot__start_time__range=[
+            in_two_hours - timedelta(minutes=30),
+            in_two_hours + timedelta(minutes=30)
+        ],
+        status='Accepted'
+    ).select_related('patient', 'practitioner')
+    
+    for appointment in appointments:
+        notify_appointment_reminder(appointment, hours_before=2)
