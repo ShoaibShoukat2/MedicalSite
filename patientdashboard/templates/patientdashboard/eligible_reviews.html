@@ -10,18 +10,18 @@
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
         <div>
             <h1 class="text-2xl md:text-3xl font-bold mb-2" data-translate="Practitioner Reviews">Practitioner Reviews</h1>
-            <p class="text-white/90">Share your experience and help other patients</p>
+            <p class="text-white/90" data-translate="Share your experience and help other patients">Share your experience and help other patients</p>
         </div>
         <div class="mt-4 md:mt-0">
             <div class="flex items-center space-x-4">
                 <div class="text-center">
                     <div class="text-2xl font-bold">{{ practitioners|length }}</div>
-                    <div class="text-sm text-white/80">To Review</div>
+                    <div class="text-sm text-white/80" data-translate="To Review">To Review</div>
                 </div>
                 <div class="w-px h-12 bg-white/20"></div>
                 <div class="text-center">
                     <div class="text-2xl font-bold">{{ reviewed_count|default:0 }}</div>
-                    <div class="text-sm text-white/80">Completed</div>
+                    <div class="text-sm text-white/80" data-translate="Completed">Completed</div>
                 </div>
             </div>
         </div>
