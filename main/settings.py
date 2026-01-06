@@ -227,11 +227,11 @@ AUTH_USER_MODEL = 'user_account.User'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 465  # Use SSL port
-EMAIL_USE_SSL = True
-EMAIL_USE_TLS = False  # Don't need TLS when using SSL
+EMAIL_PORT = 587  # Use TLS port instead of SSL
+EMAIL_USE_TLS = True  # Use TLS instead of SSL
+EMAIL_USE_SSL = False  # Don't use SSL when using TLS
 EMAIL_HOST_USER = 'shoaibahmadbhatti6252@gmail.com'  # Your email address
-EMAIL_HOST_PASSWORD = 'qlye fqjt pkbv xbzl'  # Updated App Password
+EMAIL_HOST_PASSWORD = 'rxkz iwfa rdgf qrvd'  # App Password - may need to be regenerated
 DEFAULT_FROM_EMAIL = 'shoaibahmadbhatti6252@gmail.com'
 
 
