@@ -65,11 +65,11 @@
     <div class="flex items-center justify-between">
       <div>
         <h1 class="text-3xl font-bold text-doctor-dark-blue mb-2" data-translate="Dashboard">Dashboard Overview</h1>
-        <p class="text-doctor-dark-gray">Welcome back! Here's what's happening with your practice today.</p>
+        <p class="text-doctor-dark-gray" data-translate="Welcome back! Here's what's happening with your practice today.">Welcome back! Here's what's happening with your practice today.</p>
       </div>
       <div class="hidden md:flex items-center space-x-4">
         <div class="text-right">
-          <p class="text-sm text-doctor-dark-gray">Today's Date</p>
+          <p class="text-sm text-doctor-dark-gray" data-translate="Today's Date">Today's Date</p>
           <p class="font-semibold text-doctor-blue">{{ today|date:"M d, Y" }}</p>
         </div>
       </div>
@@ -211,9 +211,9 @@
       <div class="flex items-center justify-between">
         <div>
           <h2 class="text-2xl font-bold mb-2">
-            <i class="fas fa-calendar-alt mr-3"></i>Appointments Management
+            <i class="fas fa-calendar-alt mr-3"></i><span data-translate="Appointments Management">Appointments Management</span>
           </h2>
-          <p class="text-blue-100">Manage and track all your patient appointments</p>
+          <p class="text-blue-100" data-translate="Manage and track all your patient appointments">Manage and track all your patient appointments</p>
         </div>
       </div>
     </div>
@@ -222,15 +222,15 @@
     <div class="border-b border-gray-200 bg-gray-50">
       <nav class="flex space-x-8 px-6" id="appointmentTabs">
         <button class="tab-button active py-4 px-2 border-b-2 border-doctor-blue text-doctor-blue font-medium transition-colors" data-tab="today">
-          <i class="fas fa-calendar-check mr-2"></i>Today's Appointments
+          <i class="fas fa-calendar-check mr-2"></i><span data-translate="Today's Appointments">Today's Appointments</span>
           <span class="ml-2 bg-doctor-blue text-white text-xs px-2 py-1 rounded-full">{{ today_appointments|length }}</span>
         </button>
         <button class="tab-button py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-doctor-blue font-medium transition-colors" data-tab="waiting">
-          <i class="fas fa-clock mr-2"></i>Waiting List
+          <i class="fas fa-clock mr-2"></i><span data-translate="Waiting List">Waiting List</span>
           <span class="ml-2 bg-blue-500 text-white text-xs px-2 py-1 rounded-full">{{ waiting_list_appointments|length }}</span>
         </button>
         <button class="tab-button py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-doctor-blue font-medium transition-colors" data-tab="accepted">
-          <i class="fas fa-check-circle mr-2"></i>Accepted
+          <i class="fas fa-check-circle mr-2"></i><span data-translate="Accepted" data-translate="Accepted">Accepted</span>
           <span class="ml-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">{{ accepted_appointments|length }}</span>
         </button>
       </nav>
@@ -252,13 +252,13 @@
                 <table class="w-full">
                   <thead>
                     <tr class="border-b border-gray-200">
-                      <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Patient</th>
-                      <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Time</th>
-                      <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Reason</th>
-                      <th class="text-center py-4 px-4 font-semibold text-doctor-dark-blue">Urgency</th>
-                      <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Amount</th>
-                      <th class="text-center py-4 px-4 font-semibold text-doctor-dark-blue">Status</th>
-                      <th class="text-right py-4 px-4 font-semibold text-doctor-dark-blue">Actions</th>
+                      <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Patient">Patient</th>
+                      <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Time">Time</th>
+                      <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Reason">Reason</th>
+                      <th class="text-center py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Urgency">Urgency</th>
+                      <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Amount">Amount</th>
+                      <th class="text-center py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Status">Status</th>
+                      <th class="text-right py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Actions">Actions</th>
                     </tr>
                   </thead>
                   <tbody class="divide-y divide-gray-100">
@@ -291,15 +291,15 @@
                       <td class="py-4 px-4 text-center">
                         {% if appointment.urgency == 'emergency' %}
                           <span class="px-3 py-1 bg-red-100 text-red-800 rounded-full text-sm font-medium">
-                            <i class="fas fa-exclamation-circle mr-1"></i>Emergency
+                            <i class="fas fa-exclamation-circle mr-1"></i><span data-translate="Emergency">Emergency</span>
                           </span>
                         {% elif appointment.urgency == 'urgent' %}
                           <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-medium">
-                            <i class="fas fa-exclamation-triangle mr-1"></i>Urgent
+                            <i class="fas fa-exclamation-triangle mr-1"></i><span data-translate="Urgent">Urgent</span>
                           </span>
                         {% else %}
                           <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
-                            <i class="fas fa-clock mr-1"></i>Normal
+                            <i class="fas fa-clock mr-1"></i><span data-translate="Normal">Normal</span>
                           </span>
                         {% endif %}
                       </td>
@@ -309,17 +309,17 @@
                         </span>
                       </td>
                       <td class="py-4 px-4 text-center">
-                        <span class="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm font-medium">Pending</span>
+                        <span class="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm font-medium" data-translate="Pending">Pending</span>
                       </td>
                       <td class="py-4 px-4 text-right">
                         <div class="flex items-center justify-end space-x-2">
-                          <button class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors view-btn" title="View Details">
+                          <button class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors view-btn" title="View Details" data-translate-title="View Details">
                             <i class="fas fa-eye"></i>
                           </button>
-                          <button class="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition-colors accept-btn" title="Accept Appointment">
+                          <button class="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition-colors accept-btn" title="Accept Appointment" data-translate-title="Accept Appointment">
                             <i class="fas fa-check"></i>
                           </button>
-                          <button class="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors cancel-btn" title="Cancel Appointment">
+                          <button class="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors cancel-btn" title="Cancel Appointment" data-translate-title="Cancel Appointment">
                             <i class="fas fa-times"></i>
                           </button>
                         </div>
@@ -343,13 +343,13 @@
                 <table class="w-full">
                   <thead>
                     <tr class="border-b border-gray-200">
-                      <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Patient</th>
-                      <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Time</th>
-                      <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Reason</th>
-                      <th class="text-center py-4 px-4 font-semibold text-doctor-dark-blue">Urgency</th>
-                      <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Amount</th>
-                      <th class="text-center py-4 px-4 font-semibold text-doctor-dark-blue">Status</th>
-                      <th class="text-right py-4 px-4 font-semibold text-doctor-dark-blue">Actions</th>
+                      <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Patient">Patient</th>
+                      <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Time">Time</th>
+                      <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Reason">Reason</th>
+                      <th class="text-center py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Urgency">Urgency</th>
+                      <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Amount">Amount</th>
+                      <th class="text-center py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Status">Status</th>
+                      <th class="text-right py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Actions">Actions</th>
                     </tr>
                   </thead>
                   <tbody class="divide-y divide-gray-100">
@@ -382,15 +382,15 @@
                       <td class="py-4 px-4 text-center">
                         {% if appointment.urgency == 'emergency' %}
                           <span class="px-3 py-1 bg-red-100 text-red-800 rounded-full text-sm font-medium">
-                            <i class="fas fa-exclamation-circle mr-1"></i>Emergency
+                            <i class="fas fa-exclamation-circle mr-1"></i><span data-translate="Emergency">Emergency</span>
                           </span>
                         {% elif appointment.urgency == 'urgent' %}
                           <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-medium">
-                            <i class="fas fa-exclamation-triangle mr-1"></i>Urgent
+                            <i class="fas fa-exclamation-triangle mr-1"></i><span data-translate="Urgent">Urgent</span>
                           </span>
                         {% else %}
                           <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
-                            <i class="fas fa-clock mr-1"></i>Normal
+                            <i class="fas fa-clock mr-1"></i><span data-translate="Normal">Normal</span>
                           </span>
                         {% endif %}
                       </td>
@@ -400,23 +400,23 @@
                         </span>
                       </td>
                       <td class="py-4 px-4 text-center">
-                        <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">Accepted</span>
+                        <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium" data-translate="Accepted">Accepted</span>
                       </td>
                       <td class="py-4 px-4 text-right">
                         <div class="flex items-center justify-end space-x-2">
-                          <button class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors view-btn" title="View Details">
+                          <button class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors view-btn" title="View Details" data-translate-title="View Details">
                             <i class="fas fa-eye"></i>
                           </button>
                           <!-- Video Call Button for Accepted Appointments -->
                           <button onclick="startVideoCall({{ appointment.patient.id }}, '{{ appointment.patient.first_name|escapejs }} {{ appointment.patient.last_name|escapejs }}')" 
                                   class="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition-colors video-call-btn"
-                                  title="Start Video Meeting">
+                                  title="Start Video Meeting" data-translate-title="Start Video Meeting">
                             <i class="fas fa-video"></i>
                           </button>
                           <!-- Chat Button for Accepted Appointments -->
                           <button onclick="openChat({{ appointment.patient.id }}, '{{ appointment.patient.first_name|escapejs }} {{ appointment.patient.last_name|escapejs }}')" 
                                   class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors chat-btn"
-                                  title="Chat with Patient">
+                                  title="Chat with Patient" data-translate-title="Chat with Patient">
                             <i class="fas fa-comments"></i>
                           </button>
                           <button class="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors cancel-btn">
@@ -436,8 +436,8 @@
             <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <i class="fas fa-calendar-times text-gray-400 text-3xl"></i>
             </div>
-            <h3 class="text-xl font-semibold text-doctor-dark-blue mb-2">No appointments for today</h3>
-            <p class="text-doctor-dark-gray">Your schedule is clear for today!</p>
+            <h3 class="text-xl font-semibold text-doctor-dark-blue mb-2" data-translate="No appointments for today">No appointments for today</h3>
+            <p class="text-doctor-dark-gray" data-translate="Your schedule is clear for today!">Your schedule is clear for today!</p>
           </div>
         {% endif %}
       </div>
@@ -449,13 +449,13 @@
             <table class="w-full">
               <thead>
                 <tr class="border-b border-gray-200">
-                  <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Patient</th>
-                  <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Time</th>
-                  <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Reason</th>
-                  <th class="text-center py-4 px-4 font-semibold text-doctor-dark-blue">Urgency</th>
-                  <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Amount</th>
-                  <th class="text-center py-4 px-4 font-semibold text-doctor-dark-blue">Status</th>
-                  <th class="text-right py-4 px-4 font-semibold text-doctor-dark-blue">Actions</th>
+                  <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Patient">Patient</th>
+                  <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Time">Time</th>
+                  <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Reason">Reason</th>
+                  <th class="text-center py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Urgency">Urgency</th>
+                  <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Amount">Amount</th>
+                  <th class="text-center py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Status">Status</th>
+                  <th class="text-right py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Actions">Actions</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-100">
@@ -488,15 +488,15 @@
                   <td class="py-4 px-4 text-center">
                     {% if appointment.urgency == 'emergency' %}
                       <span class="px-3 py-1 bg-red-100 text-red-800 rounded-full text-sm font-medium">
-                        <i class="fas fa-exclamation-circle mr-1"></i>Emergency
+                        <i class="fas fa-exclamation-circle mr-1"></i><span data-translate="Emergency">Emergency</span>
                       </span>
                     {% elif appointment.urgency == 'urgent' %}
                       <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-medium">
-                        <i class="fas fa-exclamation-triangle mr-1"></i>Urgent
+                        <i class="fas fa-exclamation-triangle mr-1"></i><span data-translate="Urgent">Urgent</span>
                       </span>
                     {% else %}
                       <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
-                        <i class="fas fa-clock mr-1"></i>Normal
+                        <i class="fas fa-clock mr-1"></i><span data-translate="Normal">Normal</span>
                       </span>
                     {% endif %}
                   </td>
@@ -506,17 +506,17 @@
                     </span>
                   </td>
                   <td class="py-4 px-4 text-center">
-                    <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">Waiting</span>
+                    <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium" data-translate="Waiting">Waiting</span>
                   </td>
                   <td class="py-4 px-4 text-right">
                     <div class="flex items-center justify-end space-x-2">
-                      <button class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors view-btn" title="View Details">
+                      <button class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors view-btn" title="View Details" data-translate-title="View Details">
                         <i class="fas fa-eye"></i>
                       </button>
-                      <button class="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition-colors accept-btn" title="Accept Appointment">
+                      <button class="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition-colors accept-btn" title="Accept Appointment" data-translate-title="Accept Appointment">
                         <i class="fas fa-check"></i>
                       </button>
-                      <button class="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors cancel-btn" title="Cancel Appointment">
+                      <button class="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors cancel-btn" title="Cancel Appointment" data-translate-title="Cancel Appointment">
                         <i class="fas fa-times"></i>
                       </button>
                     </div>
@@ -531,8 +531,8 @@
             <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <i class="fas fa-clock text-gray-400 text-3xl"></i>
             </div>
-            <h3 class="text-xl font-semibold text-doctor-dark-blue mb-2">No appointments in waiting list</h3>
-            <p class="text-doctor-dark-gray">Your waiting list is empty.</p>
+            <h3 class="text-xl font-semibold text-doctor-dark-blue mb-2" data-translate="No appointments in waiting list">No appointments in waiting list</h3>
+            <p class="text-doctor-dark-gray" data-translate="Your waiting list is empty.">Your waiting list is empty.</p>
           </div>
         {% endif %}
       </div>
@@ -544,12 +544,12 @@
             <table class="w-full">
               <thead>
                 <tr class="border-b border-gray-200">
-                  <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Patient</th>
-                  <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Time</th>
-                  <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Amount</th>
-                  <th class="text-center py-4 px-4 font-semibold text-doctor-dark-blue">Symptoms</th>
-                  <th class="text-center py-4 px-4 font-semibold text-doctor-dark-blue">Status</th>
-                  <th class="text-right py-4 px-4 font-semibold text-doctor-dark-blue">Actions</th>
+                  <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Patient">Patient</th>
+                  <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Time">Time</th>
+                  <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Amount">Amount</th>
+                  <th class="text-center py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Symptoms">Symptoms</th>
+                  <th class="text-center py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Status">Status</th>
+                  <th class="text-right py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Actions">Actions</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-100">
@@ -583,7 +583,7 @@
                     </button>
                   </td>
                   <td class="py-4 px-4 text-center">
-                    <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">Accepted</span>
+                    <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium" data-translate="Accepted">Accepted</span>
                   </td>
                   <td class="py-4 px-4 text-right">
                     <div class="flex items-center justify-end space-x-2">
@@ -599,7 +599,7 @@
                       <!-- Chat Button for Accepted Appointments -->
                       <button onclick="openChat({{ appointment.patient.id }}, '{{ appointment.patient.first_name|escapejs }} {{ appointment.patient.last_name|escapejs }}')" 
                               class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors chat-btn"
-                              title="Chat with Patient">
+                              title="Chat with Patient" data-translate-title="Chat with Patient">
                         <i class="fas fa-comments"></i>
                       </button>
                       <button class="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors cancel-btn">
@@ -632,7 +632,7 @@
     <div class="p-6 border-b border-gray-200">
       <div class="flex items-center justify-between">
         <h2 class="text-2xl font-bold text-doctor-dark-blue">
-          <i class="fas fa-user-circle mr-3 text-doctor-blue"></i>Patient Information
+          <i class="fas fa-user-circle mr-3 text-doctor-blue"></i><span data-translate="Patient Information">Patient Information</span>
         </h2>
         <button onclick="closePatientModal()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
           <i class="fas fa-times text-gray-500"></i>
@@ -686,7 +686,7 @@
     <div class="p-6 border-b border-gray-200">
       <div class="flex items-center justify-between">
         <h2 class="text-xl font-bold text-doctor-dark-blue">
-          <i class="fas fa-clipboard-list mr-3 text-doctor-blue"></i>Patient Symptoms
+          <i class="fas fa-clipboard-list mr-3 text-doctor-blue"></i><span data-translate="Patient Symptoms">Patient Symptoms</span>
         </h2>
         <button onclick="closeSymptomModal()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
           <i class="fas fa-times text-gray-500"></i>
