@@ -230,8 +230,8 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587  # Use TLS port instead of SSL
 EMAIL_USE_TLS = True  # Use TLS instead of SSL
 EMAIL_USE_SSL = False  # Don't use SSL when using TLS
-EMAIL_HOST_USER = 'shoaibahmadbhatti6252@gmail.com'  # Your email address
-EMAIL_HOST_PASSWORD = 'rxkz iwfa rdgf qrvd'  # App Password - may need to be regenerated
+EMAIL_HOST_USER = 'reeduvie@gmail.com'  # Your email address
+EMAIL_HOST_PASSWORD = 'rxkz iwfa rdgf qrvd'  
 DEFAULT_FROM_EMAIL = 'shoaibahmadbhatti6252@gmail.com'
 
 
