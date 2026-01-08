@@ -768,15 +768,23 @@ def book_video_consultation(request, slot_id):
             request.session['booking_slot_id'] = slot_id
 
             print("Creating Stripe checkout session...")
+            
+            # Get practitioner price, default to 50 if not set
+            practitioner_price = slot.practitioner.price or 50.00
+            print(f"Practitioner: Dr. {slot.practitioner.first_name} {slot.practitioner.last_name}")
+            print(f"Original price: {slot.practitioner.price}")
+            print(f"Using price: ${practitioner_price}")
+            
             checkout_session = stripe.checkout.Session.create(
                 payment_method_types=['card'],
                 line_items=[{
                     'price_data': {
                         'currency': 'usd',
                         'product_data': {
-                            'name': f'Consultation with {slot.practitioner.first_name}',
+                            'name': f'Consultation with Dr. {slot.practitioner.first_name} {slot.practitioner.last_name}',
+                            'description': f'Medical consultation session',
                         },
-                        'unit_amount': int(slot.practitioner.price * 100),
+                        'unit_amount': int(practitioner_price * 100),  # Convert to cents
                     },
                     'quantity': 1,
                 }],

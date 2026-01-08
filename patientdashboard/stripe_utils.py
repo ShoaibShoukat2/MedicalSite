@@ -17,7 +17,9 @@ def create_checkout_session(request, appointment):
         The Stripe checkout session ID
     """
     # Get the practitioner's price from the appointment
-    amount = int(appointment.practitioner.price * 100)  # Convert to cents
+    # Get practitioner price, default to 50 if not set
+    practitioner_price = appointment.practitioner.price or 50.00
+    amount = int(practitioner_price * 100)  # Convert to cents
     
     success_url = request.build_absolute_uri(
         reverse('patientdashboard:payment_success')
