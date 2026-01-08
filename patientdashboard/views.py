@@ -848,7 +848,14 @@ def payment_success(request, slot_id):
             is_paid=True
         )
 
-
+        # 🔔 SEND NOTIFICATIONS - This was missing!
+        try:
+            from practitionerdashboard.notifications import notify_appointment_booked
+            notify_appointment_booked(appointment)
+            print(f"✅ Notifications sent for appointment {appointment.id}")
+        except Exception as notification_error:
+            print(f"⚠️ Notification error: {notification_error}")
+            # Don't fail the whole process if notifications fail
 
         messages.success(request, "Payment successful! Appointment booked.")
         return redirect('patientdashboard:booking_success', appointment_id=appointment.id)
