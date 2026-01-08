@@ -292,16 +292,8 @@ def dashboard_view(request):
         amount=practitioner.price
     ).order_by('slot__start_time')
     
-    # Waiting list (appointments >= 24 hours away with status = Pending)
+    # Waiting list (all appointments with status = Pending)
     waiting_list_appointments = Appointment.objects.filter(
-        slot__start_time__gte=twenty_four_hours_later,
-        status='Pending',
-        practitioner_id=practitioner_id,
-    ).order_by('slot__start_time')
-    
-    # Pending appointments (< 24 hours away with status = Pending)
-    pending_appointments_list = Appointment.objects.filter(
-        slot__start_time__lt=twenty_four_hours_later,
         status='Pending',
         practitioner_id=practitioner_id,
     ).order_by('slot__start_time')
@@ -313,7 +305,6 @@ def dashboard_view(request):
         'today_accepted_appointments': today_accepted_appointments,
         'waiting_list_appointments': waiting_list_appointments,
         'accepted_appointments': accepted_appointments,
-        'pending_appointments_list': pending_appointments_list,
         'total_patients': total_patients,
         'completed_appointments': completed_appointments,
         'pending_appointments': pending_appointments,
