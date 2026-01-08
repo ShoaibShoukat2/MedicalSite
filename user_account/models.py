@@ -3,6 +3,7 @@ from django.contrib.auth.models import BaseUserManager,AbstractBaseUser,Permissi
 from django.db.models import Q
 from django.contrib.auth.models import Permission
 from django.contrib.auth.hashers import make_password
+from django.utils.translation import gettext_lazy as _
 
 '''Custom User Manager'''
 class UserManager(BaseUserManager):
@@ -108,25 +109,25 @@ class Practitioner(models.Model):
     ]
 
     DOCTOR_TYPE_CHOICES = [
-        ('health_professional', 'A health professional'),
-        ('other', 'Other'),
+        ('health_professional', _('A health professional')),
+        ('other', _('Other')),
     ]
 
     SPECIALTY_CHOICES = [
-        ('occupational_therapist', 'Occupational Therapist'),
-        ('physiotherapist', 'Physiotherapist'),
-        ('neuropsychologist', 'Neuropsychologist'),
-        ('speech_therapist', 'Speech Therapist'),
-        ('psychologist', 'Psychologist'),
-        ('chiropractor', 'Chiropractor'),
-        ('nutritionist', 'Nutritionist'),
-        ('general_practitioner', 'General Practitioner'),
+        ('occupational_therapist', _('Occupational Therapist')),
+        ('physiotherapist', _('Physiotherapist')),
+        ('neuropsychologist', _('Neuropsychologist')),
+        ('speech_therapist', _('Speech Therapist')),
+        ('psychologist', _('Psychologist')),
+        ('chiropractor', _('Chiropractor')),
+        ('nutritionist', _('Nutritionist')),
+        ('general_practitioner', _('General Practitioner')),
     ]
 
     CIVILITY_CHOICES = [
-        ('m', 'M.'),
-        ('mme', 'Mme'),
-        ('mlle', 'Mlle'),
+        ('m', _('M.')),
+        ('mme', _('Mme')),
+        ('mlle', _('Mlle')),
     ]
 
     doctor_type = models.CharField(max_length=20, choices=DOCTOR_TYPE_CHOICES)
