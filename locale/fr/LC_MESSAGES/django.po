@@ -57,3 +57,10 @@ msgstr "Mme"
 
 msgid "Mlle"
 msgstr "Mlle"
+
+# Portal and Dashboard
+msgid "Doctor Portal"
+msgstr "Portail Médical"
+
+msgid "Healthcare Dashboard"
+msgstr "Tableau de Bord Médical"
