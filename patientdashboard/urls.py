@@ -17,6 +17,8 @@ urlpatterns = [
     path('available-slots/<int:practitioner_id>/', views.available_slots, name='available_slots'),
     path('book-consultation/<int:slot_id>/', views.book_video_consultation, name='book_video_consultation'),
     path('payment-success/<int:slot_id>/', views.payment_success, name='payment_success'),
+    path('payment-window/<int:appointment_id>/', views.payment_window, name='payment_window'),
+    path('social-security-payment/<int:appointment_id>/', views.social_security_payment, name='social_security_payment'),
     
     
     

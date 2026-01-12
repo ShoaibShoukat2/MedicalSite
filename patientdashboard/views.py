@@ -371,8 +371,170 @@ def search_practitioners(request):
     
     
 
+def get_chat_room_api(request):
+    """API endpoint to get or create chat room for patient"""
+    if request.method == 'POST':
+        try:
+            patient_id = request.session.get('patient_id')
+            if not patient_id:
+                return JsonResponse({'success': False, 'error': 'Not authenticated'}, status=401)
+            
+            data = json.loads(request.body)
+            practitioner_id = data.get('practitioner_id')
+            
+            if not practitioner_id:
+                return JsonResponse({'success': False, 'error': 'Practitioner ID required'}, status=400)
+            
+            # Get patient and practitioner objects
+            try:
+                patient = Patient.objects.get(id=patient_id)
+                practitioner = Practitioner.objects.get(id=practitioner_id)
+            except (Patient.DoesNotExist, Practitioner.DoesNotExist):
+                return JsonResponse({'success': False, 'error': 'Patient or practitioner not found'}, status=404)
+            
+            # Check if patient has accepted appointment with this practitioner
+            from patientdashboard.models import Appointment
+            has_appointment = Appointment.objects.filter(
+                patient=patient,
+                practitioner=practitioner,
+                status='Accepted'
+            ).exists()
+            
+            if not has_appointment:
+                return JsonResponse({'success': False, 'error': 'You can only chat with practitioners you have appointments with'}, status=403)
+            
+            # Get or create chat room
+            from chat.models import ChatRoom
+            chat_room, created = ChatRoom.objects.get_or_create(
+                patient=patient,
+                practitioner=practitioner
+            )
+            
+            return JsonResponse({
+                'success': True,
+                'chat_room_id': chat_room.id,
+                'created': created,
+                'practitioner_name': f"Dr. {practitioner.first_name} {practitioner.last_name}",
+                'chat_url': f'/chat/room/{chat_room.id}/'
+            })
+            
+        except json.JSONDecodeError:
+            return JsonResponse({'success': False, 'error': 'Invalid JSON data'}, status=400)
+        except Exception as e:
+            print(f"Error in get_chat_room_api: {str(e)}")
+            return JsonResponse({'success': False, 'error': 'Internal server error'}, status=500)
+    
+    return JsonResponse({'success': False, 'error': 'Method not allowed'}, status=405)
+
+
+def payment_window(request, appointment_id):
+    """Dedicated payment window for consultations"""
+    patient_id = request.session.get('patient_id')
+    if not patient_id:
+        return redirect('frontend:patient_login')
+    
+    try:
+        patient = Patient.objects.get(id=patient_id)
+        appointment = get_object_or_404(Appointment, id=appointment_id, patient=patient)
+        
+        # Calculate total amount
+        consultation_fee = appointment.amount or 50.00
+        platform_fee = 5.00
+        processing_fee = 2.50
+        insurance_discount = 10.00
+        total_amount = consultation_fee + platform_fee + processing_fee - insurance_discount
+        
+        context = {
+            'patient': patient,
+            'appointment': appointment,
+            'consultation_fee': consultation_fee,
+            'platform_fee': platform_fee,
+            'processing_fee': processing_fee,
+            'insurance_discount': insurance_discount,
+            'total_amount': total_amount
+        }
+        
+        return render(request, 'patientdashboard/payment_window.html', context)
+        
+    except Patient.DoesNotExist:
+        return redirect('frontend:patient_login')
+    except Exception as e:
+        print(f"Error in payment_window: {str(e)}")
+        messages.error(request, "Error loading payment page")
+        return redirect('patientdashboard:appointments_patients')
+
+def social_security_payment(request, appointment_id):
+    """Social Security compliant payment interface"""
+    patient_id = request.session.get('patient_id')
+    if not patient_id:
+        return redirect('frontend:patient_login')
+    
+    try:
+        patient = Patient.objects.get(id=patient_id)
+        appointment = get_object_or_404(Appointment, id=appointment_id, patient=patient)
+        
+        # Calculate insurance coverage and patient responsibility
+        consultation_fee = appointment.amount or 75.00
+        insurance_coverage_percent = 0.80  # 80% coverage
+        insurance_coverage = consultation_fee * insurance_coverage_percent
+        copayment = 15.00
+        patient_responsibility = consultation_fee - insurance_coverage + copayment
+        
+        context = {
+            'patient': patient,
+            'appointment': appointment,
+            'consultation_fee': consultation_fee,
+            'insurance_coverage': insurance_coverage,
+            'copayment': copayment,
+            'patient_responsibility': patient_responsibility
+        }
+        
+        return render(request, 'patientdashboard/social_security_payment.html', context)
+        
+    except Patient.DoesNotExist:
+        return redirect('frontend:patient_login')
+    except Exception as e:
+        print(f"Error in social_security_payment: {str(e)}")
+        messages.error(request, "Error loading Social Security payment page")
+        return redirect('patientdashboard:appointments_patients')
+
 def chat(request):
-    return render(request, 'patientdashboard/chat.html')
+    """Patient chat interface"""
+    patient_id = request.session.get('patient_id')
+    if not patient_id:
+        return redirect('frontend:patient_login')
+    
+    try:
+        patient = Patient.objects.get(id=patient_id)
+        
+        # Get practitioners that the patient has had appointments with
+        from patientdashboard.models import Appointment
+        practitioner_ids = Appointment.objects.filter(
+            patient=patient,
+            status='Accepted'
+        ).values_list('practitioner_id', flat=True).distinct()
+        
+        practitioners = Practitioner.objects.filter(id__in=practitioner_ids)
+        
+        # Get existing chat rooms
+        from chat.models import ChatRoom
+        existing_chats = ChatRoom.objects.filter(patient=patient).select_related('practitioner')
+        
+        context = {
+            'patient': patient,
+            'practitioners': practitioners,
+            'existing_chats': existing_chats
+        }
+        
+        return render(request, 'patientdashboard/chat.html', context)
+        
+    except Patient.DoesNotExist:
+        return redirect('frontend:patient_login')
+    except Exception as e:
+        print(f"Error in chat view: {str(e)}")
+        return render(request, 'patientdashboard/chat.html', {
+            'error_message': 'Unable to load chat. Please try again.'
+        })
 
 
 def appointments_patients(request):

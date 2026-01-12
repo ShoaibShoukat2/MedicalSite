@@ -45,86 +45,66 @@
 
             <!-- Chat List -->
             <div class="flex-1 overflow-y-auto custom-scrollbar">
-                <!-- Active Chat Item -->
-                <div class="chat-item active p-4 border-b border-gray-100 hover:bg-patient-light-blue/30 cursor-pointer transition-all duration-300" onclick="showChatWindow('Dr. Sarah Johnson')">
-                    <div class="flex items-center space-x-3">
-                        <div class="relative">
-                            <img src="{% static 'assets/img/patient-thumb-02.jpg' %}" 
-                                 alt="Dr. Sarah Johnson" 
-                                 class="w-12 h-12 rounded-full object-cover border-2 border-patient-blue">
-                            <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-patient-green rounded-full border-2 border-white"></div>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <div class="flex items-center justify-between mb-1">
-                                <h3 class="font-semibold text-patient-dark-blue truncate">Dr. Sarah Johnson</h3>
-                                <span class="text-xs text-patient-dark-gray">2 min</span>
+                {% if existing_chats %}
+                    {% for chat in existing_chats %}
+                    <!-- Chat Item -->
+                    <div class="chat-item p-4 border-b border-gray-100 hover:bg-patient-light-blue/30 cursor-pointer transition-all duration-300" onclick="showChatWindow('Dr. {{ chat.practitioner.first_name }} {{ chat.practitioner.last_name }}', {{ chat.id }})">
+                        <div class="flex items-center space-x-3">
+                            <div class="relative">
+                                {% if chat.practitioner.photo %}
+                                    <img src="{{ chat.practitioner.photo.url }}" 
+                                         alt="Dr. {{ chat.practitioner.first_name }}" 
+                                         class="w-12 h-12 rounded-full object-cover border-2 border-patient-blue">
+                                {% else %}
+                                    <div class="w-12 h-12 rounded-full bg-patient-blue flex items-center justify-center border-2 border-patient-blue">
+                                        <i class="fas fa-user-md text-white"></i>
+                                    </div>
+                                {% endif %}
+                                <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-patient-green rounded-full border-2 border-white"></div>
                             </div>
-                            <p class="text-sm text-patient-dark-gray truncate">Your test results are ready for review...</p>
-                        </div>
-                        <div class="flex flex-col items-end space-y-1">
-                            <span class="w-5 h-5 bg-patient-blue text-white text-xs rounded-full flex items-center justify-center">3</span>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center justify-between mb-1">
+                                    <h3 class="font-semibold text-patient-dark-blue truncate">Dr. {{ chat.practitioner.first_name }} {{ chat.practitioner.last_name }}</h3>
+                                    <span class="text-xs text-patient-dark-gray">{{ chat.updated_at|timesince }}</span>
+                                </div>
+                                <p class="text-sm text-patient-dark-gray truncate">{{ chat.practitioner.get_specialty_display }}</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <!-- Other Chat Items -->
-                <div class="chat-item p-4 border-b border-gray-100 hover:bg-patient-light-blue/30 cursor-pointer transition-all duration-300" onclick="showChatWindow('Dr. Michael Chen')">
-                    <div class="flex items-center space-x-3">
-                        <div class="relative">
-                            <img src="{% static 'assets/img/patient-thumb-02.jpg' %}" 
-                                 alt="Dr. Michael Chen" 
-                                 class="w-12 h-12 rounded-full object-cover border-2 border-gray-200">
-                            <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-gray-400 rounded-full border-2 border-white"></div>
+                    {% endfor %}
+                {% else %}
+                    <!-- No Chats Available -->
+                    <div class="p-8 text-center">
+                        <div class="w-16 h-16 bg-patient-light-blue rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-comments text-patient-blue text-2xl"></i>
                         </div>
-                        <div class="flex-1 min-w-0">
-                            <div class="flex items-center justify-between mb-1">
-                                <h3 class="font-semibold text-patient-dark-blue truncate">Dr. Michael Chen</h3>
-                                <span class="text-xs text-patient-dark-gray">1 hour</span>
+                        <h3 class="font-medium text-patient-dark-blue mb-2">No Conversations Yet</h3>
+                        <p class="text-patient-dark-gray text-sm mb-4">Start chatting with your doctors after your appointments are accepted.</p>
+                        {% if practitioners %}
+                            <p class="text-xs text-patient-dark-gray">Available doctors:</p>
+                            <div class="mt-2 space-y-2">
+                                {% for practitioner in practitioners %}
+                                <button onclick="startNewChat({{ practitioner.id }}, 'Dr. {{ practitioner.first_name }} {{ practitioner.last_name }}')" 
+                                        class="w-full text-left p-2 bg-patient-light-blue rounded-lg hover:bg-patient-blue/20 transition-colors">
+                                    <div class="flex items-center space-x-2">
+                                        {% if practitioner.photo %}
+                                            <img src="{{ practitioner.photo.url }}" class="w-8 h-8 rounded-full object-cover">
+                                        {% else %}
+                                            <div class="w-8 h-8 rounded-full bg-patient-blue flex items-center justify-center">
+                                                <i class="fas fa-user-md text-white text-xs"></i>
+                                            </div>
+                                        {% endif %}
+                                        <div>
+                                            <p class="text-sm font-medium text-patient-dark-blue">Dr. {{ practitioner.first_name }} {{ practitioner.last_name }}</p>
+                                            <p class="text-xs text-patient-dark-gray">{{ practitioner.get_specialty_display }}</p>
+                                        </div>
+                                    </div>
+                                </button>
+                                {% endfor %}
                             </div>
-                            <p class="text-sm text-patient-dark-gray truncate">Thank you for the follow-up information</p>
-                        </div>
+                        {% endif %}
                     </div>
-                </div>
-
-                <div class="chat-item p-4 border-b border-gray-100 hover:bg-patient-light-blue/30 cursor-pointer transition-all duration-300" onclick="showChatWindow('Dr. Emily Davis')">
-                    <div class="flex items-center space-x-3">
-                        <div class="relative">
-                            <img src="{% static 'assets/img/patient-thumb-02.jpg' %}" 
-                                 alt="Dr. Emily Davis" 
-                                 class="w-12 h-12 rounded-full object-cover border-2 border-gray-200">
-                            <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-patient-green rounded-full border-2 border-white"></div>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <div class="flex items-center justify-between mb-1">
-                                <h3 class="font-semibold text-patient-dark-blue truncate">Dr. Emily Davis</h3>
-                                <span class="text-xs text-patient-dark-gray">Yesterday</span>
-                            </div>
-                            <p class="text-sm text-patient-dark-gray truncate">Your appointment is confirmed for tomorrow</p>
-                        </div>
-                        <div class="flex flex-col items-end space-y-1">
-                            <span class="w-5 h-5 bg-patient-green text-white text-xs rounded-full flex items-center justify-center">1</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="chat-item p-4 border-b border-gray-100 hover:bg-patient-light-blue/30 cursor-pointer transition-all duration-300" onclick="showChatWindow('Dr. James Wilson')">
-                    <div class="flex items-center space-x-3">
-                        <div class="relative">
-                            <img src="{% static 'assets/img/patient-thumb-02.jpg' %}" 
-                                 alt="Dr. James Wilson" 
-                                 class="w-12 h-12 rounded-full object-cover border-2 border-gray-200">
-                            <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-gray-400 rounded-full border-2 border-white"></div>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <div class="flex items-center justify-between mb-1">
-                                <h3 class="font-semibold text-patient-dark-blue truncate">Dr. James Wilson</h3>
-                                <span class="text-xs text-patient-dark-gray">2 days</span>
-                            </div>
-                            <p class="text-sm text-patient-dark-gray truncate">Please remember to take your medication</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                {% endif %}
         </div>
 
         <!-- Chat Window -->
@@ -329,10 +309,12 @@
 
 <script>
 // Chat functionality
-let currentChat = 'Dr. Sarah Johnson';
+let currentChat = null;
+let currentChatId = null;
 
-function showChatWindow(doctorName) {
+function showChatWindow(doctorName, chatId) {
     currentChat = doctorName;
+    currentChatId = chatId;
     document.getElementById('chatTitle').textContent = doctorName;
     
     // Mobile: Hide chat list, show chat window
@@ -346,11 +328,61 @@ function showChatWindow(doctorName) {
     });
     event.currentTarget.classList.add('active');
     
+    // Load chat messages for this room
+    loadChatMessages(chatId);
+    
     // Scroll to bottom of messages
     setTimeout(() => {
         const container = document.getElementById('messagesContainer');
         container.scrollTop = container.scrollHeight;
     }, 100);
+}
+
+function startNewChat(practitionerId, doctorName) {
+    // Create new chat room
+    fetch('/patient-dashboard/api/chat-room/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({
+            'practitioner_id': practitionerId
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Open the new chat
+            showChatWindow(doctorName, data.chat_room_id);
+            
+            // Reload the page to show the new chat in the sidebar
+            setTimeout(() => {
+                location.reload();
+            }, 1000);
+        } else {
+            showNotification('Error creating chat: ' + data.error, 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Error creating chat', 'error');
+    });
+}
+
+function loadChatMessages(chatId) {
+    // This would typically load messages via AJAX
+    // For now, we'll show a placeholder
+    const container = document.getElementById('messagesContainer');
+    container.innerHTML = `
+        <div class="text-center py-8">
+            <div class="w-16 h-16 bg-patient-light-blue rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-comments text-patient-blue text-2xl"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-patient-dark-blue mb-2">Start Conversation</h3>
+            <p class="text-patient-dark-gray">Send a message to start chatting with ${currentChat}</p>
+        </div>
+    `;
 }
 
 function showChatList() {

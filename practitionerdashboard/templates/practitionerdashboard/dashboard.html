@@ -240,100 +240,9 @@
     <div class="p-6">
       <!-- Today's Appointments Tab -->
       <div class="tab-content active" id="today">
-        {% if today_appointments %}
-          <!-- Today's Pending Appointments -->
-          {% if today_pending_appointments %}
-            <div class="mb-8">
-              <h4 class="text-lg font-semibold text-doctor-dark-blue mb-4 flex items-center">
-                <i class="fas fa-hourglass-half text-orange-500 mr-2"></i>
-                Pending Today ({{ today_pending_appointments|length }})
-              </h4>
-              <div class="overflow-x-auto">
-                <table class="w-full">
-                  <thead>
-                    <tr class="border-b border-gray-200">
-                      <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Patient">Patient</th>
-                      <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Time">Time</th>
-                      <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Reason">Reason</th>
-                      <th class="text-center py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Urgency">Urgency</th>
-                      <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Amount">Amount</th>
-                      <th class="text-center py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Status">Status</th>
-                      <th class="text-right py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Actions">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody class="divide-y divide-gray-100">
-                    {% for appointment in today_pending_appointments %}
-                    <tr class="appointment-row hover:bg-orange-50 transition-colors" data-id="{{ appointment.id }}">
-                      <td class="py-4 px-4">
-                        <div class="flex items-center space-x-3">
-                          <div class="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center">
-                            <span class="text-white font-semibold text-sm">{{ appointment.patient.first_name|slice:":1" }}</span>
-                          </div>
-                          <div>
-                            <p class="font-medium text-doctor-dark-blue">{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</p>
-                            <p class="text-sm text-doctor-dark-gray">{{ appointment.patient.email }}</p>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="py-4 px-4">
-                        <div>
-                          <p class="font-medium text-doctor-dark-blue">{{ appointment.slot.start_time|date:"M d, Y" }}</p>
-                          <p class="text-sm text-doctor-blue">{{ appointment.slot.start_time|time:"h:i A" }}</p>
-                        </div>
-                      </td>
-                      <td class="py-4 px-4">
-                        <div class="max-w-xs">
-                          <p class="text-sm text-doctor-dark-blue truncate" title="{{ appointment.reason|default:'No reason provided' }}">
-                            {{ appointment.reason|default:"No reason provided"|truncatechars:50 }}
-                          </p>
-                        </div>
-                      </td>
-                      <td class="py-4 px-4 text-center">
-                        {% if appointment.urgency == 'emergency' %}
-                          <span class="px-3 py-1 bg-red-100 text-red-800 rounded-full text-sm font-medium">
-                            <i class="fas fa-exclamation-circle mr-1"></i><span data-translate="Emergency">Emergency</span>
-                          </span>
-                        {% elif appointment.urgency == 'urgent' %}
-                          <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-medium">
-                            <i class="fas fa-exclamation-triangle mr-1"></i><span data-translate="Urgent">Urgent</span>
-                          </span>
-                        {% else %}
-                          <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
-                            <i class="fas fa-clock mr-1"></i><span data-translate="Normal">Normal</span>
-                          </span>
-                        {% endif %}
-                      </td>
-                      <td class="py-4 px-4">
-                        <span class="px-3 py-1 bg-gray-100 text-doctor-dark-blue rounded-full text-sm font-medium">
-                          ${{ appointment.practitioner.price|floatformat:0 }}
-                        </span>
-                      </td>
-                      <td class="py-4 px-4 text-center">
-                        <span class="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm font-medium" data-translate="Pending">Pending</span>
-                      </td>
-                      <td class="py-4 px-4 text-right">
-                        <div class="flex items-center justify-end space-x-2">
-                          <button class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors view-btn" title="View Details" data-translate-title="View Details">
-                            <i class="fas fa-eye"></i>
-                          </button>
-                          <button class="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition-colors accept-btn" title="Accept Appointment" data-translate-title="Accept Appointment">
-                            <i class="fas fa-check"></i>
-                          </button>
-                          <button class="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors cancel-btn" title="Cancel Appointment" data-translate-title="Cancel Appointment">
-                            <i class="fas fa-times"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    {% endfor %}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          {% endif %}
-
+        {% if today_accepted_appointments %}
           <!-- Today's Accepted Appointments -->
-          {% if today_accepted_appointments %}
+          <div class="mb-8">
             <div class="mb-8">
               <h4 class="text-lg font-semibold text-doctor-dark-blue mb-4 flex items-center">
                 <i class="fas fa-check-circle text-green-500 mr-2"></i>
@@ -430,14 +339,13 @@
                 </table>
               </div>
             </div>
-          {% endif %}
         {% else %}
           <div class="text-center py-12">
             <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <i class="fas fa-calendar-times text-gray-400 text-3xl"></i>
             </div>
-            <h3 class="text-xl font-semibold text-doctor-dark-blue mb-2" data-translate="No appointments for today">No appointments for today</h3>
-            <p class="text-doctor-dark-gray" data-translate="Your schedule is clear for today!">Your schedule is clear for today!</p>
+            <h3 class="text-xl font-semibold text-doctor-dark-blue mb-2" data-translate="No accepted appointments for today">No accepted appointments for today</h3>
+            <p class="text-doctor-dark-gray" data-translate="Check the Waiting List tab for pending appointments.">Check the Waiting List tab for pending appointments.</p>
           </div>
         {% endif %}
       </div>

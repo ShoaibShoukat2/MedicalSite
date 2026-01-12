@@ -1,0 +1,353 @@
+{% extends 'patientdashboard/patient_base.html' %}
+{% load static %}
+
+{% block title %}Payment - Patient Dashboard{% endblock %}
+
+{% block content %}
+<!-- Modern Payment Interface -->
+<div class="min-h-screen bg-gradient-to-br from-patient-gray to-patient-light-blue py-8">
+    <div class="max-w-6xl mx-auto px-4">
+        <!-- Payment Header -->
+        <div class="bg-gradient-to-r from-patient-blue to-patient-dark-blue rounded-2xl p-6 mb-8 text-white">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-bold mb-2" data-translate="Secure Payment">Secure Payment</h1>
+                    <p class="text-white/90" data-translate="Complete your consultation payment securely">Complete your consultation payment securely</p>
+                </div>
+                <div class="hidden md:flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                        <i class="fas fa-shield-alt text-white text-xl"></i>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm text-white/80" data-translate="SSL Secured">SSL Secured</p>
+                        <p class="text-xs text-white/60" data-translate="256-bit Encryption">256-bit Encryption</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Payment Form Section -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Patient Information -->
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+                    <div class="bg-gradient-to-r from-patient-light-blue to-blue-50 p-6 border-b border-gray-200">
+                        <h3 class="text-xl font-bold text-patient-dark-blue mb-2">
+                            <i class="fas fa-user-circle mr-2 text-patient-blue"></i>
+                            <span data-translate="Patient Information">Patient Information</span>
+                        </h3>
+                        <p class="text-patient-dark-gray" data-translate="Verify your details">Verify your details</p>
+                    </div>
+                    <div class="p-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-patient-dark-blue mb-2" data-translate="First Name">First Name</label>
+                                <input type="text" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-patient-blue/50 focus:border-patient-blue transition-all duration-300" 
+                                       value="{{ patient.first_name|default:'' }}" readonly>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-patient-dark-blue mb-2" data-translate="Last Name">Last Name</label>
+                                <input type="text" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-patient-blue/50 focus:border-patient-blue transition-all duration-300" 
+                                       value="{{ patient.last_name|default:'' }}" readonly>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-patient-dark-blue mb-2" data-translate="Email">Email</label>
+                                <input type="email" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-patient-blue/50 focus:border-patient-blue transition-all duration-300" 
+                                       value="{{ patient.email|default:'' }}" readonly>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-patient-dark-blue mb-2" data-translate="Phone">Phone</label>
+                                <input type="tel" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-patient-blue/50 focus:border-patient-blue transition-all duration-300" 
+                                       value="{{ patient.mobile_phone|default:'' }}" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Method Selection -->
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+                    <div class="bg-gradient-to-r from-patient-green/10 to-green-50 p-6 border-b border-gray-200">
+                        <h3 class="text-xl font-bold text-patient-dark-blue mb-2">
+                            <i class="fas fa-credit-card mr-2 text-patient-green"></i>
+                            <span data-translate="Payment Method">Payment Method</span>
+                        </h3>
+                        <p class="text-patient-dark-gray" data-translate="Choose your preferred payment method">Choose your preferred payment method</p>
+                    </div>
+                    <div class="p-6">
+                        <!-- Payment Options -->
+                        <div class="space-y-4 mb-6">
+                            <!-- Credit Card -->
+                            <label class="payment-option flex items-center p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-patient-blue hover:bg-patient-light-blue/20 transition-all duration-300">
+                                <input type="radio" name="payment_method" value="card" class="sr-only peer" checked>
+                                <div class="w-6 h-6 border-2 border-gray-300 rounded-full peer-checked:border-patient-blue peer-checked:bg-patient-blue flex items-center justify-center mr-4">
+                                    <div class="w-2 h-2 bg-white rounded-full opacity-0 peer-checked:opacity-100"></div>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center space-x-3">
+                                        <i class="fas fa-credit-card text-patient-blue text-xl"></i>
+                                        <div>
+                                            <h4 class="font-semibold text-patient-dark-blue" data-translate="Credit/Debit Card">Credit/Debit Card</h4>
+                                            <p class="text-sm text-patient-dark-gray" data-translate="Visa, Mastercard, American Express">Visa, Mastercard, American Express</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <img src="{% static 'img/visa.png' %}" alt="Visa" class="h-6" onerror="this.style.display='none'">
+                                    <img src="{% static 'img/mastercard.png' %}" alt="Mastercard" class="h-6" onerror="this.style.display='none'">
+                                    <img src="{% static 'img/amex.png' %}" alt="Amex" class="h-6" onerror="this.style.display='none'">
+                                </div>
+                            </label>
+
+                            <!-- PayPal -->
+                            <label class="payment-option flex items-center p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-patient-blue hover:bg-patient-light-blue/20 transition-all duration-300">
+                                <input type="radio" name="payment_method" value="paypal" class="sr-only peer">
+                                <div class="w-6 h-6 border-2 border-gray-300 rounded-full peer-checked:border-patient-blue peer-checked:bg-patient-blue flex items-center justify-center mr-4">
+                                    <div class="w-2 h-2 bg-white rounded-full opacity-0 peer-checked:opacity-100"></div>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center space-x-3">
+                                        <i class="fab fa-paypal text-blue-600 text-xl"></i>
+                                        <div>
+                                            <h4 class="font-semibold text-patient-dark-blue">PayPal</h4>
+                                            <p class="text-sm text-patient-dark-gray" data-translate="Pay with your PayPal account">Pay with your PayPal account</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </label>
+
+                            <!-- Insurance -->
+                            <label class="payment-option flex items-center p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-patient-blue hover:bg-patient-light-blue/20 transition-all duration-300">
+                                <input type="radio" name="payment_method" value="insurance" class="sr-only peer">
+                                <div class="w-6 h-6 border-2 border-gray-300 rounded-full peer-checked:border-patient-blue peer-checked:bg-patient-blue flex items-center justify-center mr-4">
+                                    <div class="w-2 h-2 bg-white rounded-full opacity-0 peer-checked:opacity-100"></div>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center space-x-3">
+                                        <i class="fas fa-shield-alt text-patient-green text-xl"></i>
+                                        <div>
+                                            <h4 class="font-semibold text-patient-dark-blue" data-translate="Insurance Coverage">Insurance Coverage</h4>
+                                            <p class="text-sm text-patient-dark-gray" data-translate="Use your health insurance">Use your health insurance</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+
+                        <!-- Card Details Form -->
+                        <div id="cardDetailsForm" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-patient-dark-blue mb-2" data-translate="Card Number">Card Number</label>
+                                <input type="text" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-patient-blue/50 focus:border-patient-blue transition-all duration-300" 
+                                       placeholder="1234 5678 9012 3456" maxlength="19">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-semibold text-patient-dark-blue mb-2" data-translate="Expiry Date">Expiry Date</label>
+                                    <input type="text" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-patient-blue/50 focus:border-patient-blue transition-all duration-300" 
+                                           placeholder="MM/YY" maxlength="5">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-patient-dark-blue mb-2" data-translate="CVV">CVV</label>
+                                    <input type="text" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-patient-blue/50 focus:border-patient-blue transition-all duration-300" 
+                                           placeholder="123" maxlength="4">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-patient-dark-blue mb-2" data-translate="Cardholder Name">Cardholder Name</label>
+                                <input type="text" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-patient-blue/50 focus:border-patient-blue transition-all duration-300" 
+                                       placeholder="John Doe">
+                            </div>
+                        </div>
+
+                        <!-- Terms and Conditions -->
+                        <div class="mt-6 p-4 bg-patient-light-blue/20 rounded-xl">
+                            <label class="flex items-start space-x-3 cursor-pointer">
+                                <input type="checkbox" class="mt-1 w-5 h-5 text-patient-blue border-2 border-gray-300 rounded focus:ring-patient-blue/50" required>
+                                <div class="text-sm text-patient-dark-gray">
+                                    <span data-translate="I agree to the">I agree to the</span> 
+                                    <a href="#" class="text-patient-blue hover:underline" data-translate="Terms and Conditions">Terms and Conditions</a> 
+                                    <span data-translate="and">and</span> 
+                                    <a href="#" class="text-patient-blue hover:underline" data-translate="Privacy Policy">Privacy Policy</a>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Summary Section -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden sticky top-8">
+                    <!-- Doctor Information -->
+                    <div class="bg-gradient-to-r from-patient-purple/10 to-purple-50 p-6 border-b border-gray-200">
+                        <h3 class="text-lg font-bold text-patient-dark-blue mb-4">
+                            <i class="fas fa-user-md mr-2 text-patient-purple"></i>
+                            <span data-translate="Consultation Details">Consultation Details</span>
+                        </h3>
+                        <div class="flex items-center space-x-4">
+                            {% if appointment.practitioner.photo %}
+                                <img src="{{ appointment.practitioner.photo.url }}" 
+                                     alt="Dr. {{ appointment.practitioner.first_name }}" 
+                                     class="w-16 h-16 rounded-full object-cover border-4 border-white shadow-lg">
+                            {% else %}
+                                <div class="w-16 h-16 rounded-full bg-gradient-to-br from-patient-purple to-purple-600 flex items-center justify-center border-4 border-white shadow-lg">
+                                    <i class="fas fa-user-md text-white text-xl"></i>
+                                </div>
+                            {% endif %}
+                            <div>
+                                <h4 class="font-bold text-patient-dark-blue">Dr. {{ appointment.practitioner.first_name }} {{ appointment.practitioner.last_name }}</h4>
+                                <p class="text-sm text-patient-dark-gray">{{ appointment.practitioner.get_specialty_display }}</p>
+                                <div class="flex items-center mt-1">
+                                    <div class="flex text-yellow-400 text-xs">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                    <span class="text-xs text-patient-dark-gray ml-1">5.0 (120 reviews)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Appointment Details -->
+                    <div class="p-6 border-b border-gray-200">
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-patient-dark-gray" data-translate="Date">Date:</span>
+                                <span class="font-medium text-patient-dark-blue">{{ appointment.slot.date|date:"M d, Y" }}</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-patient-dark-gray" data-translate="Time">Time:</span>
+                                <span class="font-medium text-patient-dark-blue">{{ appointment.slot.start_time|time:"g:i A" }}</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-patient-dark-gray" data-translate="Duration">Duration:</span>
+                                <span class="font-medium text-patient-dark-blue">60 minutes</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-patient-dark-gray" data-translate="Type">Type:</span>
+                                <span class="font-medium text-patient-dark-blue" data-translate="Video Consultation">Video Consultation</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Breakdown -->
+                    <div class="p-6 border-b border-gray-200">
+                        <h4 class="font-bold text-patient-dark-blue mb-4" data-translate="Payment Summary">Payment Summary</h4>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-patient-dark-gray" data-translate="Consultation Fee">Consultation Fee:</span>
+                                <span class="font-medium text-patient-dark-blue">${{ appointment.amount|default:"50.00" }}</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-patient-dark-gray" data-translate="Platform Fee">Platform Fee:</span>
+                                <span class="font-medium text-patient-dark-blue">$5.00</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-patient-dark-gray" data-translate="Processing Fee">Processing Fee:</span>
+                                <span class="font-medium text-patient-dark-blue">$2.50</span>
+                            </div>
+                            <div class="flex items-center justify-between text-patient-green">
+                                <span class="text-sm" data-translate="Insurance Discount">Insurance Discount:</span>
+                                <span class="font-medium">-$10.00</span>
+                            </div>
+                            <hr class="border-gray-200">
+                            <div class="flex items-center justify-between text-lg font-bold text-patient-dark-blue">
+                                <span data-translate="Total Amount">Total Amount:</span>
+                                <span>${{ total_amount|default:"47.50" }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Button -->
+                    <div class="p-6">
+                        <button onclick="processPayment()" class="w-full bg-gradient-to-r from-patient-green to-green-600 text-white py-4 px-6 rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-300 font-bold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                            <i class="fas fa-lock mr-2"></i>
+                            <span data-translate="Pay Securely">Pay Securely</span>
+                        </button>
+                        
+                        <div class="mt-4 text-center">
+                            <div class="flex items-center justify-center space-x-2 text-xs text-patient-dark-gray">
+                                <i class="fas fa-shield-alt text-patient-green"></i>
+                                <span data-translate="Secured by SSL encryption">Secured by SSL encryption</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Payment form functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Payment method selection
+    document.querySelectorAll('input[name="payment_method"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            const cardForm = document.getElementById('cardDetailsForm');
+            if (this.value === 'card') {
+                cardForm.style.display = 'block';
+            } else {
+                cardForm.style.display = 'none';
+            }
+        });
+    });
+    
+    // Card number formatting
+    const cardNumberInput = document.querySelector('input[placeholder="1234 5678 9012 3456"]');
+    if (cardNumberInput) {
+        cardNumberInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\s/g, '').replace(/[^0-9]/gi, '');
+            let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+            e.target.value = formattedValue;
+        });
+    }
+    
+    // Expiry date formatting
+    const expiryInput = document.querySelector('input[placeholder="MM/YY"]');
+    if (expiryInput) {
+        expiryInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2, 4);
+            }
+            e.target.value = value;
+        });
+    }
+});
+
+function processPayment() {
+    // Show loading state
+    const button = event.target;
+    const originalText = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
+    button.disabled = true;
+    
+    // Simulate payment processing
+    setTimeout(() => {
+        // In real implementation, this would integrate with Stripe
+        alert('Payment processed successfully! Redirecting to confirmation...');
+        window.location.href = '/patient-dashboard/payment-success/';
+    }, 3000);
+}
+
+// Get CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+{% endblock %}

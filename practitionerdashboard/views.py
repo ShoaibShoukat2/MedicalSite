@@ -279,10 +279,7 @@ def dashboard_view(request):
         practitioner_id=practitioner_id,
     ).exclude(status='Cancelled').order_by('slot__start_time')
     
-    # Today's pending appointments
-    today_pending_appointments = today_appointments.filter(status='Pending')
-    
-    # Today's accepted appointments
+    # Today's accepted appointments only (for Today's Appointments tab)
     today_accepted_appointments = today_appointments.filter(status='Accepted')
     
     # Accepted appointments (status = Accepted)
@@ -301,7 +298,6 @@ def dashboard_view(request):
     return render(request, 'practitionerdashboard/dashboard.html', {
         'practitioner': practitioner,
         'today_appointments': today_appointments,
-        'today_pending_appointments': today_pending_appointments,
         'today_accepted_appointments': today_accepted_appointments,
         'waiting_list_appointments': waiting_list_appointments,
         'accepted_appointments': accepted_appointments,

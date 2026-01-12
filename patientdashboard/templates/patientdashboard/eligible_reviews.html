@@ -87,18 +87,18 @@
                             <h4 class="font-semibold text-green-800">Review Completed</h4>
                         </div>
                         
-                        <!-- Star Rating -->
+                        <!-- Star Rating Display -->
                         <div class="flex items-center space-x-2 mb-3">
                             <div class="flex text-yellow-400">
                                 {% for star in "12345"|make_list %}
-                                    {% if star <= patient_review.rating|stringformat:"s" %}
-                                        <i class="fas fa-star"></i>
+                                    {% if forloop.counter <= patient_review.rating %}
+                                        <i class="fas fa-star text-lg"></i>
                                     {% else %}
-                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star text-lg"></i>
                                     {% endif %}
                                 {% endfor %}
                             </div>
-                            <span class="text-sm text-patient-dark-gray">{{ patient_review.rating }}/5 stars</span>
+                            <span class="text-sm text-patient-dark-gray font-medium">{{ patient_review.rating }}/5 stars</span>
                         </div>
                         
                         <!-- Feedback -->
@@ -146,14 +146,14 @@
                             <div class="flex space-x-2">
                                 {% for i in "12345"|make_list %}
                                 <label class="cursor-pointer">
-                                    <input type="radio" name="rating" value="{{ i }}" class="sr-only peer" required>
-                                    <div class="w-12 h-12 border-2 border-gray-200 rounded-full flex items-center justify-center peer-checked:border-yellow-400 peer-checked:bg-yellow-50 hover:border-yellow-300 transition-all duration-300">
-                                        <span class="text-lg font-bold text-gray-400 peer-checked:text-yellow-500">{{ i }}</span>
+                                    <input type="radio" name="rating" value="{{ forloop.counter }}" class="sr-only peer" required>
+                                    <div class="w-12 h-12 border-2 border-gray-200 rounded-full flex items-center justify-center peer-checked:border-yellow-400 peer-checked:bg-yellow-50 hover:border-yellow-300 transition-all duration-300 star-rating-btn" data-rating="{{ forloop.counter }}">
+                                        <i class="fas fa-star text-lg text-gray-400 peer-checked:text-yellow-500 star-icon"></i>
                                     </div>
                                 </label>
                                 {% endfor %}
                             </div>
-                            <p class="text-xs text-patient-dark-gray mt-2">Click to rate from 1 to 5 stars</p>
+                            <p class="text-xs text-patient-dark-gray mt-2">Click stars to rate from 1 to 5</p>
                         </div>
 
                         <!-- Feedback -->
@@ -262,24 +262,69 @@ document.querySelectorAll('input[type="radio"][name="rating"]').forEach(radio =>
     radio.addEventListener('change', function() {
         const value = parseInt(this.value);
         const container = this.closest('form');
-        const stars = container.querySelectorAll('input[type="radio"][name="rating"]');
+        const starButtons = container.querySelectorAll('.star-rating-btn');
         
-        stars.forEach((star, index) => {
-            const starContainer = star.nextElementSibling;
-            const starNumber = starContainer.querySelector('span');
+        starButtons.forEach((button, index) => {
+            const starIcon = button.querySelector('.star-icon');
             
             if (index < value) {
-                starContainer.classList.add('border-yellow-400', 'bg-yellow-50');
-                starContainer.classList.remove('border-gray-200');
-                starNumber.classList.add('text-yellow-500');
-                starNumber.classList.remove('text-gray-400');
+                button.classList.add('border-yellow-400', 'bg-yellow-50');
+                button.classList.remove('border-gray-200');
+                starIcon.classList.add('text-yellow-500');
+                starIcon.classList.remove('text-gray-400');
             } else {
-                starContainer.classList.remove('border-yellow-400', 'bg-yellow-50');
-                starContainer.classList.add('border-gray-200');
-                starNumber.classList.remove('text-yellow-500');
-                starNumber.classList.add('text-gray-400');
+                button.classList.remove('border-yellow-400', 'bg-yellow-50');
+                button.classList.add('border-gray-200');
+                starIcon.classList.remove('text-yellow-500');
+                starIcon.classList.add('text-gray-400');
             }
         });
+    });
+});
+
+// Add hover effect for star ratings
+document.querySelectorAll('.star-rating-btn').forEach((button, index) => {
+    button.addEventListener('mouseenter', function() {
+        const container = this.closest('form');
+        const starButtons = container.querySelectorAll('.star-rating-btn');
+        const rating = parseInt(this.getAttribute('data-rating'));
+        
+        starButtons.forEach((btn, btnIndex) => {
+            const starIcon = btn.querySelector('.star-icon');
+            if (btnIndex < rating) {
+                starIcon.classList.add('text-yellow-400');
+                starIcon.classList.remove('text-gray-400');
+            } else {
+                starIcon.classList.remove('text-yellow-400');
+                starIcon.classList.add('text-gray-400');
+            }
+        });
+    });
+    
+    button.addEventListener('mouseleave', function() {
+        const container = this.closest('form');
+        const checkedRadio = container.querySelector('input[name="rating"]:checked');
+        const starButtons = container.querySelectorAll('.star-rating-btn');
+        
+        if (checkedRadio) {
+            const checkedValue = parseInt(checkedRadio.value);
+            starButtons.forEach((btn, btnIndex) => {
+                const starIcon = btn.querySelector('.star-icon');
+                if (btnIndex < checkedValue) {
+                    starIcon.classList.add('text-yellow-500');
+                    starIcon.classList.remove('text-gray-400', 'text-yellow-400');
+                } else {
+                    starIcon.classList.remove('text-yellow-500', 'text-yellow-400');
+                    starIcon.classList.add('text-gray-400');
+                }
+            });
+        } else {
+            starButtons.forEach(btn => {
+                const starIcon = btn.querySelector('.star-icon');
+                starIcon.classList.remove('text-yellow-400', 'text-yellow-500');
+                starIcon.classList.add('text-gray-400');
+            });
+        }
     });
 });
 

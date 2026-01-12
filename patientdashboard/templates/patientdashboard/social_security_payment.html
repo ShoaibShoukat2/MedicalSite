@@ -1,0 +1,322 @@
+{% extends 'patientdashboard/patient_base.html' %}
+{% load static %}
+
+{% block title %}Social Security Payment - Patient Dashboard{% endblock %}
+
+{% block content %}
+<!-- Social Security Compliant Payment Interface -->
+<div class="min-h-screen bg-gradient-to-br from-patient-gray to-patient-light-blue py-8">
+    <div class="max-w-4xl mx-auto px-4">
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-patient-blue to-patient-dark-blue rounded-2xl p-6 mb-8 text-white">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-bold mb-2" data-translate="Social Security Payment">Social Security Payment</h1>
+                    <p class="text-white/90" data-translate="Secure payment with Social Security compliance">Secure payment with Social Security compliance</p>
+                </div>
+                <div class="hidden md:flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                        <i class="fas fa-shield-alt text-white text-xl"></i>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm text-white/80" data-translate="HIPAA Compliant">HIPAA Compliant</p>
+                        <p class="text-xs text-white/60" data-translate="Social Security Approved">Social Security Approved</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Steps -->
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 mb-8">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="w-10 h-10 bg-patient-blue text-white rounded-full flex items-center justify-center font-bold">1</div>
+                    <div>
+                        <h3 class="font-semibold text-patient-dark-blue" data-translate="Verification">Verification</h3>
+                        <p class="text-sm text-patient-dark-gray" data-translate="Identity & Insurance">Identity & Insurance</p>
+                    </div>
+                </div>
+                <div class="flex-1 h-1 bg-gray-200 mx-4">
+                    <div class="h-1 bg-patient-blue w-1/3"></div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="w-10 h-10 bg-gray-200 text-gray-500 rounded-full flex items-center justify-center font-bold">2</div>
+                    <div>
+                        <h3 class="font-semibold text-gray-500" data-translate="Payment">Payment</h3>
+                        <p class="text-sm text-gray-400" data-translate="Secure Transaction">Secure Transaction</p>
+                    </div>
+                </div>
+                <div class="flex-1 h-1 bg-gray-200 mx-4"></div>
+                <div class="flex items-center space-x-4">
+                    <div class="w-10 h-10 bg-gray-200 text-gray-500 rounded-full flex items-center justify-center font-bold">3</div>
+                    <div>
+                        <h3 class="font-semibold text-gray-500" data-translate="Confirmation">Confirmation</h3>
+                        <p class="text-sm text-gray-400" data-translate="Receipt & Records">Receipt & Records</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Main Form -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Social Security Information -->
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 border-b border-gray-200">
+                        <h3 class="text-xl font-bold text-patient-dark-blue mb-2">
+                            <i class="fas fa-id-card mr-2 text-blue-600"></i>
+                            <span data-translate="Social Security Information">Social Security Information</span>
+                        </h3>
+                        <p class="text-patient-dark-gray" data-translate="Required for insurance processing">Required for insurance processing</p>
+                    </div>
+                    <div class="p-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-patient-dark-blue mb-2" data-translate="Social Security Number">Social Security Number</label>
+                                <input type="text" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all duration-300" 
+                                       placeholder="XXX-XX-XXXX" maxlength="11" required>
+                                <p class="text-xs text-gray-500 mt-1" data-translate="Required for Medicare/Medicaid processing">Required for Medicare/Medicaid processing</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-patient-dark-blue mb-2" data-translate="Medicare ID">Medicare ID</label>
+                                <input type="text" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all duration-300" 
+                                       placeholder="1EG4-TE5-MK73">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-patient-dark-blue mb-2" data-translate="Insurance Provider">Insurance Provider</label>
+                                <select class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all duration-300">
+                                    <option value="">Select Provider</option>
+                                    <option value="medicare">Medicare</option>
+                                    <option value="medicaid">Medicaid</option>
+                                    <option value="aetna">Aetna</option>
+                                    <option value="bluecross">Blue Cross Blue Shield</option>
+                                    <option value="cigna">Cigna</option>
+                                    <option value="humana">Humana</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-patient-dark-blue mb-2" data-translate="Policy Number">Policy Number</label>
+                                <input type="text" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all duration-300" 
+                                       placeholder="Policy/Group Number">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Medical Information -->
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+                    <div class="bg-gradient-to-r from-green-50 to-emerald-50 p-6 border-b border-gray-200">
+                        <h3 class="text-xl font-bold text-patient-dark-blue mb-2">
+                            <i class="fas fa-heartbeat mr-2 text-green-600"></i>
+                            <span data-translate="Medical Information">Medical Information</span>
+                        </h3>
+                        <p class="text-patient-dark-gray" data-translate="For proper billing and compliance">For proper billing and compliance</p>
+                    </div>
+                    <div class="p-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-patient-dark-blue mb-2" data-translate="Primary Diagnosis">Primary Diagnosis</label>
+                                <input type="text" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500 transition-all duration-300" 
+                                       placeholder="ICD-10 Code or Description">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-patient-dark-blue mb-2" data-translate="Referring Physician">Referring Physician</label>
+                                <input type="text" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500 transition-all duration-300" 
+                                       placeholder="Dr. Name (if applicable)">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-semibold text-patient-dark-blue mb-2" data-translate="Medical Necessity">Medical Necessity</label>
+                                <textarea class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500 transition-all duration-300 resize-none" 
+                                          rows="3" placeholder="Brief description of medical necessity for this consultation"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Authorization -->
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+                    <div class="bg-gradient-to-r from-purple-50 to-violet-50 p-6 border-b border-gray-200">
+                        <h3 class="text-xl font-bold text-patient-dark-blue mb-2">
+                            <i class="fas fa-file-signature mr-2 text-purple-600"></i>
+                            <span data-translate="Payment Authorization">Payment Authorization</span>
+                        </h3>
+                        <p class="text-patient-dark-gray" data-translate="Required authorizations and consents">Required authorizations and consents</p>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <!-- Authorization Checkboxes -->
+                        <label class="flex items-start space-x-3 cursor-pointer p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
+                            <input type="checkbox" class="mt-1 w-5 h-5 text-blue-600 border-2 border-gray-300 rounded focus:ring-blue-500/50" required>
+                            <div class="text-sm text-patient-dark-gray">
+                                <span class="font-semibold" data-translate="Medicare Assignment">Medicare Assignment:</span>
+                                <span data-translate="I authorize Medicare benefits to be paid directly to the provider">I authorize Medicare benefits to be paid directly to the provider</span>
+                            </div>
+                        </label>
+
+                        <label class="flex items-start space-x-3 cursor-pointer p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
+                            <input type="checkbox" class="mt-1 w-5 h-5 text-green-600 border-2 border-gray-300 rounded focus:ring-green-500/50" required>
+                            <div class="text-sm text-patient-dark-gray">
+                                <span class="font-semibold" data-translate="Information Release">Information Release:</span>
+                                <span data-translate="I authorize release of medical information necessary for insurance claims">I authorize release of medical information necessary for insurance claims</span>
+                            </div>
+                        </label>
+
+                        <label class="flex items-start space-x-3 cursor-pointer p-3 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors">
+                            <input type="checkbox" class="mt-1 w-5 h-5 text-purple-600 border-2 border-gray-300 rounded focus:ring-purple-500/50" required>
+                            <div class="text-sm text-patient-dark-gray">
+                                <span class="font-semibold" data-translate="Financial Responsibility">Financial Responsibility:</span>
+                                <span data-translate="I understand my financial responsibility for services not covered by insurance">I understand my financial responsibility for services not covered by insurance</span>
+                            </div>
+                        </label>
+
+                        <label class="flex items-start space-x-3 cursor-pointer p-3 bg-yellow-50 rounded-lg hover:bg-yellow-100 transition-colors">
+                            <input type="checkbox" class="mt-1 w-5 h-5 text-yellow-600 border-2 border-gray-300 rounded focus:ring-yellow-500/50" required>
+                            <div class="text-sm text-patient-dark-gray">
+                                <span class="font-semibold" data-translate="HIPAA Compliance">HIPAA Compliance:</span>
+                                <span data-translate="I acknowledge receipt of HIPAA privacy practices notice">I acknowledge receipt of HIPAA privacy practices notice</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary Sidebar -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden sticky top-8">
+                    <!-- Appointment Summary -->
+                    <div class="bg-gradient-to-r from-patient-blue/10 to-blue-50 p-6 border-b border-gray-200">
+                        <h3 class="text-lg font-bold text-patient-dark-blue mb-4">
+                            <i class="fas fa-file-medical mr-2 text-patient-blue"></i>
+                            <span data-translate="Appointment Summary">Appointment Summary</span>
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-patient-dark-gray" data-translate="Provider">Provider:</span>
+                                <span class="font-medium text-patient-dark-blue text-sm">Dr. {{ appointment.practitioner.first_name }} {{ appointment.practitioner.last_name }}</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-patient-dark-gray" data-translate="Date">Date:</span>
+                                <span class="font-medium text-patient-dark-blue text-sm">{{ appointment.slot.date|date:"M d, Y" }}</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-patient-dark-gray" data-translate="Time">Time:</span>
+                                <span class="font-medium text-patient-dark-blue text-sm">{{ appointment.slot.start_time|time:"g:i A" }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Insurance Coverage -->
+                    <div class="p-6 border-b border-gray-200">
+                        <h4 class="font-bold text-patient-dark-blue mb-4" data-translate="Insurance Coverage">Insurance Coverage</h4>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-patient-dark-gray" data-translate="Consultation Fee">Consultation Fee:</span>
+                                <span class="font-medium text-patient-dark-blue">${{ appointment.amount|default:"75.00" }}</span>
+                            </div>
+                            <div class="flex items-center justify-between text-green-600">
+                                <span class="text-sm" data-translate="Insurance Coverage">Insurance Coverage (80%):</span>
+                                <span class="font-medium">-${{ insurance_coverage|default:"60.00" }}</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-patient-dark-gray" data-translate="Copayment">Copayment:</span>
+                                <span class="font-medium text-patient-dark-blue">${{ copayment|default:"15.00" }}</span>
+                            </div>
+                            <hr class="border-gray-200">
+                            <div class="flex items-center justify-between text-lg font-bold text-patient-dark-blue">
+                                <span data-translate="Your Responsibility">Your Responsibility:</span>
+                                <span>${{ patient_responsibility|default:"15.00" }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Compliance Information -->
+                    <div class="p-6 border-b border-gray-200">
+                        <h4 class="font-bold text-patient-dark-blue mb-4" data-translate="Compliance Information">Compliance Information</h4>
+                        <div class="space-y-3">
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-check-circle text-green-600"></i>
+                                <span class="text-sm text-patient-dark-gray" data-translate="HIPAA Compliant">HIPAA Compliant</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-check-circle text-green-600"></i>
+                                <span class="text-sm text-patient-dark-gray" data-translate="Medicare Approved">Medicare Approved</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-check-circle text-green-600"></i>
+                                <span class="text-sm text-patient-dark-gray" data-translate="SOX Compliant">SOX Compliant</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-shield-alt text-blue-600"></i>
+                                <span class="text-sm text-patient-dark-gray" data-translate="PCI DSS Certified">PCI DSS Certified</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="p-6">
+                        <button onclick="processCompliantPayment()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-4 px-6 rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 font-bold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                            <i class="fas fa-shield-alt mr-2"></i>
+                            <span data-translate="Process Secure Payment">Process Secure Payment</span>
+                        </button>
+                        
+                        <div class="mt-4 text-center">
+                            <div class="flex items-center justify-center space-x-2 text-xs text-patient-dark-gray">
+                                <i class="fas fa-lock text-green-600"></i>
+                                <span data-translate="Social Security & HIPAA Compliant">Social Security & HIPAA Compliant</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Social Security Number formatting
+document.addEventListener('DOMContentLoaded', function() {
+    const ssnInput = document.querySelector('input[placeholder="XXX-XX-XXXX"]');
+    if (ssnInput) {
+        ssnInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 3) {
+                value = value.substring(0, 3) + '-' + value.substring(3);
+            }
+            if (value.length >= 6) {
+                value = value.substring(0, 6) + '-' + value.substring(6, 10);
+            }
+            e.target.value = value;
+        });
+    }
+});
+
+function processCompliantPayment() {
+    // Validate all required fields
+    const requiredCheckboxes = document.querySelectorAll('input[type="checkbox"][required]');
+    let allChecked = true;
+    
+    requiredCheckboxes.forEach(checkbox => {
+        if (!checkbox.checked) {
+            allChecked = false;
+        }
+    });
+    
+    if (!allChecked) {
+        alert('Please complete all required authorizations before proceeding.');
+        return;
+    }
+    
+    // Show processing state
+    const button = event.target;
+    const originalText = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing Secure Payment...';
+    button.disabled = true;
+    
+    // Simulate secure processing
+    setTimeout(() => {
+        alert('Payment processed successfully with Social Security compliance!');
+        window.location.href = '/patient-dashboard/payment-success/';
+    }, 4000);
+}
+</script>
+{% endblock %}

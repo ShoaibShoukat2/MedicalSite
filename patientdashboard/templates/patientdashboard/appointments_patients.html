@@ -9,7 +9,7 @@
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
         <div>
             <h1 class="text-2xl md:text-3xl font-bold mb-2" data-translate="My Appointments">My Appointments</h1>
-            <p class="text-white/90">Manage your healthcare appointments and consultations</p>
+            <p class="text-white/90" data-translate="Manage your healthcare appointments and consultations">Manage your healthcare appointments and consultations</p>
         </div>
         <div class="mt-4 md:mt-0 flex gap-3">
             <a href="{% url 'chat:browse_practitioners' %}" class="inline-flex items-center px-6 py-3 bg-patient-green text-white rounded-xl hover:bg-green-600 transition-all duration-300 font-semibold shadow-lg">
@@ -29,7 +29,7 @@
     <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 patient-card">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-patient-dark-gray text-sm font-medium">Total Appointments</p>
+                <p class="text-patient-dark-gray text-sm font-medium" data-translate="Total Appointments">Total Appointments</p>
                 <p class="text-2xl font-bold text-patient-dark-blue">{{ appointments.count }}</p>
             </div>
             <div class="w-12 h-12 bg-gradient-to-br from-patient-blue to-patient-dark-blue rounded-xl flex items-center justify-center">
@@ -41,7 +41,7 @@
     <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 patient-card">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-patient-dark-gray text-sm font-medium">Upcoming</p>
+                <p class="text-patient-dark-gray text-sm font-medium" data-translate="Upcoming">Upcoming</p>
                 <p class="text-2xl font-bold text-patient-green">{{ upcoming_count|default:0 }}</p>
             </div>
             <div class="w-12 h-12 bg-gradient-to-br from-patient-green to-green-600 rounded-xl flex items-center justify-center">
@@ -53,7 +53,7 @@
     <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 patient-card">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-patient-dark-gray text-sm font-medium">Completed</p>
+                <p class="text-patient-dark-gray text-sm font-medium" data-translate="Completed">Completed</p>
                 <p class="text-2xl font-bold text-patient-teal">{{ completed_count|default:0 }}</p>
             </div>
             <div class="w-12 h-12 bg-gradient-to-br from-patient-teal to-teal-600 rounded-xl flex items-center justify-center">
@@ -65,7 +65,7 @@
     <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 patient-card">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-patient-dark-gray text-sm font-medium">This Month</p>
+                <p class="text-patient-dark-gray text-sm font-medium" data-translate="This Month">This Month</p>
                 <p class="text-2xl font-bold text-patient-purple">{{ month_count|default:0 }}</p>
             </div>
             <div class="w-12 h-12 bg-gradient-to-br from-patient-purple to-purple-600 rounded-xl flex items-center justify-center">
@@ -80,13 +80,13 @@
     <div class="border-b border-gray-200">
         <nav class="flex space-x-8 px-6" aria-label="Tabs">
             <button onclick="showTab('upcoming')" id="upcoming-tab" class="tab-button active py-4 px-2 border-b-2 border-patient-blue font-medium text-sm text-patient-blue">
-                <i class="fas fa-clock mr-2"></i>Upcoming
+                <i class="fas fa-clock mr-2"></i><span data-translate="Upcoming">Upcoming</span>
             </button>
             <button onclick="showTab('completed')" id="completed-tab" class="tab-button py-4 px-2 border-b-2 border-transparent font-medium text-sm text-patient-dark-gray hover:text-patient-blue hover:border-patient-light-blue">
-                <i class="fas fa-check-circle mr-2"></i>Completed
+                <i class="fas fa-check-circle mr-2"></i><span data-translate="Completed">Completed</span>
             </button>
             <button onclick="showTab('cancelled')" id="cancelled-tab" class="tab-button py-4 px-2 border-b-2 border-transparent font-medium text-sm text-patient-dark-gray hover:text-patient-blue hover:border-patient-light-blue">
-                <i class="fas fa-times-circle mr-2"></i>Cancelled
+                <i class="fas fa-times-circle mr-2"></i><span data-translate="Cancelled">Cancelled</span>
             </button>
         </nav>
     </div>
@@ -128,7 +128,7 @@
                                     <button class="patient-chat-btn px-4 py-2 bg-patient-teal text-white rounded-lg hover:bg-teal-600 transition-colors"
                                             data-practitioner-id="{{ appointment.practitioner.id }}"
                                             data-doctor-name="Dr. {{ appointment.practitioner.first_name }} {{ appointment.practitioner.last_name }}">
-                                        <i class="fas fa-comments mr-2"></i>Chat
+                                        <i class="fas fa-comments mr-2"></i><span data-translate="Chat">Chat</span>
                                     </button>
                                     
                                     <!-- Video Call Button - Show only if video link exists -->
@@ -136,25 +136,31 @@
                                         <button class="video-call-btn px-4 py-2 bg-patient-blue text-white rounded-lg hover:bg-patient-dark-blue transition-colors"
                                                 data-meeting-link="{{ appointment.video_call_link }}"
                                                 data-doctor-name="Dr. {{ appointment.practitioner.first_name }} {{ appointment.practitioner.last_name }}">
-                                            <i class="fas fa-video mr-2"></i>Join Call
+                                            <i class="fas fa-video mr-2"></i><span data-translate="Join Call">Join Call</span>
                                         </button>
                                     {% else %}
                                         <button class="px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed" title="Video call will be available soon">
                                             <i class="fas fa-video mr-2"></i>Call Preparing...
                                         </button>
                                     {% endif %}
+                                {% elif appointment.status == 'Pending' %}
+                                    <!-- Payment Options for Pending Appointments -->
+                                    <a href="{% url 'patientdashboard:payment_window' appointment.id %}" class="px-4 py-2 bg-patient-green text-white rounded-lg hover:bg-green-600 transition-colors">
+                                        <i class="fas fa-credit-card mr-2"></i><span data-translate="Pay Now">Pay Now</span>
+                                    </a>
+                                    <a href="{% url 'patientdashboard:social_security_payment' appointment.id %}" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                        <i class="fas fa-shield-alt mr-2"></i><span data-translate="Insurance Payment">Insurance Payment</span>
+                                    </a>
+                                    
+                                    <button class="symptom-btn px-4 py-2 bg-patient-teal text-white rounded-lg hover:bg-teal-600 transition-colors" data-appointment-id="{{ appointment.id }}">
+                                        <i class="fas fa-notes-medical mr-2"></i><span data-translate="Add Symptoms">Add Symptoms</span>
+                                    </button>
                                 {% else %}
                                     <button disabled class="px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed">
                                         <i class="fas fa-video mr-2"></i>Call Not Available
                                     </button>
                                     <button disabled class="px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed">
                                         <i class="fas fa-comments mr-2"></i>Chat Not Available
-                                    </button>
-                                {% endif %}
-                                
-                                {% if appointment.status == 'Pending' %}
-                                    <button class="symptom-btn px-4 py-2 bg-patient-teal text-white rounded-lg hover:bg-teal-600 transition-colors" data-appointment-id="{{ appointment.id }}">
-                                        <i class="fas fa-notes-medical mr-2"></i>Add Symptoms
                                     </button>
                                 {% endif %}
                                 {% if appointment.status != 'Cancelled' %}
