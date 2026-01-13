@@ -176,15 +176,23 @@ def notify_appointment_accepted(appointment):
         send_sms_notification(appointment.patient.phone, sms_message)
 
 def notify_appointment_cancelled(appointment, reason="", cancelled_by="system"):
-    """Notify patient and practitioner when appointment is cancelled"""
+    """Notify patient and practitioner when appointment is cancelled with separate, appropriate messages"""
     
-    # Notify Patient
+    # Prevent duplicate notifications - check if already cancelled
+    if appointment.status != "Cancelled":
+        print(f"⚠️ Warning: Trying to send cancellation notification for appointment {appointment.id} that is not cancelled (status: {appointment.status})")
+        return
+    
+    print(f"📧 Sending cancellation notifications for appointment {appointment.id} (cancelled by: {cancelled_by})")
+    
+    # Always notify the patient about cancellation
     patient_title = "Appointment Cancelled"
     patient_message = f"Your appointment with Dr. {appointment.practitioner.first_name} {appointment.practitioner.last_name} scheduled for {appointment.slot.start_time.strftime('%B %d, %Y at %I:%M %p')} has been cancelled."
     
     if reason:
         patient_message += f" Reason: {reason}"
     
+    # Create in-app notification for patient
     create_patient_notification(
         patient=appointment.patient,
         title=patient_title,
@@ -193,54 +201,73 @@ def notify_appointment_cancelled(appointment, reason="", cancelled_by="system"):
         url=f'/patient-dashboard/appointments/'
     )
     
-    # Send email to patient
+    # Send email to patient using patient-specific template
     if appointment.patient.email:
+        print(f"📤 Sending patient email to: {appointment.patient.email}")
         send_email_notification(
             to_email=appointment.patient.email,
             subject=patient_title,
-            template_name='emails/appointment_cancelled.html',
+            template_name='emails/appointment_cancelled_patient.html',
             context={
                 'patient': appointment.patient,
                 'practitioner': appointment.practitioner,
                 'appointment': appointment,
                 'appointment_time': appointment.slot.start_time,
-                'reason': reason
+                'reason': reason,
+                'cancelled_by': cancelled_by
             }
         )
     
-    # Notify Practitioner (if cancelled by patient)
+    # Always notify practitioner about cancellation (different message based on who cancelled)
     if cancelled_by == "patient":
-        practitioner_title = "Appointment Cancelled by Patient"
-        practitioner_message = f"Appointment with {appointment.patient.first_name} {appointment.patient.last_name} scheduled for {appointment.slot.start_time.strftime('%B %d, %Y at %I:%M %p')} has been cancelled by the patient."
-        
-        create_practitioner_notification(
-            practitioner=appointment.practitioner,
-            title=practitioner_title,
-            message=practitioner_message,
-            notification_type='info',
-            url=f'/practitioner-dashboard/dashboard/'
-        )
-        
-        # Send email to practitioner
-        if appointment.practitioner.email:
-            send_email_notification(
-                to_email=appointment.practitioner.email,
-                subject=practitioner_title,
-                template_name='emails/appointment_cancelled.html',
-                context={
-                    'patient': appointment.patient,
-                    'practitioner': appointment.practitioner,
-                    'appointment': appointment,
-                    'appointment_time': appointment.slot.start_time,
-                    'reason': reason,
-                    'cancelled_by': 'patient'
-                }
-            )
+        practitioner_title = "Patient Cancelled Appointment"
+        practitioner_message = f"Patient {appointment.patient.first_name} {appointment.patient.last_name} has cancelled their appointment scheduled for {appointment.slot.start_time.strftime('%B %d, %Y at %I:%M %p')}."
+    else:
+        practitioner_title = "Appointment Cancellation Confirmed"
+        practitioner_message = f"You have successfully cancelled the appointment with {appointment.patient.first_name} {appointment.patient.last_name} scheduled for {appointment.slot.start_time.strftime('%B %d, %Y at %I:%M %p')}."
     
-    # Send SMS to patient
-    if hasattr(appointment.patient, 'phone') and appointment.patient.phone:
-        sms_message = f"Appointment with Dr. {appointment.practitioner.first_name} {appointment.practitioner.last_name} on {appointment.slot.start_time.strftime('%m/%d/%Y at %I:%M %p')} has been cancelled."
-        send_sms_notification(appointment.patient.phone, sms_message)
+    if reason:
+        practitioner_message += f" Reason: {reason}"
+    
+    # Create in-app notification for practitioner
+    create_practitioner_notification(
+        practitioner=appointment.practitioner,
+        title=practitioner_title,
+        message=practitioner_message,
+        notification_type='info' if cancelled_by == "patient" else 'success',
+        url=f'/practitioner-dashboard/dashboard/'
+    )
+    
+    # Send email to practitioner using practitioner-specific template
+    if appointment.practitioner.email:
+        print(f"📤 Sending practitioner email to: {appointment.practitioner.email}")
+        send_email_notification(
+            to_email=appointment.practitioner.email,
+            subject=practitioner_title,
+            template_name='emails/appointment_cancelled_practitioner.html',
+            context={
+                'patient': appointment.patient,
+                'practitioner': appointment.practitioner,
+                'appointment': appointment,
+                'appointment_time': appointment.slot.start_time,
+                'reason': reason,
+                'cancelled_by': cancelled_by
+            }
+        )
+    
+    # Send SMS to patient (only if patient has phone number)
+    if hasattr(appointment.patient, 'mobile_phone') and appointment.patient.mobile_phone:
+        if cancelled_by == "practitioner":
+            sms_message = f"Your appointment with Dr. {appointment.practitioner.first_name} {appointment.practitioner.last_name} on {appointment.slot.start_time.strftime('%m/%d/%Y at %I:%M %p')} has been cancelled by the doctor."
+        else:
+            sms_message = f"Your appointment cancellation with Dr. {appointment.practitioner.first_name} {appointment.practitioner.last_name} on {appointment.slot.start_time.strftime('%m/%d/%Y at %I:%M %p')} has been confirmed."
+        
+        if reason:
+            sms_message += f" Reason: {reason}"
+            
+        send_sms_notification(appointment.patient.mobile_phone, sms_message)
+    
+    print(f"✅ Cancellation notifications sent successfully for appointment {appointment.id}")
 
 def notify_appointment_modified(appointment, old_time=None, reason=""):
     """Notify patient when appointment is modified"""

@@ -380,39 +380,29 @@ def cancel_appointment(request, appointment_id):
     """Cancel appointment with enhanced notifications and reason"""
     appointment = get_object_or_404(Appointment, id=appointment_id)
     
+    # Prevent duplicate cancellations
+    if appointment.status == "Cancelled":
+        messages.info(request, "This appointment is already cancelled.")
+        return redirect('practitioner_dashboard:dashboard')
+    
     # Get cancellation reason from request
-    reason = request.POST.get('reason', 'No reason provided')
+    reason = request.POST.get('reason', 'Cancelled by practitioner')
     
     # Import notification functions
     from .notifications import notify_appointment_cancelled
     
-    # Send notifications before deleting
-    notify_appointment_cancelled(appointment, reason)
-    
-    # Update status instead of deleting (for record keeping)
+    # Update status first to prevent duplicate notifications
     appointment.status = "Cancelled"
     appointment.cancellation_reason = reason
+    appointment.cancelled_at = timezone.now()
     appointment.save()
     
-    # Add frontend notification
-    messages.success(request, f"Appointment cancelled successfully! Patient has been notified.")
+    # Send notifications after updating status
+    notify_appointment_cancelled(appointment, reason=reason, cancelled_by="practitioner")
     
-    return redirect('practitioner_dashboard:dashboard')
-
-    subject = 'Your Appointment Has Been Cancelled'
-    message = f"""
-    Dear {patient_name},
-
-    Your appointment has been cancelled.
-
-    - Date: {date}
-    - Time: {time}
-    - Practitioner: {practitioner_name}
-    """
-    send_mail(subject, message, 'shoaibahmadbhatti6252@gmail.com', [recipient_email])
-
-    messages.info(request, "Appointment cancelled and email sent successfully.")
-
+    # Add frontend notification
+    messages.success(request, f"Appointment cancelled successfully! Both you and the patient have been notified with appropriate messages.")
+    
     return redirect('practitioner_dashboard:dashboard')
 
 
@@ -990,8 +980,10 @@ def update_appointment_status_api(request, appointment_id, status):
             notify_appointment_accepted(appointment)
             message = 'Appointment accepted successfully! Zoom meeting and chat enabled.'
         else:
-            from .notifications import notify_appointment_cancelled
-            notify_appointment_cancelled(appointment, 'Cancelled by practitioner')
+            # Only send notification if status actually changed to prevent duplicates
+            if appointment.status != 'Cancelled':
+                from .notifications import notify_appointment_cancelled
+                notify_appointment_cancelled(appointment, reason='Cancelled by practitioner', cancelled_by="practitioner")
             message = 'Appointment cancelled successfully!'
         
         return JsonResponse({
