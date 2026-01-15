@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rendez-vous Annulé - Notification Praticien</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            color: white;
+            padding: 20px;
+            border-radius: 10px 10px 0 0;
+            text-align: center;
+            margin: -30px -30px 30px -30px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .appointment-details {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #fee2e2;
+        }
+        .detail-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        .label {
+            font-weight: bold;
+            color: #dc2626;
+        }
+        .value {
+            color: #374151;
+        }
+        .reason-box {
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        .btn {
+            display: inline-block;
+            background: #1e40af;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 6px;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        .btn:hover {
+            background: #1e3a8a;
+        }
+        .info-box {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .patient-info {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚫 Rendez-vous Annulé</h1>
+        </div>
+        
+        <p>Cher Dr. {{ practitioner.first_name }} {{ practitioner.last_name }},</p>
+        
+        {% if cancelled_by == "patient" %}
+        <p>Nous vous informons qu'un patient a annulé son rendez-vous avec vous.</p>
+        {% else %}
+        <p>Ceci est une confirmation que vous avez annulé un rendez-vous avec succès.</p>
+        {% endif %}
+        
+        <div class="appointment-details">
+            <h3 style="margin-top: 0; color: #dc2626;">Détails du Rendez-vous Annulé</h3>
+            <div class="detail-row">
+                <span class="label">Patient :</span>
+                <span class="value">{{ patient.first_name }} {{ patient.last_name }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Email du Patient :</span>
+                <span class="value">{{ patient.email }}</span>
+            </div>
+            {% if patient.mobile_phone %}
+            <div class="detail-row">
+                <span class="label">Téléphone du Patient :</span>
+                <span class="value">{{ patient.mobile_phone }}</span>
+            </div>
+            {% endif %}
+            <div class="detail-row">
+                <span class="label">Date et Heure :</span>
+                <span class="value">{{ appointment_time|date:"d F Y" }} à {{ appointment_time|time:"H:i" }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Statut :</span>
+                <span class="value" style="color: #dc2626; font-weight: bold;">ANNULÉ</span>
+            </div>
+            {% if cancelled_by == "patient" %}
+            <div class="detail-row">
+                <span class="label">Annulé Par :</span>
+                <span class="value">Patient</span>
+            </div>
+            {% endif %}
+        </div>
+        
+        {% if reason %}
+        <div class="reason-box">
+            <h4 style="margin-top: 0; color: #ea580c;">Raison de l'Annulation :</h4>
+            <p style="margin-bottom: 0;">{{ reason }}</p>
+        </div>
+        {% endif %}
+        
+        {% if cancelled_by == "patient" %}
+        <div class="info-box">
+            <h4 style="margin-top: 0; color: #1e40af;">📋 Annulation par le Patient</h4>
+            <p>Le patient {{ patient.first_name }} {{ patient.last_name }} a annulé son rendez-vous. Ce créneau horaire est maintenant disponible pour d'autres patients.</p>
+            <p style="margin-bottom: 0;">Le patient a été informé de l'annulation et peut reprendre rendez-vous si nécessaire.</p>
+        </div>
+        {% else %}
+        <div class="info-box">
+            <h4 style="margin-top: 0; color: #1e40af;">📋 Annulation Traitée</h4>
+            <p>Vous avez annulé ce rendez-vous avec succès. Le patient a été notifié par email et SMS (si applicable).</p>
+            <p style="margin-bottom: 0;">Ce créneau horaire est maintenant disponible pour d'autres rendez-vous.</p>
+        </div>
+        {% endif %}
+        
+        <div class="patient-info">
+            <h4 style="margin-top: 0; color: #0369a1;">👤 Informations du Patient</h4>
+            <p><strong>Nom :</strong> {{ patient.first_name }} {{ patient.last_name }}</p>
+            <p><strong>Email :</strong> {{ patient.email }}</p>
+            {% if patient.mobile_phone %}
+            <p><strong>Téléphone :</strong> {{ patient.mobile_phone }}</p>
+            {% endif %}
+            {% if patient.date_of_birth %}
+            <p><strong>Date de Naissance :</strong> {{ patient.date_of_birth|date:"d F Y" }}</p>
+            {% endif %}
+            <p style="margin-bottom: 0;"><strong>Genre :</strong> {{ patient.gender|default:"Non spécifié" }}</p>
+        </div>
+        
+        <div style="text-align: center;">
+            <a href="http://{{ request.get_host }}/practitioner-dashboard/dashboard/" class="btn">
+                📊 Voir le Tableau de Bord
+            </a>
+        </div>
+        
+        <p>Si vous avez des questions concernant cette annulation, veuillez contacter notre équipe de support.</p>
+        
+        <div class="footer">
+            <p><strong>Plateforme Médicale - Portail Praticien</strong><br>
+            Gestion Professionnelle de la Santé<br>
+            📧 practitioner-support@medicalplatform.com | 📞 +1 (555) 123-4567</p>
+        </div>
+    </div>
+</body>
+</html>

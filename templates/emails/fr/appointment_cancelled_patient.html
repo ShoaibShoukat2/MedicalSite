@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rendez-vous Annulé</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            color: white;
+            padding: 20px;
+            border-radius: 10px 10px 0 0;
+            text-align: center;
+            margin: -30px -30px 30px -30px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .appointment-details {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #fee2e2;
+        }
+        .detail-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        .label {
+            font-weight: bold;
+            color: #dc2626;
+        }
+        .value {
+            color: #374151;
+        }
+        .reason-box {
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        .btn {
+            display: inline-block;
+            background: #1e40af;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 6px;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        .btn:hover {
+            background: #1e3a8a;
+        }
+        .info-box {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚫 Rendez-vous Annulé</h1>
+        </div>
+        
+        <p>Cher(e) {{ patient.first_name }} {{ patient.last_name }},</p>
+        
+        <p>Nous regrettons de vous informer que votre rendez-vous a été annulé.</p>
+        
+        <div class="appointment-details">
+            <h3 style="margin-top: 0; color: #dc2626;">Détails du Rendez-vous Annulé</h3>
+            <div class="detail-row">
+                <span class="label">Médecin :</span>
+                <span class="value">Dr. {{ practitioner.first_name }} {{ practitioner.last_name }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Spécialité :</span>
+                <span class="value">{{ practitioner.get_specialty_display }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Date et Heure :</span>
+                <span class="value">{{ appointment_time|date:"d F Y" }} à {{ appointment_time|time:"H:i" }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Statut :</span>
+                <span class="value" style="color: #dc2626; font-weight: bold;">ANNULÉ</span>
+            </div>
+        </div>
+        
+        {% if reason %}
+        <div class="reason-box">
+            <h4 style="margin-top: 0; color: #ea580c;">Raison de l'Annulation :</h4>
+            <p style="margin-bottom: 0;">{{ reason }}</p>
+        </div>
+        {% endif %}
+        
+        {% if cancelled_by == "practitioner" %}
+        <div class="info-box">
+            <h4 style="margin-top: 0; color: #1e40af;">📋 Que se passe-t-il ensuite ?</h4>
+            <p style="margin-bottom: 0;">Votre rendez-vous a été annulé par le praticien. Si vous avez des questions concernant cette annulation, veuillez contacter notre équipe de support. Vous pouvez prendre un nouveau rendez-vous avec le même praticien ou un autre à votre convenance.</p>
+        </div>
+        {% else %}
+        <div class="info-box">
+            <h4 style="margin-top: 0; color: #1e40af;">📋 Annulation Confirmée</h4>
+            <p style="margin-bottom: 0;">Votre annulation de rendez-vous a été traitée avec succès. Aucun frais ne sera appliqué pour cette annulation.</p>
+        </div>
+        {% endif %}
+        
+        <p>Nous nous excusons pour tout inconvénient que cela pourrait causer. Vous pouvez prendre un nouveau rendez-vous à votre convenance.</p>
+        
+        <div style="text-align: center;">
+            <a href="http://{{ request.get_host }}/patient-dashboard/specialty-selection/" class="btn">
+                📅 Prendre un Nouveau Rendez-vous
+            </a>
+        </div>
+        
+        <p>Si vous avez des questions ou des préoccupations, n'hésitez pas à nous contacter.</p>
+        
+        <div class="footer">
+            <p><strong>Plateforme Médicale</strong><br>
+            Votre Santé, Notre Priorité<br>
+            📧 support@medicalplatform.com | 📞 +1 (555) 123-4567</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>Rendez-vous Réservé</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #0e5274, #1a6a8f); color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
+        .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 8px 8px; }
+        .appointment-details { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #0e5274; }
+        .button { display: inline-block; background: #0e5274; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; margin: 10px 0; }
+        .footer { text-align: center; margin-top: 30px; color: #666; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🩺 Rendez-vous Réservé avec Succès</h1>
+        </div>
+        
+        <div class="content">
+            <h2>Bonjour {{ patient.first_name }} !</h2>
+            
+            <p>Votre rendez-vous a été réservé avec succès. Voici les détails :</p>
+            
+            <div class="appointment-details">
+                <h3>📅 Détails du Rendez-vous</h3>
+                <p><strong>Médecin :</strong> Dr. {{ practitioner.first_name }} {{ practitioner.last_name }}</p>
+                <p><strong>Spécialité :</strong> {{ practitioner.get_specialty_display }}</p>
+                <p><strong>Date et Heure :</strong> {{ appointment_time|date:"d F Y" }} à {{ appointment_time|time:"H:i" }}</p>
+                <p><strong>Statut :</strong> En attente de confirmation</p>
+                <p><strong>ID du Rendez-vous :</strong> #{{ appointment.id }}</p>
+            </div>
+            
+            <h3>📋 Prochaines Étapes</h3>
+            <ul>
+                <li>Votre rendez-vous est en attente de confirmation du médecin</li>
+                <li>Vous recevrez un autre email une fois confirmé</li>
+                <li>Veuillez arriver 15 minutes avant l'heure prévue</li>
+                <li>Apportez une pièce d'identité valide et votre carte d'assurance si applicable</li>
+            </ul>
+            
+            <p>Si vous devez annuler ou reporter, veuillez vous connecter à votre tableau de bord patient.</p>
+            
+            <a href="#" class="button">Voir Mes Rendez-vous</a>
+            
+            <div class="footer">
+                <p>Merci d'avoir choisi notre plateforme médicale !</p>
+                <p>Si vous avez des questions, veuillez contacter notre équipe de support.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

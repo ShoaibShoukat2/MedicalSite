@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nouveaux Créneaux Disponibles</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #059669, #10b981);
+            color: white;
+            padding: 20px;
+            border-radius: 10px 10px 0 0;
+            text-align: center;
+            margin: -30px -30px 30px -30px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .availability-box {
+            background: #dcfce7;
+            border: 2px solid #86efac;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .doctor-info {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        .btn {
+            display: inline-block;
+            background: #059669;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 6px;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        .btn:hover {
+            background: #047857;
+        }
+        .info-box {
+            background: #fef3c7;
+            border: 1px solid #fbbf24;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎉 Nouveaux Créneaux Disponibles !</h1>
+        </div>
+        
+        <p>Cher(e) {{ patient.first_name }} {{ patient.last_name }},</p>
+        
+        <div class="availability-box">
+            <h2 style="margin-top: 0; color: #059669;">✨ Bonne Nouvelle !</h2>
+            <p style="font-size: 18px; margin-bottom: 0;">Dr. {{ practitioner.first_name }} {{ practitioner.last_name }} a ajouté de nouveaux créneaux de rendez-vous.</p>
+        </div>
+        
+        <p>Vous pourriez être en mesure d'obtenir un rendez-vous plus tôt que prévu !</p>
+        
+        <div class="doctor-info">
+            <h3 style="margin-top: 0; color: #1e40af;">👨‍⚕️ Informations du Médecin</h3>
+            <p><strong>Nom :</strong> Dr. {{ practitioner.first_name }} {{ practitioner.last_name }}</p>
+            <p><strong>Spécialité :</strong> {{ practitioner.get_specialty_display }}</p>
+            {% if practitioner.description %}
+            <p style="margin-bottom: 0;"><strong>À propos :</strong> {{ practitioner.description|truncatewords:30 }}</p>
+            {% endif %}
+        </div>
+        
+        <div class="info-box">
+            <h4 style="margin-top: 0; color: #92400e;">⚡ Agissez Rapidement !</h4>
+            <p style="margin-bottom: 0;">Les créneaux disponibles sont limités et peuvent être réservés rapidement. Nous vous recommandons de réserver votre rendez-vous dès que possible.</p>
+        </div>
+        
+        <div style="text-align: center;">
+            <a href="http://{{ request.get_host }}/patient-dashboard/practitioner/{{ practitioner.id }}/slots/" class="btn">
+                📅 Voir les Créneaux Disponibles
+            </a>
+        </div>
+        
+        <h3>📋 Comment Réserver :</h3>
+        <ol>
+            <li>Cliquez sur le bouton ci-dessus pour voir tous les créneaux disponibles</li>
+            <li>Choisissez la date et l'heure qui vous conviennent</li>
+            <li>Confirmez votre réservation</li>
+            <li>Recevez une confirmation par email</li>
+        </ol>
+        
+        <p>Si vous avez déjà un rendez-vous en attente, vous pouvez le reprogrammer pour une date plus proche.</p>
+        
+        <div class="footer">
+            <p><strong>Plateforme Médicale</strong><br>
+            Votre Santé, Notre Priorité<br>
+            📧 support@medicalplatform.com | 📞 +1 (555) 123-4567</p>
+        </div>
+    </div>
+</body>
+</html>

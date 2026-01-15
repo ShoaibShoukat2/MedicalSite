@@ -43,15 +43,31 @@ def create_practitioner_notification(practitioner, title, message, notification_
         print(f"Error creating practitioner notification: {str(e)}")
         return None
 
-def send_email_notification(to_email, subject, template_name, context):
-    """Send email notification"""
+def send_email_notification(to_email, subject, template_name, context, language='fr'):
+    """Send email notification with language support (default: French)"""
     try:
         # Add request context for URLs
         context.update({
             'settings': settings,
         })
         
+        # Try to use language-specific template first (French by default)
+        if language and language != 'en':
+            localized_template = f'emails/{language}/{template_name.replace("emails/", "")}'
+            try:
+                # Check if localized template exists
+                from django.template.loader import get_template
+                get_template(localized_template)
+                template_name = localized_template
+                print(f"📧 Using {language.upper()} template: {localized_template}")
+            except:
+                print(f"⚠️ {language.upper()} template not found, using default: {template_name}")
+        
         html_message = render_to_string(template_name, context)
+        
+        # Translate subject to French if using French template
+        if language == 'fr':
+            subject = translate_subject_to_french(subject)
         
         send_mail(
             subject=subject,
@@ -61,11 +77,26 @@ def send_email_notification(to_email, subject, template_name, context):
             html_message=html_message,
             fail_silently=False,
         )
-        print(f"Email sent successfully to {to_email}")
+        print(f"✅ Email sent successfully to {to_email} in {language.upper()}")
         return True
     except Exception as e:
-        print(f"Error sending email to {to_email}: {str(e)}")
+        print(f"❌ Error sending email to {to_email}: {str(e)}")
         return False
+
+def translate_subject_to_french(subject):
+    """Translate common email subjects to French"""
+    translations = {
+        'Appointment Booked': 'Rendez-vous Réservé',
+        'Appointment Confirmed': 'Rendez-vous Confirmé',
+        'Appointment Cancelled': 'Rendez-vous Annulé',
+        'Patient Cancelled Appointment': 'Patient a Annulé le Rendez-vous',
+        'Appointment Cancellation Confirmed': 'Annulation de Rendez-vous Confirmée',
+        'Appointment Reminder': 'Rappel de Rendez-vous',
+        'Appointment Modified': 'Rendez-vous Modifié',
+        'New Availability': 'Nouvelle Disponibilité',
+        'Appointment Request': 'Demande de Rendez-vous',
+    }
+    return translations.get(subject, subject)
 
 def send_sms_notification(phone_number, message):
     """Send SMS notification (placeholder for SMS service integration)"""
