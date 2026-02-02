@@ -9,18 +9,18 @@
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
         <div>
             <h1 class="text-2xl md:text-3xl font-bold mb-2" data-translate="Book Appointment">Book Appointment</h1>
-            <p class="text-white/90">Select a specialty to find available doctors and schedule your consultation</p>
+            <p class="text-white/90" data-translate="Select a specialty to find available doctors and schedule your consultation">Select a specialty to find available doctors and schedule your consultation</p>
         </div>
         <div class="mt-4 md:mt-0">
             <div class="flex items-center space-x-4">
                 <div class="text-center">
                     <div class="text-2xl font-bold">{{ specialties|length }}</div>
-                    <div class="text-sm text-white/80">Specialties</div>
+                    <div class="text-sm text-white/80" data-translate="Specialties">Specialties</div>
                 </div>
                 <div class="w-px h-12 bg-white/20"></div>
                 <div class="text-center">
                     <div class="text-2xl font-bold">50+</div>
-                    <div class="text-sm text-white/80">Doctors</div>
+                    <div class="text-sm text-white/80" data-translate="Doctors">Doctors</div>
                 </div>
             </div>
         </div>
@@ -77,34 +77,34 @@
         
         <!-- Card Content -->
         <div class="p-6">
-            <h3 class="text-lg font-bold text-patient-dark-blue mb-2 group-hover:text-patient-blue transition-colors">
+            <h3 class="text-lg font-bold text-patient-dark-blue mb-2 group-hover:text-patient-blue transition-colors" data-translate="{{ value }}">
                 {{ value }}
             </h3>
             <p class="text-sm text-patient-dark-gray mb-4">
                 {% if key == 'occupational_therapist' %}
-                    Helping you regain daily living skills and independence
+                    <span data-translate="Helping you regain daily living skills and independence">Helping you regain daily living skills and independence</span>
                 {% elif key == 'physiotherapist' %}
-                    Physical rehabilitation and movement therapy
+                    <span data-translate="Physical rehabilitation and movement therapy">Physical rehabilitation and movement therapy</span>
                 {% elif key == 'neuropsychologist' %}
-                    Brain function assessment and cognitive therapy
+                    <span data-translate="Brain function assessment and cognitive therapy">Brain function assessment and cognitive therapy</span>
                 {% elif key == 'speech_therapist' %}
-                    Communication and swallowing disorder treatment
+                    <span data-translate="Communication and swallowing disorder treatment">Communication and swallowing disorder treatment</span>
                 {% elif key == 'psychologist' %}
-                    Mental health counseling and therapy
+                    <span data-translate="Mental health counseling and therapy">Mental health counseling and therapy</span>
                 {% elif key == 'chiropractor' %}
-                    Spine and musculoskeletal system care
+                    <span data-translate="Spine and musculoskeletal system care">Spine and musculoskeletal system care</span>
                 {% elif key == 'nutritionist' %}
-                    Diet planning and nutritional guidance
+                    <span data-translate="Diet planning and nutritional guidance">Diet planning and nutritional guidance</span>
                 {% elif key == 'general_practitioner' %}
-                    Primary healthcare and general medical care
+                    <span data-translate="Primary healthcare and general medical care">Primary healthcare and general medical care</span>
                 {% else %}
-                    Professional healthcare consultation
+                    <span data-translate="Professional healthcare consultation">Professional healthcare consultation</span>
                 {% endif %}
             </p>
             
             <!-- Action Button -->
             <div class="flex items-center justify-between">
-                <span class="text-sm font-medium text-patient-blue">View Doctors</span>
+                <span class="text-sm font-medium text-patient-blue" data-translate="View Doctors">View Doctors</span>
                 <div class="w-8 h-8 bg-patient-blue/10 rounded-full flex items-center justify-center group-hover:bg-patient-blue group-hover:text-white transition-all duration-300">
                     <i class="fas fa-arrow-right text-sm"></i>
                 </div>
@@ -117,23 +117,23 @@
         <div class="w-24 h-24 bg-patient-light-blue rounded-full flex items-center justify-center mx-auto mb-6">
             <i class="fas fa-stethoscope text-patient-blue text-4xl"></i>
         </div>
-        <h3 class="text-2xl font-semibold text-patient-dark-blue mb-4">No Specialties Available</h3>
-        <p class="text-patient-dark-gray">Please contact support for assistance with booking appointments.</p>
+        <h3 class="text-2xl font-semibold text-patient-dark-blue mb-4" data-translate="No Specialties Available">No Specialties Available</h3>
+        <p class="text-patient-dark-gray" data-translate="Please contact support for assistance with booking appointments.">Please contact support for assistance with booking appointments.</p>
     </div>
     {% endfor %}
 </div>
 
 <!-- Quick Actions -->
 <div class="mt-12 bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
-    <h2 class="text-xl font-bold text-patient-dark-blue mb-4">Need Help Choosing?</h2>
+    <h2 class="text-xl font-bold text-patient-dark-blue mb-4" data-translate="Need Help Choosing?">Need Help Choosing?</h2>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div class="flex items-center space-x-3 p-4 bg-patient-gray rounded-xl">
             <div class="w-12 h-12 bg-patient-blue/10 rounded-full flex items-center justify-center">
                 <i class="fas fa-phone text-patient-blue"></i>
             </div>
             <div>
-                <h4 class="font-semibold text-patient-dark-blue">Call Support</h4>
-                <p class="text-sm text-patient-dark-gray">Get help choosing the right specialist</p>
+                <h4 class="font-semibold text-patient-dark-blue" data-translate="Call Support">Call Support</h4>
+                <p class="text-sm text-patient-dark-gray" data-translate="Get help choosing the right specialist">Get help choosing the right specialist</p>
             </div>
         </div>
         
@@ -142,8 +142,8 @@
                 <i class="fas fa-comments text-patient-green"></i>
             </div>
             <div>
-                <h4 class="font-semibold text-patient-dark-blue">Live Chat</h4>
-                <p class="text-sm text-patient-dark-gray">Chat with our medical advisors</p>
+                <h4 class="font-semibold text-patient-dark-blue" data-translate="Live Chat">Live Chat</h4>
+                <p class="text-sm text-patient-dark-gray" data-translate="Chat with our medical advisors">Chat with our medical advisors</p>
             </div>
         </div>
         
@@ -152,8 +152,8 @@
                 <i class="fas fa-question-circle text-patient-purple"></i>
             </div>
             <div>
-                <h4 class="font-semibold text-patient-dark-blue">FAQ</h4>
-                <p class="text-sm text-patient-dark-gray">Find answers to common questions</p>
+                <h4 class="font-semibold text-patient-dark-blue" data-translate="FAQ">FAQ</h4>
+                <p class="text-sm text-patient-dark-gray" data-translate="Find answers to common questions">Find answers to common questions</p>
             </div>
         </div>
     </div>

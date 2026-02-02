@@ -334,9 +334,19 @@
                     <span class="font-medium" data-translate="Profile">Profile</span>
                 </a>
                 
-                <a href="{% url 'practitionerdashboard:mypatient' %}" class="flex items-center space-x-3 px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'mypatient' %}bg-white/20 text-white{% endif %}">
+                <a href="{% url 'practitioner_dashboard:mypatient' %}" class="flex items-center space-x-3 px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'mypatient' %}bg-white/20 text-white{% endif %}">
                     <i class="fas fa-users text-lg"></i>
                     <span class="font-medium" data-translate="My Patients">My Patients</span>
+                </a>
+                
+                <a href="{% url 'practitioner_dashboard:blacklist' %}" class="flex items-center space-x-3 px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'blacklist' %}bg-white/20 text-white{% endif %}">
+                    <i class="fas fa-user-slash text-lg"></i>
+                    <span class="font-medium" data-translate="Blacklist">Blacklist</span>
+                </a>
+                
+                <a href="{% url 'practitioner_dashboard:payment_management' %}" class="flex items-center space-x-3 px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'payment_management' %}bg-white/20 text-white{% endif %}">
+                    <i class="fas fa-credit-card text-lg"></i>
+                    <span class="font-medium" data-translate="Payments">Payments</span>
                 </a>
                 
                 <a href="{% url 'practitionerdashboard:schedule_timming' %}" class="flex items-center space-x-3 px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'schedule_timming' %}bg-white/20 text-white{% endif %}">
@@ -406,7 +416,7 @@
                             
                             <!-- Language Dropdown -->
                             <div id="practitionerLangDropdown" class="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-2xl border border-gray-200 py-2 z-[9999]" style="display: none;">
-                                <div class="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide border-b border-gray-100">Select Language</div>
+                                <div class="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide border-b border-gray-100" data-translate="Select Language">Select Language</div>
                                 <button class="practitioner-lang-option w-full text-left px-4 py-3 hover:bg-doctor-light-blue text-gray-700 hover:text-doctor-dark-blue transition-colors duration-200 flex items-center space-x-3" data-lang="en" data-name="English">
                                     <span class="w-6 h-4 bg-gradient-to-r from-blue-500 to-red-500 rounded-sm flex items-center justify-center text-white text-xs font-bold">EN</span>
                                     <span>English</span>
@@ -454,7 +464,7 @@
                                 <div class="p-4 border-b border-gray-100">
                                     <h3 class="text-lg font-semibold text-doctor-dark-blue flex items-center">
                                         <i class="fas fa-hourglass-half text-doctor-orange mr-2"></i>
-                                        Pending Appointments
+                                        <span data-translate="Pending Appointments">Pending Appointments</span>
                                     </h3>
                                 </div>
                                 <div id="pendingAppointmentsList" class="max-h-96 overflow-y-auto custom-scrollbar">
@@ -462,7 +472,7 @@
                                 </div>
                                 <div class="p-3 border-t border-gray-100 text-center">
                                     <a href="{% url 'practitionerdashboard:dashboard' %}" class="text-doctor-blue hover:text-doctor-dark-blue text-sm font-medium">
-                                        View All Appointments
+                                        <span data-translate="View All Appointments">View All Appointments</span>
                                     </a>
                                 </div>
                             </div>
@@ -488,10 +498,10 @@
                                     {% elif request.user.is_authenticated %}
                                         Dr. {{ request.user.name|default:request.user.email }}
                                     {% else %}
-                                        Doctor
+                                        <span data-translate="Doctor">Doctor</span>
                                     {% endif %}
                                 </p>
-                                <p class="text-xs text-doctor-dark-gray">Medical Professional</p>
+                                <p class="text-xs text-doctor-dark-gray" data-translate="Medical Professional">Medical Professional</p>
                             </div>
                         </div>
                         
@@ -616,7 +626,24 @@ const practitionerTranslations = {
         'Check Status': 'Check Status',
         'No accepted appointments': 'No accepted appointments',
         'No appointments have been accepted yet.': 'No appointments have been accepted yet.',
-        'Close': 'Close'
+        'Close': 'Close',
+        'Age': 'Age',
+        'Video': 'Video',
+        'Chat': 'Chat',
+        'No appointments scheduled': 'No appointments scheduled',
+        'No prescriptions issued': 'No prescriptions issued',
+        'Start Video Call': 'Start Video Call',
+        'No Video Link': 'No Video Link',
+        'Add Prescription': 'Add Prescription',
+        'Schedule Appointment': 'Schedule Appointment',
+        'New Prescription': 'New Prescription',
+        'Prescription Details': 'Prescription Details',
+        'Enter complete prescription details...': 'Enter complete prescription details...',
+        'Upload Document (Optional)': 'Upload Document (Optional)',
+        'Click to upload document': 'Click to upload document',
+        'Images, PDF, Word documents': 'Images, PDF, Word documents',
+        'Save Prescription': 'Save Prescription',
+        'Edit Your Profile': 'Edit Your Profile'
     },
     'ur': {
         'Dashboard': 'ڈیش بورڈ',
@@ -952,6 +979,87 @@ const practitionerTranslations = {
         'Dashboard': 'Tableau de Bord',
         'Profile': 'Profil',
         'My Patients': 'Mes Patients',
+        'Blacklist': 'Liste Noire',
+        'Patient Blacklist': 'Liste Noire des Patients',
+        'Manage patients with frequent appointment cancellations': 'Gérer les patients avec des annulations fréquentes de rendez-vous',
+        'Blacklisted Patients': 'Patients sur Liste Noire',
+        'At Risk Patients': 'Patients à Risque',
+        'Total Cancellations': 'Total des Annulations',
+        'Risk Level': 'Niveau de Risque',
+        'Low': 'Faible',
+        'Medium': 'Moyen',
+        'High': 'Élevé',
+        'Based on patterns': 'Basé sur les tendances',
+        '3+ cancellations': '3+ annulations',
+        '2 cancellations': '2 annulations',
+        'All time': 'Depuis toujours',
+        'Blacklisted': 'Liste Noire',
+        'At Risk': 'À Risque',
+        'Overview': 'Aperçu',
+        'cancellations': 'annulations',
+        'Phone': 'Téléphone',
+        'Last Cancellation': 'Dernière Annulation',
+        'Cancellation History': 'Historique des Annulations',
+        'more cancellations': 'annulations de plus',
+        'View Details': 'Voir Détails',
+        'Contact': 'Contacter',
+        'View': 'Voir',
+        'No Blacklisted Patients': 'Aucun Patient sur Liste Noire',
+        'Great! No patients have cancelled 3 or more appointments.': 'Parfait ! Aucun patient n\'a annulé 3 rendez-vous ou plus.',
+        'No At-Risk Patients': 'Aucun Patient à Risque',
+        'No patients have 2 cancellations currently.': 'Aucun patient n\'a actuellement 2 annulations.',
+        'Recent Cancellations': 'Annulations Récentes',
+        'No recent cancellations': 'Aucune annulation récente',
+        'Recommendations': 'Recommandations',
+        'High Priority': 'Priorité Élevée',
+        'Consider implementing a cancellation policy for patients with 3+ cancellations.': 'Envisagez d\'implémenter une politique d\'annulation pour les patients avec 3+ annulations.',
+        'Medium Priority': 'Priorité Moyenne',
+        'Reach out to at-risk patients to understand cancellation reasons.': 'Contactez les patients à risque pour comprendre les raisons d\'annulation.',
+        'Best Practice': 'Meilleure Pratique',
+        'Send appointment reminders 24 hours before scheduled time.': 'Envoyez des rappels de rendez-vous 24 heures avant l\'heure prévue.',
+        'Suggestion': 'Suggestion',
+        'Consider requiring a deposit for patients with multiple cancellations.': 'Envisagez d\'exiger un dépôt pour les patients avec plusieurs annulations.',
+        'Patient Details': 'Détails du Patient',
+        'Last cancellation': 'Dernière annulation',
+        'Payments': 'Paiements',
+        'Payment Management': 'Gestion des Paiements',
+        'Social Security compliant payment processing and billing': 'Traitement des paiements et facturation conformes à la Sécurité Sociale',
+        'Total Payments': 'Total des Paiements',
+        'Total Revenue': 'Chiffre d\'Affaires Total',
+        'All payments': 'Tous les paiements',
+        'Covered Amount': 'Montant Couvert',
+        'Insurance/SS': 'Assurance/SS',
+        'Patient Copay': 'Quote-part Patient',
+        'Out of pocket': 'Reste à charge',
+        'Pending': 'En attente',
+        'Awaiting processing': 'En attente de traitement',
+        'Payment Records': 'Dossiers de Paiement',
+        'All Status': 'Tous les Statuts',
+        'Processing': 'En cours',
+        'Approved': 'Approuvé',
+        'Rejected': 'Rejeté',
+        'Reimbursed': 'Remboursé',
+        'Filter': 'Filtrer',
+        'Export': 'Exporter',
+        'New Payment': 'Nouveau Paiement',
+        'Patient': 'Patient',
+        'Service': 'Service',
+        'Amount': 'Montant',
+        'Coverage': 'Couverture',
+        'Status': 'Statut',
+        'Compliance': 'Conformité',
+        'Actions': 'Actions',
+        'No coverage': 'Aucune couverture',
+        'Verified': 'Vérifié',
+        'View Details': 'Voir Détails',
+        'Verify Eligibility': 'Vérifier l\'Éligibilité',
+        'Process Payment': 'Traiter le Paiement',
+        'No Payment Records': 'Aucun Dossier de Paiement',
+        'No payments have been processed yet.': 'Aucun paiement n\'a encore été traité.',
+        'Create First Payment': 'Créer le Premier Paiement',
+        'Recent Transactions': 'Transactions Récentes',
+        'Create Payment Record': 'Créer un Dossier de Paiement',
+        'Select an appointment to create a payment record': 'Sélectionnez un rendez-vous pour créer un dossier de paiement',
         'Schedule': 'Horaires',
         'Appointments': 'Rendez-vous',
         'Cancellation & Completion': 'Annulation et Achèvement',
@@ -1046,7 +1154,104 @@ const practitionerTranslations = {
         'Check Status': 'Vérifier le Statut',
         'No accepted appointments': 'Aucun rendez-vous accepté',
         'No appointments have been accepted yet.': 'Aucun rendez-vous n\'a encore été accepté.',
-        'Close': 'Fermer'
+        'Close': 'Fermer',
+        'Medical Professional': 'Professionnel Médical',
+        'Doctor': 'Docteur',
+        'Select Language': 'Sélectionner la Langue',
+        'Pending Appointments': 'Rendez-vous en Attente',
+        'View All Appointments': 'Voir Tous les Rendez-vous',
+        'No pending appointments': 'Aucun rendez-vous en attente',
+        'First Name': 'Prénom',
+        'Last Name': 'Nom de Famille',
+        'Phone Number': 'Numéro de Téléphone',
+        'Experience': 'Expérience',
+        'years': 'ans',
+        'Save Changes': 'Enregistrer les Modifications',
+        'Cancel': 'Annuler',
+        'Upload Photo': 'Télécharger Photo',
+        'Remove Photo': 'Supprimer Photo',
+        'Professional Information': 'Informations Professionnelles',
+        'Contact Information': 'Informations de Contact',
+        'Pricing': 'Tarification',
+        'Account Settings': 'Paramètres du Compte',
+        'Notification Settings': 'Paramètres de Notification',
+        'Privacy Settings': 'Paramètres de Confidentialité',
+        'Language Settings': 'Paramètres de Langue',
+        'Help': 'Aide',
+        'Support': 'Support',
+        'Contact Support': 'Contacter le Support',
+        'Terms of Service': 'Conditions d\'Utilisation',
+        'Privacy Policy': 'Politique de Confidentialité',
+        'About': 'À Propos',
+        'Version': 'Version',
+        'Loading...': 'Chargement...',
+        'Please wait': 'Veuillez patienter',
+        'Success': 'Succès',
+        'Error': 'Erreur',
+        'Warning': 'Avertissement',
+        'Information': 'Information',
+        'Confirm': 'Confirmer',
+        'Yes': 'Oui',
+        'No': 'Non',
+        'OK': 'OK',
+        'Continue': 'Continuer',
+        'Back': 'Retour',
+        'Next': 'Suivant',
+        'Previous': 'Précédent',
+        'Finish': 'Terminer',
+        'Submit': 'Soumettre',
+        'Reset': 'Réinitialiser',
+        'Clear': 'Effacer',
+        'Search': 'Rechercher',
+        'Sort': 'Trier',
+        'Import': 'Importer',
+        'Print': 'Imprimer',
+        'Download': 'Télécharger',
+        'Upload': 'Télécharger',
+        'Delete': 'Supprimer',
+        'Edit': 'Modifier',
+        'Add': 'Ajouter',
+        'Remove': 'Supprimer',
+        'Update': 'Mettre à jour',
+        'Create': 'Créer',
+        'New': 'Nouveau',
+        'All': 'Tous',
+        'None': 'Aucun',
+        'Select': 'Sélectionner',
+        'Choose': 'Choisir',
+        'Optional': 'Optionnel',
+        'Required': 'Requis',
+        'Available': 'Disponible',
+        'Unavailable': 'Indisponible',
+        'Online': 'En ligne',
+        'Offline': 'Hors ligne',
+        'Active': 'Actif',
+        'Inactive': 'Inactif',
+        'Enabled': 'Activé',
+        'Disabled': 'Désactivé',
+        'Public': 'Public',
+        'Private': 'Privé',
+        'Draft': 'Brouillon',
+        'Published': 'Publié',
+        'Archived': 'Archivé',
+        'Deleted': 'Supprimé',
+        'Age': 'Âge',
+        'Video': 'Vidéo',
+        'Chat': 'Discussion',
+        'No appointments scheduled': 'Aucun rendez-vous programmé',
+        'No prescriptions issued': 'Aucune ordonnance émise',
+        'Start Video Call': 'Démarrer l\'appel vidéo',
+        'No Video Link': 'Aucun lien vidéo',
+        'Add Prescription': 'Ajouter une Ordonnance',
+        'Schedule Appointment': 'Programmer un Rendez-vous',
+        'New Prescription': 'Nouvelle Ordonnance',
+        'Prescription Details': 'Détails de l\'Ordonnance',
+        'Enter complete prescription details...': 'Entrez les détails complets de l\'ordonnance...',
+        'Upload Document (Optional)': 'Télécharger un Document (Optionnel)',
+        'Click to upload document': 'Cliquez pour télécharger un document',
+        'Images, PDF, Word documents': 'Images, PDF, documents Word',
+        'Save Prescription': 'Enregistrer l\'Ordonnance',
+        'Edit Your Profile': 'Modifier Votre Profil'
     },
     'de': {
         'Dashboard': 'Dashboard',

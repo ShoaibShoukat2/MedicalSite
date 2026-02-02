@@ -1,0 +1,579 @@
+{% extends "practitionerdashboard/base.html" %}
+{% load static %}
+
+<style>
+/* Blacklist specific styles */
+.blacklist-card {
+    transition: all 0.3s ease;
+    border-left: 4px solid #dc2626;
+}
+
+.blacklist-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.warning-card {
+    border-left: 4px solid #f59e0b;
+}
+
+.cancellation-badge {
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+}
+
+.warning-badge {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+.timeline-item {
+    position: relative;
+    padding-left: 30px;
+    margin-bottom: 15px;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    width: 8px;
+    height: 8px;
+    background: #dc2626;
+    border-radius: 50%;
+}
+
+.timeline-item::after {
+    content: '';
+    position: absolute;
+    left: 11px;
+    top: 16px;
+    width: 2px;
+    height: calc(100% - 8px);
+    background: #e5e7eb;
+}
+
+.timeline-item:last-child::after {
+    display: none;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    border-left: 4px solid;
+    transition: transform 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+}
+
+.stat-danger { border-left-color: #dc2626; }
+.stat-warning { border-left-color: #f59e0b; }
+.stat-info { border-left-color: #3b82f6; }
+.stat-success { border-left-color: #10b981; }
+
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .blacklist-card {
+        margin-bottom: 1rem;
+    }
+}
+</style>
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header Section -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-doctor-dark-blue mb-2 flex items-center">
+                    <i class="fas fa-user-slash text-red-600 mr-3"></i>
+                    <span data-translate="Patient Blacklist">Patient Blacklist</span>
+                </h1>
+                <p class="text-doctor-dark-gray" data-translate="Manage patients with frequent appointment cancellations">Manage patients with frequent appointment cancellations (3+ cancellations)</p>
+            </div>
+            <div class="hidden md:flex items-center space-x-4">
+                <div class="text-right">
+                    <p class="text-sm text-doctor-dark-gray" data-translate="Blacklisted Patients">Blacklisted Patients</p>
+                    <p class="text-2xl font-bold text-red-600">{{ total_blacklisted }}</p>
+                </div>
+                <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-red-700 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-ban text-white text-lg"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="stats-grid">
+        <div class="stat-card stat-danger">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600" data-translate="Blacklisted Patients">Blacklisted Patients</p>
+                    <p class="text-2xl font-bold text-red-600">{{ total_blacklisted }}</p>
+                    <p class="text-xs text-gray-500 mt-1" data-translate="3+ cancellations">3+ cancellations</p>
+                </div>
+                <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-user-slash text-red-600"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card stat-warning">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600" data-translate="At Risk Patients">At Risk Patients</p>
+                    <p class="text-2xl font-bold text-yellow-600">{{ total_frequent_cancellers }}</p>
+                    <p class="text-xs text-gray-500 mt-1" data-translate="2 cancellations">2 cancellations</p>
+                </div>
+                <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-exclamation-triangle text-yellow-600"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card stat-info">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600" data-translate="Total Cancellations">Total Cancellations</p>
+                    <p class="text-2xl font-bold text-blue-600">{{ total_cancelled_appointments }}</p>
+                    <p class="text-xs text-gray-500 mt-1" data-translate="All time">All time</p>
+                </div>
+                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-times-circle text-blue-600"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card stat-success">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600" data-translate="Risk Level">Risk Level</p>
+                    <p class="text-lg font-bold text-green-600">
+                        {% if total_blacklisted == 0 %}
+                            <span data-translate="Low">Low</span>
+                        {% elif total_blacklisted <= 2 %}
+                            <span class="text-yellow-600" data-translate="Medium">Medium</span>
+                        {% else %}
+                            <span class="text-red-600" data-translate="High">High</span>
+                        {% endif %}
+                    </p>
+                    <p class="text-xs text-gray-500 mt-1" data-translate="Based on patterns">Based on patterns</p>
+                </div>
+                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-shield-alt text-green-600"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="border-b border-gray-200 bg-gray-50">
+            <nav class="flex space-x-8 px-6" id="blacklistTabs">
+                <button class="tab-button active py-4 px-2 border-b-2 border-red-600 text-red-600 font-medium transition-colors" data-tab="blacklisted">
+                    <i class="fas fa-user-slash mr-2"></i><span data-translate="Blacklisted">Blacklisted</span>
+                    <span class="ml-2 bg-red-600 text-white text-xs px-2 py-1 rounded-full">{{ total_blacklisted }}</span>
+                </button>
+                <button class="tab-button py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-yellow-600 font-medium transition-colors" data-tab="at-risk">
+                    <i class="fas fa-exclamation-triangle mr-2"></i><span data-translate="At Risk">At Risk</span>
+                    <span class="ml-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded-full">{{ total_frequent_cancellers }}</span>
+                </button>
+                <button class="tab-button py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-blue-600 font-medium transition-colors" data-tab="overview">
+                    <i class="fas fa-chart-line mr-2"></i><span data-translate="Overview">Overview</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="p-6">
+            <!-- Blacklisted Patients Tab -->
+            <div class="tab-content active" id="blacklisted">
+                {% if blacklisted_patients %}
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        {% for patient in blacklisted_patients %}
+                        <div class="blacklist-card bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                            <!-- Patient Header -->
+                            <div class="bg-gradient-to-r from-red-50 to-red-100 p-4 border-b border-red-200">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-12 h-12 rounded-full overflow-hidden border-2 border-red-300">
+                                            {% if patient.profile_photo %}
+                                                <img src="{{ patient.profile_photo.url }}" alt="{{ patient.first_name }}" class="w-full h-full object-cover">
+                                            {% else %}
+                                                <div class="w-full h-full bg-red-200 flex items-center justify-center">
+                                                    <i class="fas fa-user text-red-600"></i>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        <div>
+                                            <h3 class="font-bold text-gray-800">{{ patient.greeting }} {{ patient.first_name }} {{ patient.last_name }}</h3>
+                                            <p class="text-sm text-gray-600">{{ patient.email }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="cancellation-badge">
+                                        {{ patient.cancellation_count }} <span data-translate="cancellations">cancellations</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Patient Details -->
+                            <div class="p-4">
+                                <div class="grid grid-cols-2 gap-4 mb-4">
+                                    <div class="text-center p-3 bg-gray-50 rounded-lg">
+                                        <p class="text-xs text-gray-500" data-translate="Phone">Phone</p>
+                                        <p class="font-medium text-gray-800">{{ patient.mobile_phone|default:"Not provided" }}</p>
+                                    </div>
+                                    <div class="text-center p-3 bg-gray-50 rounded-lg">
+                                        <p class="text-xs text-gray-500" data-translate="Last Cancellation">Last Cancellation</p>
+                                        <p class="font-medium text-gray-800">{{ patient.last_cancellation|date:"M d, Y" }}</p>
+                                    </div>
+                                </div>
+
+                                <!-- Cancellation History -->
+                                <div class="border-t border-gray-200 pt-4">
+                                    <h4 class="font-semibold text-gray-800 mb-3 flex items-center">
+                                        <i class="fas fa-history text-red-600 mr-2"></i>
+                                        <span data-translate="Cancellation History">Cancellation History</span>
+                                    </h4>
+                                    <div class="max-h-40 overflow-y-auto">
+                                        {% for cancellation in patient.cancellation_history|slice:":5" %}
+                                        <div class="timeline-item">
+                                            <div class="bg-red-50 p-3 rounded-lg">
+                                                <div class="flex justify-between items-start mb-1">
+                                                    <span class="text-sm font-medium text-gray-800">
+                                                        {{ cancellation.appointment_date|date:"M d, Y" }} at {{ cancellation.appointment_date|time:"h:i A" }}
+                                                    </span>
+                                                    <span class="text-xs text-gray-500">{{ cancellation.cancelled_at|date:"M d" }}</span>
+                                                </div>
+                                                <p class="text-xs text-gray-600">{{ cancellation.reason|truncatechars:50 }}</p>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                        {% if patient.cancellation_history|length > 5 %}
+                                        <p class="text-xs text-gray-500 text-center mt-2">
+                                            +{{ patient.cancellation_history|length|add:"-5" }} <span data-translate="more cancellations">more cancellations</span>
+                                        </p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <!-- Actions -->
+                                <div class="border-t border-gray-200 pt-4 mt-4">
+                                    <div class="flex space-x-2">
+                                        <button onclick="viewPatientDetails({{ patient.id }}, '{{ patient.first_name|escapejs }} {{ patient.last_name|escapejs }}')" 
+                                                class="flex-1 px-3 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors text-sm font-medium">
+                                            <i class="fas fa-eye mr-1"></i><span data-translate="View Details">View Details</span>
+                                        </button>
+                                        <button onclick="contactPatient({{ patient.id }}, '{{ patient.first_name|escapejs }} {{ patient.last_name|escapejs }}')" 
+                                                class="flex-1 px-3 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors text-sm font-medium">
+                                            <i class="fas fa-phone mr-1"></i><span data-translate="Contact">Contact</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-12">
+                        <div class="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-check-circle text-green-500 text-4xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2" data-translate="No Blacklisted Patients">No Blacklisted Patients</h3>
+                        <p class="text-gray-600" data-translate="Great! No patients have cancelled 3 or more appointments.">Great! No patients have cancelled 3 or more appointments.</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- At Risk Patients Tab -->
+            <div class="tab-content hidden" id="at-risk">
+                {% if frequent_cancellers %}
+                    <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+                        {% for patient in frequent_cancellers %}
+                        <div class="warning-card bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-yellow-300">
+                                        {% if patient.profile_photo %}
+                                            <img src="{{ patient.profile_photo.url }}" alt="{{ patient.first_name }}" class="w-full h-full object-cover">
+                                        {% else %}
+                                            <div class="w-full h-full bg-yellow-200 flex items-center justify-center">
+                                                <i class="fas fa-user text-yellow-600 text-sm"></i>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium text-gray-800">{{ patient.first_name }} {{ patient.last_name }}</h4>
+                                        <p class="text-xs text-gray-600">{{ patient.email }}</p>
+                                    </div>
+                                </div>
+                                <div class="warning-badge">
+                                    {{ patient.cancellation_count }}
+                                </div>
+                            </div>
+                            <div class="text-xs text-gray-600 mb-3">
+                                <span data-translate="Last cancellation">Last cancellation</span>: {{ patient.last_cancellation|date:"M d, Y" }}
+                            </div>
+                            <div class="flex space-x-2">
+                                <button onclick="viewPatientDetails({{ patient.id }}, '{{ patient.first_name|escapejs }} {{ patient.last_name|escapejs }}')" 
+                                        class="flex-1 px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-medium hover:bg-blue-200 transition-colors">
+                                    <i class="fas fa-eye mr-1"></i><span data-translate="View">View</span>
+                                </button>
+                                <button onclick="contactPatient({{ patient.id }}, '{{ patient.first_name|escapejs }} {{ patient.last_name|escapejs }}')" 
+                                        class="flex-1 px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-medium hover:bg-green-200 transition-colors">
+                                    <i class="fas fa-phone mr-1"></i><span data-translate="Contact">Contact</span>
+                                </button>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-12">
+                        <div class="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-thumbs-up text-green-500 text-4xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2" data-translate="No At-Risk Patients">No At-Risk Patients</h3>
+                        <p class="text-gray-600" data-translate="No patients have 2 cancellations currently.">No patients have 2 cancellations currently.</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Overview Tab -->
+            <div class="tab-content hidden" id="overview">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Recent Cancellations -->
+                    <div class="bg-gray-50 rounded-xl p-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                            <i class="fas fa-clock text-blue-600 mr-2"></i>
+                            <span data-translate="Recent Cancellations">Recent Cancellations</span>
+                        </h3>
+                        <div class="space-y-3 max-h-80 overflow-y-auto">
+                            {% for appointment in all_cancelled_appointments %}
+                            <div class="bg-white p-3 rounded-lg border border-gray-200">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <p class="font-medium text-gray-800">{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</p>
+                                        <p class="text-sm text-gray-600">{{ appointment.slot.start_time|date:"M d, Y" }} at {{ appointment.slot.start_time|time:"h:i A" }}</p>
+                                        <p class="text-xs text-gray-500 mt-1">{{ appointment.cancellation_reason|default:"No reason provided"|truncatechars:40 }}</p>
+                                    </div>
+                                    <span class="text-xs text-gray-500">{{ appointment.cancelled_at|timesince }} ago</span>
+                                </div>
+                            </div>
+                            {% empty %}
+                            <p class="text-gray-500 text-center py-4" data-translate="No recent cancellations">No recent cancellations</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Recommendations -->
+                    <div class="bg-blue-50 rounded-xl p-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                            <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>
+                            <span data-translate="Recommendations">Recommendations</span>
+                        </h3>
+                        <div class="space-y-4">
+                            {% if total_blacklisted > 0 %}
+                            <div class="bg-white p-4 rounded-lg border-l-4 border-red-500">
+                                <h4 class="font-medium text-red-700 mb-2" data-translate="High Priority">High Priority</h4>
+                                <p class="text-sm text-gray-700" data-translate="Consider implementing a cancellation policy for patients with 3+ cancellations.">Consider implementing a cancellation policy for patients with 3+ cancellations.</p>
+                            </div>
+                            {% endif %}
+                            
+                            {% if total_frequent_cancellers > 0 %}
+                            <div class="bg-white p-4 rounded-lg border-l-4 border-yellow-500">
+                                <h4 class="font-medium text-yellow-700 mb-2" data-translate="Medium Priority">Medium Priority</h4>
+                                <p class="text-sm text-gray-700" data-translate="Reach out to at-risk patients to understand cancellation reasons.">Reach out to at-risk patients to understand cancellation reasons.</p>
+                            </div>
+                            {% endif %}
+                            
+                            <div class="bg-white p-4 rounded-lg border-l-4 border-green-500">
+                                <h4 class="font-medium text-green-700 mb-2" data-translate="Best Practice">Best Practice</h4>
+                                <p class="text-sm text-gray-700" data-translate="Send appointment reminders 24 hours before scheduled time.">Send appointment reminders 24 hours before scheduled time.</p>
+                            </div>
+                            
+                            <div class="bg-white p-4 rounded-lg border-l-4 border-blue-500">
+                                <h4 class="font-medium text-blue-700 mb-2" data-translate="Suggestion">Suggestion</h4>
+                                <p class="text-sm text-gray-700" data-translate="Consider requiring a deposit for patients with multiple cancellations.">Consider requiring a deposit for patients with multiple cancellations.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Patient Details Modal -->
+<div id="patientDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="p-6 border-b border-gray-200">
+            <div class="flex items-center justify-between">
+                <h2 class="text-2xl font-bold text-gray-800">
+                    <i class="fas fa-user-circle mr-3 text-blue-600"></i><span data-translate="Patient Details">Patient Details</span>
+                </h2>
+                <button onclick="closePatientDetailsModal()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                    <i class="fas fa-times text-gray-500"></i>
+                </button>
+            </div>
+        </div>
+        <div class="p-6" id="patientDetailsContent">
+            <!-- Content will be loaded dynamically -->
+        </div>
+    </div>
+</div>
+
+<script>
+// Tab functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const targetTab = button.getAttribute('data-tab');
+            
+            // Remove active class from all buttons and contents
+            tabButtons.forEach(btn => {
+                btn.classList.remove('active', 'border-red-600', 'text-red-600', 'border-yellow-600', 'text-yellow-600', 'border-blue-600', 'text-blue-600');
+                btn.classList.add('border-transparent', 'text-gray-500');
+            });
+            tabContents.forEach(content => {
+                content.classList.add('hidden');
+                content.classList.remove('active');
+            });
+            
+            // Add active class to clicked button and corresponding content
+            if (targetTab === 'blacklisted') {
+                button.classList.add('active', 'border-red-600', 'text-red-600');
+            } else if (targetTab === 'at-risk') {
+                button.classList.add('active', 'border-yellow-600', 'text-yellow-600');
+            } else {
+                button.classList.add('active', 'border-blue-600', 'text-blue-600');
+            }
+            button.classList.remove('border-transparent', 'text-gray-500');
+            document.getElementById(targetTab).classList.remove('hidden');
+            document.getElementById(targetTab).classList.add('active');
+        });
+    });
+});
+
+function viewPatientDetails(patientId, patientName) {
+    // Show loading state
+    document.getElementById('patientDetailsContent').innerHTML = `
+        <div class="text-center py-8">
+            <i class="fas fa-spinner fa-spin text-blue-600 text-2xl mb-4"></i>
+            <p class="text-gray-600">Loading patient details...</p>
+        </div>
+    `;
+    
+    document.getElementById('patientDetailsModal').classList.remove('hidden');
+    
+    // Fetch patient details (you can implement this endpoint)
+    fetch(`/practitioner-dashboard/api/patient-details/${patientId}/`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('patientDetailsContent').innerHTML = `
+                    <div class="space-y-6">
+                        <div class="text-center">
+                            <h3 class="text-xl font-bold text-gray-800">${patientName}</h3>
+                            <p class="text-gray-600">${data.patient.email}</p>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <p class="text-sm text-gray-500">Phone</p>
+                                <p class="font-medium">${data.patient.mobile_phone || 'Not provided'}</p>
+                            </div>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <p class="text-sm text-gray-500">Total Cancellations</p>
+                                <p class="font-medium text-red-600">${data.cancellation_count}</p>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold text-gray-800 mb-3">Complete Cancellation History</h4>
+                            <div class="max-h-60 overflow-y-auto space-y-2">
+                                ${data.cancellation_history.map(cancellation => `
+                                    <div class="bg-red-50 p-3 rounded-lg border border-red-200">
+                                        <div class="flex justify-between items-start mb-1">
+                                            <span class="font-medium text-gray-800">${cancellation.appointment_date}</span>
+                                            <span class="text-xs text-gray-500">${cancellation.cancelled_at}</span>
+                                        </div>
+                                        <p class="text-sm text-gray-600">${cancellation.reason}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                document.getElementById('patientDetailsContent').innerHTML = `
+                    <div class="text-center py-8">
+                        <i class="fas fa-exclamation-triangle text-red-600 text-2xl mb-4"></i>
+                        <p class="text-gray-600">Failed to load patient details.</p>
+                    </div>
+                `;
+            }
+        })
+        .catch(error => {
+            document.getElementById('patientDetailsContent').innerHTML = `
+                <div class="text-center py-8">
+                    <i class="fas fa-exclamation-triangle text-red-600 text-2xl mb-4"></i>
+                    <p class="text-gray-600">Error loading patient details.</p>
+                </div>
+            `;
+        });
+}
+
+function closePatientDetailsModal() {
+    document.getElementById('patientDetailsModal').classList.add('hidden');
+}
+
+function contactPatient(patientId, patientName) {
+    // You can implement contact functionality here
+    alert(`Contact functionality for ${patientName} - Patient ID: ${patientId}`);
+}
+
+// Get CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+
+{% endblock content %}

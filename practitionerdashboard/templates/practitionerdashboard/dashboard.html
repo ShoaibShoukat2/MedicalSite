@@ -64,7 +64,7 @@
   <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
     <div class="flex items-center justify-between">
       <div>
-        <h1 class="text-3xl font-bold text-doctor-dark-blue mb-2" data-translate="Dashboard">Dashboard Overview</h1>
+        <h1 class="text-3xl font-bold text-doctor-dark-blue mb-2" data-translate="Dashboard Overview">Dashboard Overview</h1>
         <p class="text-doctor-dark-gray" data-translate="Welcome back! Here's what's happening with your practice today.">Welcome back! Here's what's happening with your practice today.</p>
       </div>
       <div class="hidden md:flex items-center space-x-4">
@@ -615,6 +615,60 @@
   </div>
 </div>
 
+<!-- Cancellation Reason Modal -->
+<div id="cancellationModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full">
+    <div class="p-6 border-b border-gray-200">
+      <div class="flex items-center justify-between">
+        <h2 class="text-xl font-bold text-doctor-dark-blue">
+          <i class="fas fa-times-circle mr-3 text-red-600"></i><span data-translate="Cancel Appointment">Cancel Appointment</span>
+        </h2>
+        <button onclick="closeCancellationModal()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+          <i class="fas fa-times text-gray-500"></i>
+        </button>
+      </div>
+    </div>
+    <div class="p-6">
+      <div class="mb-4">
+        <p class="text-gray-600 mb-4" data-translate="Please provide a reason for cancelling this appointment:">Please provide a reason for cancelling this appointment:</p>
+        <div class="space-y-3">
+          <label class="flex items-center">
+            <input type="radio" name="cancellationReason" value="Emergency came up" class="mr-3 text-red-600">
+            <span data-translate="Emergency came up">Emergency came up</span>
+          </label>
+          <label class="flex items-center">
+            <input type="radio" name="cancellationReason" value="Schedule conflict" class="mr-3 text-red-600">
+            <span data-translate="Schedule conflict">Schedule conflict</span>
+          </label>
+          <label class="flex items-center">
+            <input type="radio" name="cancellationReason" value="Personal reasons" class="mr-3 text-red-600">
+            <span data-translate="Personal reasons">Personal reasons</span>
+          </label>
+          <label class="flex items-center">
+            <input type="radio" name="cancellationReason" value="Medical reasons" class="mr-3 text-red-600">
+            <span data-translate="Medical reasons">Medical reasons</span>
+          </label>
+          <label class="flex items-center">
+            <input type="radio" name="cancellationReason" value="Other" class="mr-3 text-red-600">
+            <span data-translate="Other">Other</span>
+          </label>
+        </div>
+        <div id="customReasonDiv" class="mt-3 hidden">
+          <textarea id="customReason" placeholder="Please specify..." class="w-full p-3 border border-gray-300 rounded-lg resize-none" rows="3"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="p-6 border-t border-gray-200 flex justify-end space-x-3">
+      <button onclick="closeCancellationModal()" class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+        <span data-translate="Cancel">Cancel</span>
+      </button>
+      <button onclick="confirmCancellation()" class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+        <i class="fas fa-times mr-2"></i><span data-translate="Cancel Appointment">Cancel Appointment</span>
+      </button>
+    </div>
+  </div>
+</div>
+
 <script>
 // Tab functionality
 document.addEventListener('DOMContentLoaded', function() {
@@ -659,6 +713,67 @@ function closePatientModal() {
     document.getElementById('patientModal').classList.add('hidden');
 }
 
+function closeCancellationModal() {
+    document.getElementById('cancellationModal').classList.add('hidden');
+    // Reset form
+    document.querySelectorAll('input[name="cancellationReason"]').forEach(radio => radio.checked = false);
+    document.getElementById('customReasonDiv').classList.add('hidden');
+    document.getElementById('customReason').value = '';
+}
+
+let currentCancellationAppointmentId = null;
+
+function openCancellationModal(appointmentId) {
+    currentCancellationAppointmentId = appointmentId;
+    document.getElementById('cancellationModal').classList.remove('hidden');
+}
+
+function confirmCancellation() {
+    const selectedReason = document.querySelector('input[name="cancellationReason"]:checked');
+    
+    if (!selectedReason) {
+        alert('Please select a reason for cancellation.');
+        return;
+    }
+    
+    let reason = selectedReason.value;
+    if (reason === 'Other') {
+        const customReason = document.getElementById('customReason').value.trim();
+        if (!customReason) {
+            alert('Please specify the reason for cancellation.');
+            return;
+        }
+        reason = customReason;
+    }
+    
+    // Send cancellation request with reason
+    const formData = new FormData();
+    formData.append('reason', reason);
+    
+    fetch(`/practitioner-dashboard/appointments/${currentCancellationAppointmentId}/cancel/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: formData
+    })
+    .then(response => {
+        if (response.ok) {
+            closeCancellationModal();
+            showNotification('Appointment cancelled successfully! Both you and the patient have been notified.', 'success');
+            setTimeout(() => {
+                location.reload();
+            }, 2000);
+        } else {
+            throw new Error('Failed to cancel appointment');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Error cancelling appointment. Please try again.', 'error');
+    });
+}
+
 // Appointment actions
 document.addEventListener('DOMContentLoaded', function() {
     // Check migration status on page load
@@ -669,21 +784,33 @@ document.addEventListener('DOMContentLoaded', function() {
         button.addEventListener('click', function() {
             const appointmentRow = this.closest('tr');
             const appointmentId = appointmentRow.getAttribute('data-id');
-            const status = this.classList.contains('accept-btn') ? 'Accepted' : 'Cancelled';
             
-            const url = status === 'Accepted' 
-                ? `/practitioner-dashboard/appointments/${appointmentId}/Accepted/`
-                : `/practitioner-dashboard/appointments/${appointmentId}/Cancelled/`;
-            
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    alert(`Successfully ${status} the appointment`);
-                    location.reload();
+            if (this.classList.contains('accept-btn')) {
+                // Handle accept
+                fetch(`/practitioner-dashboard/appointments/${appointmentId}/accept/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken')
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        showNotification('Appointment accepted successfully! Both you and the patient have been notified.', 'success');
+                        setTimeout(() => {
+                            location.reload();
+                        }, 2000);
+                    } else {
+                        throw new Error('Failed to accept appointment');
+                    }
                 })
                 .catch(error => {
-                    alert('Something went wrong. Please try again.');
+                    console.error('Error:', error);
+                    showNotification('Error accepting appointment. Please try again.', 'error');
                 });
+            } else if (this.classList.contains('cancel-btn')) {
+                // Handle cancel - open modal
+                openCancellationModal(appointmentId);
+            }
         });
     });
 
@@ -711,8 +838,21 @@ document.addEventListener('DOMContentLoaded', function() {
                     document.getElementById('patientModal').classList.remove('hidden');
                 })
                 .catch(error => {
-                    alert('Failed to load patient details.');
+                    showNotification('Failed to load patient details.', 'error');
                 });
+        });
+    });
+    
+    // Handle custom reason radio button
+    document.querySelectorAll('input[name="cancellationReason"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            const customReasonDiv = document.getElementById('customReasonDiv');
+            if (this.value === 'Other') {
+                customReasonDiv.classList.remove('hidden');
+            } else {
+                customReasonDiv.classList.add('hidden');
+                document.getElementById('customReason').value = '';
+            }
         });
     });
 });
@@ -999,6 +1139,44 @@ function getCookie(name) {
         }
     }
     return cookieValue;
+}
+
+// Notification system
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    const bgColor = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
+    
+    notification.className = `fixed top-4 right-4 ${bgColor} text-white px-6 py-3 rounded-lg shadow-lg z-50 transform transition-all duration-300 translate-x-full`;
+    notification.innerHTML = `
+        <div class="flex items-center space-x-2">
+            <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+            <span>${message}</span>
+            <button onclick="this.parentElement.parentElement.remove()" class="ml-2 text-white hover:text-gray-200">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Animate in
+    setTimeout(() => {
+        notification.classList.remove('translate-x-full');
+    }, 100);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        if (document.body.contains(notification)) {
+            notification.classList.add('translate-x-full');
+            setTimeout(() => {
+                if (document.body.contains(notification)) {
+                    document.body.removeChild(notification);
+                }
+            }, 300);
+        }
+    }, 5000);
+    
+    return notification;
 }
 
 // Profile validation

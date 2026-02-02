@@ -50,8 +50,6 @@
             <button id="edit-profile-btn" class="w-full bg-white text-doctor-blue px-6 py-3 rounded-xl font-medium hover:bg-gray-50 transition-colors">
               <i class="fas fa-edit mr-2"></i><span data-translate="Edit Profile">Edit Profile</span>
             </button>
-              <i class="fas fa-edit mr-2"></i>Edit Profile
-            </button>
           </div>
         </div>
         
@@ -120,10 +118,10 @@
       <div class="flex items-center justify-between mb-8">
         <h2 class="text-2xl font-bold text-doctor-dark-blue flex items-center">
           <i class="fas fa-edit text-doctor-blue mr-3"></i>
-          Edit Your Profile
+          <span data-translate="Edit Your Profile">Edit Your Profile</span>
         </h2>
         <button id="cancel-edit-btn" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
-          <i class="fas fa-times mr-2"></i>Cancel
+          <i class="fas fa-times mr-2"></i><span data-translate="Cancel">Cancel</span>
         </button>
       </div>
       
@@ -149,15 +147,15 @@
           <!-- Photo Upload -->
           <div class="lg:col-span-2">
             <label class="block text-sm font-semibold text-doctor-dark-blue mb-3">
-              <i class="fas fa-camera mr-2 text-doctor-blue"></i>Update Profile Photo
+              <i class="fas fa-camera mr-2 text-doctor-blue"></i><span data-translate="Update Profile Photo">Update Profile Photo</span>
             </label>
             <div class="relative">
               <input type="file" id="photo" name="photo" accept="image/*" class="hidden">
               <label for="photo" class="flex items-center justify-center w-full px-6 py-4 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-doctor-blue hover:bg-blue-50 transition-colors">
                 <div class="text-center">
                   <i class="fas fa-upload text-gray-400 text-2xl mb-2"></i>
-                  <p class="text-sm text-gray-600">Click to upload new photo</p>
-                  <p class="text-xs text-gray-500 mt-1">Leave empty to keep current photo</p>
+                  <p class="text-sm text-gray-600" data-translate="Click to upload new photo">Click to upload new photo</p>
+                  <p class="text-xs text-gray-500 mt-1" data-translate="Leave empty to keep current photo">Leave empty to keep current photo</p>
                 </div>
               </label>
             </div>

@@ -48,6 +48,11 @@ class Appointment(models.Model):
     host_start_url = models.URLField(blank=True, null=True)
     
     created_at = models.DateTimeField(auto_now_add=True)
+    
+    # Cancellation tracking fields
+    cancellation_reason = models.TextField(blank=True, null=True, help_text="Reason for appointment cancellation")
+    cancelled_at = models.DateTimeField(blank=True, null=True, help_text="When the appointment was cancelled")
+    
     PAYMENT_STATUS_CHOICES = [
         ('Unpaid', 'Unpaid'),
         ('Pending', 'Pending'),

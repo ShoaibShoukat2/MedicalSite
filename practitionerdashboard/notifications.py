@@ -46,6 +46,12 @@ def create_practitioner_notification(practitioner, title, message, notification_
 def send_email_notification(to_email, subject, template_name, context, language='fr'):
     """Send email notification with language support (default: French)"""
     try:
+        print(f"📧 SEND_EMAIL_NOTIFICATION DEBUG:")
+        print(f"   To: {to_email}")
+        print(f"   Subject: {subject}")
+        print(f"   Template: {template_name}")
+        print(f"   Language: {language}")
+        
         # Add request context for URLs
         context.update({
             'settings': settings,
@@ -64,11 +70,15 @@ def send_email_notification(to_email, subject, template_name, context, language=
                 print(f"⚠️ {language.upper()} template not found, using default: {template_name}")
         
         html_message = render_to_string(template_name, context)
+        print(f"📧 Template rendered successfully")
         
         # Translate subject to French if using French template
         if language == 'fr':
+            original_subject = subject
             subject = translate_subject_to_french(subject)
+            print(f"📧 Subject translated: '{original_subject}' -> '{subject}'")
         
+        print(f"📧 Attempting to send email...")
         send_mail(
             subject=subject,
             message='',  # Plain text version
@@ -81,6 +91,8 @@ def send_email_notification(to_email, subject, template_name, context, language=
         return True
     except Exception as e:
         print(f"❌ Error sending email to {to_email}: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return False
 
 def translate_subject_to_french(subject):
@@ -165,28 +177,29 @@ def notify_appointment_booked(appointment):
         )
 
 def notify_appointment_accepted(appointment):
-    """Notify patient when appointment is accepted"""
+    """Notify patient and practitioner when appointment is accepted"""
     
-    title = "Appointment Confirmed"
-    message = f"Your appointment with Dr. {appointment.practitioner.first_name} {appointment.practitioner.last_name} has been confirmed for {appointment.slot.start_time.strftime('%B %d, %Y at %I:%M %p')}."
+    # Notify Patient
+    patient_title = "Appointment Confirmed"
+    patient_message = f"Your appointment with Dr. {appointment.practitioner.first_name} {appointment.practitioner.last_name} has been confirmed for {appointment.slot.start_time.strftime('%B %d, %Y at %I:%M %p')}."
     
     # Add Zoom meeting info if available
     if appointment.video_call_link:
-        message += f" Video consultation link has been provided."
+        patient_message += f" Video consultation link has been provided."
     
     create_patient_notification(
         patient=appointment.patient,
-        title=title,
-        message=message,
+        title=patient_title,
+        message=patient_message,
         notification_type='success',
         url=f'/patient-dashboard/appointments/'
     )
     
-    # Send email
+    # Send email to patient
     if appointment.patient.email:
         send_email_notification(
             to_email=appointment.patient.email,
-            subject=title,
+            subject=patient_title,
             template_name='emails/appointment_confirmed.html',
             context={
                 'patient': appointment.patient,
@@ -199,12 +212,47 @@ def notify_appointment_accepted(appointment):
             }
         )
     
-    # Send SMS if phone number available
+    # Send SMS to patient if phone number available
     if hasattr(appointment.patient, 'phone') and appointment.patient.phone:
         sms_message = f"Appointment confirmed with Dr. {appointment.practitioner.first_name} {appointment.practitioner.last_name} on {appointment.slot.start_time.strftime('%m/%d/%Y at %I:%M %p')}."
         if appointment.video_call_link:
             sms_message += f" Video link provided in email."
         send_sms_notification(appointment.patient.phone, sms_message)
+    
+    # Notify Practitioner
+    practitioner_title = "Appointment Confirmation Sent"
+    practitioner_message = f"You have confirmed the appointment with {appointment.patient.first_name} {appointment.patient.last_name} for {appointment.slot.start_time.strftime('%B %d, %Y at %I:%M %p')}."
+    
+    if appointment.video_call_link:
+        practitioner_message += f" Video consultation link has been created."
+    
+    create_practitioner_notification(
+        practitioner=appointment.practitioner,
+        title=practitioner_title,
+        message=practitioner_message,
+        notification_type='success',
+        url=f'/practitioner-dashboard/dashboard/'
+    )
+    
+    # Send email to practitioner
+    if appointment.practitioner.email:
+        send_email_notification(
+            to_email=appointment.practitioner.email,
+            subject=practitioner_title,
+            template_name='emails/appointment_confirmed.html',
+            context={
+                'patient': appointment.patient,
+                'practitioner': appointment.practitioner,
+                'appointment': appointment,
+                'appointment_time': appointment.slot.start_time,
+                'zoom_join_url': appointment.video_call_link,
+                'zoom_meeting_id': appointment.meeting_id,
+                'zoom_password': appointment.meeting_password,
+                'is_practitioner': True  # Flag to customize template for practitioner
+            }
+        )
+    
+    print(f"✅ Confirmation notifications sent to both patient and practitioner for appointment {appointment.id}")
 
 def notify_appointment_cancelled(appointment, reason="", cancelled_by="system"):
     """Notify patient and practitioner when appointment is cancelled with separate, appropriate messages"""

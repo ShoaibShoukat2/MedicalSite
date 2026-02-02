@@ -9,18 +9,18 @@
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
         <div>
             <h1 class="text-2xl md:text-3xl font-bold mb-2" data-translate="Bills & Payments">Bills & Payments</h1>
-            <p class="text-white/90">Manage your medical bills and payment history</p>
+            <p class="text-white/90" data-translate="Manage your medical bills and payment history">Manage your medical bills and payment history</p>
         </div>
         <div class="mt-4 md:mt-0">
             <div class="flex items-center space-x-4">
                 <div class="text-center">
                     <div class="text-2xl font-bold">{{ bills.count }}</div>
-                    <div class="text-sm text-white/80">Total Bills</div>
+                    <div class="text-sm text-white/80" data-translate="Total Bills">Total Bills</div>
                 </div>
                 <div class="w-px h-12 bg-white/20"></div>
                 <div class="text-center">
                     <div class="text-2xl font-bold">${{ total_amount|default:0 }}</div>
-                    <div class="text-sm text-white/80">Total Amount</div>
+                    <div class="text-sm text-white/80" data-translate="Total Amount">Total Amount</div>
                 </div>
             </div>
         </div>
@@ -32,7 +32,7 @@
     <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 patient-card">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-patient-dark-gray text-sm font-medium">Paid Bills</p>
+                <p class="text-patient-dark-gray text-sm font-medium" data-translate="Paid Bills">Paid Bills</p>
                 <p class="text-2xl font-bold text-patient-green">{{ paid_bills|default:0 }}</p>
             </div>
             <div class="w-12 h-12 bg-gradient-to-br from-patient-green to-green-600 rounded-xl flex items-center justify-center">
@@ -44,7 +44,7 @@
     <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 patient-card">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-patient-dark-gray text-sm font-medium">Pending</p>
+                <p class="text-patient-dark-gray text-sm font-medium" data-translate="Pending">Pending</p>
                 <p class="text-2xl font-bold text-patient-orange">{{ pending_bills|default:0 }}</p>
             </div>
             <div class="w-12 h-12 bg-gradient-to-br from-patient-orange to-orange-600 rounded-xl flex items-center justify-center">
@@ -56,7 +56,7 @@
     <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 patient-card">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-patient-dark-gray text-sm font-medium">This Month</p>
+                <p class="text-patient-dark-gray text-sm font-medium" data-translate="This Month">This Month</p>
                 <p class="text-2xl font-bold text-patient-blue">${{ month_total|default:0 }}</p>
             </div>
             <div class="w-12 h-12 bg-gradient-to-br from-patient-blue to-patient-dark-blue rounded-xl flex items-center justify-center">
@@ -68,7 +68,7 @@
     <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 patient-card">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-patient-dark-gray text-sm font-medium">Average Bill</p>
+                <p class="text-patient-dark-gray text-sm font-medium" data-translate="Average Bill">Average Bill</p>
                 <p class="text-2xl font-bold text-patient-purple">${{ average_bill|default:0 }}</p>
             </div>
             <div class="w-12 h-12 bg-gradient-to-br from-patient-purple to-purple-600 rounded-xl flex items-center justify-center">
@@ -83,15 +83,15 @@
     <div class="p-6 border-b border-gray-200">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
             <div>
-                <h2 class="text-xl font-bold text-patient-dark-blue">Billing History</h2>
-                <p class="text-patient-dark-gray mt-1">View and manage your medical bills</p>
+                <h2 class="text-xl font-bold text-patient-dark-blue" data-translate="Billing History">Billing History</h2>
+                <p class="text-patient-dark-gray mt-1" data-translate="View and manage your medical bills">View and manage your medical bills</p>
             </div>
             <div class="mt-4 md:mt-0 flex space-x-3">
                 <button class="px-4 py-2 bg-patient-blue/10 text-patient-blue rounded-lg hover:bg-patient-blue/20 transition-colors">
-                    <i class="fas fa-filter mr-2"></i>Filter
+                    <i class="fas fa-filter mr-2"></i><span data-translate="Filter">Filter</span>
                 </button>
                 <button class="px-4 py-2 bg-patient-green/10 text-patient-green rounded-lg hover:bg-patient-green/20 transition-colors">
-                    <i class="fas fa-download mr-2"></i>Export
+                    <i class="fas fa-download mr-2"></i><span data-translate="Export">Export</span>
                 </button>
             </div>
         </div>

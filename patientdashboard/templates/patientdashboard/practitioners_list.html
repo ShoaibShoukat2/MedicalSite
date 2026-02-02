@@ -11,25 +11,25 @@
             <!-- Breadcrumb -->
             <nav class="mb-4">
                 <ol class="flex items-center space-x-2 text-sm text-white/80">
-                    <li><a href="{% url 'patientdashboard:specialty_selection' %}" class="hover:text-white transition-colors">Specialties</a></li>
+                    <li><a href="{% url 'patientdashboard:specialty_selection' %}" class="hover:text-white transition-colors" data-translate="Specialties">Specialties</a></li>
                     <li><i class="fas fa-chevron-right text-xs"></i></li>
                     <li class="text-white font-medium">{{ specialty_name }}</li>
                 </ol>
             </nav>
             
             <h1 class="text-2xl md:text-3xl font-bold mb-2">{{ specialty_name }}</h1>
-            <p class="text-white/90">Choose from {{ practitioners|length }} available specialists</p>
+            <p class="text-white/90"><span data-translate="Choose from">Choose from</span> {{ practitioners|length }} <span data-translate="available specialists">available specialists</span></p>
         </div>
         <div class="mt-4 md:mt-0">
             <div class="flex items-center space-x-4">
                 <div class="text-center">
                     <div class="text-2xl font-bold">{{ practitioners|length }}</div>
-                    <div class="text-sm text-white/80">Doctors</div>
+                    <div class="text-sm text-white/80" data-translate="Doctors">Doctors</div>
                 </div>
                 <div class="w-px h-12 bg-white/20"></div>
                 <div class="text-center">
                     <div class="text-2xl font-bold">24/7</div>
-                    <div class="text-sm text-white/80">Available</div>
+                    <div class="text-sm text-white/80" data-translate="Available">Available</div>
                 </div>
             </div>
         </div>
@@ -75,7 +75,7 @@
                         </span>
                         {% if practitioner.experience %}
                         <span class="px-3 py-1 bg-patient-green/10 text-patient-green rounded-full text-sm font-medium">
-                            {{ practitioner.experience }} years exp.
+                            {{ practitioner.experience }} <span data-translate="years exp.">years exp.</span>
                         </span>
                         {% endif %}
                     </div>
@@ -91,7 +91,7 @@
                                 <i class="fas fa-star"></i>
                             </div>
                             <span class="font-medium">4.9</span>
-                            <span>(127 reviews)</span>
+                            <span>(<span data-translate="reviews">reviews</span>)</span>
                         </div>
                     </div>
                     
@@ -99,7 +99,7 @@
                     {% if practitioner.price %}
                     <div class="mb-4">
                         <span class="text-2xl font-bold text-patient-green">${{ practitioner.price }}</span>
-                        <span class="text-patient-dark-gray text-sm">/ consultation</span>
+                        <span class="text-patient-dark-gray text-sm">/ <span data-translate="consultation">consultation</span></span>
                     </div>
                     {% endif %}
                 </div>
@@ -109,11 +109,11 @@
             <div class="flex flex-col sm:flex-row gap-3 mt-6">
                 <a href="{% url 'patientdashboard:practitioner_profile' practitioner.id %}" 
                    class="flex-1 px-4 py-3 border-2 border-patient-blue text-patient-blue rounded-xl hover:bg-patient-blue hover:text-white transition-all duration-300 font-semibold text-center">
-                    <i class="fas fa-user mr-2"></i>View Profile
+                    <i class="fas fa-user mr-2"></i><span data-translate="View Profile">View Profile</span>
                 </a>
                 <a href="{% url 'patientdashboard:available_slots' practitioner.id %}" 
                    class="flex-1 px-4 py-3 bg-patient-blue text-white rounded-xl hover:bg-patient-dark-blue transition-all duration-300 font-semibold text-center shadow-lg">
-                    <i class="fas fa-calendar-plus mr-2"></i>Book Appointment
+                    <i class="fas fa-calendar-plus mr-2"></i><span data-translate="Book Appointment">Book Appointment</span>
                 </a>
             </div>
         </div>
@@ -122,12 +122,12 @@
         <div class="bg-patient-gray px-6 py-3">
             <div class="flex items-center justify-between text-sm text-patient-dark-gray">
                 <div class="flex items-center space-x-4">
-                    <span><i class="fas fa-clock mr-1"></i>Next available: Today</span>
-                    <span><i class="fas fa-video mr-1"></i>Video consultation</span>
+                    <span><i class="fas fa-clock mr-1"></i><span data-translate="Next available:">Next available:</span> <span data-translate="Today">Today</span></span>
+                    <span><i class="fas fa-video mr-1"></i><span data-translate="Video consultation">Video consultation</span></span>
                 </div>
                 <div class="flex items-center space-x-1">
                     <i class="fas fa-shield-alt text-patient-green"></i>
-                    <span class="text-patient-green font-medium">Verified</span>
+                    <span class="text-patient-green font-medium" data-translate="Verified">Verified</span>
                 </div>
             </div>
         </div>
@@ -139,7 +139,7 @@
 {% if practitioners|length > 6 %}
 <div class="text-center mt-8">
     <button class="px-8 py-3 bg-white border-2 border-patient-blue text-patient-blue rounded-xl hover:bg-patient-blue hover:text-white transition-all duration-300 font-semibold">
-        <i class="fas fa-plus mr-2"></i>Load More Doctors
+        <i class="fas fa-plus mr-2"></i><span data-translate="Load More Doctors">Load More Doctors</span>
     </button>
 </div>
 {% endif %}
@@ -150,19 +150,18 @@
     <div class="w-24 h-24 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
         <i class="fas fa-user-md text-orange-500 text-4xl"></i>
     </div>
-    <h3 class="text-2xl font-semibold text-patient-dark-blue mb-4">No {{ specialty_name }} Available</h3>
+    <h3 class="text-2xl font-semibold text-patient-dark-blue mb-4"><span data-translate="No">No</span> {{ specialty_name }} <span data-translate="Available">Available</span></h3>
     <p class="text-patient-dark-gray mb-8 max-w-md mx-auto">
-        We don't have any {{ specialty_name }} specialists available at this time. 
-        Please try another specialty or contact support for assistance.
+        <span data-translate="We don't have any">We don't have any</span> {{ specialty_name }} <span data-translate="specialists available at this time. Please try another specialty or contact support for assistance.">specialists available at this time. Please try another specialty or contact support for assistance.</span>
     </p>
     <div class="flex flex-col sm:flex-row gap-4 justify-center">
         <a href="{% url 'patientdashboard:specialty_selection' %}" 
            class="inline-flex items-center px-6 py-3 bg-patient-blue text-white rounded-xl hover:bg-patient-dark-blue transition-colors font-semibold">
-            <i class="fas fa-arrow-left mr-2"></i>Browse Other Specialties
+            <i class="fas fa-arrow-left mr-2"></i><span data-translate="Browse Other Specialties">Browse Other Specialties</span>
         </a>
         <a href="#" 
            class="inline-flex items-center px-6 py-3 border-2 border-patient-blue text-patient-blue rounded-xl hover:bg-patient-blue hover:text-white transition-colors font-semibold">
-            <i class="fas fa-phone mr-2"></i>Contact Support
+            <i class="fas fa-phone mr-2"></i><span data-translate="Contact Support">Contact Support</span>
         </a>
     </div>
 </div>

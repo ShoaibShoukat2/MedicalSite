@@ -9,7 +9,7 @@
     <div class="flex items-center justify-between">
         <div>
             <h1 class="text-2xl md:text-3xl font-bold mb-2" data-translate="My Profile">My Profile</h1>
-            <p class="text-white/90">Manage your personal information and preferences</p>
+            <p class="text-white/90" data-translate="Manage your personal information and preferences">Manage your personal information and preferences</p>
         </div>
         <div class="hidden md:block">
             <i class="fas fa-user-circle text-6xl text-white/20"></i>
@@ -71,7 +71,7 @@
             <!-- Edit Button -->
             <div class="flex space-x-3">
                 <button type="button" id="editProfileBtn" class="px-6 py-3 bg-patient-blue text-white rounded-xl hover:bg-patient-dark-blue transition-colors font-semibold shadow-lg">
-                    <i class="fas fa-edit mr-2"></i>Edit Profile
+                    <i class="fas fa-edit mr-2"></i><span data-translate="Edit Profile">Edit Profile</span>
                 </button>
             </div>
         </div>
@@ -84,18 +84,18 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div class="space-y-6">
                     <div class="bg-patient-gray rounded-xl p-6">
-                        <h3 class="text-lg font-semibold text-patient-dark-blue mb-4">Personal Information</h3>
+                        <h3 class="text-lg font-semibold text-patient-dark-blue mb-4" data-translate="Personal Information">Personal Information</h3>
                         <div class="space-y-4">
                             <div>
-                                <label class="text-sm font-medium text-patient-dark-gray">Full Name</label>
+                                <label class="text-sm font-medium text-patient-dark-gray" data-translate="Full Name">Full Name</label>
                                 <p class="text-patient-dark-blue font-medium">{{ patient.first_name }} {{ patient.last_name }}</p>
                             </div>
                             <div>
-                                <label class="text-sm font-medium text-patient-dark-gray">Gender</label>
+                                <label class="text-sm font-medium text-patient-dark-gray" data-translate="Gender">Gender</label>
                                 <p class="text-patient-dark-blue font-medium">{{ patient.gender|default:"Not specified" }}</p>
                             </div>
                             <div>
-                                <label class="text-sm font-medium text-patient-dark-gray">Date of Birth</label>
+                                <label class="text-sm font-medium text-patient-dark-gray" data-translate="Date of Birth">Date of Birth</label>
                                 <p class="text-patient-dark-blue font-medium">{{ patient.date_of_birth|default:"Not specified" }}</p>
                             </div>
                         </div>
@@ -104,18 +104,18 @@
                 
                 <div class="space-y-6">
                     <div class="bg-patient-gray rounded-xl p-6">
-                        <h3 class="text-lg font-semibold text-patient-dark-blue mb-4">Contact Information</h3>
+                        <h3 class="text-lg font-semibold text-patient-dark-blue mb-4" data-translate="Contact Information">Contact Information</h3>
                         <div class="space-y-4">
                             <div>
-                                <label class="text-sm font-medium text-patient-dark-gray">Email Address</label>
+                                <label class="text-sm font-medium text-patient-dark-gray" data-translate="Email Address">Email Address</label>
                                 <p class="text-patient-dark-blue font-medium">{{ patient.email }}</p>
                             </div>
                             <div>
-                                <label class="text-sm font-medium text-patient-dark-gray">Mobile Phone</label>
+                                <label class="text-sm font-medium text-patient-dark-gray" data-translate="Mobile Phone">Mobile Phone</label>
                                 <p class="text-patient-dark-blue font-medium">{{ patient.mobile_phone|default:"Not specified" }}</p>
                             </div>
                             <div>
-                                <label class="text-sm font-medium text-patient-dark-gray">Greeting Preference</label>
+                                <label class="text-sm font-medium text-patient-dark-gray" data-translate="Greeting Preference">Greeting Preference</label>
                                 <p class="text-patient-dark-blue font-medium">{{ patient.greeting|default:"Not specified" }}</p>
                             </div>
                         </div>
@@ -134,9 +134,9 @@
                         <h3 class="text-lg font-semibold text-patient-dark-blue mb-4">Personal Information</h3>
                         <div class="space-y-4">
                             <div>
-                                <label class="block text-sm font-medium text-patient-dark-gray mb-2">Greeting</label>
+                                <label class="block text-sm font-medium text-patient-dark-gray mb-2" data-translate="Greeting">Greeting</label>
                                 <select name="greeting" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-patient-blue/50 focus:border-patient-blue">
-                                    <option value="">Select greeting</option>
+                                    <option value="" data-translate="Select greeting">Select greeting</option>
                                     <option value="Mr." {% if patient.greeting == "Mr." %}selected{% endif %}>Mr.</option>
                                     <option value="Mrs." {% if patient.greeting == "Mrs." %}selected{% endif %}>Mrs.</option>
                                     <option value="Ms." {% if patient.greeting == "Ms." %}selected{% endif %}>Ms.</option>
@@ -145,22 +145,22 @@
                             </div>
                             
                             <div>
-                                <label class="block text-sm font-medium text-patient-dark-gray mb-2">First Name</label>
+                                <label class="block text-sm font-medium text-patient-dark-gray mb-2" data-translate="First Name">First Name</label>
                                 <input type="text" name="first_name" value="{{ patient.first_name }}" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-patient-blue/50 focus:border-patient-blue">
                             </div>
                             
                             <div>
-                                <label class="block text-sm font-medium text-patient-dark-gray mb-2">Last Name</label>
+                                <label class="block text-sm font-medium text-patient-dark-gray mb-2" data-translate="Last Name">Last Name</label>
                                 <input type="text" name="last_name" value="{{ patient.last_name }}" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-patient-blue/50 focus:border-patient-blue">
                             </div>
                             
                             <div>
-                                <label class="block text-sm font-medium text-patient-dark-gray mb-2">Gender</label>
+                                <label class="block text-sm font-medium text-patient-dark-gray mb-2" data-translate="Gender">Gender</label>
                                 <select name="gender" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-patient-blue/50 focus:border-patient-blue">
-                                    <option value="">Select gender</option>
-                                    <option value="Male" {% if patient.gender == "Male" %}selected{% endif %}>Male</option>
-                                    <option value="Female" {% if patient.gender == "Female" %}selected{% endif %}>Female</option>
-                                    <option value="Other" {% if patient.gender == "Other" %}selected{% endif %}>Other</option>
+                                    <option value="" data-translate="Select gender">Select gender</option>
+                                    <option value="Male" {% if patient.gender == "Male" %}selected{% endif %} data-translate="Male">Male</option>
+                                    <option value="Female" {% if patient.gender == "Female" %}selected{% endif %} data-translate="Female">Female</option>
+                                    <option value="Other" {% if patient.gender == "Other" %}selected{% endif %} data-translate="Other">Other</option>
                                 </select>
                             </div>
                         </div>
@@ -172,22 +172,22 @@
                         <h3 class="text-lg font-semibold text-patient-dark-blue mb-4">Contact Information</h3>
                         <div class="space-y-4">
                             <div>
-                                <label class="block text-sm font-medium text-patient-dark-gray mb-2">Email Address</label>
+                                <label class="block text-sm font-medium text-patient-dark-gray mb-2" data-translate="Email Address">Email Address</label>
                                 <input type="email" name="email" value="{{ patient.email }}" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-patient-blue/50 focus:border-patient-blue">
                             </div>
                             
                             <div>
-                                <label class="block text-sm font-medium text-patient-dark-gray mb-2">Mobile Phone</label>
+                                <label class="block text-sm font-medium text-patient-dark-gray mb-2" data-translate="Mobile Phone">Mobile Phone</label>
                                 <input type="tel" name="mobile_phone" value="{{ patient.mobile_phone|default:'' }}" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-patient-blue/50 focus:border-patient-blue">
                             </div>
                             
                             <div>
-                                <label class="block text-sm font-medium text-patient-dark-gray mb-2">Date of Birth</label>
+                                <label class="block text-sm font-medium text-patient-dark-gray mb-2" data-translate="Date of Birth">Date of Birth</label>
                                 <input type="date" name="date_of_birth" value="{{ patient.date_of_birth|date:'Y-m-d' }}" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-patient-blue/50 focus:border-patient-blue">
                             </div>
                             
                             <div>
-                                <label class="block text-sm font-medium text-patient-dark-gray mb-2">Profile Photo</label>
+                                <label class="block text-sm font-medium text-patient-dark-gray mb-2" data-translate="Profile Photo">Profile Photo</label>
                                 <input type="file" name="profile_photo" accept="image/*" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-patient-blue/50 focus:border-patient-blue">
                             </div>
                         </div>
@@ -198,10 +198,10 @@
             <!-- Form Actions -->
             <div class="flex justify-end space-x-4 mt-8 pt-6 border-t border-gray-200">
                 <button type="button" id="cancelEdit" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors font-semibold">
-                    Cancel
+                    <span data-translate="Cancel">Cancel</span>
                 </button>
                 <button type="submit" name="update_profile" class="px-8 py-3 bg-patient-blue text-white rounded-xl hover:bg-patient-dark-blue transition-colors font-semibold shadow-lg">
-                    <i class="fas fa-save mr-2"></i>Save Changes
+                    <i class="fas fa-save mr-2"></i><span data-translate="Save Changes">Save Changes</span>
                 </button>
             </div>
         </form>

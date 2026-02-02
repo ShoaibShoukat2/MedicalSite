@@ -64,3 +64,942 @@ msgstr "Portail Médical"
 
 msgid "Healthcare Dashboard"
 msgstr "Tableau de Bord Médical"
+
+msgid "Patient Portal"
+msgstr "Portail Patient"
+
+# Navigation Menu
+msgid "Dashboard"
+msgstr "Tableau de Bord"
+
+msgid "Book Appointment"
+msgstr "Prendre Rendez-vous"
+
+msgid "Bills & Payments"
+msgstr "Factures et Paiements"
+
+msgid "Exercises"
+msgstr "Exercices"
+
+msgid "Symptoms"
+msgstr "Symptômes"
+
+msgid "Reviews"
+msgstr "Avis"
+
+msgid "Message Doctors"
+msgstr "Contacter les Médecins"
+
+# Profile Page
+msgid "My Profile"
+msgstr "Mon Profil"
+
+msgid "Manage your personal information and preferences"
+msgstr "Gérez vos informations personnelles et préférences"
+
+msgid "Edit Profile"
+msgstr "Modifier le Profil"
+
+msgid "Personal Information"
+msgstr "Informations Personnelles"
+
+msgid "Contact Information"
+msgstr "Informations de Contact"
+
+msgid "Full Name"
+msgstr "Nom Complet"
+
+msgid "Gender"
+msgstr "Sexe"
+
+msgid "Date of Birth"
+msgstr "Date de Naissance"
+
+msgid "Email Address"
+msgstr "Adresse Email"
+
+msgid "Mobile Phone"
+msgstr "Téléphone Mobile"
+
+msgid "Greeting Preference"
+msgstr "Préférence de Salutation"
+
+msgid "Not specified"
+msgstr "Non spécifié"
+
+msgid "Select greeting"
+msgstr "Sélectionner la salutation"
+
+msgid "Select gender"
+msgstr "Sélectionner le sexe"
+
+msgid "Male"
+msgstr "Homme"
+
+msgid "Female"
+msgstr "Femme"
+
+msgid "Profile Photo"
+msgstr "Photo de Profil"
+
+msgid "Cancel"
+msgstr "Annuler"
+
+msgid "Save Changes"
+msgstr "Enregistrer les Modifications"
+
+msgid "Patient"
+msgstr "Patient"
+
+# Appointments Page
+msgid "My Appointments"
+msgstr "Mes Rendez-vous"
+
+msgid "Manage your healthcare appointments and consultations"
+msgstr "Gérez vos rendez-vous médicaux et consultations"
+
+msgid "Book New Appointment"
+msgstr "Prendre un Nouveau Rendez-vous"
+
+msgid "Cancellation Policy"
+msgstr "Politique d'Annulation"
+
+msgid "Total Appointments"
+msgstr "Total des Rendez-vous"
+
+msgid "Upcoming"
+msgstr "À Venir"
+
+msgid "Completed"
+msgstr "Terminés"
+
+msgid "Cancelled"
+msgstr "Annulés"
+
+# Search
+msgid "Search"
+msgstr "Rechercher"
+
+msgid "Search doctors, specialties..."
+msgstr "Rechercher des médecins, spécialités..."
+
+# Common Terms
+msgid "Loading..."
+msgstr "Chargement..."
+
+msgid "Save"
+msgstr "Enregistrer"
+
+msgid "Delete"
+msgstr "Supprimer"
+
+msgid "Edit"
+msgstr "Modifier"
+
+msgid "View"
+msgstr "Voir"
+
+msgid "Close"
+msgstr "Fermer"
+
+msgid "Submit"
+msgstr "Soumettre"
+
+msgid "Back"
+msgstr "Retour"
+
+msgid "Next"
+msgstr "Suivant"
+
+msgid "Previous"
+msgstr "Précédent"
+
+msgid "Yes"
+msgstr "Oui"
+
+msgid "No"
+msgstr "Non"
+
+msgid "Confirm"
+msgstr "Confirmer"
+
+msgid "Success"
+msgstr "Succès"
+
+msgid "Error"
+msgstr "Erreur"
+
+msgid "Warning"
+msgstr "Avertissement"
+
+msgid "Information"
+msgstr "Information"
+
+# Time and Date
+msgid "Today"
+msgstr "Aujourd'hui"
+
+msgid "Tomorrow"
+msgstr "Demain"
+
+msgid "Yesterday"
+msgstr "Hier"
+
+msgid "This Week"
+msgstr "Cette Semaine"
+
+msgid "Next Week"
+msgstr "Semaine Prochaine"
+
+msgid "This Month"
+msgstr "Ce Mois"
+
+msgid "Next Month"
+msgstr "Mois Prochain"
+
+# Status
+msgid "Active"
+msgstr "Actif"
+
+msgid "Inactive"
+msgstr "Inactif"
+
+msgid "Pending"
+msgstr "En Attente"
+
+msgid "Approved"
+msgstr "Approuvé"
+
+msgid "Rejected"
+msgstr "Rejeté"
+
+msgid "Scheduled"
+msgstr "Programmé"
+
+msgid "Confirmed"
+msgstr "Confirmé"
+
+# Medical Terms
+msgid "Appointment"
+msgstr "Rendez-vous"
+
+msgid "Consultation"
+msgstr "Consultation"
+
+msgid "Treatment"
+msgstr "Traitement"
+
+msgid "Prescription"
+msgstr "Ordonnance"
+
+msgid "Diagnosis"
+msgstr "Diagnostic"
+
+msgid "Medical History"
+msgstr "Antécédents Médicaux"
+
+msgid "Symptoms"
+msgstr "Symptômes"
+
+msgid "Doctor"
+msgstr "Médecin"
+
+msgid "Practitioner"
+msgstr "Praticien"
+
+msgid "Specialist"
+msgstr "Spécialiste"
+
+msgid "Clinic"
+msgstr "Clinique"
+
+msgid "Hospital"
+msgstr "Hôpital"
+
+# Payment Terms
+msgid "Payment"
+msgstr "Paiement"
+
+msgid "Bill"
+msgstr "Facture"
+
+msgid "Invoice"
+msgstr "Facture"
+
+msgid "Amount"
+msgstr "Montant"
+
+msgid "Total"
+msgstr "Total"
+
+msgid "Paid"
+msgstr "Payé"
+
+msgid "Unpaid"
+msgstr "Impayé"
+
+msgid "Due Date"
+msgstr "Date d'Échéance"
+
+msgid "Payment Method"
+msgstr "Méthode de Paiement"
+
+msgid "Credit Card"
+msgstr "Carte de Crédit"
+
+msgid "Cash"
+msgstr "Espèces"
+
+msgid "Bank Transfer"
+msgstr "Virement Bancaire"
+
+# Exercise Terms
+msgid "Exercise"
+msgstr "Exercice"
+
+msgid "Workout"
+msgstr "Entraînement"
+
+msgid "Routine"
+msgstr "Routine"
+
+msgid "Duration"
+msgstr "Durée"
+
+msgid "Repetitions"
+msgstr "Répétitions"
+
+msgid "Sets"
+msgstr "Séries"
+
+msgid "Instructions"
+msgstr "Instructions"
+
+msgid "Start Exercise"
+msgstr "Commencer l'Exercice"
+
+msgid "Complete"
+msgstr "Terminer"
+
+# Notification Terms
+msgid "Notifications"
+msgstr "Notifications"
+
+msgid "New Notification"
+msgstr "Nouvelle Notification"
+
+msgid "Mark as Read"
+msgstr "Marquer comme Lu"
+
+msgid "Mark All as Read"
+msgstr "Tout Marquer comme Lu"
+
+msgid "No notifications"
+msgstr "Aucune notification"
+
+# Chat Terms
+msgid "Chat"
+msgstr "Discussion"
+
+msgid "Message"
+msgstr "Message"
+
+msgid "Send Message"
+msgstr "Envoyer un Message"
+
+msgid "Type your message..."
+msgstr "Tapez votre message..."
+
+msgid "Online"
+msgstr "En Ligne"
+
+msgid "Offline"
+msgstr "Hors Ligne"
+
+msgid "Last seen"
+msgstr "Vu pour la dernière fois"
+
+# Form Labels
+msgid "First Name"
+msgstr "Prénom"
+
+msgid "Last Name"
+msgstr "Nom de Famille"
+
+msgid "Phone Number"
+msgstr "Numéro de Téléphone"
+
+msgid "Address"
+msgstr "Adresse"
+
+msgid "City"
+msgstr "Ville"
+
+msgid "Country"
+msgstr "Pays"
+
+msgid "Postal Code"
+msgstr "Code Postal"
+
+msgid "Emergency Contact"
+msgstr "Contact d'Urgence"
+
+# Buttons and Actions
+msgid "Book Now"
+msgstr "Réserver Maintenant"
+
+msgid "Cancel Appointment"
+msgstr "Annuler le Rendez-vous"
+
+msgid "Reschedule"
+msgstr "Reprogrammer"
+
+msgid "Download"
+msgstr "Télécharger"
+
+msgid "Upload"
+msgstr "Téléverser"
+
+msgid "Print"
+msgstr "Imprimer"
+
+msgid "Share"
+msgstr "Partager"
+
+msgid "Export"
+msgstr "Exporter"
+
+msgid "Import"
+msgstr "Importer"
+
+# Error Messages
+msgid "Please fill in all required fields"
+msgstr "Veuillez remplir tous les champs obligatoires"
+
+msgid "Invalid email address"
+msgstr "Adresse email invalide"
+
+msgid "Password too short"
+msgstr "Mot de passe trop court"
+
+msgid "Passwords do not match"
+msgstr "Les mots de passe ne correspondent pas"
+
+msgid "Something went wrong"
+msgstr "Quelque chose s'est mal passé"
+
+msgid "Please try again"
+msgstr "Veuillez réessayer"
+
+# Success Messages
+msgid "Profile updated successfully"
+msgstr "Profil mis à jour avec succès"
+
+msgid "Appointment booked successfully"
+msgstr "Rendez-vous réservé avec succès"
+
+msgid "Payment completed successfully"
+msgstr "Paiement effectué avec succès"
+
+msgid "Message sent successfully"
+msgstr "Message envoyé avec succès"
+
+# Time Slots
+msgid "Morning"
+msgstr "Matin"
+
+msgid "Afternoon"
+msgstr "Après-midi"
+
+msgid "Evening"
+msgstr "Soir"
+
+msgid "Available"
+msgstr "Disponible"
+
+msgid "Unavailable"
+msgstr "Indisponible"
+
+msgid "Booked"
+msgstr "Réservé"
+
+# Days of Week
+msgid "Monday"
+msgstr "Lundi"
+
+msgid "Tuesday"
+msgstr "Mardi"
+
+msgid "Wednesday"
+msgstr "Mercredi"
+
+msgid "Thursday"
+msgstr "Jeudi"
+
+msgid "Friday"
+msgstr "Vendredi"
+
+msgid "Saturday"
+msgstr "Samedi"
+
+msgid "Sunday"
+msgstr "Dimanche"
+
+# Months
+msgid "January"
+msgstr "Janvier"
+
+msgid "February"
+msgstr "Février"
+
+msgid "March"
+msgstr "Mars"
+
+msgid "April"
+msgstr "Avril"
+
+msgid "May"
+msgstr "Mai"
+
+msgid "June"
+msgstr "Juin"
+
+msgid "July"
+msgstr "Juillet"
+
+msgid "August"
+msgstr "Août"
+
+msgid "September"
+msgstr "Septembre"
+
+msgid "October"
+msgstr "Octobre"
+
+msgid "November"
+msgstr "Novembre"
+
+msgid "December"
+msgstr "Décembre"
+
+# Additional Patient Dashboard Translations
+msgid "Cancellation Policy"
+msgstr "Politique d'Annulation"
+
+msgid "Appointments must be cancelled at least"
+msgstr "Les rendez-vous doivent être annulés au moins"
+
+msgid "This policy helps protect our practitioners' time and ensures fair scheduling for all patients."
+msgstr "Cette politique aide à protéger le temps de nos praticiens et assure une planification équitable pour tous les patients."
+
+msgid "Need help? Contact our support team for assistance with urgent changes."
+msgstr "Besoin d'aide ? Contactez notre équipe de support pour une assistance avec les changements urgents."
+
+msgid "Welcome back!"
+msgstr "Bon retour !"
+
+msgid "Choose Language"
+msgstr "Choisir la Langue"
+
+msgid "Mark all read"
+msgstr "Tout marquer comme lu"
+
+msgid "You're all caught up!"
+msgstr "Vous êtes à jour !"
+
+msgid "View All Notifications"
+msgstr "Voir Toutes les Notifications"
+
+msgid "Manage your personal information and preferences"
+msgstr "Gérez vos informations personnelles et préférences"
+
+msgid "Greeting"
+msgstr "Salutation"
+
+msgid "Select greeting"
+msgstr "Sélectionner la salutation"
+
+msgid "Select gender"
+msgstr "Sélectionner le sexe"
+
+msgid "Chat"
+msgstr "Discussion"
+
+msgid "Join Call"
+msgstr "Rejoindre l'Appel"
+
+msgid "Reschedule"
+msgstr "Reprogrammer"
+
+msgid "Cancel Appointment"
+msgstr "Annuler le Rendez-vous"
+
+msgid "Add Symptoms"
+msgstr "Ajouter des Symptômes"
+
+msgid "Pay Now"
+msgstr "Payer Maintenant"
+
+msgid "View Details"
+msgstr "Voir les Détails"
+
+msgid "Download Receipt"
+msgstr "Télécharger le Reçu"
+
+msgid "No appointments found"
+msgstr "Aucun rendez-vous trouvé"
+
+msgid "You don't have any appointments yet"
+msgstr "Vous n'avez encore aucun rendez-vous"
+
+msgid "Book your first appointment"
+msgstr "Réservez votre premier rendez-vous"
+
+msgid "General Practice"
+msgstr "Médecine Générale"
+
+msgid "Confirmed"
+msgstr "Confirmé"
+
+msgid "Pending"
+msgstr "En Attente"
+
+msgid "Accepted"
+msgstr "Accepté"
+
+msgid "Rejected"
+msgstr "Rejeté"
+
+msgid "Completed"
+msgstr "Terminé"
+
+msgid "Cancelled"
+msgstr "Annulé"
+
+msgid "Loading..."
+msgstr "Chargement..."
+
+msgid "Please wait"
+msgstr "Veuillez patienter"
+
+msgid "Success"
+msgstr "Succès"
+
+msgid "Error"
+msgstr "Erreur"
+
+msgid "Warning"
+msgstr "Avertissement"
+
+msgid "Information"
+msgstr "Information"
+
+msgid "Close"
+msgstr "Fermer"
+
+msgid "Continue"
+msgstr "Continuer"
+
+msgid "Back"
+msgstr "Retour"
+
+msgid "Next"
+msgstr "Suivant"
+
+msgid "Previous"
+msgstr "Précédent"
+
+msgid "Finish"
+msgstr "Terminer"
+
+msgid "Submit"
+msgstr "Soumettre"
+
+msgid "Reset"
+msgstr "Réinitialiser"
+
+msgid "Clear"
+msgstr "Effacer"
+
+msgid "Search"
+msgstr "Rechercher"
+
+msgid "Filter"
+msgstr "Filtrer"
+
+msgid "Sort"
+msgstr "Trier"
+
+msgid "Export"
+msgstr "Exporter"
+
+msgid "Import"
+msgstr "Importer"
+
+msgid "Print"
+msgstr "Imprimer"
+
+msgid "Share"
+msgstr "Partager"
+
+msgid "Copy"
+msgstr "Copier"
+
+msgid "Paste"
+msgstr "Coller"
+
+msgid "Cut"
+msgstr "Couper"
+
+msgid "Undo"
+msgstr "Annuler"
+
+msgid "Redo"
+msgstr "Refaire"
+
+msgid "Select All"
+msgstr "Tout Sélectionner"
+
+msgid "Deselect All"
+msgstr "Tout Désélectionner"
+
+msgid "Refresh"
+msgstr "Actualiser"
+
+msgid "Reload"
+msgstr "Recharger"
+
+msgid "Update"
+msgstr "Mettre à Jour"
+
+msgid "Upgrade"
+msgstr "Mettre à Niveau"
+
+msgid "Download"
+msgstr "Télécharger"
+
+msgid "Upload"
+msgstr "Téléverser"
+
+msgid "Attach"
+msgstr "Joindre"
+
+msgid "Detach"
+msgstr "Détacher"
+
+msgid "Connect"
+msgstr "Connecter"
+
+msgid "Disconnect"
+msgstr "Déconnecter"
+
+msgid "Login"
+msgstr "Se Connecter"
+
+msgid "Logout"
+msgstr "Se Déconnecter"
+
+msgid "Register"
+msgstr "S'Inscrire"
+
+msgid "Sign Up"
+msgstr "S'Inscrire"
+
+msgid "Sign In"
+msgstr "Se Connecter"
+
+msgid "Sign Out"
+msgstr "Se Déconnecter"
+
+msgid "Forgot Password"
+msgstr "Mot de Passe Oublié"
+
+msgid "Reset Password"
+msgstr "Réinitialiser le Mot de Passe"
+
+msgid "Change Password"
+msgstr "Changer le Mot de Passe"
+
+msgid "Profile Settings"
+msgstr "Paramètres du Profil"
+
+msgid "Account Settings"
+msgstr "Paramètres du Compte"
+
+msgid "Privacy Settings"
+msgstr "Paramètres de Confidentialité"
+
+msgid "Notification Settings"
+msgstr "Paramètres de Notification"
+
+msgid "Language Settings"
+msgstr "Paramètres de Langue"
+
+msgid "Theme Settings"
+msgstr "Paramètres de Thème"
+
+msgid "Help"
+msgstr "Aide"
+
+msgid "Support"
+msgstr "Support"
+
+msgid "Contact Us"
+msgstr "Nous Contacter"
+
+msgid "About"
+msgstr "À Propos"
+
+msgid "Terms of Service"
+msgstr "Conditions d'Utilisation"
+
+msgid "Privacy Policy"
+msgstr "Politique de Confidentialité"
+
+msgid "Cookie Policy"
+msgstr "Politique des Cookies"
+# Specialty Selection Page Translations
+msgid "Select a specialty to find available doctors and schedule your consultation"
+msgstr "Sélectionnez une spécialité pour trouver des médecins disponibles et planifier votre consultation"
+
+msgid "Specialties"
+msgstr "Spécialités"
+
+msgid "Doctors"
+msgstr "Médecins"
+
+msgid "View Doctors"
+msgstr "Voir les Médecins"
+
+msgid "Need Help Choosing?"
+msgstr "Besoin d'Aide pour Choisir ?"
+
+msgid "Call Support"
+msgstr "Appeler le Support"
+
+msgid "Get help choosing the right specialist"
+msgstr "Obtenez de l'aide pour choisir le bon spécialiste"
+
+msgid "Live Chat"
+msgstr "Chat en Direct"
+
+msgid "Chat with our medical advisors"
+msgstr "Discutez avec nos conseillers médicaux"
+
+msgid "FAQ"
+msgstr "FAQ"
+
+msgid "Find answers to common questions"
+msgstr "Trouvez des réponses aux questions courantes"
+
+msgid "No Specialties Available"
+msgstr "Aucune Spécialité Disponible"
+
+msgid "Please contact support for assistance with booking appointments."
+msgstr "Veuillez contacter le support pour obtenir de l'aide pour réserver des rendez-vous."
+
+# Specialty Descriptions
+msgid "Helping you regain daily living skills and independence"
+msgstr "Vous aider à retrouver les compétences de la vie quotidienne et l'indépendance"
+
+msgid "Physical rehabilitation and movement therapy"
+msgstr "Rééducation physique et thérapie du mouvement"
+
+msgid "Brain function assessment and cognitive therapy"
+msgstr "Évaluation des fonctions cérébrales et thérapie cognitive"
+
+msgid "Communication and swallowing disorder treatment"
+msgstr "Traitement des troubles de la communication et de la déglutition"
+
+msgid "Mental health counseling and therapy"
+msgstr "Conseil et thérapie en santé mentale"
+
+msgid "Spine and musculoskeletal system care"
+msgstr "Soins de la colonne vertébrale et du système musculo-squelettique"
+
+msgid "Diet planning and nutritional guidance"
+msgstr "Planification alimentaire et conseils nutritionnels"
+
+msgid "Primary healthcare and general medical care"
+msgstr "Soins de santé primaires et soins médicaux généraux"
+
+msgid "Professional healthcare consultation"
+msgstr "Consultation médicale professionnelle"
+# Practitioners List Page Translations
+msgid "Choose from"
+msgstr "Choisissez parmi"
+
+msgid "available specialists"
+msgstr "spécialistes disponibles"
+
+msgid "Available"
+msgstr "Disponible"
+
+msgid "years exp."
+msgstr "ans d'exp."
+
+msgid "reviews"
+msgstr "avis"
+
+msgid "consultation"
+msgstr "consultation"
+
+msgid "View Profile"
+msgstr "Voir le Profil"
+
+msgid "Next available:"
+msgstr "Prochaine disponibilité :"
+
+msgid "Today"
+msgstr "Aujourd'hui"
+
+msgid "Video consultation"
+msgstr "Consultation vidéo"
+
+msgid "Verified"
+msgstr "Vérifié"
+
+msgid "Load More Doctors"
+msgstr "Charger Plus de Médecins"
+
+msgid "No"
+msgstr "Aucun"
+
+msgid "We don't have any"
+msgstr "Nous n'avons aucun"
+
+msgid "specialists available at this time. Please try another specialty or contact support for assistance."
+msgstr "spécialistes disponibles en ce moment. Veuillez essayer une autre spécialité ou contacter le support pour obtenir de l'aide."
+
+msgid "Browse Other Specialties"
+msgstr "Parcourir d'Autres Spécialités"
+
+msgid "Contact Support"
+msgstr "Contacter le Support"
+# Bills & Payments Page Translations
+msgid "Manage your medical bills and payment history"
+msgstr "Gérez vos factures médicales et votre historique de paiement"
+
+msgid "Total Bills"
+msgstr "Total des Factures"
+
+msgid "Total Amount"
+msgstr "Montant Total"
+
+msgid "Paid Bills"
+msgstr "Factures Payées"
+
+msgid "Average Bill"
+msgstr "Facture Moyenne"
+
+msgid "Billing History"
+msgstr "Historique de Facturation"
+
+msgid "View and manage your medical bills"
+msgstr "Consultez et gérez vos factures médicales"
+
+msgid "Filter"
+msgstr "Filtrer"
+
+msgid "Export"
+msgstr "Exporter"

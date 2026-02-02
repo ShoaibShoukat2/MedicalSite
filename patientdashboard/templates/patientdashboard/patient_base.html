@@ -840,8 +840,8 @@
                 <div class="flex items-center space-x-3">
                     <img src="{% static 'MedicalSiteLogo.svg' %}" alt="Medical Platform" class="h-8 w-8 sm:h-10 sm:w-10">
                     <div>
-                        <h2 class="text-white font-bold text-base sm:text-lg">Patient Portal</h2>
-                        <p class="text-white/70 text-xs sm:text-sm">Healthcare Dashboard</p>
+                        <h2 class="text-white font-bold text-base sm:text-lg" data-translate="Patient Portal">Patient Portal</h2>
+                        <p class="text-white/70 text-xs sm:text-sm" data-translate="Healthcare Dashboard">Healthcare Dashboard</p>
                     </div>
                 </div>
             </div>
@@ -926,7 +926,7 @@
                             <!-- Language Dropdown -->
                             <div id="languageDropdown" class="absolute right-0 top-full mt-3 w-56 bg-white rounded-2xl shadow-2xl border border-gray-100 py-3 z-[99999] hidden backdrop-blur-lg" style="z-index: 99999 !important; position: absolute !important; right: 0 !important; top: calc(100% + 0.75rem) !important;">
                                 <div class="px-4 py-2 text-xs font-bold text-patient-blue uppercase tracking-wider border-b border-gray-100 mb-2">
-                                    <i class="fas fa-language mr-2"></i>Choose Language
+                                    <i class="fas fa-language mr-2"></i><span data-translate="Choose Language">Choose Language</span>
                                 </div>
                                 
                                 <button onclick="changeLanguage('en', 'English')" class="language-option w-full text-left px-4 py-3 hover:bg-gradient-to-r hover:from-patient-light-blue hover:to-blue-50 text-gray-700 hover:text-patient-dark-blue transition-all duration-200 flex items-center space-x-3 group">
@@ -1011,9 +1011,9 @@
                                 <!-- Header -->
                                 <div class="p-4 border-b border-gray-200 bg-gradient-to-r from-patient-blue to-patient-dark-blue text-white rounded-t-xl">
                                     <div class="flex items-center justify-between">
-                                        <h3 class="font-semibold text-lg">Notifications</h3>
+                                        <h3 class="font-semibold text-lg" data-translate="Notifications">Notifications</h3>
                                         <button onclick="markAllAsRead()" class="text-white/80 hover:text-white text-sm transition-colors">
-                                            Mark all read
+                                            <span data-translate="Mark all read">Mark all read</span>
                                         </button>
                                     </div>
                                 </div>
@@ -1049,8 +1049,8 @@
                                             <div class="w-16 h-16 bg-patient-light-blue rounded-full flex items-center justify-center mx-auto mb-4">
                                                 <i class="fas fa-bell-slash text-patient-blue text-2xl"></i>
                                             </div>
-                                            <h3 class="font-medium text-patient-dark-blue mb-2">No notifications</h3>
-                                            <p class="text-patient-dark-gray text-sm">You're all caught up!</p>
+                                            <h3 class="font-medium text-patient-dark-blue mb-2" data-translate="No notifications">No notifications</h3>
+                                            <p class="text-patient-dark-gray text-sm" data-translate="You're all caught up!">You're all caught up!</p>
                                         </div>
                                     {% endif %}
                                 </div>
@@ -1058,7 +1058,7 @@
                                 <!-- Footer -->
                                 <div class="p-4 border-t border-gray-200 bg-patient-gray rounded-b-xl">
                                     <button onclick="viewAllNotifications()" class="w-full text-center text-patient-blue hover:text-patient-dark-blue font-medium text-sm transition-colors">
-                                        View All Notifications
+                                        <span data-translate="View All Notifications">View All Notifications</span>
                                     </button>
                                 </div>
                             </div>
@@ -1073,13 +1073,13 @@
                                 {% endif %}
                             </div>
                             <div class="hidden lg:block">
-                                <p class="text-sm font-medium text-patient-dark-blue">Welcome back!</p>
-                                <p class="text-xs text-patient-dark-gray">Patient Dashboard</p>
+                                <p class="text-sm font-medium text-patient-dark-blue" data-translate="Welcome back!">Welcome back!</p>
+                                <p class="text-xs text-patient-dark-gray" data-translate="Patient Dashboard">Patient Dashboard</p>
                             </div>
                         </div>
                         
-                        <a href="{% url 'frontend:logout' %}" class="px-2 sm:px-4 py-2 bg-patient-red text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium mobile-btn" data-translate="Logout">
-                            <i class="fas fa-sign-out-alt sm:mr-2"></i><span class="hidden sm:inline">Logout</span>
+                        <a href="{% url 'frontend:logout' %}" class="px-2 sm:px-4 py-2 bg-patient-red text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium mobile-btn">
+                            <i class="fas fa-sign-out-alt sm:mr-2"></i><span class="hidden sm:inline" data-translate="Logout">Logout</span>
                         </a>
                     </div>
                 </div>
@@ -1714,8 +1714,118 @@ const dashboardTranslations = {
         'Manage your healthcare appointments and consultations': 'Gérez vos rendez-vous médicaux et consultations',
         'Chat': 'Chat',
         'Join Call': 'Rejoindre Appel',
-        'Cancel': 'Annuler',
-        'Add Symptoms': 'Ajouter Symptômes'
+        'Add Symptoms': 'Ajouter Symptômes',
+        'Patient Portal': 'Portail Patient',
+        'Healthcare Dashboard': 'Tableau de Bord Médical',
+        'Welcome back!': 'Bon retour !',
+        'Patient Dashboard': 'Tableau de Bord Patient',
+        'Choose Language': 'Choisir la Langue',
+        'Notifications': 'Notifications',
+        'Mark all read': 'Tout marquer comme lu',
+        'No notifications': 'Aucune notification',
+        'You\'re all caught up!': 'Vous êtes à jour !',
+        'View All Notifications': 'Voir Toutes les Notifications',
+        'My Profile': 'Mon Profil',
+        'Manage your personal information and preferences': 'Gérez vos informations personnelles et préférences',
+        'Edit Profile': 'Modifier le Profil',
+        'Personal Information': 'Informations Personnelles',
+        'Contact Information': 'Informations de Contact',
+        'Full Name': 'Nom Complet',
+        'Gender': 'Sexe',
+        'Date of Birth': 'Date de Naissance',
+        'Email Address': 'Adresse Email',
+        'Mobile Phone': 'Téléphone Mobile',
+        'Greeting Preference': 'Préférence de Salutation',
+        'Not specified': 'Non spécifié',
+        'Greeting': 'Salutation',
+        'Select greeting': 'Sélectionner la salutation',
+        'First Name': 'Prénom',
+        'Last Name': 'Nom de Famille',
+        'Select gender': 'Sélectionner le sexe',
+        'Male': 'Homme',
+        'Female': 'Femme',
+        'Other': 'Autre',
+        'Profile Photo': 'Photo de Profil',
+        'Save Changes': 'Enregistrer les Modifications',
+        'Cancellation Policy': 'Politique d\'Annulation',
+        'Appointments must be cancelled at least': 'Les rendez-vous doivent être annulés au moins',
+        'This policy helps protect our practitioners\' time and ensures fair scheduling for all patients.': 'Cette politique aide à protéger le temps de nos praticiens et assure une planification équitable pour tous les patients.',
+        'Need help? Contact our support team for assistance with urgent changes.': 'Besoin d\'aide ? Contactez notre équipe de support pour une assistance avec les changements urgents.',
+        'Chat': 'Discussion',
+        'Join Call': 'Rejoindre l\'Appel',
+        'Reschedule': 'Reprogrammer',
+        'Cancel Appointment': 'Annuler le Rendez-vous',
+        'View Details': 'Voir les Détails',
+        'Download Receipt': 'Télécharger le Reçu',
+        'No appointments found': 'Aucun rendez-vous trouvé',
+        'You don\'t have any appointments yet': 'Vous n\'avez encore aucun rendez-vous',
+        'Book your first appointment': 'Réservez votre premier rendez-vous',
+        'General Practice': 'Médecine Générale',
+        'Confirmed': 'Confirmé',
+        'Pending': 'En Attente',
+        'Accepted': 'Accepté',
+        'Rejected': 'Rejeté',
+        'Loading...': 'Chargement...',
+        'Please wait': 'Veuillez patienter',
+        'Success': 'Succès',
+        'Error': 'Erreur',
+        'Warning': 'Avertissement',
+        'Information': 'Information',
+        'Close': 'Fermer',
+        'Continue': 'Continuer',
+        'Back': 'Retour',
+        'Next': 'Suivant',
+        'Previous': 'Précédent',
+        'Finish': 'Terminer',
+        'Submit': 'Soumettre',
+        'Reset': 'Réinitialiser',
+        'Clear': 'Effacer',
+        'Select a specialty to find available doctors and schedule your consultation': 'Sélectionnez une spécialité pour trouver des médecins disponibles et planifier votre consultation',
+        'Specialties': 'Spécialités',
+        'Doctors': 'Médecins',
+        'View Doctors': 'Voir les Médecins',
+        'Need Help Choosing?': 'Besoin d\'Aide pour Choisir ?',
+        'Call Support': 'Appeler le Support',
+        'Get help choosing the right specialist': 'Obtenez de l\'aide pour choisir le bon spécialiste',
+        'Live Chat': 'Chat en Direct',
+        'Chat with our medical advisors': 'Discutez avec nos conseillers médicaux',
+        'Find answers to common questions': 'Trouvez des réponses aux questions courantes',
+        'No Specialties Available': 'Aucune Spécialité Disponible',
+        'Please contact support for assistance with booking appointments.': 'Veuillez contacter le support pour obtenir de l\'aide pour réserver des rendez-vous.',
+        'Helping you regain daily living skills and independence': 'Vous aider à retrouver les compétences de la vie quotidienne et l\'indépendance',
+        'Physical rehabilitation and movement therapy': 'Rééducation physique et thérapie du mouvement',
+        'Brain function assessment and cognitive therapy': 'Évaluation des fonctions cérébrales et thérapie cognitive',
+        'Communication and swallowing disorder treatment': 'Traitement des troubles de la communication et de la déglutition',
+        'Mental health counseling and therapy': 'Conseil et thérapie en santé mentale',
+        'Spine and musculoskeletal system care': 'Soins de la colonne vertébrale et du système musculo-squelettique',
+        'Diet planning and nutritional guidance': 'Planification alimentaire et conseils nutritionnels',
+        'Primary healthcare and general medical care': 'Soins de santé primaires et soins médicaux généraux',
+        'Professional healthcare consultation': 'Consultation médicale professionnelle',
+        'Choose from': 'Choisissez parmi',
+        'available specialists': 'spécialistes disponibles',
+        'Available': 'Disponible',
+        'years exp.': 'ans d\'exp.',
+        'reviews': 'avis',
+        'consultation': 'consultation',
+        'View Profile': 'Voir le Profil',
+        'Next available:': 'Prochaine disponibilité :',
+        'Today': 'Aujourd\'hui',
+        'Video consultation': 'Consultation vidéo',
+        'Verified': 'Vérifié',
+        'Load More Doctors': 'Charger Plus de Médecins',
+        'No': 'Aucun',
+        'We don\'t have any': 'Nous n\'avons aucun',
+        'specialists available at this time. Please try another specialty or contact support for assistance.': 'spécialistes disponibles en ce moment. Veuillez essayer une autre spécialité ou contacter le support pour obtenir de l\'aide.',
+        'Browse Other Specialties': 'Parcourir d\'Autres Spécialités',
+        'Contact Support': 'Contacter le Support',
+        'Manage your medical bills and payment history': 'Gérez vos factures médicales et votre historique de paiement',
+        'Total Bills': 'Total des Factures',
+        'Total Amount': 'Montant Total',
+        'Paid Bills': 'Factures Payées',
+        'Average Bill': 'Facture Moyenne',
+        'Billing History': 'Historique de Facturation',
+        'View and manage your medical bills': 'Consultez et gérez vos factures médicales',
+        'Filter': 'Filtrer'
     },
     'de': {
         'Dashboard': 'Dashboard',

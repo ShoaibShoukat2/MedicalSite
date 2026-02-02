@@ -1,0 +1,51 @@
+{% extends 'practitionerdashboard/base.html' %}
+{% load static %}
+
+{% block title %}Customer Service - Practitioner Dashboard{% endblock %}
+
+{% block content %}
+<!-- Modern Customer Service Header -->
+<div class="bg-gradient-to-r from-indigo-600 to-purple-700 rounded-2xl p-6 mb-8 text-white">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+        <div>
+            <h1 class="text-2xl md:text-3xl font-bold mb-2" data-translate="Professional Support">Support Professionnel</h1>
+            <p class="text-white/90" data-translate="Dedicated support for healthcare professionals">Support dédié aux professionnels de santé</p>
+        </div>
+        <div class="mt-4 md:mt-0 flex gap-3">
+            <div class="flex items-center space-x-2 bg-white/20 rounded-lg px-4 py-2">
+                <i class="fas fa-shield-alt text-green-300"></i>
+                <span class="text-sm" data-translate="Priority Support">Support Prioritaire</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Contact Options -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+        <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center">
+                <i class="fas fa-phone text-white text-lg"></i>
+            </div>
+            <span class="px-3 py-1 bg-red-100 text-red-600 rounded-full text-sm font-medium" data-translate="Emergency">Urgence</span>
+        </div>
+        <h3 class="text-lg font-bold text-gray-800 mb-2" data-translate="Emergency Support">Support d'Urgence</h3>
+        <p class="text-gray-600 text-sm mb-4" data-translate="24/7 emergency line for critical issues">Ligne d'urgence 24h/24 pour les problèmes critiques</p>
+        <div class="space-y-2">
+            <div class="flex items-center text-sm text-gray-700">
+                <i class="fas fa-phone-alt mr-2 text-red-500"></i>
+                <span>+33 1 23 45 67 90</span>
+            </div>
+            <div class="flex items-center text-sm text-gray-700">
+                <i class="fas fa-clock mr-2 text-red-500"></i>
+                <span data-translate="24/7 Emergency">Urgence 24h/24</span>
+            </div>
+        </div>
+        <button onclick="initiateEmergencyCall()" class="w-full mt-4 bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition-colors">
+            <i class="fas fa-exclamation-triangle mr-2"></i><span data-translate="Emergency Call">Appel d'Urgence</span>
+        </button>
+    </div>
+
+    <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+        <div class="flex items-center justify-between mb-4">
+            <div class

@@ -11,6 +11,10 @@ urlpatterns = [
     path('accepted-appointments/', views.accepted_appointments_view, name='accepted_appointments'),  # NEW: Dedicated accepted appointments view
     path('telemedicine/', views.telemedicine, name='telemedicine'),
     path('mypatient/', views.mypatient, name='mypatient'),
+    path('blacklist/', views.blacklist_view, name='blacklist'),  # NEW: Blacklist view
+    path('payments/', views.payment_management_view, name='payment_management'),  # NEW: Payment management
+    path('payments/create/<int:appointment_id>/', views.create_payment_view, name='create_payment'),  # NEW: Create payment
+    path('payments/details/<int:payment_id>/', views.payment_details_view, name='payment_details'),  # NEW: Payment details
     path('schedule-timming/', views.schedule_timming, name='schedule_timming'),
     
     # Slot management
@@ -38,6 +42,13 @@ urlpatterns = [
     # API endpoints for alert bell
     path('api/pending-appointments/', views.get_pending_appointments_api, name='pending_appointments_api'),
     path('appointments/<int:appointment_id>/<str:status>/', views.update_appointment_status_api, name='update_appointment_status_api'),
+    
+    # Patient details API
+    path('api/patient-details/<int:patient_id>/', views.get_patient_details_api, name='patient_details_api'),
+    
+    # Payment API endpoints
+    path('api/payments/verify-eligibility/<int:payment_id>/', views.verify_eligibility_view, name='verify_eligibility'),
+    path('api/payments/process/<int:payment_id>/', views.process_payment_view, name='process_payment'),
     
     # Chat room API
     path('api/get-chat-room/', views.get_chat_room_api, name='get_chat_room_api'),

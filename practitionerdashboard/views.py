@@ -7,6 +7,7 @@ from django.conf import settings
 from django.shortcuts import render, redirect,get_object_or_404
 from user_account.models import Patient, Practitioner
 from datetime import date, datetime, timedelta
+from django.utils import timezone
 
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
@@ -689,19 +690,139 @@ def mypatient(request):
     if practitioner_id:
         appointments = Appointment.objects.filter(
             practitioner_id=practitioner_id, status='Accepted'
-        ).select_related('patient')
-       
+        ).select_related('patient', 'slot')
        
         patients = list(set(appointment.patient for appointment in appointments))
 
-        # Fetch prescriptions for each patient
+        # Fetch prescriptions and appointments for each patient
         for patient in patients:
             patient.prescriptions = Prescription.objects.filter(patient=patient)
+            # Get all appointments for this patient with this practitioner
+            patient.appointments = Appointment.objects.filter(
+                patient=patient,
+                practitioner_id=practitioner_id,
+                status='Accepted'
+            ).select_related('slot').order_by('slot__start_time')
 
     else:
         patients = []
 
     return render(request, 'practitionerdashboard/mypatient.html', {'patients': patients})
+
+
+def get_patient_details_api(request, patient_id):
+    """API endpoint to get detailed patient information for blacklist modal"""
+    practitioner_id = request.session.get('practitioner_id')
+    
+    if not practitioner_id:
+        return JsonResponse({'success': False, 'error': 'Not authenticated'})
+    
+    try:
+        patient = get_object_or_404(Patient, id=patient_id)
+        
+        # Get cancellation history for this patient with this practitioner
+        cancelled_appointments = Appointment.objects.filter(
+            patient=patient,
+            practitioner_id=practitioner_id,
+            status='Cancelled'
+        ).select_related('slot').order_by('-cancelled_at')
+        
+        cancellation_history = []
+        for appointment in cancelled_appointments:
+            cancellation_history.append({
+                'appointment_date': appointment.slot.start_time.strftime('%B %d, %Y at %I:%M %p'),
+                'cancelled_at': appointment.cancelled_at.strftime('%B %d, %Y') if appointment.cancelled_at else 'Unknown',
+                'reason': getattr(appointment, 'cancellation_reason', 'No reason provided')
+            })
+        
+        return JsonResponse({
+            'success': True,
+            'patient': {
+                'id': patient.id,
+                'first_name': patient.first_name,
+                'last_name': patient.last_name,
+                'email': patient.email,
+                'mobile_phone': patient.mobile_phone,
+                'date_of_birth': patient.date_of_birth.strftime('%B %d, %Y') if patient.date_of_birth else 'Not provided'
+            },
+            'cancellation_count': cancelled_appointments.count(),
+            'cancellation_history': cancellation_history
+        })
+        
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
+
+
+def blacklist_view(request):
+    """View for managing blacklisted patients (those who cancelled 3+ times)"""
+    practitioner_id = request.session.get('practitioner_id')
+    
+    if not practitioner_id:
+        return redirect('frontend:practitioner_login')
+    
+    practitioner = get_object_or_404(Practitioner, id=practitioner_id)
+    
+    # Get all patients who have appointments with this practitioner
+    from django.db.models import Count, Q
+    from collections import defaultdict
+    
+    # Get cancellation counts for each patient with this practitioner
+    cancelled_appointments = Appointment.objects.filter(
+        practitioner_id=practitioner_id,
+        status='Cancelled'
+    ).select_related('patient', 'slot').order_by('-cancelled_at')
+    
+    # Count cancellations per patient
+    patient_cancellation_counts = defaultdict(int)
+    patient_cancellation_details = defaultdict(list)
+    
+    for appointment in cancelled_appointments:
+        patient_cancellation_counts[appointment.patient.id] += 1
+        patient_cancellation_details[appointment.patient.id].append({
+            'appointment': appointment,
+            'cancelled_at': appointment.cancelled_at,
+            'reason': getattr(appointment, 'cancellation_reason', 'No reason provided'),
+            'appointment_date': appointment.slot.start_time
+        })
+    
+    # Filter patients with 3+ cancellations
+    blacklisted_patients = []
+    frequent_cancellers = []  # 2 cancellations
+    
+    for patient_id, count in patient_cancellation_counts.items():
+        if count >= 3:
+            patient = Patient.objects.get(id=patient_id)
+            patient.cancellation_count = count
+            patient.cancellation_history = patient_cancellation_details[patient_id]
+            patient.last_cancellation = patient.cancellation_history[0]['cancelled_at'] if patient.cancellation_history else None
+            blacklisted_patients.append(patient)
+        elif count == 2:
+            patient = Patient.objects.get(id=patient_id)
+            patient.cancellation_count = count
+            patient.cancellation_history = patient_cancellation_details[patient_id]
+            patient.last_cancellation = patient.cancellation_history[0]['cancelled_at'] if patient.cancellation_history else None
+            frequent_cancellers.append(patient)
+    
+    # Sort by cancellation count (highest first)
+    blacklisted_patients.sort(key=lambda p: p.cancellation_count, reverse=True)
+    frequent_cancellers.sort(key=lambda p: p.cancellation_count, reverse=True)
+    
+    # Get statistics
+    total_cancelled_appointments = cancelled_appointments.count()
+    total_blacklisted = len(blacklisted_patients)
+    total_frequent_cancellers = len(frequent_cancellers)
+    
+    context = {
+        'practitioner': practitioner,
+        'blacklisted_patients': blacklisted_patients,
+        'frequent_cancellers': frequent_cancellers,
+        'total_cancelled_appointments': total_cancelled_appointments,
+        'total_blacklisted': total_blacklisted,
+        'total_frequent_cancellers': total_frequent_cancellers,
+        'all_cancelled_appointments': cancelled_appointments[:20],  # Recent 20 for overview
+    }
+    
+    return render(request, 'practitionerdashboard/blacklist.html', context)
 
 
 
@@ -1438,3 +1559,495 @@ def reschedule_appointment(request, appointment_id):
         
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)})
+
+
+# Blacklist Management Views
+
+def blacklist_view(request):
+    """Display blacklisted patients for the practitioner"""
+    practitioner_id = request.session.get('practitioner_id')
+    
+    if not practitioner_id:
+        return redirect('frontend:practitioner_login')
+    
+    practitioner = get_object_or_404(Practitioner, id=practitioner_id)
+    
+    # Get blacklisted patients
+    from .models import PatientBlacklist
+    blacklisted_patients = PatientBlacklist.objects.filter(
+        practitioner=practitioner,
+        status='active'
+    ).select_related('patient').order_by('-created_at')
+    
+    # Get patients with high cancellation counts (potential blacklist candidates)
+    from django.db.models import Count, Q
+    potential_blacklist = []
+    
+    # Find patients who have cancelled 3+ appointments with this practitioner
+    cancelled_appointments = Appointment.objects.filter(
+        practitioner=practitioner,
+        status='Cancelled'
+    ).values('patient').annotate(
+        cancellation_count=Count('id')
+    ).filter(cancellation_count__gte=3)
+    
+    for item in cancelled_appointments:
+        patient = Patient.objects.get(id=item['patient'])
+        # Check if not already blacklisted
+        if not PatientBlacklist.objects.filter(
+            practitioner=practitioner, 
+            patient=patient, 
+            status='active'
+        ).exists():
+            potential_blacklist.append({
+                'patient': patient,
+                'cancellation_count': item['cancellation_count']
+            })
+    
+    context = {
+        'practitioner': practitioner,
+        'blacklisted_patients': blacklisted_patients,
+        'potential_blacklist': potential_blacklist,
+        'total_blacklisted': blacklisted_patients.count(),
+        'potential_count': len(potential_blacklist),
+    }
+    
+    return render(request, 'practitionerdashboard/blacklist.html', context)
+
+
+def add_to_blacklist(request, patient_id):
+    """Add a patient to the blacklist"""
+    if request.method == 'POST':
+        practitioner_id = request.session.get('practitioner_id')
+        
+        if not practitioner_id:
+            return JsonResponse({'success': False, 'error': 'Not authenticated'})
+        
+        practitioner = get_object_or_404(Practitioner, id=practitioner_id)
+        patient = get_object_or_404(Patient, id=patient_id)
+        
+        # Get form data
+        reason = request.POST.get('reason', 'excessive_cancellations')
+        notes = request.POST.get('notes', '')
+        
+        # Count cancellations
+        cancellation_count = Appointment.objects.filter(
+            practitioner=practitioner,
+            patient=patient,
+            status='Cancelled'
+        ).count()
+        
+        # Create or update blacklist entry
+        from .models import PatientBlacklist
+        blacklist_entry, created = PatientBlacklist.objects.get_or_create(
+            practitioner=practitioner,
+            patient=patient,
+            defaults={
+                'reason': reason,
+                'cancellation_count': cancellation_count,
+                'notes': notes,
+                'status': 'active'
+            }
+        )
+        
+        if not created:
+            # Update existing entry
+            blacklist_entry.reason = reason
+            blacklist_entry.cancellation_count = cancellation_count
+            blacklist_entry.notes = notes
+            blacklist_entry.status = 'active'
+            blacklist_entry.save()
+        
+        # Send notification to practitioner
+        create_practitioner_notification(
+            practitioner=practitioner,
+            title="Patient Added to Blacklist",
+            message=f"Patient {patient.first_name} {patient.last_name} has been added to your blacklist.",
+            notification_type='warning',
+            url='/practitioner-dashboard/blacklist/'
+        )
+        
+        return JsonResponse({
+            'success': True,
+            'message': f'{patient.first_name} {patient.last_name} has been added to the blacklist.'
+        })
+    
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+
+def remove_from_blacklist(request, blacklist_id):
+    """Remove a patient from the blacklist"""
+    if request.method == 'POST':
+        practitioner_id = request.session.get('practitioner_id')
+        
+        if not practitioner_id:
+            return JsonResponse({'success': False, 'error': 'Not authenticated'})
+        
+        practitioner = get_object_or_404(Practitioner, id=practitioner_id)
+        
+        from .models import PatientBlacklist
+        blacklist_entry = get_object_or_404(
+            PatientBlacklist, 
+            id=blacklist_id, 
+            practitioner=practitioner
+        )
+        
+        notes = request.POST.get('notes', 'Removed by practitioner')
+        
+        # Remove from blacklist
+        blacklist_entry.remove_from_blacklist(notes)
+        
+        # Send notification
+        create_practitioner_notification(
+            practitioner=practitioner,
+            title="Patient Removed from Blacklist",
+            message=f"Patient {blacklist_entry.patient.first_name} {blacklist_entry.patient.last_name} has been removed from your blacklist.",
+            notification_type='success',
+            url='/practitioner-dashboard/blacklist/'
+        )
+        
+        return JsonResponse({
+            'success': True,
+            'message': f'{blacklist_entry.patient.first_name} {blacklist_entry.patient.last_name} has been removed from the blacklist.'
+        })
+    
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+
+def get_blacklist_stats(request):
+    """API endpoint to get blacklist statistics"""
+    practitioner_id = request.session.get('practitioner_id')
+    
+    if not practitioner_id:
+        return JsonResponse({'success': False, 'error': 'Not authenticated'})
+    
+    practitioner = get_object_or_404(Practitioner, id=practitioner_id)
+    
+    from .models import PatientBlacklist
+    from django.db.models import Count
+    
+    # Get statistics
+    total_blacklisted = PatientBlacklist.objects.filter(
+        practitioner=practitioner,
+        status='active'
+    ).count()
+    
+    # Get patients with 3+ cancellations (potential blacklist)
+    potential_count = Appointment.objects.filter(
+        practitioner=practitioner,
+        status='Cancelled'
+    ).values('patient').annotate(
+        cancellation_count=Count('id')
+    ).filter(cancellation_count__gte=3).count()
+    
+    # Get recent blacklist additions (last 30 days)
+    from datetime import timedelta
+    thirty_days_ago = timezone.now() - timedelta(days=30)
+    recent_additions = PatientBlacklist.objects.filter(
+        practitioner=practitioner,
+        created_at__gte=thirty_days_ago,
+        status='active'
+    ).count()
+    
+    return JsonResponse({
+        'success': True,
+        'stats': {
+            'total_blacklisted': total_blacklisted,
+            'potential_count': potential_count,
+            'recent_additions': recent_additions
+        }
+    })
+
+
+def auto_blacklist_check():
+    """Utility function to automatically check and blacklist patients with excessive cancellations"""
+    from .models import PatientBlacklist
+    from django.db.models import Count
+    
+    # Find patients with 3+ cancellations who aren't already blacklisted
+    excessive_cancellers = Appointment.objects.filter(
+        status='Cancelled'
+    ).values('patient', 'practitioner').annotate(
+        cancellation_count=Count('id')
+    ).filter(cancellation_count__gte=3)
+    
+    auto_blacklisted = 0
+    
+    for item in excessive_cancellers:
+        patient = Patient.objects.get(id=item['patient'])
+        practitioner = Practitioner.objects.get(id=item['practitioner'])
+        
+        # Check if not already blacklisted
+        if not PatientBlacklist.objects.filter(
+            practitioner=practitioner,
+            patient=patient,
+            status='active'
+        ).exists():
+            
+            # Auto-blacklist
+            PatientBlacklist.objects.create(
+                practitioner=practitioner,
+                patient=patient,
+                reason='excessive_cancellations',
+                cancellation_count=item['cancellation_count'],
+                notes=f"Automatically blacklisted for {item['cancellation_count']} cancellations",
+                status='active'
+            )
+            
+            # Notify practitioner
+            create_practitioner_notification(
+                practitioner=practitioner,
+                title="Patient Auto-Blacklisted",
+                message=f"Patient {patient.first_name} {patient.last_name} has been automatically blacklisted for excessive cancellations ({item['cancellation_count']} times).",
+                notification_type='warning',
+                url='/practitioner-dashboard/blacklist/'
+            )
+            
+            auto_blacklisted += 1
+    
+    return auto_blacklisted
+
+
+# Social Security Compliant Payment Views
+
+def payment_management_view(request):
+    """View for managing Social Security compliant payments"""
+    practitioner_id = request.session.get('practitioner_id')
+    
+    if not practitioner_id:
+        return redirect('frontend:practitioner_login')
+    
+    practitioner = get_object_or_404(Practitioner, id=practitioner_id)
+    
+    # Import payment models
+    from .models import SocialSecurityPayment, EligibilityVerification, PaymentTransaction
+    
+    # Get all payments for this practitioner
+    payments = SocialSecurityPayment.objects.filter(
+        practitioner=practitioner
+    ).select_related('patient', 'appointment').order_by('-created_at')
+    
+    # Filter by status if requested
+    status_filter = request.GET.get('status')
+    if status_filter:
+        payments = payments.filter(status=status_filter)
+    
+    # Calculate statistics
+    total_payments = payments.count()
+    pending_payments = payments.filter(status='pending').count()
+    approved_payments = payments.filter(status='approved').count()
+    rejected_payments = payments.filter(status='rejected').count()
+    
+    # Calculate financial statistics
+    total_amount = sum(payment.total_amount for payment in payments)
+    covered_amount = sum(payment.covered_amount for payment in payments)
+    patient_copay_total = sum(payment.patient_copay for payment in payments)
+    
+    # Recent transactions
+    recent_transactions = PaymentTransaction.objects.filter(
+        payment__practitioner=practitioner
+    ).select_related('payment').order_by('-processed_at')[:10]
+    
+    context = {
+        'practitioner': practitioner,
+        'payments': payments[:20],  # Paginate in production
+        'total_payments': total_payments,
+        'pending_payments': pending_payments,
+        'approved_payments': approved_payments,
+        'rejected_payments': rejected_payments,
+        'total_amount': total_amount,
+        'covered_amount': covered_amount,
+        'patient_copay_total': patient_copay_total,
+        'recent_transactions': recent_transactions,
+        'status_filter': status_filter,
+    }
+    
+    return render(request, 'practitionerdashboard/payment_management.html', context)
+
+
+def create_payment_view(request, appointment_id):
+    """Create a new Social Security compliant payment"""
+    practitioner_id = request.session.get('practitioner_id')
+    
+    if not practitioner_id:
+        return redirect('frontend:practitioner_login')
+    
+    practitioner = get_object_or_404(Practitioner, id=practitioner_id)
+    appointment = get_object_or_404(Appointment, id=appointment_id, practitioner=practitioner)
+    
+    if request.method == 'POST':
+        from .models import SocialSecurityPayment, EligibilityVerification
+        
+        try:
+            # Create payment record
+            payment = SocialSecurityPayment.objects.create(
+                appointment=appointment,
+                patient=appointment.patient,
+                practitioner=practitioner,
+                payment_type=request.POST.get('payment_type', 'social_security'),
+                total_amount=request.POST.get('total_amount'),
+                covered_amount=request.POST.get('covered_amount', 0),
+                patient_copay=request.POST.get('patient_copay', 0),
+                ss_number=request.POST.get('ss_number'),
+                insurance_number=request.POST.get('insurance_number'),
+                insurance_provider=request.POST.get('insurance_provider'),
+                diagnosis_code=request.POST.get('diagnosis_code'),
+                procedure_code=request.POST.get('procedure_code'),
+                service_description=request.POST.get('service_description'),
+                pre_authorization_code=request.POST.get('pre_authorization_code'),
+                referral_number=request.POST.get('referral_number'),
+                notes=request.POST.get('notes'),
+            )
+            
+            # Create eligibility verification record
+            EligibilityVerification.objects.create(
+                payment=payment,
+                coverage_percentage=request.POST.get('coverage_percentage', 0),
+                deductible_amount=request.POST.get('deductible_amount', 0),
+                deductible_met=request.POST.get('deductible_met', 0),
+            )
+            
+            messages.success(request, 'Payment record created successfully!')
+            return redirect('practitioner_dashboard:payment_management')
+            
+        except Exception as e:
+            messages.error(request, f'Error creating payment: {str(e)}')
+    
+    context = {
+        'practitioner': practitioner,
+        'appointment': appointment,
+        'patient': appointment.patient,
+    }
+    
+    return render(request, 'practitionerdashboard/create_payment.html', context)
+
+
+def verify_eligibility_view(request, payment_id):
+    """Verify patient eligibility for Social Security/Insurance coverage"""
+    practitioner_id = request.session.get('practitioner_id')
+    
+    if not practitioner_id:
+        return JsonResponse({'success': False, 'error': 'Not authenticated'})
+    
+    from .models import SocialSecurityPayment, EligibilityVerification
+    
+    try:
+        payment = get_object_or_404(SocialSecurityPayment, id=payment_id, practitioner_id=practitioner_id)
+        
+        # Simulate eligibility verification (integrate with real API in production)
+        eligibility, created = EligibilityVerification.objects.get_or_create(
+            payment=payment,
+            defaults={
+                'verification_status': 'verified',
+                'verified_at': timezone.now(),
+                'verified_by': f"Dr. {payment.practitioner.first_name} {payment.practitioner.last_name}",
+                'coverage_percentage': 80.00,  # Example coverage
+                'deductible_amount': 500.00,
+                'deductible_met': 200.00,
+            }
+        )
+        
+        if not created:
+            # Update existing verification
+            eligibility.verification_status = 'verified'
+            eligibility.verified_at = timezone.now()
+            eligibility.save()
+        
+        # Update payment status
+        payment.eligibility_verified = True
+        payment.eligibility_verification_date = timezone.now()
+        payment.status = 'processing'
+        payment.save()
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Eligibility verified successfully',
+            'coverage_percentage': float(eligibility.coverage_percentage),
+            'verification_status': eligibility.verification_status
+        })
+        
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
+
+
+def process_payment_view(request, payment_id):
+    """Process a Social Security compliant payment"""
+    practitioner_id = request.session.get('practitioner_id')
+    
+    if not practitioner_id:
+        return JsonResponse({'success': False, 'error': 'Not authenticated'})
+    
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Invalid request method'})
+    
+    from .models import SocialSecurityPayment, PaymentTransaction
+    
+    try:
+        payment = get_object_or_404(SocialSecurityPayment, id=payment_id, practitioner_id=practitioner_id)
+        
+        transaction_type = request.POST.get('transaction_type', 'payment')
+        transaction_method = request.POST.get('transaction_method', 'insurance')
+        amount = float(request.POST.get('amount', 0))
+        
+        # Create transaction record
+        transaction = PaymentTransaction.objects.create(
+            payment=payment,
+            transaction_type=transaction_type,
+            transaction_method=transaction_method,
+            amount=amount,
+            reference_number=request.POST.get('reference_number'),
+            check_number=request.POST.get('check_number'),
+            card_last_four=request.POST.get('card_last_four'),
+            processed_by=f"Dr. {payment.practitioner.first_name} {payment.practitioner.last_name}",
+            notes=request.POST.get('notes'),
+        )
+        
+        # Update payment status based on transaction
+        if transaction_type == 'payment':
+            if amount >= payment.get_remaining_balance():
+                payment.status = 'approved'
+            else:
+                payment.status = 'processing'
+        elif transaction_type == 'refund':
+            payment.status = 'reimbursed'
+        
+        payment.processed_at = timezone.now()
+        payment.save()
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Payment processed successfully',
+            'new_status': payment.status,
+            'transaction_id': transaction.id
+        })
+        
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
+
+
+def payment_details_view(request, payment_id):
+    """View detailed payment information"""
+    practitioner_id = request.session.get('practitioner_id')
+    
+    if not practitioner_id:
+        return redirect('frontend:practitioner_login')
+    
+    from .models import SocialSecurityPayment
+    
+    payment = get_object_or_404(
+        SocialSecurityPayment, 
+        id=payment_id, 
+        practitioner_id=practitioner_id
+    )
+    
+    context = {
+        'payment': payment,
+        'practitioner': payment.practitioner,
+        'patient': payment.patient,
+        'appointment': payment.appointment,
+        'eligibility': getattr(payment, 'eligibility', None),
+        'transactions': payment.transactions.all(),
+        'documents': payment.documents.all(),
+    }
+    
+    return render(request, 'practitionerdashboard/payment_details.html', context)

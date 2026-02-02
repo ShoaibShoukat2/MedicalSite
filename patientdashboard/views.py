@@ -545,11 +545,61 @@ def appointments_patients(request):
 
         notifications = Notification.objects.filter(recipient=patient, is_read=False).order_by('-created_at')
 
-        appointments = Appointment.objects.filter(patient=patient).select_related('practitioner', 'slot')
+        # Get all appointments for the patient
+        all_appointments = Appointment.objects.filter(patient=patient).select_related('practitioner', 'slot').order_by('-created_at')
+        
+        # Add cancellation eligibility to each appointment
+        from datetime import datetime, timedelta
+        current_time = timezone.now()
+        
+        for appointment in all_appointments:
+            appointment_datetime = datetime.combine(appointment.slot.date, appointment.slot.start_time)
+            appointment_datetime = timezone.make_aware(appointment_datetime)
+            time_until_appointment = appointment_datetime - current_time
+            
+            # Can cancel if more than 2 hours before appointment and not already cancelled
+            appointment.can_cancel = (
+                appointment.status != 'Cancelled' and 
+                time_until_appointment >= timedelta(hours=2)
+            )
+            
+            # Calculate time remaining for display
+            if time_until_appointment.total_seconds() > 0:
+                hours_remaining = time_until_appointment.total_seconds() / 3600
+                if hours_remaining < 2:
+                    if hours_remaining >= 1:
+                        appointment.time_remaining = f"{hours_remaining:.1f} hours"
+                    else:
+                        minutes_remaining = int(hours_remaining * 60)
+                        appointment.time_remaining = f"{minutes_remaining} minutes"
+                else:
+                    appointment.time_remaining = "More than 2 hours"
+            else:
+                appointment.time_remaining = "Appointment passed"
+        
+        # Separate appointments by status
+        upcoming_appointments = all_appointments.filter(status__in=['Pending', 'Accepted'])
+        completed_appointments = all_appointments.filter(status='Completed')
+        cancelled_appointments = all_appointments.filter(status='Cancelled')
+        
+        # Calculate counts for stats
+        upcoming_count = upcoming_appointments.count()
+        completed_count = completed_appointments.count()
+        cancelled_count = cancelled_appointments.count()
+        
+        # Get this month's appointments
+        from datetime import datetime
+        current_month = datetime.now().month
+        current_year = datetime.now().year
+        month_appointments = all_appointments.filter(
+            slot__date__month=current_month,
+            slot__date__year=current_year
+        )
+        month_count = month_appointments.count()
 
         # Debug: Print appointment details
-        for appointment in appointments:
-            print(f"🔍 Appointment {appointment.id}: Status={appointment.status}, Video Link={appointment.video_call_link}, Meeting ID={appointment.meeting_id}")
+        for appointment in all_appointments:
+            print(f"🔍 Appointment {appointment.id}: Status={appointment.status}, Can Cancel={appointment.can_cancel}, Time Remaining={appointment.time_remaining}")
 
         prescriptions = Prescription.objects.filter(patient=patient)
         
@@ -558,7 +608,14 @@ def appointments_patients(request):
         return render(request, 'patientdashboard/appointments_patients.html', {
             'patient': patient,
             'notifications': notifications,
-            'appointments': appointments,
+            'appointments': all_appointments,  # Keep for backward compatibility
+            'upcoming_appointments': upcoming_appointments,
+            'completed_appointments': completed_appointments,
+            'cancelled_appointments': cancelled_appointments,
+            'upcoming_count': upcoming_count,
+            'completed_count': completed_count,
+            'cancelled_count': cancelled_count,
+            'month_count': month_count,
             'prescriptions': prescriptions,
             'billing_records': billing_records
         })
@@ -1171,20 +1228,59 @@ def download_bill_pdf(request, bill_id):
 
 
 def cancel_appointment(request, appointment_id):
-    """Cancel the appointment by updating its status."""
+    """Cancel the appointment by updating its status with reason - requires 2 hours advance notice."""
     appointment = get_object_or_404(Appointment, id=appointment_id)
 
     if appointment.status != "Cancelled":  # Prevent duplicate cancellations
+        # Check if cancellation is at least 2 hours before appointment
+        from datetime import datetime, timedelta
+        appointment_datetime = datetime.combine(appointment.slot.date, appointment.slot.start_time)
+        appointment_datetime = timezone.make_aware(appointment_datetime)
+        current_time = timezone.now()
+        time_until_appointment = appointment_datetime - current_time
+        
+        # Require at least 2 hours (120 minutes) advance notice
+        if time_until_appointment < timedelta(hours=2):
+            # Calculate how much time is left
+            hours_left = time_until_appointment.total_seconds() / 3600
+            if hours_left > 0:
+                hours_text = f"{hours_left:.1f} hours" if hours_left >= 1 else f"{int(hours_left * 60)} minutes"
+                error_message = f"Cancellation denied. You must cancel at least 2 hours before your appointment. Only {hours_text} remaining."
+            else:
+                error_message = "Cancellation denied. Your appointment time has already passed."
+            
+            return JsonResponse({
+                "success": False, 
+                "error": error_message,
+                "policy_violation": True,
+                "hours_required": 2,
+                "time_remaining": hours_left if hours_left > 0 else 0
+            })
+        
+        # Get cancellation reason from request
+        reason = request.POST.get('reason', 'Cancelled by patient')
+        
+        # Update appointment status and reason
         appointment.status = "Cancelled"
+        appointment.cancellation_reason = reason
+        appointment.cancelled_at = timezone.now()
         appointment.save()
         
         # Send notifications to practitioner about patient cancellation
         from practitionerdashboard.notifications import notify_appointment_cancelled
-        notify_appointment_cancelled(appointment, reason="Cancelled by patient", cancelled_by="patient")
+        notify_appointment_cancelled(appointment, reason=reason, cancelled_by="patient")
         
-        messages.success(request, "Appointment has been cancelled.")
-    
-    return JsonResponse({"success": True, "message": "Appointment cancelled successfully"})
+        return JsonResponse({
+            "success": True, 
+            "message": "Appointment cancelled successfully. You cancelled with sufficient advance notice.",
+            "policy_compliant": True
+        })
+    else:
+        return JsonResponse({
+            "success": False, 
+            "error": "This appointment is already cancelled.",
+            "already_cancelled": True
+        })
 
 
 

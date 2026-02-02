@@ -1,0 +1,470 @@
+{% extends "practitionerdashboard/base.html" %}
+{% load static %}
+
+<style>
+/* Payment Management Styles */
+.payment-card {
+    transition: all 0.3s ease;
+    border-left: 4px solid #3b82f6;
+}
+
+.payment-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.status-pending { border-left-color: #f59e0b; }
+.status-processing { border-left-color: #3b82f6; }
+.status-approved { border-left-color: #10b981; }
+.status-rejected { border-left-color: #ef4444; }
+.status-reimbursed { border-left-color: #8b5cf6; }
+
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-pending { background: #fef3c7; color: #92400e; }
+.status-processing { background: #dbeafe; color: #1e40af; }
+.status-approved { background: #d1fae5; color: #065f46; }
+.status-rejected { background: #fee2e2; color: #991b1b; }
+.status-reimbursed { background: #ede9fe; color: #5b21b6; }
+
+.financial-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.financial-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50%;
+}
+
+.compliance-indicator {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.compliance-verified { background: #d1fae5; color: #065f46; }
+.compliance-pending { background: #fef3c7; color: #92400e; }
+.compliance-error { background: #fee2e2; color: #991b1b; }
+
+@media (max-width: 768px) {
+    .payment-card {
+        margin-bottom: 1rem;
+    }
+    
+    .financial-card {
+        margin-bottom: 1rem;
+    }
+}
+</style>
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header Section -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-doctor-dark-blue mb-2 flex items-center">
+                    <i class="fas fa-credit-card text-blue-600 mr-3"></i>
+                    <span data-translate="Payment Management">Payment Management</span>
+                </h1>
+                <p class="text-doctor-dark-gray" data-translate="Social Security compliant payment processing and billing">Social Security compliant payment processing and billing</p>
+            </div>
+            <div class="hidden md:flex items-center space-x-4">
+                <div class="text-right">
+                    <p class="text-sm text-doctor-dark-gray" data-translate="Total Payments">Total Payments</p>
+                    <p class="text-2xl font-bold text-blue-600">{{ total_payments }}</p>
+                </div>
+                <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-dollar-sign text-white text-lg"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Financial Overview Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Total Revenue -->
+        <div class="financial-card">
+            <div class="relative z-10">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-chart-line text-white text-xl"></i>
+                    </div>
+                    <span class="text-white/80 text-sm" data-translate="Total Revenue">Total Revenue</span>
+                </div>
+                <div class="text-2xl font-bold text-white mb-1">${{ total_amount|floatformat:2 }}</div>
+                <div class="text-white/80 text-sm" data-translate="All payments">All payments</div>
+            </div>
+        </div>
+
+        <!-- Insurance Coverage -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-shield-alt text-green-600 text-xl"></i>
+                </div>
+                <span class="text-gray-600 text-sm" data-translate="Covered Amount">Covered Amount</span>
+            </div>
+            <div class="text-2xl font-bold text-green-600 mb-1">${{ covered_amount|floatformat:2 }}</div>
+            <div class="text-gray-500 text-sm" data-translate="Insurance/SS">Insurance/SS</div>
+        </div>
+
+        <!-- Patient Responsibility -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-user-circle text-orange-600 text-xl"></i>
+                </div>
+                <span class="text-gray-600 text-sm" data-translate="Patient Copay">Patient Copay</span>
+            </div>
+            <div class="text-2xl font-bold text-orange-600 mb-1">${{ patient_copay_total|floatformat:2 }}</div>
+            <div class="text-gray-500 text-sm" data-translate="Out of pocket">Out of pocket</div>
+        </div>
+
+        <!-- Pending Payments -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-clock text-yellow-600 text-xl"></i>
+                </div>
+                <span class="text-gray-600 text-sm" data-translate="Pending">Pending</span>
+            </div>
+            <div class="text-2xl font-bold text-yellow-600 mb-1">{{ pending_payments }}</div>
+            <div class="text-gray-500 text-sm" data-translate="Awaiting processing">Awaiting processing</div>
+        </div>
+    </div>
+
+    <!-- Filter and Actions -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+            <div class="flex items-center space-x-4">
+                <h2 class="text-xl font-semibold text-gray-800" data-translate="Payment Records">Payment Records</h2>
+                <div class="flex items-center space-x-2">
+                    <select id="statusFilter" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="" data-translate="All Status">All Status</option>
+                        <option value="pending" {% if status_filter == 'pending' %}selected{% endif %} data-translate="Pending">Pending</option>
+                        <option value="processing" {% if status_filter == 'processing' %}selected{% endif %} data-translate="Processing">Processing</option>
+                        <option value="approved" {% if status_filter == 'approved' %}selected{% endif %} data-translate="Approved">Approved</option>
+                        <option value="rejected" {% if status_filter == 'rejected' %}selected{% endif %} data-translate="Rejected">Rejected</option>
+                        <option value="reimbursed" {% if status_filter == 'reimbursed' %}selected{% endif %} data-translate="Reimbursed">Reimbursed</option>
+                    </select>
+                    <button onclick="filterPayments()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-filter mr-2"></i><span data-translate="Filter">Filter</span>
+                    </button>
+                </div>
+            </div>
+            <div class="flex items-center space-x-3">
+                <button onclick="exportPayments()" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                    <i class="fas fa-download mr-2"></i><span data-translate="Export">Export</span>
+                </button>
+                <button onclick="openCreatePaymentModal()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                    <i class="fas fa-plus mr-2"></i><span data-translate="New Payment">New Payment</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Records -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        {% if payments %}
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-gray-50 border-b border-gray-200">
+                        <tr>
+                            <th class="text-left py-4 px-6 font-semibold text-gray-800" data-translate="Patient">Patient</th>
+                            <th class="text-left py-4 px-6 font-semibold text-gray-800" data-translate="Service">Service</th>
+                            <th class="text-left py-4 px-6 font-semibold text-gray-800" data-translate="Amount">Amount</th>
+                            <th class="text-left py-4 px-6 font-semibold text-gray-800" data-translate="Coverage">Coverage</th>
+                            <th class="text-center py-4 px-6 font-semibold text-gray-800" data-translate="Status">Status</th>
+                            <th class="text-center py-4 px-6 font-semibold text-gray-800" data-translate="Compliance">Compliance</th>
+                            <th class="text-right py-4 px-6 font-semibold text-gray-800" data-translate="Actions">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        {% for payment in payments %}
+                        <tr class="payment-card status-{{ payment.status }} hover:bg-gray-50 transition-colors">
+                            <td class="py-4 px-6">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center">
+                                        <span class="text-white font-semibold text-sm">{{ payment.patient.first_name|slice:":1" }}</span>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-gray-800">{{ payment.patient.first_name }} {{ payment.patient.last_name }}</p>
+                                        <p class="text-sm text-gray-600">{{ payment.patient.email }}</p>
+                                        {% if payment.ss_number %}
+                                        <p class="text-xs text-gray-500">SS: ***-**-{{ payment.ss_number|slice:"-4:" }}</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-4 px-6">
+                                <div>
+                                    <p class="font-medium text-gray-800">{{ payment.appointment.slot.start_time|date:"M d, Y" }}</p>
+                                    <p class="text-sm text-gray-600">{{ payment.service_description|default:"Medical Consultation"|truncatechars:30 }}</p>
+                                    {% if payment.diagnosis_code %}
+                                    <p class="text-xs text-blue-600">ICD: {{ payment.diagnosis_code }}</p>
+                                    {% endif %}
+                                    {% if payment.procedure_code %}
+                                    <p class="text-xs text-green-600">CPT: {{ payment.procedure_code }}</p>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td class="py-4 px-6">
+                                <div>
+                                    <p class="font-semibold text-gray-800">${{ payment.total_amount }}</p>
+                                    {% if payment.covered_amount > 0 %}
+                                    <p class="text-sm text-green-600">Covered: ${{ payment.covered_amount }}</p>
+                                    {% endif %}
+                                    {% if payment.patient_copay > 0 %}
+                                    <p class="text-sm text-orange-600">Copay: ${{ payment.patient_copay }}</p>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td class="py-4 px-6">
+                                <div class="text-center">
+                                    {% if payment.get_coverage_percentage > 0 %}
+                                    <div class="w-16 h-16 mx-auto mb-2">
+                                        <svg class="w-16 h-16 transform -rotate-90" viewBox="0 0 36 36">
+                                            <path class="text-gray-300" stroke="currentColor" stroke-width="3" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                                            <path class="text-green-500" stroke="currentColor" stroke-width="3" fill="none" stroke-dasharray="{{ payment.get_coverage_percentage }}, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                                        </svg>
+                                    </div>
+                                    <p class="text-sm font-medium text-gray-800">{{ payment.get_coverage_percentage|floatformat:0 }}%</p>
+                                    {% else %}
+                                    <p class="text-sm text-gray-500" data-translate="No coverage">No coverage</p>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td class="py-4 px-6 text-center">
+                                <span class="status-badge status-{{ payment.status }}">{{ payment.get_status_display }}</span>
+                            </td>
+                            <td class="py-4 px-6 text-center">
+                                {% if payment.eligibility_verified %}
+                                <span class="compliance-indicator compliance-verified">
+                                    <i class="fas fa-check-circle mr-1"></i><span data-translate="Verified">Verified</span>
+                                </span>
+                                {% else %}
+                                <span class="compliance-indicator compliance-pending">
+                                    <i class="fas fa-clock mr-1"></i><span data-translate="Pending">Pending</span>
+                                </span>
+                                {% endif %}
+                            </td>
+                            <td class="py-4 px-6 text-right">
+                                <div class="flex items-center justify-end space-x-2">
+                                    <button onclick="viewPaymentDetails({{ payment.id }})" 
+                                            class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors"
+                                            title="View Details" data-translate-title="View Details">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    {% if not payment.eligibility_verified %}
+                                    <button onclick="verifyEligibility({{ payment.id }})" 
+                                            class="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition-colors"
+                                            title="Verify Eligibility" data-translate-title="Verify Eligibility">
+                                        <i class="fas fa-shield-alt"></i>
+                                    </button>
+                                    {% endif %}
+                                    {% if payment.status == 'processing' %}
+                                    <button onclick="processPayment({{ payment.id }})" 
+                                            class="p-2 bg-purple-100 text-purple-600 rounded-lg hover:bg-purple-200 transition-colors"
+                                            title="Process Payment" data-translate-title="Process Payment">
+                                        <i class="fas fa-credit-card"></i>
+                                    </button>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="text-center py-12">
+                <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-credit-card text-gray-400 text-4xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-2" data-translate="No Payment Records">No Payment Records</h3>
+                <p class="text-gray-600 mb-6" data-translate="No payments have been processed yet.">No payments have been processed yet.</p>
+                <button onclick="openCreatePaymentModal()" class="px-6 py-3 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors">
+                    <i class="fas fa-plus mr-2"></i><span data-translate="Create First Payment">Create First Payment</span>
+                </button>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Recent Transactions -->
+    {% if recent_transactions %}
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+            <i class="fas fa-history text-blue-600 mr-2"></i>
+            <span data-translate="Recent Transactions">Recent Transactions</span>
+        </h3>
+        <div class="space-y-3">
+            {% for transaction in recent_transactions %}
+            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-{{ transaction.transaction_type == 'payment' and 'arrow-down' or 'arrow-up' }} text-blue-600 text-xs"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-800">{{ transaction.get_transaction_type_display }}</p>
+                        <p class="text-sm text-gray-600">{{ transaction.payment.patient.first_name }} {{ transaction.payment.patient.last_name }}</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <p class="font-semibold text-gray-800">${{ transaction.amount }}</p>
+                    <p class="text-xs text-gray-500">{{ transaction.processed_at|date:"M d, Y" }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Create Payment Modal -->
+<div id="createPaymentModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="p-6 border-b border-gray-200">
+            <div class="flex items-center justify-between">
+                <h2 class="text-2xl font-bold text-gray-800">
+                    <i class="fas fa-plus-circle mr-3 text-blue-600"></i><span data-translate="Create Payment Record">Create Payment Record</span>
+                </h2>
+                <button onclick="closeCreatePaymentModal()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                    <i class="fas fa-times text-gray-500"></i>
+                </button>
+            </div>
+        </div>
+        <div class="p-6" id="createPaymentContent">
+            <p class="text-gray-600 text-center py-8" data-translate="Select an appointment to create a payment record">Select an appointment to create a payment record</p>
+        </div>
+    </div>
+</div>
+
+<script>
+function filterPayments() {
+    const status = document.getElementById('statusFilter').value;
+    const url = new URL(window.location);
+    if (status) {
+        url.searchParams.set('status', status);
+    } else {
+        url.searchParams.delete('status');
+    }
+    window.location.href = url.toString();
+}
+
+function viewPaymentDetails(paymentId) {
+    window.location.href = `/practitioner-dashboard/payments/details/${paymentId}/`;
+}
+
+function verifyEligibility(paymentId) {
+    if (confirm('Verify patient eligibility for this payment?')) {
+        fetch(`/practitioner-dashboard/api/payments/verify-eligibility/${paymentId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showNotification('success', 'Eligibility verified successfully!');
+                setTimeout(() => location.reload(), 1500);
+            } else {
+                showNotification('error', data.error || 'Failed to verify eligibility');
+            }
+        })
+        .catch(error => {
+            showNotification('error', 'Error verifying eligibility');
+        });
+    }
+}
+
+function processPayment(paymentId) {
+    // Open payment processing modal (implement as needed)
+    alert('Payment processing modal - to be implemented');
+}
+
+function exportPayments() {
+    // Implement export functionality
+    alert('Export functionality - to be implemented');
+}
+
+function openCreatePaymentModal() {
+    document.getElementById('createPaymentModal').classList.remove('hidden');
+    // Load available appointments (implement as needed)
+}
+
+function closeCreatePaymentModal() {
+    document.getElementById('createPaymentModal').classList.add('hidden');
+}
+
+function showNotification(type, message) {
+    const notification = document.createElement('div');
+    const bgColor = type === 'success' ? 'bg-green-500' : 'bg-red-500';
+    
+    notification.className = `fixed top-4 right-4 ${bgColor} text-white px-6 py-3 rounded-lg shadow-lg z-50 transform transition-all duration-300 translate-x-full`;
+    notification.innerHTML = `
+        <div class="flex items-center space-x-2">
+            <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+            <span>${message}</span>
+            <button onclick="this.parentElement.parentElement.remove()" class="ml-2 text-white hover:text-gray-200">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.classList.remove('translate-x-full');
+    }, 100);
+    
+    setTimeout(() => {
+        if (document.body.contains(notification)) {
+            notification.classList.add('translate-x-full');
+            setTimeout(() => {
+                if (document.body.contains(notification)) {
+                    document.body.removeChild(notification);
+                }
+            }, 300);
+        }
+    }, 5000);
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+
+{% endblock content %}
