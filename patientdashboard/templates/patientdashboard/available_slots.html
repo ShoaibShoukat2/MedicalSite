@@ -3,99 +3,369 @@
 
 {% block extra_css %}
 <style>
-    .calendar-container {
+    /* Google Calendar Style CSS */
+    .google-calendar-container {
         background: white;
-        border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        padding: 0;
         margin-top: 20px;
+        overflow: hidden;
     }
+
     .calendar-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 24px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .calendar-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .calendar-nav {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .nav-btn {
+        background: rgba(255,255,255,0.2);
+        border: none;
+        color: white;
+        padding: 10px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .nav-btn:hover {
+        background: rgba(255,255,255,0.3);
+        transform: translateY(-1px);
+    }
+
+    .nav-btn.today-btn {
+        background: rgba(255,255,255,0.9);
+        color: #667eea;
+    }
+
+    .nav-btn.today-btn:hover {
+        background: white;
+    }
+
+    .calendar-controls {
+        background: #f8fafc;
+        padding: 20px 30px;
+        border-bottom: 1px solid #e2e8f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .month-year-selector {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+    }
+
+    .month-year-selector select {
+        padding: 8px 12px;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        background: white;
+        font-weight: 500;
+        cursor: pointer;
+        transition: border-color 0.3s ease;
+    }
+
+    .month-year-selector select:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .view-toggle {
+        display: flex;
+        background: white;
+        border-radius: 8px;
+        padding: 4px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .view-btn {
+        padding: 8px 16px;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        border-radius: 6px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        color: #64748b;
+    }
+
+    .view-btn.active {
+        background: #667eea;
+        color: white;
+        box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+    }
+
+    .calendar-grid {
+        padding: 0;
+    }
+
+    .week-days-header {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        background: #f1f5f9;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .week-day-header {
+        padding: 16px 8px;
+        text-align: center;
+        font-weight: 600;
+        color: #475569;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .calendar-days {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        min-height: 400px;
+    }
+
+    .day-cell {
+        border-right: 1px solid #e2e8f0;
+        border-bottom: 1px solid #e2e8f0;
+        min-height: 100px;
+        padding: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        background: white;
+    }
+
+    .day-cell:hover {
+        background: #f8fafc;
+        transform: scale(1.02);
+        z-index: 2;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .day-cell.selected {
+        background: linear-gradient(135deg, #667eea20, #764ba220);
+        border-color: #667eea;
+        box-shadow: inset 0 0 0 2px #667eea;
+    }
+
+    .day-cell.today {
+        background: linear-gradient(135deg, #fef3c7, #fde68a);
+        border-color: #f59e0b;
+    }
+
+    .day-cell.other-month {
+        background: #f8fafc;
+        color: #94a3b8;
+    }
+
+    .day-cell.other-month:hover {
+        background: #f1f5f9;
+    }
+
+    .day-number {
+        font-weight: 600;
+        font-size: 1rem;
+        margin-bottom: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .day-indicator {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #10b981;
+        display: inline-block;
+    }
+
+    .slots-info {
+        font-size: 0.75rem;
+        color: #059669;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        margin-top: 4px;
+    }
+
+    .slots-info i {
+        font-size: 0.7rem;
+    }
+
+    .no-slots {
+        font-size: 0.75rem;
+        color: #94a3b8;
+        font-style: italic;
+    }
+
+    .time-slots-panel {
+        background: white;
+        border-top: 1px solid #e2e8f0;
+        padding: 24px 30px;
+    }
+
+    .slots-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin-bottom: 20px;
     }
-    .calendar-nav {
-        display: flex;
-        gap: 10px;
-    }
-    .calendar-title {
-        font-size: 1.2rem;
+
+    .slots-title {
+        font-size: 1.3rem;
         font-weight: 600;
-    }
-    .week-days-header {
-        display: grid;
-        grid-template-columns: repeat(7, 1fr);
-        text-align: center;
-        font-weight: 600;
-        margin-bottom: 10px;
-    }
-    .week-days {
-        display: grid;
-        grid-template-columns: repeat(7, 1fr);
-        gap: 5px;
-    }
-    .day-card {
-        border: 1px solid #e0e0e0;
-        border-radius: 5px;
-        padding: 10px;
-        min-height: 80px;
-        cursor: pointer;
-        transition: all 0.2s;
-        text-align: center;
-    }
-    .day-card:hover {
-        background-color: #f5f5f5;
-    }
-    .day-card.active {
-        background-color: #e3f2fd;
-        border-color: #2196f3;
-    }
-    .day-card.today {
-        background-color: #fff8e1;
-    }
-    .day-card.other-month {
-        opacity: 0.5;
-    }
-    .day-date {
-        font-weight: bold;
-        margin-bottom: 5px;
-    }
-    .day-slots {
-        font-size: 0.8rem;
-        color: #4caf50;
-    }
-    .time-slots-container {
-        margin-top: 30px;
-    }
-    .time-slot {
-        display: inline-block;
-        padding: 8px 12px;
-        margin: 5px;
-        background: #e3f2fd;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: all 0.2s;
-    }
-    .time-slot:hover {
-        background: #bbdefb;
-    }
-    .no-slots {
-        color: #9e9e9e;
-        font-style: italic;
-        text-align: center;
-        padding: 20px;
-        border: 1px dashed #ddd;
-        border-radius: 5px;
-    }
-    .month-year-selector {
+        color: #1e293b;
         display: flex;
-        gap: 10px;
-        margin-bottom: 15px;
+        align-items: center;
+        gap: 8px;
     }
 
-    /* Custom Modal Styles */
+    .selected-date-badge {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+
+    .time-slots-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 12px;
+        margin-top: 16px;
+    }
+
+    .time-slot {
+        background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+        border: 2px solid #bae6fd;
+        border-radius: 12px;
+        padding: 16px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .time-slot::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .time-slot:hover::before {
+        left: 100%;
+    }
+
+    .time-slot:hover {
+        background: linear-gradient(135deg, #0ea5e9, #0284c7);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(14, 165, 233, 0.3);
+        border-color: #0284c7;
+    }
+
+    .time-slot-time {
+        font-weight: 600;
+        font-size: 1rem;
+        margin-bottom: 4px;
+    }
+
+    .time-slot-duration {
+        font-size: 0.8rem;
+        opacity: 0.8;
+    }
+
+    .no-slots-message {
+        text-align: center;
+        padding: 40px 20px;
+        color: #64748b;
+        background: #f8fafc;
+        border-radius: 12px;
+        border: 2px dashed #cbd5e1;
+    }
+
+    .no-slots-message i {
+        font-size: 3rem;
+        margin-bottom: 16px;
+        color: #94a3b8;
+    }
+
+    .no-slots-message h4 {
+        margin-bottom: 8px;
+        color: #475569;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .calendar-header {
+            padding: 16px 20px;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .calendar-title {
+            font-size: 1.4rem;
+        }
+
+        .calendar-controls {
+            padding: 16px 20px;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .time-slots-panel {
+            padding: 20px;
+        }
+
+        .time-slots-grid {
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 8px;
+        }
+
+        .day-cell {
+            min-height: 80px;
+            padding: 6px;
+        }
+
+        .week-day-header {
+            padding: 12px 4px;
+            font-size: 0.8rem;
+        }
+    }
+
+    /* Custom Modal Styles - Enhanced */
     .booking-modal {
         display: none;
         position: fixed;
@@ -104,137 +374,171 @@
         top: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0,0,0,0.5);
+        background-color: rgba(0,0,0,0.6);
+        backdrop-filter: blur(4px);
     }
 
     .booking-modal.show {
         display: flex;
         align-items: center;
         justify-content: center;
+        animation: modalFadeIn 0.3s ease;
+    }
+
+    @keyframes modalFadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
     }
 
     .modal-content {
-        background-color: white;
-        border-radius: 10px;
+        background: white;
+        border-radius: 16px;
         padding: 0;
         width: 90%;
-        max-width: 500px;
+        max-width: 520px;
         max-height: 90vh;
         overflow-y: auto;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        animation: modalSlideIn 0.3s ease;
+    }
+
+    @keyframes modalSlideIn {
+        from { 
+            opacity: 0;
+            transform: translateY(-20px) scale(0.95);
+        }
+        to { 
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
     }
 
     .modal-header {
-        padding: 20px 25px 15px;
-        border-bottom: 1px solid #eee;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        padding: 24px 28px;
         display: flex;
         justify-content: space-between;
         align-items: center;
     }
 
     .modal-title {
-        font-size: 1.3rem;
+        font-size: 1.4rem;
         font-weight: 600;
-        color: #333;
         margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
     }
 
     .close-btn {
-        background: none;
+        background: rgba(255,255,255,0.2);
         border: none;
-        font-size: 1.5rem;
+        color: white;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
         cursor: pointer;
-        color: #999;
-        padding: 0;
-        width: 30px;
-        height: 30px;
         display: flex;
         align-items: center;
         justify-content: center;
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
     }
 
     .close-btn:hover {
-        color: #333;
+        background: rgba(255,255,255,0.3);
+        transform: rotate(90deg);
     }
 
     .modal-body {
-        padding: 25px;
+        padding: 28px;
     }
 
     .form-group {
-        margin-bottom: 20px;
+        margin-bottom: 24px;
     }
 
     .form-label {
         display: block;
-        margin-bottom: 8px;
+        margin-bottom: 10px;
         font-weight: 600;
-        color: #333;
-        font-size: 0.95rem;
+        color: #374151;
+        font-size: 1rem;
     }
 
     .required {
-        color: #dc3545;
+        color: #ef4444;
     }
 
     .form-control {
         width: 100%;
-        padding: 12px 15px;
-        border: 2px solid #e1e5e9;
-        border-radius: 8px;
-        font-size: 0.95rem;
-        transition: border-color 0.3s;
+        padding: 14px 16px;
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
         resize: vertical;
-        min-height: 100px;
+        min-height: 120px;
+        font-family: inherit;
     }
 
     .form-control:focus {
         outline: none;
-        border-color: #007bff;
-        box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+        border-color: #667eea;
+        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
     }
 
     .form-text {
-        font-size: 0.85rem;
-        color: #6c757d;
-        margin-top: 5px;
+        font-size: 0.9rem;
+        color: #6b7280;
+        margin-top: 6px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
     }
 
     .urgency-options {
         display: flex;
         flex-direction: column;
         gap: 12px;
-        margin-top: 10px;
+        margin-top: 12px;
     }
 
     .urgency-option {
         display: flex;
         align-items: center;
-        padding: 15px;
-        border: 2px solid #e1e5e9;
-        border-radius: 8px;
+        padding: 18px;
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
         cursor: pointer;
-        transition: all 0.3s;
+        transition: all 0.3s ease;
+        background: white;
     }
 
     .urgency-option:hover {
-        border-color: #007bff;
-        background-color: #f8f9fa;
+        border-color: #667eea;
+        background: #f8fafc;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
     }
 
     .urgency-option.selected {
-        border-color: #007bff;
-        background-color: #e3f2fd;
+        border-color: #667eea;
+        background: linear-gradient(135deg, #667eea10, #764ba210);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
     }
 
     .urgency-radio {
-        margin-right: 12px;
+        margin-right: 14px;
+        transform: scale(1.2);
     }
 
     .urgency-icon {
-        margin-right: 10px;
-        width: 20px;
+        margin-right: 12px;
+        width: 24px;
         text-align: center;
+        font-size: 1.2rem;
     }
 
     .urgency-text {
@@ -243,190 +547,239 @@
 
     .urgency-title {
         font-weight: 600;
-        margin-bottom: 2px;
+        margin-bottom: 4px;
+        font-size: 1rem;
     }
 
     .urgency-desc {
-        font-size: 0.85rem;
-        color: #6c757d;
+        font-size: 0.9rem;
+        color: #6b7280;
     }
 
-    .urgency-normal .urgency-icon { color: #28a745; }
-    .urgency-urgent .urgency-icon { color: #ffc107; }
-    .urgency-emergency .urgency-icon { color: #dc3545; }
+    .urgency-normal .urgency-icon { color: #10b981; }
+    .urgency-urgent .urgency-icon { color: #f59e0b; }
+    .urgency-emergency .urgency-icon { color: #ef4444; }
 
     .modal-footer {
-        padding: 15px 25px 25px;
+        padding: 20px 28px 28px;
         display: flex;
         justify-content: flex-end;
-        gap: 10px;
+        gap: 12px;
+        border-top: 1px solid #f3f4f6;
     }
 
     .btn {
         padding: 12px 24px;
         border: none;
-        border-radius: 6px;
-        font-size: 0.95rem;
-        font-weight: 500;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-weight: 600;
         cursor: pointer;
-        transition: all 0.3s;
+        transition: all 0.3s ease;
         text-decoration: none;
         display: inline-flex;
         align-items: center;
         justify-content: center;
+        gap: 8px;
     }
 
     .btn-secondary {
-        background-color: #6c757d;
-        color: white;
+        background: #f3f4f6;
+        color: #374151;
+        border: 2px solid #e5e7eb;
     }
 
     .btn-secondary:hover {
-        background-color: #5a6268;
+        background: #e5e7eb;
+        transform: translateY(-1px);
     }
 
     .btn-primary {
-        background-color: #007bff;
+        background: linear-gradient(135deg, #667eea, #764ba2);
         color: white;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
     }
 
     .btn-primary:hover {
-        background-color: #0056b3;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
     }
 
     .btn:disabled {
         opacity: 0.6;
         cursor: not-allowed;
+        transform: none !important;
     }
 
     .emergency-note {
-        background-color: #fff3cd;
-        border: 1px solid #ffeaa7;
-        border-radius: 6px;
-        padding: 12px;
-        margin-top: 15px;
+        background: linear-gradient(135deg, #fef3c7, #fde68a);
+        border: 2px solid #f59e0b;
+        border-radius: 12px;
+        padding: 16px;
+        margin-top: 16px;
     }
 
     .emergency-note small {
-        color: #856404;
-        font-size: 0.85rem;
-    }
-
-    @media (max-width: 768px) {
-        .modal-content {
-            width: 95%;
-            margin: 10px;
-        }
-        
-        .modal-header, .modal-body, .modal-footer {
-            padding-left: 20px;
-            padding-right: 20px;
-        }
-        
-        .urgency-options {
-            gap: 10px;
-        }
-        
-        .urgency-option {
-            padding: 12px;
-        }
+        color: #92400e;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
     }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="container">
-    <div class="calendar-container">
+    <div class="google-calendar-container">
+        <!-- Calendar Header -->
         <div class="calendar-header">
-            <div class="calendar-title">{{ selected_date|date:"l, d F - W" }}</div>
+            <h1 class="calendar-title">
+                <i class="fas fa-calendar-alt"></i>
+                Book Your Appointment
+            </h1>
             <div class="calendar-nav">
-                <button class="btn btn-sm btn-outline-secondary" onclick="navigateWeek(-1)">← Previous</button>
-                <button class="btn btn-sm btn-outline-primary" onclick="navigateToToday()">Today</button>
-                <button class="btn btn-sm btn-outline-secondary" onclick="navigateWeek(1)">Next →</button>
+                <button class="nav-btn" onclick="navigateMonth(-1)">
+                    <i class="fas fa-chevron-left"></i> Previous
+                </button>
+                <button class="nav-btn today-btn" onclick="navigateToToday()">
+                    <i class="fas fa-calendar-day"></i> Today
+                </button>
+                <button class="nav-btn" onclick="navigateMonth(1)">
+                    Next <i class="fas fa-chevron-right"></i>
+                </button>
             </div>
         </div>
 
-        <div class="month-year-selector">
-            <select class="form-select" id="month-select" onchange="changeMonthYear()">
-                {% for month in months %}
-                <option value="{{ month.value }}" {% if month.selected %}selected{% endif %}>{{ month.name }}</option>
+        <!-- Calendar Controls -->
+        <div class="calendar-controls">
+            <div class="month-year-selector">
+                <select class="form-select" id="month-select" onchange="changeMonthYear()">
+                    {% for month in months %}
+                    <option value="{{ month.value }}" {% if month.selected %}selected{% endif %}>{{ month.name }}</option>
+                    {% endfor %}
+                </select>
+                <select class="form-select" id="year-select" onchange="changeMonthYear()">
+                    {% for year in years %}
+                    <option value="{{ year }}" {% if year == current_year %}selected{% endif %}>{{ year }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="view-toggle">
+                <button class="view-btn active" data-view="month">
+                    <i class="fas fa-calendar"></i> Month
+                </button>
+                <button class="view-btn" data-view="week">
+                    <i class="fas fa-calendar-week"></i> Week
+                </button>
+            </div>
+        </div>
+
+        <!-- Calendar Grid -->
+        <div class="calendar-grid">
+            <div class="week-days-header">
+                <div class="week-day-header">Monday</div>
+                <div class="week-day-header">Tuesday</div>
+                <div class="week-day-header">Wednesday</div>
+                <div class="week-day-header">Thursday</div>
+                <div class="week-day-header">Friday</div>
+                <div class="week-day-header">Saturday</div>
+                <div class="week-day-header">Sunday</div>
+            </div>
+
+            <div class="calendar-days">
+                {% for day in days %}
+                <div class="day-cell 
+                            {% if day.date == selected_date %}selected{% endif %} 
+                            {% if day.date == today %}today{% endif %}
+                            {% if not day.is_current_month %}other-month{% endif %}"
+                     data-date="{{ day.date|date:'Y-m-d' }}"
+                     onclick="handleDateSelection(this)">
+                    <div class="day-number">
+                        {{ day.date.day }}
+                        {% if day.slot_count > 0 %}
+                        <span class="day-indicator"></span>
+                        {% endif %}
+                    </div>
+                    {% if day.slot_count > 0 %}
+                    <div class="slots-info">
+                        <i class="fas fa-clock"></i>
+                        {{ day.slot_count }} slot{{ day.slot_count|pluralize }}
+                    </div>
+                    {% else %}
+                    <div class="no-slots">No slots</div>
+                    {% endif %}
+                </div>
                 {% endfor %}
-            </select>
-            <select class="form-select" id="year-select" onchange="changeMonthYear()">
-                {% for year in years %}
-                <option value="{{ year }}" {% if year == current_year %}selected{% endif %}>{{ year }}</option>
+            </div>
+        </div>
+
+        <!-- Time Slots Panel -->
+        <div class="time-slots-panel">
+            <div class="slots-header">
+                <h3 class="slots-title">
+                    <i class="fas fa-clock"></i>
+                    Available Times
+                </h3>
+                <div class="selected-date-badge">
+                    {{ selected_date|date:"l, F j, Y" }}
+                </div>
+            </div>
+            
+            {% if available_slots %}
+            <div class="time-slots-grid">
+                {% for slot in available_slots %}
+                <div class="time-slot" 
+                     data-slot-id="{{ slot.id }}"
+                     onclick="showBookingModal(this)">
+                    <div class="time-slot-time">{{ slot.start_time|time:"H:i" }}</div>
+                    <div class="time-slot-duration">{{ slot.start_time|time:"H:i" }} - {{ slot.end_time|time:"H:i" }}</div>
+                </div>
                 {% endfor %}
-            </select>
-        </div>
-
-        <div class="week-days-header">
-            <div>Mon</div>
-            <div>Tue</div>
-            <div>Wed</div>
-            <div>Thu</div>
-            <div>Fri</div>
-            <div>Sat</div>
-            <div>Sun</div>
-        </div>
-
-        <div class="week-days">
-            {% for day in days %}
-            <div class="day-card 
-                        {% if day.date == selected_date %}active{% endif %} 
-                        {% if day.date == today %}today{% endif %}
-                        {% if not day.is_current_month %}other-month{% endif %}"
-                 data-date="{{ day.date|date:'Y-m-d' }}"
-                 onclick="handleDateSelection(this)">
-                <div class="day-date">{{ day.date.day }}</div>
-                {% if day.slot_count > 0 %}
-                <div class="day-slots">{{ day.slot_count }} slot{{ day.slot_count|pluralize }}</div>
-                {% endif %}
             </div>
-            {% endfor %}
-        </div>
-    </div>
-
-    <div class="time-slots-container">
-        <h4>Available Slots for {{ selected_date|date:"l, d F Y" }}</h4>
-        {% if available_slots %}
-        <div>
-            {% for slot in available_slots %}
-            <div class="time-slot" 
-                 data-slot-id="{{ slot.id }}"
-                 onclick="showBookingModal(this)">
-                {{ slot.start_time|time:"H:i" }} - {{ slot.end_time|time:"H:i" }}
+            {% else %}
+            <div class="no-slots-message">
+                <i class="fas fa-calendar-times"></i>
+                <h4>No Available Slots</h4>
+                <p>There are no available appointment slots for this day. Please select another date.</p>
             </div>
-            {% endfor %}
+            {% endif %}
         </div>
-        {% else %}
-        <div class="no-slots">No available slots for this day</div>
-        {% endif %}
     </div>
 </div>
 
-<!-- Booking Modal -->
+<!-- Enhanced Booking Modal -->
 <div class="booking-modal" id="bookingModal">
     <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title" id="bookingModalLabel">Book Appointment</h5>
+            <h5 class="modal-title" id="bookingModalLabel">
+                <i class="fas fa-calendar-plus"></i>
+                Book Appointment
+            </h5>
             <button type="button" class="close-btn" onclick="closeBookingModal()">×</button>
         </div>
         <div class="modal-body">
             <form id="bookingForm">
                 <div class="form-group">
                     <label for="appointmentReason" class="form-label">
+                        <i class="fas fa-clipboard-list"></i>
                         Reason for Appointment <span class="required">*</span>
                     </label>
                     <textarea 
                         class="form-control" 
                         id="appointmentReason" 
-                        placeholder="Please describe your symptoms or reason for consultation..." 
+                        placeholder="Please describe your symptoms or reason for consultation in detail..." 
                         required></textarea>
-                    <div class="form-text">This helps the doctor prepare for your consultation.</div>
+                    <div class="form-text">
+                        <i class="fas fa-info-circle"></i>
+                        This helps the doctor prepare for your consultation and provide better care.
+                    </div>
                 </div>
                 
                 <div class="form-group">
                     <label class="form-label">
+                        <i class="fas fa-exclamation-triangle"></i>
                         Urgency Level <span class="required">*</span>
                     </label>
                     <div class="urgency-options">
@@ -435,7 +788,7 @@
                             <i class="fas fa-clock urgency-icon"></i>
                             <div class="urgency-text">
                                 <div class="urgency-title">Normal</div>
-                                <div class="urgency-desc">Regular consultation</div>
+                                <div class="urgency-desc">Regular consultation - routine check-up or follow-up</div>
                             </div>
                         </div>
                         
@@ -444,7 +797,7 @@
                             <i class="fas fa-exclamation-triangle urgency-icon"></i>
                             <div class="urgency-text">
                                 <div class="urgency-title">Urgent</div>
-                                <div class="urgency-desc">Need attention soon</div>
+                                <div class="urgency-desc">Need attention soon - concerning symptoms</div>
                             </div>
                         </div>
                         
@@ -453,45 +806,62 @@
                             <i class="fas fa-exclamation-circle urgency-icon"></i>
                             <div class="urgency-text">
                                 <div class="urgency-title">Emergency</div>
-                                <div class="urgency-desc">Immediate attention required</div>
+                                <div class="urgency-desc">Immediate attention required - severe symptoms</div>
                             </div>
                         </div>
                     </div>
                     
                     <div class="emergency-note">
                         <small>
-                            <strong>Note:</strong> For life-threatening emergencies, please call emergency services immediately.
+                            <i class="fas fa-phone-alt"></i>
+                            <strong>Important:</strong> For life-threatening emergencies, please call emergency services (911) immediately instead of booking an appointment.
                         </small>
                     </div>
                 </div>
             </form>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" onclick="closeBookingModal()">Cancel</button>
+            <button type="button" class="btn btn-secondary" onclick="closeBookingModal()">
+                <i class="fas fa-times"></i> Cancel
+            </button>
             <button type="button" class="btn btn-primary" onclick="confirmBooking()">
-                <i class="fas fa-calendar-check" style="margin-right: 8px;"></i>Book Appointment
+                <i class="fas fa-calendar-check"></i> Book Appointment
             </button>
         </div>
     </div>
 </div>
+
 <script>
 let selectedSlotId = null;
+let currentView = 'month';
 
+// Enhanced modal functionality
 function showBookingModal(element) {
     selectedSlotId = element.getAttribute('data-slot-id');
-    const timeSlot = element.textContent.trim();
+    const timeSlot = element.querySelector('.time-slot-time').textContent;
+    const duration = element.querySelector('.time-slot-duration').textContent;
     
     // Update modal title with time slot
-    document.getElementById('bookingModalLabel').textContent = `Book Appointment - ${timeSlot}`;
+    document.getElementById('bookingModalLabel').innerHTML = `
+        <i class="fas fa-calendar-plus"></i>
+        Book Appointment - ${duration}
+    `;
     
-    // Show the modal
-    document.getElementById('bookingModal').classList.add('show');
-    document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    // Show the modal with animation
+    const modal = document.getElementById('bookingModal');
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+    
+    // Focus on the reason textarea
+    setTimeout(() => {
+        document.getElementById('appointmentReason').focus();
+    }, 300);
 }
 
 function closeBookingModal() {
-    document.getElementById('bookingModal').classList.remove('show');
-    document.body.style.overflow = 'auto'; // Restore scrolling
+    const modal = document.getElementById('bookingModal');
+    modal.classList.remove('show');
+    document.body.style.overflow = 'auto';
     
     // Reset form
     document.getElementById('appointmentReason').value = '';
@@ -521,6 +891,12 @@ function confirmBooking() {
         return;
     }
     
+    if (reason.length < 10) {
+        alert('Please provide a more detailed reason for your appointment (at least 10 characters).');
+        document.getElementById('appointmentReason').focus();
+        return;
+    }
+    
     if (!selectedSlotId) {
         alert('Please select a time slot.');
         return;
@@ -529,7 +905,7 @@ function confirmBooking() {
     // Show loading state
     const bookButton = document.querySelector('.modal-footer .btn-primary');
     const originalText = bookButton.innerHTML;
-    bookButton.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 8px;"></i>Booking...';
+    bookButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Booking...';
     bookButton.disabled = true;
     
     fetch(`{% url 'patientdashboard:book_video_consultation' 0 %}`.replace('0', selectedSlotId), {
@@ -572,21 +948,16 @@ function confirmBooking() {
     });
 }
 
-// Close modal when clicking outside
-document.getElementById('bookingModal').addEventListener('click', function(e) {
-    if (e.target === this) {
-        closeBookingModal();
-    }
-});
-
-// Close modal with Escape key
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape' && document.getElementById('bookingModal').classList.contains('show')) {
-        closeBookingModal();
-    }
-});
-
+// Enhanced date selection
 function handleDateSelection(element) {
+    // Remove selected class from all day cells
+    document.querySelectorAll('.day-cell').forEach(cell => {
+        cell.classList.remove('selected');
+    });
+    
+    // Add selected class to clicked cell
+    element.classList.add('selected');
+    
     const date = element.getAttribute('data-date');
     selectDate(date);
 }
@@ -597,35 +968,81 @@ function selectDate(date) {
     window.location.href = url.toString();
 }
 
-// Function to navigate weeks forward or backward
-function navigateWeek(weeks) {
+// Enhanced navigation
+function navigateMonth(months) {
     const urlParams = new URLSearchParams(window.location.search);
     let currentDate = urlParams.get('date') || '{{ selected_date|date:"Y-m-d" }}';
     let date = new Date(currentDate);
-    date.setDate(date.getDate() + (weeks * 7));
+    date.setMonth(date.getMonth() + months);
     selectDate(date.toISOString().split('T')[0]);
 }
 
-// Function to navigate to today's date
 function navigateToToday() {
     selectDate('{{ today|date:"Y-m-d" }}');
 }
 
-// Function to handle month/year changes
 function changeMonthYear() {
     const month = document.getElementById('month-select').value;
     const year = document.getElementById('year-select').value;
     
-    // Create a new URL with the selected year and month
     const url = new URL(window.location.href);
     url.searchParams.set('year', year);
     url.searchParams.set('month', month);
     
-    // Reset the date to 1st of the selected month
     const newDate = `${year}-${month.padStart(2, '0')}-01`;
     url.searchParams.set('date', newDate);
     
     window.location.href = url.toString();
 }
+
+// View toggle functionality
+document.querySelectorAll('.view-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        currentView = this.getAttribute('data-view');
+        
+        // You can implement week view here if needed
+        if (currentView === 'week') {
+            // Switch to week view (implement if needed)
+            console.log('Week view selected');
+        } else {
+            // Month view (current implementation)
+            console.log('Month view selected');
+        }
+    });
+});
+
+// Enhanced modal interactions
+document.getElementById('bookingModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeBookingModal();
+    }
+});
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && document.getElementById('bookingModal').classList.contains('show')) {
+        closeBookingModal();
+    }
+});
+
+// Add smooth scrolling to time slots when date is selected
+function scrollToTimeSlots() {
+    const timeSlotsPanel = document.querySelector('.time-slots-panel');
+    if (timeSlotsPanel) {
+        timeSlotsPanel.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'start'
+        });
+    }
+}
+
+// Auto-scroll to time slots when a date with slots is selected
+document.addEventListener('DOMContentLoaded', function() {
+    const selectedDate = document.querySelector('.day-cell.selected');
+    if (selectedDate && selectedDate.querySelector('.slots-info')) {
+        setTimeout(scrollToTimeSlots, 500);
+    }
+});
 </script>
 {% endblock %}
