@@ -1,0 +1,205 @@
+{% extends 'patientdashboard/patient_base.html' %}
+{% load static %}
+
+{% block title %}Chat - Patient Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <!-- Header -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body bg-gradient-primary text-white">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-comments fa-2x me-3"></i>
+                            <div>
+                                <h4 class="mb-0">Messages</h4>
+                                <p class="mb-0 opacity-75">Stay connected with your healthcare providers</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat List -->
+            <div class="row">
+                {% if existing_chats %}
+                    {% for chat in existing_chats %}
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card shadow-sm hover-shadow transition-all cursor-pointer" onclick="openChatRoom({{ chat.id }})">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="position-relative me-3">
+                                        {% if chat.practitioner.photo %}
+                                            <img src="{{ chat.practitioner.photo.url }}" 
+                                                 alt="Dr. {{ chat.practitioner.first_name }}" 
+                                                 class="rounded-circle"
+                                                 style="width: 60px; height: 60px; object-fit: cover;">
+                                        {% else %}
+                                            <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center" 
+                                                 style="width: 60px; height: 60px;">
+                                                <i class="fas fa-user-md text-white fa-2x"></i>
+                                            </div>
+                                        {% endif %}
+                                        <span class="position-absolute bottom-0 end-0 bg-success rounded-circle" 
+                                              style="width: 15px; height: 15px; border: 2px solid white;"></span>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h5 class="mb-1">Dr. {{ chat.practitioner.first_name }} {{ chat.practitioner.last_name }}</h5>
+                                        <p class="text-muted mb-0 small">{{ chat.practitioner.get_specialty_display }}</p>
+                                        <p class="text-muted mb-0 small">
+                                            <i class="fas fa-clock me-1"></i>
+                                            {{ chat.updated_at|timesince }} ago
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <i class="fas fa-chevron-right text-muted"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <!-- No Chats Available -->
+                    <div class="col-12">
+                        <div class="card shadow-sm">
+                            <div class="card-body text-center py-5">
+                                <div class="mb-4">
+                                    <i class="fas fa-comments fa-4x text-muted"></i>
+                                </div>
+                                <h4 class="mb-3">No Conversations Yet</h4>
+                                <p class="text-muted mb-4">Start chatting with your doctors after your appointments are accepted.</p>
+                                
+                                {% if practitioners %}
+                                    <h5 class="mb-3">Available Doctors:</h5>
+                                    <div class="row justify-content-center">
+                                        {% for practitioner in practitioners %}
+                                        <div class="col-md-6 col-lg-4 mb-3">
+                                            <div class="card border hover-shadow transition-all cursor-pointer" 
+                                                 onclick="startNewChat({{ practitioner.id }}, 'Dr. {{ practitioner.first_name|escapejs }} {{ practitioner.last_name|escapejs }}')">
+                                                <div class="card-body">
+                                                    <div class="d-flex align-items-center">
+                                                        {% if practitioner.photo %}
+                                                            <img src="{{ practitioner.photo.url }}" 
+                                                                 class="rounded-circle me-3"
+                                                                 style="width: 50px; height: 50px; object-fit: cover;">
+                                                        {% else %}
+                                                            <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center me-3" 
+                                                                 style="width: 50px; height: 50px;">
+                                                                <i class="fas fa-user-md text-white"></i>
+                                                            </div>
+                                                        {% endif %}
+                                                        <div class="flex-grow-1 text-start">
+                                                            <h6 class="mb-0">Dr. {{ practitioner.first_name }} {{ practitioner.last_name }}</h6>
+                                                            <small class="text-muted">{{ practitioner.get_specialty_display }}</small>
+                                                        </div>
+                                                        <i class="fas fa-comment-medical text-primary"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        You need to have an accepted appointment with a practitioner before you can start chatting.
+                                    </div>
+                                    <a href="{% url 'patientdashboard:appointments_patients' %}" class="btn btn-primary">
+                                        <i class="fas fa-calendar-plus me-2"></i>
+                                        Book an Appointment
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.hover-shadow {
+    transition: all 0.3s ease;
+}
+
+.hover-shadow:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    transform: translateY(-2px);
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.transition-all {
+    transition: all 0.3s ease;
+}
+
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
+}
+</style>
+
+<script>
+function openChatRoom(chatId) {
+    // Redirect to the actual chat room page
+    window.location.href = `/chat/room/${chatId}/`;
+}
+
+function startNewChat(practitionerId, doctorName) {
+    // Show loading
+    const btn = event.currentTarget;
+    const originalHTML = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Creating chat...';
+    btn.style.pointerEvents = 'none';
+    
+    // Create new chat room
+    fetch('/patient-dashboard/api/chat-room/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({
+            'practitioner_id': practitionerId
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Redirect to the chat room
+            window.location.href = `/chat/room/${data.chat_room_id}/`;
+        } else {
+            alert('Error creating chat: ' + (data.error || 'Unknown error'));
+            btn.innerHTML = originalHTML;
+            btn.style.pointerEvents = 'auto';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error creating chat. Please try again.');
+        btn.innerHTML = originalHTML;
+        btn.style.pointerEvents = 'auto';
+    });
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+{% endblock %}

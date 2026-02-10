@@ -1,0 +1,35 @@
+{% extends 'practitionerdashboard/base.html' %}
+{% load static %}
+
+{% block title %}Patient Messages - Practitioner Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="card shadow-sm mb-4" style="background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);">
+        <div class="card-body text-white">
+            <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-stethoscope fa-2x me-3"></i>
+                    <div>
+                        <h4 class="mb-0">Patient Communication Center</h4>
+                        <p class="mb-0 opacity-75 small">Secure messaging with your patients</p>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-success">
+                        <i class="fas fa-circle me-1"></i>Online
+                    </span>
+                    <span class="badge bg-light text-dark">
+                        <i class="fas fa-shield-alt me-1"></i>HIPAA Compliant
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Interface -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm" style="height: 600px;">
+                <d

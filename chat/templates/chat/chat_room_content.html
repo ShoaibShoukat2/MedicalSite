@@ -1,75 +1,24 @@
-<!-- Chat Room Content -->
+<!-- Chat Room Content with Tailwind CSS -->
 <style>
-/* Chat Layout Fixes */
-.chat-room-container {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    max-height: 650px;
-    background: white;
-}
-
-.chat-header {
-    flex-shrink: 0;
-    background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
-}
-
-.messages-container {
-    flex: 1;
-    overflow-y: auto;
-    min-height: 300px;
-    max-height: 400px;
-    background: linear-gradient(to bottom, #f8fafc 0%, #ffffff 100%);
-}
-
-.input-container {
-    flex-shrink: 0;
-    background: white;
-    border-top: 1px solid #e5e7eb;
-}
-
-/* Message Bubbles */
-.message-sent {
-    background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
-    color: white;
-    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
-}
-
-.message-received {
-    background: #f1f5f9;
-    color: #374151;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.practitioner-sent {
-    background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
-}
-
-.patient-sent {
-    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
-}
-
-/* Scrollbar */
-.scrollbar-thin::-webkit-scrollbar {
+/* Custom scrollbar for messages */
+.messages-scroll::-webkit-scrollbar {
     width: 6px;
 }
 
-.scrollbar-thin::-webkit-scrollbar-track {
+.messages-scroll::-webkit-scrollbar-track {
     background: #f1f5f9;
-    border-radius: 3px;
 }
 
-.scrollbar-thin::-webkit-scrollbar-thumb {
+.messages-scroll::-webkit-scrollbar-thumb {
     background: #cbd5e1;
     border-radius: 3px;
 }
 
-.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+.messages-scroll::-webkit-scrollbar-thumb:hover {
     background: #94a3b8;
 }
 
-/* Animations */
+/* Message animations */
 @keyframes slideInUp {
     from {
         opacity: 0;
@@ -81,128 +30,175 @@
     }
 }
 
-.animate-slide-up {
+.message-item {
     animation: slideInUp 0.3s ease-out;
 }
 
-/* Input Focus */
-.chat-input:focus {
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-    border-color: #3B82F6;
+/* Online pulse animation */
+@keyframes pulse-dot {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.pulse-dot {
+    animation: pulse-dot 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Quick reply hover effect */
+.quick-reply-btn {
+    transition: all 0.3s ease;
+}
+
+.quick-reply-btn:hover {
+    transform: translateY(-2px);
+}
+
+/* Chat container height fix */
+.chat-room-wrapper {
+    height: calc(100vh - 200px);
+    min-height: 500px;
+    max-height: 800px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Messages container with proper scrolling */
+.messages-container-wrapper {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0; /* Important for flex scrolling */
+}
+
+@media (max-width: 768px) {
+    .chat-room-wrapper {
+        height: calc(100vh - 150px);
+        min-height: 400px;
+    }
 }
 </style>
 
-<!-- Chat Room Container -->
-<div class="chat-room-container">
+<!-- Chat Room Container with Fixed Height -->
+<div class="chat-room-wrapper bg-white rounded-lg shadow-lg">
     <!-- Chat Header -->
-    <div class="chat-header text-white p-4 flex items-center justify-between">
-        <div class="flex items-center space-x-4">
-            <button class="md:hidden w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30 transition-colors" onclick="goBackToSidebar()">
-                <i class="fas fa-arrow-left"></i>
-            </button>
-            
-            <div class="flex items-center space-x-3">
-                {% if user_type == 'patient' %}
-                    {% if chat_room.other_user.photo %}
-                        <img src="{{ chat_room.other_user.photo.url }}" 
-                             alt="{{ chat_room.other_user.first_name }}"
-                             class="w-12 h-12 rounded-full object-cover border-2 border-white shadow-lg">
-                    {% elif chat_room.other_user.profile_photo %}
-                        <img src="{{ chat_room.other_user.profile_photo.url }}" 
-                             alt="{{ chat_room.other_user.first_name }}"
-                             class="w-12 h-12 rounded-full object-cover border-2 border-white shadow-lg">
-                    {% else %}
-                        <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center text-white font-bold shadow-lg">
-                            {{ chat_room.other_user.first_name|slice:":1"|upper }}
-                        </div>
-                    {% endif %}
-                {% else %}
-                    {% if chat_room.other_user.profile_photo %}
-                        <img src="{{ chat_room.other_user.profile_photo.url }}" 
-                             alt="{{ chat_room.other_user.first_name }}"
-                             class="w-12 h-12 rounded-full object-cover border-2 border-white shadow-lg">
-                    {% else %}
-                        <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center text-white font-bold shadow-lg border-2 border-white">
-                            {{ chat_room.other_user.first_name|slice:":1"|upper }}{{ chat_room.other_user.last_name|slice:":1"|upper }}
-                        </div>
-                    {% endif %}
-                {% endif %}
+    <div class="bg-gradient-to-r from-doctor-blue to-blue-500 text-white px-4 sm:px-6 py-3 sm:py-4 flex-shrink-0 shadow-lg rounded-t-lg">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3 sm:space-x-4 flex-1 min-w-0">
+                <!-- Back button for mobile -->
+                <button onclick="goBackToSidebar()" class="lg:hidden text-white hover:bg-white hover:bg-opacity-20 rounded-full p-2 transition-all flex-shrink-0">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
                 
-                <div>
-                    <h2 class="font-bold text-lg text-white">
-                        {% if user_type == 'patient' %}
-                            Dr. {{ chat_room.other_user.first_name }} {{ chat_room.other_user.last_name }}
+                <!-- User Avatar and Info -->
+                <div class="flex items-center space-x-2 sm:space-x-3 flex-1 min-w-0">
+                    {% if user_type == 'patient' %}
+                        {% if chat_room.other_user.photo %}
+                            <img src="{{ chat_room.other_user.photo.url }}" 
+                                 alt="{{ chat_room.other_user.first_name }}"
+                                 class="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover border-2 border-white shadow-lg flex-shrink-0">
+                        {% elif chat_room.other_user.profile_photo %}
+                            <img src="{{ chat_room.other_user.profile_photo.url }}" 
+                                 alt="{{ chat_room.other_user.first_name }}"
+                                 class="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover border-2 border-white shadow-lg flex-shrink-0">
                         {% else %}
-                            {{ chat_room.other_user.first_name }} {{ chat_room.other_user.last_name }}
+                            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center text-white font-bold shadow-lg flex-shrink-0">
+                                {{ chat_room.other_user.first_name|slice:":1"|upper }}
+                            </div>
                         {% endif %}
-                    </h2>
-                    <div class="flex items-center space-x-2 text-sm opacity-90">
-                        <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                        <span>Online</span>
+                    {% else %}
+                        {% if chat_room.other_user.profile_photo %}
+                            <img src="{{ chat_room.other_user.profile_photo.url }}" 
+                                 alt="{{ chat_room.other_user.first_name }}"
+                                 class="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover border-2 border-white shadow-lg flex-shrink-0">
+                        {% else %}
+                            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center text-white font-bold shadow-lg border-2 border-white flex-shrink-0">
+                                {{ chat_room.other_user.first_name|slice:":1"|upper }}{{ chat_room.other_user.last_name|slice:":1"|upper }}
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                    
+                    <div class="flex-1 min-w-0">
+                        <h2 class="font-bold text-base sm:text-lg truncate">
+                            {% if user_type == 'patient' %}
+                                Dr. {{ chat_room.other_user.first_name }} {{ chat_room.other_user.last_name }}
+                            {% else %}
+                                {{ chat_room.other_user.first_name }} {{ chat_room.other_user.last_name }}
+                            {% endif %}
+                        </h2>
+                        <div class="flex items-center space-x-2 text-xs sm:text-sm opacity-90">
+                            <div class="w-2 h-2 bg-green-400 rounded-full pulse-dot"></div>
+                            <span>Online</span>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <div class="flex items-center space-x-2">
-            {% if user_type == 'practitioner' %}
-                <button class="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30 transition-all duration-300" title="Patient Records">
-                    <i class="fas fa-file-medical"></i>
+            
+            <!-- Action Buttons -->
+            <div class="flex items-center space-x-1 sm:space-x-2 flex-shrink-0">
+                {% if user_type == 'practitioner' %}
+                    <button class="w-8 h-8 sm:w-10 sm:h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30 transition-all" title="Patient Records">
+                        <i class="fas fa-file-medical text-sm sm:text-base"></i>
+                    </button>
+                {% endif %}
+                <button class="w-8 h-8 sm:w-10 sm:h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30 transition-all" title="Video Call">
+                    <i class="fas fa-video text-sm sm:text-base"></i>
                 </button>
-            {% endif %}
-            <button class="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30 transition-all duration-300" title="Video Call">
-                <i class="fas fa-video"></i>
-            </button>
-            <button class="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30 transition-all duration-300" title="Voice Call">
-                <i class="fas fa-phone"></i>
-            </button>
+                <button class="w-8 h-8 sm:w-10 sm:h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30 transition-all" title="Voice Call">
+                    <i class="fas fa-phone text-sm sm:text-base"></i>
+                </button>
+            </div>
         </div>
     </div>
 
-    <!-- Messages Container -->
-    <div class="messages-container p-4 space-y-3 scrollbar-thin" id="messages-container">
-        {% for message in messages %}
-            <div class="message-item animate-slide-up {% if message.sender_id == user_id %}flex justify-end{% else %}flex justify-start{% endif %}">
-                
-                {% if message.sender_id == user_id %}
-                    <!-- Sent Message -->
-                    <div class="max-w-xs lg:max-w-md">
-                        <div class="message-sent {% if user_type == 'patient' %}patient-sent{% else %}practitioner-sent{% endif %} text-white rounded-2xl rounded-br-md px-4 py-3 shadow-lg">
-                            <p class="text-sm leading-relaxed break-words">{{ message.content }}</p>
+    <!-- Messages Container with Scrolling -->
+    <div class="messages-container-wrapper messages-scroll bg-gradient-to-b from-gray-50 to-white p-4 sm:p-6" id="messages-container">
+        <div class="space-y-3 sm:space-y-4">
+            {% for message in messages %}
+                <div class="message-item {% if message.sender_id == user_id %}flex justify-end{% else %}flex justify-start{% endif %}">
+                    {% if message.sender_id == user_id %}
+                        <!-- Sent Message -->
+                        <div class="max-w-xs sm:max-w-sm lg:max-w-md">
+                            <div class="{% if user_type == 'patient' %}bg-gradient-to-r from-green-500 to-green-600{% else %}bg-gradient-to-r from-doctor-blue to-blue-600{% endif %} text-white rounded-2xl rounded-br-md px-3 sm:px-4 py-2 sm:py-3 shadow-lg">
+                                <p class="text-sm leading-relaxed break-words">{{ message.content }}</p>
+                            </div>
+                            <div class="flex justify-end items-center space-x-1 mt-1 px-2">
+                                <span class="text-xs text-gray-500">{{ message.timestamp|date:"g:i A" }}</span>
+                                <i class="fas fa-check-double text-blue-500 text-xs" title="Delivered"></i>
+                            </div>
                         </div>
-                        <div class="flex justify-end mt-1 items-center space-x-1">
-                            <span class="text-xs text-gray-500">{{ message.timestamp|date:"g:i A" }}</span>
-                            <i class="fas fa-check-double text-blue-500 text-xs" title="Delivered"></i>
+                    {% else %}
+                        <!-- Received Message -->
+                        <div class="max-w-xs sm:max-w-sm lg:max-w-md">
+                            <div class="bg-gray-100 text-gray-800 rounded-2xl rounded-bl-md px-3 sm:px-4 py-2 sm:py-3 shadow-md border border-gray-200">
+                                <p class="text-sm leading-relaxed break-words">{{ message.content }}</p>
+                            </div>
+                            <div class="flex justify-start mt-1 px-2">
+                                <span class="text-xs text-gray-500">{{ message.timestamp|date:"g:i A" }}</span>
+                            </div>
                         </div>
-                    </div>
-                {% else %}
-                    <!-- Received Message -->
-                    <div class="max-w-xs lg:max-w-md">
-                        <div class="message-received rounded-2xl rounded-bl-md px-4 py-3 shadow-lg">
-                            <p class="text-sm leading-relaxed break-words">{{ message.content }}</p>
-                        </div>
-                        <div class="flex justify-start mt-1">
-                            <span class="text-xs text-gray-500">{{ message.timestamp|date:"g:i A" }}</span>
-                        </div>
-                    </div>
-                {% endif %}
-            </div>
-        {% empty %}
-            <div class="flex flex-col items-center justify-center h-full text-center py-12">
-                <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mb-6 shadow-xl">
-                    <i class="fas fa-comment-dots text-2xl text-white"></i>
+                    {% endif %}
                 </div>
-                <h3 class="text-lg font-semibold text-gray-900 mb-2">Start the Conversation</h3>
-                <p class="text-gray-500 text-sm max-w-sm leading-relaxed">Send your first message to begin chatting.</p>
-            </div>
-        {% endfor %}
+            {% empty %}
+                <div class="flex flex-col items-center justify-center h-full text-center py-12">
+                    <div class="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mb-6 shadow-xl">
+                        <i class="fas fa-comment-dots text-2xl sm:text-3xl text-white"></i>
+                    </div>
+                    <h3 class="text-lg sm:text-xl font-semibold text-gray-900 mb-2">Start the Conversation</h3>
+                    <p class="text-gray-500 text-sm max-w-sm">Send your first message to begin chatting.</p>
+                </div>
+            {% endfor %}
+        </div>
     </div>
 
     <!-- Message Input -->
-    <div class="input-container p-4">
-        <form id="chat-form" class="flex items-center space-x-3">
+    <div class="border-t border-gray-200 bg-white p-4 flex-shrink-0">
+        <form id="chat-form" class="flex items-center space-x-3 mb-3">
             <!-- Attachment Button -->
-            <button type="button" class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-blue-500 hover:text-white transition-all duration-300" title="Attach File">
+            <button type="button" class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-doctor-blue hover:text-white transition-all" title="Attach File">
                 <i class="fas fa-paperclip text-sm"></i>
             </button>
             
@@ -211,7 +207,7 @@
                 <input type="text" 
                        id="chat-message-input" 
                        placeholder="{% if user_type == 'practitioner' %}Type your professional response...{% else %}Type your message...{% endif %}" 
-                       class="chat-input w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
+                       class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-doctor-blue focus:border-transparent transition-all"
                        autocomplete="off"
                        maxlength="1000">
             </div>
@@ -219,31 +215,31 @@
             <!-- Send Button -->
             <button type="submit" 
                     id="send-button"
-                    class="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full flex items-center justify-center hover:shadow-lg transform hover:scale-105 active:scale-95 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
-                <i class="fas fa-paper-plane text-lg"></i>
+                    class="w-12 h-12 bg-gradient-to-r from-doctor-blue to-blue-600 text-white rounded-full flex items-center justify-center hover:shadow-lg transform hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                <i class="fas fa-paper-plane"></i>
             </button>
         </form>
         
         <!-- Quick Replies -->
-        <div class="flex flex-wrap gap-2 mt-3">
+        <div class="flex flex-wrap gap-2">
             {% if user_type == 'practitioner' %}
-                <button class="quick-reply-btn px-3 py-2 bg-blue-100 text-blue-700 rounded-full text-sm hover:bg-blue-500 hover:text-white transition-all duration-300" data-message="Thank you for reaching out. How can I help you today?">
+                <button class="quick-reply-btn px-3 py-2 bg-blue-100 text-blue-700 rounded-full text-sm hover:bg-doctor-blue hover:text-white transition-all shadow-sm" data-message="Thank you for reaching out. How can I help you today?">
                     <i class="fas fa-stethoscope mr-1"></i>How can I help?
                 </button>
-                <button class="quick-reply-btn px-3 py-2 bg-green-100 text-green-700 rounded-full text-sm hover:bg-green-500 hover:text-white transition-all duration-300" data-message="I understand your concern. Let me review your case.">
+                <button class="quick-reply-btn px-3 py-2 bg-green-100 text-green-700 rounded-full text-sm hover:bg-green-600 hover:text-white transition-all shadow-sm" data-message="I understand your concern. Let me review your case.">
                     <i class="fas fa-check-circle mr-1"></i>I understand
                 </button>
-                <button class="quick-reply-btn px-3 py-2 bg-purple-100 text-purple-700 rounded-full text-sm hover:bg-purple-500 hover:text-white transition-all duration-300" data-message="Let's schedule a follow-up appointment to discuss this further.">
+                <button class="quick-reply-btn px-3 py-2 bg-purple-100 text-purple-700 rounded-full text-sm hover:bg-purple-600 hover:text-white transition-all shadow-sm" data-message="Let's schedule a follow-up appointment to discuss this further.">
                     <i class="fas fa-calendar-plus mr-1"></i>Schedule Follow-up
                 </button>
             {% else %}
-                <button class="quick-reply-btn px-3 py-2 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-blue-500 hover:text-white transition-all duration-300" data-message="Thank you!">
+                <button class="quick-reply-btn px-3 py-2 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-doctor-blue hover:text-white transition-all shadow-sm" data-message="Thank you!">
                     <i class="fas fa-thumbs-up mr-1"></i>Thank you!
                 </button>
-                <button class="quick-reply-btn px-3 py-2 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-green-500 hover:text-white transition-all duration-300" data-message="I understand">
+                <button class="quick-reply-btn px-3 py-2 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-green-600 hover:text-white transition-all shadow-sm" data-message="I understand">
                     <i class="fas fa-check mr-1"></i>I understand
                 </button>
-                <button class="quick-reply-btn px-3 py-2 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-purple-500 hover:text-white transition-all duration-300" data-message="Can we schedule a call?">
+                <button class="quick-reply-btn px-3 py-2 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-purple-600 hover:text-white transition-all shadow-sm" data-message="Can we schedule a call?">
                     <i class="fas fa-phone mr-1"></i>Schedule call
                 </button>
             {% endif %}
@@ -252,8 +248,9 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('🏥 Chat room initialized');
+// Initialize chat room
+function initializeChatRoom() {
+    console.log('🏥 Chat room initialized with Tailwind');
     
     // DOM Elements
     const chatForm = document.getElementById('chat-form');
@@ -267,15 +264,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const userId = '{{ user_id }}';
     
     let isSending = false;
-
-    // Initialize chat
-    function initializeChat() {
-        scrollToBottom();
-        if (messageInput) {
-            messageInput.focus();
-        }
-        console.log('✅ Chat ready');
-    }
 
     // Scroll to bottom
     function scrollToBottom() {
@@ -291,7 +279,6 @@ document.addEventListener('DOMContentLoaded', function() {
         isSending = true;
         
         try {
-            // Show sending state
             if (sendButton) {
                 sendButton.disabled = true;
                 sendButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
@@ -312,7 +299,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = await response.json();
             
             if (data.success) {
-                // Add message to UI
                 addMessageToUI(message, true);
                 console.log('✅ Message sent');
                 return true;
@@ -328,38 +314,35 @@ document.addEventListener('DOMContentLoaded', function() {
         } finally {
             isSending = false;
             
-            // Reset send button
             if (sendButton) {
                 sendButton.disabled = false;
-                sendButton.innerHTML = '<i class="fas fa-paper-plane text-lg"></i>';
+                sendButton.innerHTML = '<i class="fas fa-paper-plane"></i>';
             }
         }
     }
 
     // Add message to UI
-    function addMessageToUI(content, isSent) {
+    function addMessageToUI(content, isSent, timestamp) {
         if (!messagesContainer) return;
         
         const messageDiv = document.createElement('div');
-        messageDiv.className = `message-item animate-slide-up ${isSent ? 'flex justify-end' : 'flex justify-start'}`;
+        messageDiv.className = `message-item ${isSent ? 'flex justify-end' : 'flex justify-start'}`;
         
-        const currentTime = new Date().toLocaleTimeString('en-US', { 
-            hour: 'numeric', 
-            minute: 'numeric', 
-            hour12: true 
-        });
+        const displayTime = timestamp ? 
+            new Date(timestamp).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }) :
+            new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
 
         const bubbleClass = isSent ? 
-            `message-sent ${userType === 'patient' ? 'patient-sent' : 'practitioner-sent'} text-white` : 
-            'message-received';
+            (userType === 'patient' ? 'bg-gradient-to-r from-green-500 to-green-600' : 'bg-gradient-to-r from-doctor-blue to-blue-600') + ' text-white' : 
+            'bg-gray-100 text-gray-800 border border-gray-200';
 
         messageDiv.innerHTML = `
             <div class="max-w-xs lg:max-w-md">
                 <div class="${bubbleClass} rounded-2xl ${isSent ? 'rounded-br-md' : 'rounded-bl-md'} px-4 py-3 shadow-lg">
                     <p class="text-sm leading-relaxed break-words">${escapeHtml(content)}</p>
                 </div>
-                <div class="flex ${isSent ? 'justify-end' : 'justify-start'} mt-1 items-center space-x-1">
-                    <span class="text-xs text-gray-500">${currentTime}</span>
+                <div class="flex ${isSent ? 'justify-end' : 'justify-start'} items-center space-x-1 mt-1 px-2">
+                    <span class="text-xs text-gray-500">${displayTime}</span>
                     ${isSent ? '<i class="fas fa-check-double text-blue-500 text-xs" title="Delivered"></i>' : ''}
                 </div>
             </div>
@@ -378,7 +361,7 @@ document.addEventListener('DOMContentLoaded', function() {
             '"': '&quot;',
             "'": '&#039;'
         };
-        return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+        return text.replace(/[&<>"']/g, m => map[m]);
     }
 
     function getCookie(name) {
@@ -400,78 +383,134 @@ document.addEventListener('DOMContentLoaded', function() {
     if (chatForm) {
         chatForm.addEventListener('submit', async function(e) {
             e.preventDefault();
+            e.stopPropagation();
             
-            if (!messageInput || isSending) return;
+            if (!messageInput || isSending) return false;
 
             const message = messageInput.value.trim();
+            if (!message) return false;
             
-            if (!message) return;
-            
-            console.log('📤 Sending message:', message.substring(0, 50) + '...');
-            
-            // Clear input immediately
             const messageToSend = message;
             messageInput.value = '';
             
-            // Send message
             const success = await sendMessage(messageToSend);
-            
-            if (success) {
-                console.log('✅ Message sent successfully');
-            } else {
-                // Restore message on failure
+            if (!success) {
                 messageInput.value = messageToSend;
             }
             
-            // Focus back on input
             messageInput.focus();
+            return false;
         });
     }
 
     // Quick replies
     document.querySelectorAll('.quick-reply-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
             const message = this.getAttribute('data-message');
             if (message && !isSending && messageInput) {
                 messageInput.value = message;
                 messageInput.focus();
                 
-                // Auto-send after short delay
                 setTimeout(() => {
                     if (chatForm && !isSending) {
-                        chatForm.dispatchEvent(new Event('submit'));
+                        chatForm.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
                     }
                 }, 200);
             }
+            return false;
         });
     });
 
     // Enter key to send
     if (messageInput) {
         messageInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter' && !isSending) {
+            if (e.key === 'Enter' && !e.shiftKey && !isSending) {
                 e.preventDefault();
+                e.stopPropagation();
                 if (chatForm) {
-                    chatForm.dispatchEvent(new Event('submit'));
+                    chatForm.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
                 }
+                return false;
             }
         });
     }
 
-    // Mobile back button
-    window.goBackToSidebar = function() {
-        if (window.innerWidth < 768) {
-            const sidebar = document.getElementById('chat-sidebar');
-            const chatArea = document.getElementById('chat-area');
+    // Message polling
+    let pollingInterval = null;
+    
+    function getCurrentMessageCount() {
+        return messagesContainer ? messagesContainer.querySelectorAll('.message-item').length : 0;
+    }
+    
+    async function loadNewMessages() {
+        try {
+            const response = await fetch(`/chat/get-messages/${roomId}/`);
+            const data = await response.json();
             
-            if (sidebar && chatArea) {
-                sidebar.classList.remove('-translate-x-full');
-                chatArea.classList.add('hidden');
+            if (data.success && data.messages) {
+                const currentCount = getCurrentMessageCount();
+                const newMessagesCount = data.messages.length - currentCount;
+                
+                if (newMessagesCount > 0) {
+                    console.log(`📨 ${newMessagesCount} new message(s) received`);
+                    
+                    if (messagesContainer) {
+                        messagesContainer.innerHTML = '';
+                        
+                        data.messages.forEach(msg => {
+                            const isSent = (msg.sender_type === userType);
+                            addMessageToUI(msg.content, isSent, msg.full_timestamp);
+                        });
+                        
+                        scrollToBottom();
+                    }
+                }
             }
+        } catch (error) {
+            console.error('❌ Error loading messages:', error);
         }
-    };
+    }
+    
+    function startPolling() {
+        if (pollingInterval) clearInterval(pollingInterval);
+        pollingInterval = setInterval(loadNewMessages, 3000);
+        console.log('🔄 Message polling started');
+    }
+    
+    function stopPolling() {
+        if (pollingInterval) {
+            clearInterval(pollingInterval);
+            pollingInterval = null;
+        }
+    }
+    
+    startPolling();
+    
+    document.addEventListener('visibilitychange', function() {
+        document.hidden ? stopPolling() : startPolling();
+    });
+    
+    window.addEventListener('beforeunload', stopPolling);
 
     // Initialize
-    initializeChat();
-});
+    scrollToBottom();
+    if (messageInput) messageInput.focus();
+}
+
+// Mobile back button
+window.goBackToSidebar = function() {
+    window.history.back();
+};
+
+// Auto-initialize
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeChatRoom);
+} else {
+    initializeChatRoom();
+}
+
+window.initializeChatRoom = initializeChatRoom;
 </script>

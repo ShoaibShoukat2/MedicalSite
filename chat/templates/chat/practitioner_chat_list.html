@@ -1,514 +1,358 @@
 {% extends 'practitionerdashboard/base.html' %}
 {% load static %}
 
-{% block title %}
-    Patient Messages - Practitioner Dashboard
-{% endblock %}
-
 {% block content %}
 <style>
-/* Practitioner-specific styling */
-.practitioner-sent {
-    background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-}
-
-.patient-received {
-    background: #F0F9FF;
-    border: 1px solid #E0F2FE;
-    color: #0F172A;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-/* Enhanced animations */
-@keyframes slideInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px) scale(0.98);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-.animate-slide-up {
-    animation: slideInUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Typing animation */
-@keyframes typing {
-    0%, 60%, 100% { 
-        transform: translateY(0); 
-        opacity: 0.4; 
-    }
-    30% { 
-        transform: translateY(-6px); 
-        opacity: 1; 
-    }
-}
-
-.animate-typing {
-    animation: typing 1.4s infinite;
-}
-
-/* Send button animation */
-@keyframes sendPulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-}
-
-.send-pulse {
-    animation: sendPulse 0.3s ease-in-out;
-}
-
-/* Improved scrollbar */
-.scrollbar-thin {
-    scrollbar-width: thin;
-    scrollbar-color: #CBD5E1 #F1F5F9;
-}
-
-.scrollbar-thin::-webkit-scrollbar {
+/* Custom scrollbar for patient list */
+.patient-list-scroll::-webkit-scrollbar {
     width: 6px;
 }
 
-.scrollbar-thin::-webkit-scrollbar-track {
-    background: #F1F5F9;
+.patient-list-scroll::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+
+.patient-list-scroll::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #cbd5e1 0%, #94a3b8 100%);
     border-radius: 3px;
 }
 
-.scrollbar-thin::-webkit-scrollbar-thumb {
-    background: #CBD5E1;
-    border-radius: 3px;
+.patient-list-scroll::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
 }
 
-.scrollbar-thin::-webkit-scrollbar-thumb:hover {
-    background: #94A3B8;
+/* Smooth transitions */
+.patient-item {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Input focus effects */
-.chat-input:focus {
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-    border-color: #3B82F6;
+/* Hover effect with border */
+.patient-item:hover {
+    transform: translateX(8px);
 }
 
-/* Chat container fixes */
-.chat-room-container {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    min-height: 500px;
+/* Active state */
+.patient-item.active {
+    background: linear-gradient(to right, #dbeafe 0%, #eff6ff 100%);
+    border-left: 4px solid #1e40af;
 }
 
-.messages-container {
-    flex: 1;
-    overflow-y: auto;
-    min-height: 300px;
-}
-
-.input-container {
-    flex-shrink: 0;
-    background: white;
-    border-top: 1px solid #e5e7eb;
-}
-
-/* Professional styling */
-.professional-card {
-    background: white;
-    border: 1px solid #E5E7EB;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.professional-card:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.practitioner-header {
-    background: linear-gradient(135deg, #1E40AF 0%, #1D4ED8 100%);
-}
-
-.practitioner-sidebar {
-    background: linear-gradient(180deg, #F8FAFC 0%, #F1F5F9 100%);
-}
-
-.patient-avatar {
-    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
-}
-
-/* Message status indicators */
-.message-delivered {
-    color: #10B981;
-}
-
-.message-read {
-    color: #3B82F6;
-}
-
-/* Mobile-first responsive design */
-@media (max-width: 767px) {
-    .chat-container {
-        height: calc(100vh - 120px) !important;
-        margin: 0 -1rem;
+/* Badge pulse animation */
+@keyframes pulse-badge {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
     }
-    
-    .chat-interface {
-        border-radius: 0 !important;
-        height: 100% !important;
-    }
-    
-    .chat-sidebar {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100% !important;
-        height: 100%;
-        background: white;
-        z-index: 20;
-        transform: translateX(-100%);
-        transition: transform 0.3s ease-in-out;
-    }
-    
-    .chat-sidebar.show {
-        transform: translateX(0);
-    }
-    
-    .chat-area {
-        width: 100% !important;
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: 100%;
-    }
-    
-    .message-bubble {
-        max-width: 85% !important;
+    50% {
+        opacity: 0.8;
+        transform: scale(1.05);
     }
 }
 
-@media (max-width: 640px) {
-    .message-bubble {
-        max-width: 90% !important;
-        font-size: 0.875rem;
+.unread-badge {
+    animation: pulse-badge 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Online indicator pulse */
+@keyframes pulse-online {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
     }
-    
-    .chat-input {
-        font-size: 16px !important;
+    50% {
+        box-shadow: 0 0 0 6px rgba(34, 197, 94, 0);
     }
+}
+
+.online-indicator {
+    animation: pulse-online 2s ease-in-out infinite;
+}
+
+/* Float animation for empty state */
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.float-animation {
+    animation: float 3s ease-in-out infinite;
+}
+
+/* Badge glow */
+@keyframes badge-glow {
+    0%, 100% {
+        box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+    }
+}
+
+.badge-glow {
+    animation: badge-glow 2s ease-in-out infinite;
 }
 </style>
 
-<!-- Practitioner Chat Interface -->
-<div class="space-y-6">
-    <!-- Header Section -->
-    <div class="professional-card rounded-2xl p-6">
-        <div class="flex items-center justify-between">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-800 mb-2">
-                    <i class="fas fa-stethoscope text-blue-600 mr-3"></i>
-                    Patient Communication Center
-                </h1>
-                <p class="text-gray-600">Secure messaging with your patients</p>
-            </div>
-            <div class="flex items-center space-x-4">
-                <div class="bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-semibold">
-                    <i class="fas fa-circle text-green-500 mr-2"></i>
-                    Online
-                </div>
-                <div class="bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-semibold">
-                    <i class="fas fa-shield-alt mr-2"></i>
-                    HIPAA Compliant
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-6 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+        <!-- Enhanced Header -->
+        <div class="bg-gradient-to-r from-doctor-dark-blue via-doctor-blue to-blue-500 rounded-2xl shadow-2xl mb-6 overflow-hidden">
+            <div class="px-6 py-6">
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                    <div class="flex items-center space-x-4">
+                        <div class="bg-white bg-opacity-20 rounded-full p-3 backdrop-blur-sm">
+                            <i class="fas fa-stethoscope text-3xl text-white"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-2xl lg:text-3xl font-bold text-white mb-1">Patient Communication Center</h1>
+                            <p class="text-blue-100 text-sm lg:text-base flex items-center">
+                                <i class="fas fa-lock mr-2"></i>
+                                Secure, HIPAA-compliant messaging with your patients
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-3">
+                        <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-green-500 text-white badge-glow">
+                            <i class="fas fa-shield-alt mr-2"></i>
+                            HIPAA Compliant
+                        </span>
+                        <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-white text-doctor-blue">
+                            <i class="fas fa-users mr-2"></i>
+                            {{ chat_rooms|length }} Active Chat{{ chat_rooms|length|pluralize }}
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Chat Interface -->
-    <div class="professional-card rounded-2xl overflow-hidden chat-interface" style="height: 650px;">
-        <div class="flex h-full relative chat-container">
-            <!-- Patient List Sidebar -->
-            <div class="w-full md:w-96 practitioner-sidebar border-r border-gray-200 flex flex-col transition-transform duration-300 ease-in-out md:translate-x-0" 
-                 id="chat-sidebar"
-                 style="z-index: 10;">
-                <!-- Search -->
-                <div class="p-4 border-b border-gray-200 bg-white">
-                    <div class="relative">
-                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                        <input type="text" 
-                               placeholder="Search patients..." 
-                               class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
-                               id="search-input">
+        <!-- Chat Interface -->
+        <div class="bg-white rounded-2xl shadow-2xl overflow-hidden" style="height: calc(100vh - 250px); min-height: 600px;">
+            <div class="flex h-full">
+                <!-- Patient List Sidebar -->
+                <div class="w-full lg:w-1/3 xl:w-1/4 border-r border-gray-200 flex flex-col bg-gradient-to-b from-gray-50 to-white">
+                    <!-- Search Bar -->
+                    <div class="p-4 border-b border-gray-200 bg-white sticky top-0 z-10">
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-search text-doctor-blue"></i>
+                            </div>
+                            <input type="text" 
+                                   id="searchPatients"
+                                   class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl leading-5 bg-gray-50 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-2 focus:ring-doctor-blue focus:border-transparent transition duration-150 ease-in-out sm:text-sm"
+                                   placeholder="Search patients by name or ID...">
+                        </div>
+                    </div>
+                    
+                    <!-- Patient List -->
+                    <div class="flex-1 overflow-y-auto patient-list-scroll">
+                        {% if chat_rooms %}
+                            <div class="divide-y divide-gray-100">
+                                {% for room in chat_rooms %}
+                                <a href="/chat/room/{{ room.id }}/" class="block hover:bg-blue-50 transition-all duration-200">
+                                    <div class="patient-item p-4 {% if room.id == active_room_id %}active{% endif %}">
+                                        <div class="flex items-start space-x-3">
+                                            <!-- Avatar -->
+                                            <div class="relative flex-shrink-0">
+                                                {% if room.patient.profile_photo %}
+                                                    <img src="{{ room.patient.profile_photo.url }}" 
+                                                         alt="{{ room.patient.first_name }}"
+                                                         class="w-14 h-14 rounded-full object-cover border-3 border-doctor-blue shadow-lg">
+                                                {% else %}
+                                                    <div class="w-14 h-14 rounded-full bg-gradient-to-br from-doctor-blue to-blue-600 flex items-center justify-center text-white font-bold text-lg shadow-lg border-3 border-white">
+                                                        {{ room.patient.first_name|slice:":1"|upper }}{{ room.patient.last_name|slice:":1"|upper }}
+                                                    </div>
+                                                {% endif %}
+                                                <span class="absolute bottom-0 right-0 block h-4 w-4 rounded-full bg-green-400 ring-2 ring-white online-indicator"></span>
+                                            </div>
+                                            
+                                            <!-- Patient Info -->
+                                            <div class="flex-1 min-w-0">
+                                                <div class="flex items-start justify-between mb-1">
+                                                    <h3 class="text-base font-bold text-gray-900 truncate">
+                                                        {{ room.patient.first_name }} {{ room.patient.last_name }}
+                                                    </h3>
+                                                    {% if room.unread_count > 0 %}
+                                                        <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-500 rounded-full unread-badge ml-2">
+                                                            {{ room.unread_count }}
+                                                        </span>
+                                                    {% endif %}
+                                                </div>
+                                                
+                                                <div class="flex items-center text-xs text-gray-500 mb-1">
+                                                    <i class="fas fa-id-card text-doctor-blue mr-1"></i>
+                                                    <span>Patient ID: {{ room.patient.id }}</span>
+                                                </div>
+                                                
+                                                <div class="flex items-center text-xs text-gray-500 mb-2">
+                                                    <i class="fas fa-clock text-doctor-blue mr-1"></i>
+                                                    <span>{{ room.updated_at|timesince }} ago</span>
+                                                </div>
+                                                
+                                                {% with last_message=room.last_messages.0 %}
+                                                    {% if last_message %}
+                                                        <div class="bg-blue-50 rounded-lg p-2 mt-2">
+                                                            <p class="text-xs text-gray-600 line-clamp-2">
+                                                                {% if last_message.sender_type == 'practitioner' %}
+                                                                    <i class="fas fa-reply text-doctor-blue mr-1"></i>
+                                                                    <span class="font-semibold text-doctor-blue">You:</span>
+                                                                {% else %}
+                                                                    <i class="fas fa-comment text-green-600 mr-1"></i>
+                                                                    <span class="font-semibold text-green-600">Patient:</span>
+                                                                {% endif %}
+                                                                {{ last_message.content|truncatewords:8 }}
+                                                            </p>
+                                                        </div>
+                                                    {% endif %}
+                                                {% endwith %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="flex flex-col items-center justify-center h-full p-8 text-center">
+                                <div class="float-animation mb-6">
+                                    <i class="fas fa-inbox text-gray-300 text-6xl"></i>
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-700 mb-2">No Conversations Yet</h3>
+                                <p class="text-gray-500 text-sm mb-4">Patients will appear here when they message you</p>
+                                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-sm">
+                                    <div class="flex items-start">
+                                        <i class="fas fa-info-circle text-doctor-blue mt-1 mr-3"></i>
+                                        <p class="text-xs text-gray-600 text-left">
+                                            Chat rooms are created automatically when appointments are accepted
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
-
-                <!-- Patient List -->
-                <div class="flex-1 overflow-y-auto p-2">
-                    {% if chat_rooms %}
-                        {% for room in chat_rooms %}
-                        <div class="chat-item professional-card p-4 rounded-xl cursor-pointer border-l-4 border-transparent hover:border-blue-500 transition-all duration-300 mb-2 {% if room.id == active_room_id %}bg-blue-50 border-blue-500{% endif %}"
-                             data-room-id="{{ room.id }}"
-                             style="user-select: none;">
-                            <div class="flex items-center space-x-3">
-                                <!-- Patient Photo -->
-                                <div class="relative flex-shrink-0">
-                                    {% if room.patient.profile_photo %}
-                                        <img src="{{ room.patient.profile_photo.url }}" 
-                                             alt="{{ room.patient.first_name }}"
-                                             class="w-12 h-12 rounded-full object-cover border-2 border-white shadow-md">
-                                    {% else %}
-                                        <div class="patient-avatar w-12 h-12 rounded-full flex items-center justify-center text-white font-bold shadow-md">
-                                            {{ room.patient.first_name|slice:":1"|upper }}{{ room.patient.last_name|slice:":1"|upper }}
-                                        </div>
-                                    {% endif %}
-                                    <!-- Online Status -->
-                                    <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
-                                </div>
-                                
-                                <!-- Patient Info -->
-                                <div class="flex-1 min-w-0">
-                                    <div class="flex items-center justify-between mb-1">
-                                        <h3 class="font-semibold text-gray-900 truncate text-sm">
-                                            {{ room.patient.first_name }} {{ room.patient.last_name }}
-                                        </h3>
-                                        {% with last_message=room.last_messages.0 %}
-                                            {% if last_message %}
-                                                <span class="text-xs text-gray-500 flex-shrink-0">
-                                                    {{ last_message.timestamp|timesince }} ago
-                                                </span>
-                                            {% endif %}
-                                        {% endwith %}
-                                    </div>
-                                    
-                                    <div class="flex items-center justify-between">
-                                        <!-- Last Message Preview -->
-                                        {% with last_message=room.last_messages.0 %}
-                                            {% if last_message %}
-                                                <p class="text-xs text-gray-600 truncate flex-1">
-                                                    {% if last_message.sender_type == 'practitioner' %}
-                                                        <span class="text-blue-600 font-medium">You:</span>
-                                                    {% endif %}
-                                                    {{ last_message.content }}
-                                                </p>
-                                            {% else %}
-                                                <p class="text-xs text-gray-400 italic">No messages yet</p>
-                                            {% endif %}
-                                        {% endwith %}
-                                        
-                                        <!-- Unread Count -->
-                                        {% if room.unread_count > 0 %}
-                                            <span class="ml-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-bold flex-shrink-0">
-                                                {{ room.unread_count }}
-                                            </span>
-                                        {% endif %}
-                                    </div>
-                                    
-                                    <!-- Patient Badge -->
-                                    <div class="mt-1">
-                                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs bg-green-100 text-green-800">
-                                            <i class="fas fa-user-injured mr-1"></i>
-                                            Patient
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        {% endfor %}
+                
+                <!-- Chat Area -->
+                <div class="flex-1 flex flex-col bg-white">
+                    {% if active_room_id %}
+                        {% include "chat/chat_room_content.html" %}
                     {% else %}
-                        <div class="flex flex-col items-center justify-center h-full p-8 text-center">
-                            <div class="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center mb-4">
-                                <i class="fas fa-inbox text-3xl text-gray-400"></i>
+                        <div class="flex-1 flex items-center justify-center bg-gradient-to-br from-gray-50 to-blue-50">
+                            <div class="text-center max-w-2xl px-6">
+                                <div class="float-animation mb-8">
+                                    <i class="fas fa-comments text-8xl bg-gradient-to-r from-doctor-blue to-blue-500 bg-clip-text text-transparent opacity-40"></i>
+                                </div>
+                                <h2 class="text-3xl font-bold text-gray-800 mb-4">Select a Patient to Start Messaging</h2>
+                                <p class="text-lg text-gray-600 mb-8">Choose a patient from the list on the left to view your conversation</p>
+                                
+                                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-8 shadow-lg">
+                                    <div class="flex items-center justify-center mb-6">
+                                        <div class="bg-green-500 rounded-full p-4">
+                                            <i class="fas fa-shield-alt text-white text-3xl"></i>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-xl font-bold text-gray-800 mb-3">Secure & Compliant</h3>
+                                    <p class="text-gray-600 mb-6">All conversations are HIPAA compliant and end-to-end encrypted</p>
+                                    
+                                    <div class="grid grid-cols-3 gap-4">
+                                        <div class="bg-white rounded-xl p-4 shadow-sm">
+                                            <i class="fas fa-lock text-doctor-blue text-2xl mb-2"></i>
+                                            <p class="text-xs font-semibold text-gray-700">Encrypted</p>
+                                        </div>
+                                        <div class="bg-white rounded-xl p-4 shadow-sm">
+                                            <i class="fas fa-user-shield text-doctor-blue text-2xl mb-2"></i>
+                                            <p class="text-xs font-semibold text-gray-700">Private</p>
+                                        </div>
+                                        <div class="bg-white rounded-xl p-4 shadow-sm">
+                                            <i class="fas fa-check-circle text-doctor-blue text-2xl mb-2"></i>
+                                            <p class="text-xs font-semibold text-gray-700">Compliant</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <h3 class="text-lg font-semibold text-gray-700 mb-2">No Patient Messages</h3>
-                            <p class="text-gray-500 text-sm">Patients will appear here when they message you</p>
                         </div>
                     {% endif %}
                 </div>
             </div>
-
-            <!-- Chat Area -->
-            <div class="flex-1 flex flex-col bg-white md:relative absolute inset-0 md:inset-auto" id="chat-area">
-                {% if active_room_id %}
-                    <div id="chat-room-container" class="flex-1 flex flex-col">
-                        {% include "chat/chat_room_content.html" %}
-                    </div>
-                {% else %}
-                    <div id="chat-room-container" class="flex-1 flex flex-col">
-                        <div class="flex-1 flex flex-col items-center justify-center p-8 text-center">
-                            <div class="w-32 h-32 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mb-6 shadow-2xl">
-                                <i class="fas fa-stethoscope text-4xl text-white"></i>
-                            </div>
-                            <h2 class="text-2xl font-bold text-gray-800 mb-3">Patient Communication Center</h2>
-                            <p class="text-gray-600 mb-6 max-w-md leading-relaxed">
-                                Select a patient conversation from the left to view and respond to messages securely.
-                            </p>
-                            <div class="flex items-center space-x-2 text-sm text-gray-500 bg-white px-4 py-2 rounded-full shadow-md">
-                                <i class="fas fa-shield-alt text-green-500"></i>
-                                <span>HIPAA Compliant & Secure</span>
-                            </div>
-                        </div>
-                    </div>
-                {% endif %}
-            </div>
         </div>
     </div>
 </div>
 
-<!-- Loading Modal -->
-<div id="loadingModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
-    <div class="bg-white rounded-2xl p-8 text-center shadow-2xl">
-        <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
-        <p class="text-gray-700 font-semibold text-lg">Loading conversation...</p>
-        <p class="text-gray-500 text-sm mt-2">Please wait while we fetch the messages</p>
-    </div>
-</div>
-
 <script>
-console.log('🏥 Practitioner Chat Loading...');
+// Enhanced search functionality with debouncing
+let searchTimeout;
+const searchInput = document.getElementById('searchPatients');
 
-// Wait for page to load
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('✅ Page loaded');
-    
-    // Get all chat items
-    const chatItems = document.querySelectorAll('.chat-item');
-    console.log(`Found ${chatItems.length} chat items`);
-    
-    // Add click handlers
-    chatItems.forEach(function(item) {
-        const roomId = item.getAttribute('data-room-id');
-        console.log(`Adding click handler for room ${roomId}`);
+if (searchInput) {
+    searchInput.addEventListener('input', function(e) {
+        clearTimeout(searchTimeout);
         
-        item.addEventListener('click', function() {
-            console.log(`Clicked on room ${roomId}`);
-            loadChat(roomId);
-        });
-    });
-    
-    // Initialize search functionality
-    const searchInput = document.getElementById('search-input');
-    if (searchInput) {
-        searchInput.addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            const chatItems = document.querySelectorAll('.chat-item');
+        searchTimeout = setTimeout(() => {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            const patientItems = document.querySelectorAll('.patient-item');
+            let visibleCount = 0;
             
-            chatItems.forEach(function(item) {
-                const name = item.querySelector('h3').textContent.toLowerCase();
-                const message = item.querySelector('p').textContent.toLowerCase();
+            patientItems.forEach(item => {
+                const patientName = item.querySelector('h3').textContent.toLowerCase();
+                const patientIdElement = item.querySelector('.fa-id-card').parentElement;
+                const patientId = patientIdElement ? patientIdElement.textContent.toLowerCase() : '';
                 
-                if (name.includes(searchTerm) || message.includes(searchTerm)) {
-                    item.style.display = 'block';
+                const parentLink = item.closest('a');
+                if (patientName.includes(searchTerm) || patientId.includes(searchTerm)) {
+                    parentLink.style.display = 'block';
+                    visibleCount++;
                 } else {
-                    item.style.display = 'none';
+                    parentLink.style.display = 'none';
                 }
             });
-        });
-    }
+            
+            // Show "no results" message if needed
+            const existingNoResults = document.querySelector('.no-results-message');
+            if (existingNoResults) {
+                existingNoResults.remove();
+            }
+            
+            if (visibleCount === 0 && searchTerm !== '') {
+                const patientListContainer = document.querySelector('.patient-list-scroll > div');
+                if (patientListContainer) {
+                    const noResultsDiv = document.createElement('div');
+                    noResultsDiv.className = 'no-results-message flex flex-col items-center justify-center p-8 text-center';
+                    noResultsDiv.innerHTML = `
+                        <i class="fas fa-search text-gray-300 text-5xl mb-4"></i>
+                        <h3 class="text-lg font-semibold text-gray-700 mb-2">No patients found</h3>
+                        <p class="text-sm text-gray-500">Try searching with a different name or ID</p>
+                    `;
+                    patientListContainer.appendChild(noResultsDiv);
+                }
+            }
+        }, 300); // Debounce delay
+    });
     
-    console.log('✅ Practitioner chat system ready');
+    // Clear search on escape key
+    searchInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            this.value = '';
+            this.dispatchEvent(new Event('input'));
+            this.blur();
+        }
+    });
+}
+
+// Smooth scroll to active patient
+const activePatient = document.querySelector('.patient-item.active');
+if (activePatient) {
+    setTimeout(() => {
+        activePatient.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 300);
+}
+
+// Add keyboard navigation
+document.addEventListener('keydown', function(e) {
+    if (e.key === '/' && !searchInput.matches(':focus')) {
+        e.preventDefault();
+        searchInput.focus();
+    }
 });
-
-// Simple function to load chat
-function loadChat(roomId) {
-    console.log(`Loading chat room ${roomId}...`);
-    
-    // Remove active class from all items
-    document.querySelectorAll('.chat-item').forEach(function(item) {
-        item.classList.remove('bg-blue-50', 'border-blue-500');
-        item.classList.add('border-transparent');
-    });
-    
-    // Add active class to clicked item
-    const clickedItem = document.querySelector(`[data-room-id="${roomId}"]`);
-    if (clickedItem) {
-        clickedItem.classList.add('bg-blue-50', 'border-blue-500');
-        clickedItem.classList.remove('border-transparent');
-    }
-    
-    // Show loading
-    showLoadingModal();
-    
-    // Load chat content
-    fetch(`/chat/room/${roomId}/`, {
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest'
-        }
-    })
-    .then(function(response) {
-        console.log(`Response status: ${response.status}`);
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
-        }
-        return response.text();
-    })
-    .then(function(html) {
-        console.log(`Received HTML (${html.length} chars)`);
-        hideLoadingModal();
-        
-        // Find chat container
-        const chatContainer = document.getElementById('chat-room-container');
-        if (chatContainer) {
-            chatContainer.innerHTML = html;
-            
-            // Scroll to bottom if messages container exists
-            const messagesContainer = document.getElementById('messages-container');
-            if (messagesContainer) {
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            }
-            
-            // Focus on input if it exists
-            const messageInput = document.getElementById('chat-message-input');
-            if (messageInput) {
-                messageInput.focus();
-            }
-            
-            console.log('✅ Chat loaded successfully');
-        } else {
-            throw new Error('Chat container not found');
-        }
-    })
-    .catch(function(error) {
-        console.error('❌ Error loading chat:', error);
-        hideLoadingModal();
-        
-        // Show error message
-        const chatContainer = document.getElementById('chat-room-container');
-        if (chatContainer) {
-            chatContainer.innerHTML = `
-                <div class="flex-1 flex items-center justify-center">
-                    <div class="text-center">
-                        <i class="fas fa-exclamation-triangle text-4xl text-red-400 mb-4"></i>
-                        <h3 class="text-lg font-semibold text-gray-700 mb-2">Failed to load chat</h3>
-                        <p class="text-gray-500 mb-4">Please try again</p>
-                        <button onclick="loadChat(${roomId})" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
-                            Retry
-                        </button>
-                    </div>
-                </div>
-            `;
-        }
-        
-        // Remove active state
-        if (clickedItem) {
-            clickedItem.classList.remove('bg-blue-50', 'border-blue-500');
-            clickedItem.classList.add('border-transparent');
-        }
-    });
-}
-
-// Loading modal functions
-function showLoadingModal() {
-    let modal = document.getElementById('loadingModal');
-    if (modal) {
-        modal.classList.remove('hidden');
-    }
-}
-
-function hideLoadingModal() {
-    const modal = document.getElementById('loadingModal');
-    if (modal) {
-        modal.classList.add('hidden');
-    }
-}
 </script>
-
-{% endblock content %}
+{% endblock %}

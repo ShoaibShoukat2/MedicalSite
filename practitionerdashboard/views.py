@@ -564,7 +564,41 @@ def accepted_appointments_view(request):
 
 
 def chat(request):
-    return render(request, 'practitionerdashboard/chat.html')
+    """Practitioner chat interface - Simple and clean"""
+    practitioner_id = request.session.get('practitioner_id')
+    if not practitioner_id:
+        return redirect('frontend:practitioner_login')
+    
+    try:
+        practitioner = Practitioner.objects.get(id=practitioner_id)
+        
+        # Get patients that the practitioner has had appointments with
+        from patientdashboard.models import Appointment
+        patient_ids = Appointment.objects.filter(
+            practitioner_id=practitioner_id,
+            status='Accepted'
+        ).values_list('patient_id', flat=True).distinct()
+        
+        patients = Patient.objects.filter(id__in=patient_ids)
+        
+        # Get existing chat rooms
+        from chat.models import ChatRoom
+        existing_chats = ChatRoom.objects.filter(practitioner=practitioner).select_related('patient').order_by('-updated_at')
+        
+        context = {
+            'practitioner': practitioner,
+            'patients': patients,
+            'existing_chats': existing_chats
+        }
+        
+        return render(request, 'practitionerdashboard/chat.html', context)
+        
+    except Practitioner.DoesNotExist:
+        return redirect('frontend:practitioner_login')
+    except Exception as e:
+        print(f"Error in practitioner chat view: {str(e)}")
+        messages.error(request, 'Unable to load chat. Please try again.')
+        return redirect('practitioner_dashboard:dashboard')
 
 
 
