@@ -251,3 +251,56 @@ class PractitionerNotification(models.Model):
     
     def __str__(self):
         return f"{self.title} - {self.recipient.first_name} {self.recipient.last_name}"
+
+
+class PatientBlacklist(models.Model):
+    """Model for managing blacklisted patients"""
+    
+    REASON_CHOICES = [
+        ('no_show', 'Repeated No-Shows'),
+        ('late_cancellation', 'Repeated Late Cancellations'),
+        ('inappropriate_behavior', 'Inappropriate Behavior'),
+        ('non_payment', 'Non-Payment Issues'),
+        ('other', 'Other'),
+    ]
+    
+    practitioner = models.ForeignKey(Practitioner, on_delete=models.CASCADE, related_name='blacklisted_patients')
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='blacklisted_by')
+    
+    # Blacklist Details
+    reason = models.CharField(max_length=50, choices=REASON_CHOICES)
+    description = models.TextField(help_text="Detailed reason for blacklisting")
+    
+    # Timestamps
+    blacklisted_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    # Optional: Temporary blacklist
+    is_permanent = models.BooleanField(default=True)
+    unblock_date = models.DateField(blank=True, null=True, help_text="Date when patient will be automatically unblocked")
+    
+    # Status
+    is_active = models.BooleanField(default=True)
+    
+    class Meta:
+        unique_together = ['practitioner', 'patient']
+        ordering = ['-blacklisted_at']
+        verbose_name = "Patient Blacklist"
+        verbose_name_plural = "Patient Blacklists"
+    
+    def __str__(self):
+        return f"{self.patient.first_name} {self.patient.last_name} - Blacklisted by Dr. {self.practitioner.first_name} {self.practitioner.last_name}"
+    
+    def is_currently_blocked(self):
+        """Check if patient is currently blocked"""
+        if not self.is_active:
+            return False
+        
+        if self.is_permanent:
+            return True
+        
+        if self.unblock_date:
+            from django.utils import timezone
+            return timezone.now().date() < self.unblock_date
+        
+        return True

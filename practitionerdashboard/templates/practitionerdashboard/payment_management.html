@@ -6,6 +6,7 @@
 .payment-card {
     transition: all 0.3s ease;
     border-left: 4px solid #3b82f6;
+    background: white !important;
 }
 
 .payment-card:hover {
@@ -20,26 +21,28 @@
 .status-reimbursed { border-left-color: #8b5cf6; }
 
 .status-badge {
-    padding: 4px 12px;
+    padding: 6px 12px;
     border-radius: 12px;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 600;
     text-transform: uppercase;
+    display: inline-block;
 }
 
-.status-pending { background: #fef3c7; color: #92400e; }
-.status-processing { background: #dbeafe; color: #1e40af; }
-.status-approved { background: #d1fae5; color: #065f46; }
-.status-rejected { background: #fee2e2; color: #991b1b; }
-.status-reimbursed { background: #ede9fe; color: #5b21b6; }
+.status-badge.status-pending { background: #fef3c7; color: #92400e; }
+.status-badge.status-processing { background: #dbeafe; color: #1e40af; }
+.status-badge.status-approved { background: #d1fae5; color: #065f46; }
+.status-badge.status-rejected { background: #fee2e2; color: #991b1b; }
+.status-badge.status-reimbursed { background: #ede9fe; color: #5b21b6; }
 
 .financial-card {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
     border-radius: 1rem;
     padding: 1.5rem;
     position: relative;
     overflow: hidden;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
 }
 
 .financial-card::before {
@@ -53,19 +56,48 @@
     border-radius: 50%;
 }
 
+.financial-card * {
+    color: white !important;
+}
+
+.financial-card .text-white\/80 {
+    opacity: 0.8;
+}
+
 .compliance-indicator {
     display: inline-flex;
     align-items: center;
-    padding: 4px 8px;
+    padding: 6px 12px;
     border-radius: 8px;
-    font-size: 0.75rem;
-    font-weight: 500;
+    font-size: 0.7rem;
+    font-weight: 600;
 }
 
 .compliance-verified { background: #d1fae5; color: #065f46; }
 .compliance-pending { background: #fef3c7; color: #92400e; }
 .compliance-error { background: #fee2e2; color: #991b1b; }
 
+/* Custom scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Mobile optimizations */
 @media (max-width: 768px) {
     .payment-card {
         margin-bottom: 1rem;
@@ -74,20 +106,39 @@
     .financial-card {
         margin-bottom: 1rem;
     }
+    
+    .status-badge {
+        font-size: 0.65rem;
+        padding: 4px 8px;
+    }
+    
+    .compliance-indicator {
+        font-size: 0.65rem;
+        padding: 4px 8px;
+    }
 }
 </style>
 
 {% block content %}
-<div class="space-y-6">
+<div class="space-y-4 md:space-y-6 p-2 md:p-0">
     <!-- Header Section -->
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-        <div class="flex items-center justify-between">
-            <div>
-                <h1 class="text-3xl font-bold text-doctor-dark-blue mb-2 flex items-center">
-                    <i class="fas fa-credit-card text-blue-600 mr-3"></i>
+    <div class="bg-white rounded-xl md:rounded-2xl shadow-sm border border-gray-100 p-4 md:p-6">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div class="flex-1">
+                <h1 class="text-2xl md:text-3xl font-bold text-doctor-dark-blue mb-2 flex items-center">
+                    <i class="fas fa-credit-card text-blue-600 mr-2 md:mr-3 text-xl md:text-2xl"></i>
                     <span data-translate="Payment Management">Payment Management</span>
                 </h1>
-                <p class="text-doctor-dark-gray" data-translate="Social Security compliant payment processing and billing">Social Security compliant payment processing and billing</p>
+                <p class="text-sm md:text-base text-doctor-dark-gray" data-translate="Social Security compliant payment processing and billing">Social Security compliant payment processing and billing</p>
+            </div>
+            <div class="flex md:hidden items-center justify-between bg-blue-50 rounded-lg p-3">
+                <div>
+                    <p class="text-xs text-doctor-dark-gray" data-translate="Total">Total</p>
+                    <p class="text-xl font-bold text-blue-600">{{ total_payments }}</p>
+                </div>
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-dollar-sign text-white"></i>
+                </div>
             </div>
             <div class="hidden md:flex items-center space-x-4">
                 <div class="text-right">
@@ -102,65 +153,65 @@
     </div>
 
     <!-- Financial Overview Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
         <!-- Total Revenue -->
-        <div class="financial-card">
+        <div class="financial-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;">
             <div class="relative z-10">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-chart-line text-white text-xl"></i>
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-3 md:mb-4 gap-2">
+                    <div class="w-10 h-10 md:w-12 md:h-12 bg-white/20 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-chart-line text-white text-lg md:text-xl"></i>
                     </div>
-                    <span class="text-white/80 text-sm" data-translate="Total Revenue">Total Revenue</span>
+                    <span class="text-white text-xs md:text-sm font-medium" data-translate="Total Revenue">Total Revenue</span>
                 </div>
-                <div class="text-2xl font-bold text-white mb-1">${{ total_amount|floatformat:2 }}</div>
-                <div class="text-white/80 text-sm" data-translate="All payments">All payments</div>
+                <div class="text-xl md:text-2xl font-bold text-white mb-1">${{ total_amount|floatformat:2 }}</div>
+                <div class="text-white text-xs md:text-sm opacity-80" data-translate="All payments">All payments</div>
             </div>
         </div>
 
         <!-- Insurance Coverage -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-            <div class="flex items-center justify-between mb-4">
-                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-shield-alt text-green-600 text-xl"></i>
+        <div class="bg-white rounded-lg md:rounded-xl shadow-sm border border-gray-100 p-4 md:p-6">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-3 md:mb-4 gap-2">
+                <div class="w-10 h-10 md:w-12 md:h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-shield-alt text-green-600 text-lg md:text-xl"></i>
                 </div>
-                <span class="text-gray-600 text-sm" data-translate="Covered Amount">Covered Amount</span>
+                <span class="text-gray-600 text-xs md:text-sm font-medium" data-translate="Covered">Covered</span>
             </div>
-            <div class="text-2xl font-bold text-green-600 mb-1">${{ covered_amount|floatformat:2 }}</div>
-            <div class="text-gray-500 text-sm" data-translate="Insurance/SS">Insurance/SS</div>
+            <div class="text-xl md:text-2xl font-bold text-green-600 mb-1">${{ covered_amount|floatformat:2 }}</div>
+            <div class="text-gray-500 text-xs md:text-sm" data-translate="Insurance/SS">Insurance/SS</div>
         </div>
 
         <!-- Patient Responsibility -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-            <div class="flex items-center justify-between mb-4">
-                <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-user-circle text-orange-600 text-xl"></i>
+        <div class="bg-white rounded-lg md:rounded-xl shadow-sm border border-gray-100 p-4 md:p-6">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-3 md:mb-4 gap-2">
+                <div class="w-10 h-10 md:w-12 md:h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-user-circle text-orange-600 text-lg md:text-xl"></i>
                 </div>
-                <span class="text-gray-600 text-sm" data-translate="Patient Copay">Patient Copay</span>
+                <span class="text-gray-600 text-xs md:text-sm font-medium" data-translate="Copay">Copay</span>
             </div>
-            <div class="text-2xl font-bold text-orange-600 mb-1">${{ patient_copay_total|floatformat:2 }}</div>
-            <div class="text-gray-500 text-sm" data-translate="Out of pocket">Out of pocket</div>
+            <div class="text-xl md:text-2xl font-bold text-orange-600 mb-1">${{ patient_copay_total|floatformat:2 }}</div>
+            <div class="text-gray-500 text-xs md:text-sm" data-translate="Out of pocket">Out of pocket</div>
         </div>
 
         <!-- Pending Payments -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-            <div class="flex items-center justify-between mb-4">
-                <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-clock text-yellow-600 text-xl"></i>
+        <div class="bg-white rounded-lg md:rounded-xl shadow-sm border border-gray-100 p-4 md:p-6">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-3 md:mb-4 gap-2">
+                <div class="w-10 h-10 md:w-12 md:h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-clock text-yellow-600 text-lg md:text-xl"></i>
                 </div>
-                <span class="text-gray-600 text-sm" data-translate="Pending">Pending</span>
+                <span class="text-gray-600 text-xs md:text-sm font-medium" data-translate="Pending">Pending</span>
             </div>
-            <div class="text-2xl font-bold text-yellow-600 mb-1">{{ pending_payments }}</div>
-            <div class="text-gray-500 text-sm" data-translate="Awaiting processing">Awaiting processing</div>
+            <div class="text-xl md:text-2xl font-bold text-yellow-600 mb-1">{{ pending_payments }}</div>
+            <div class="text-gray-500 text-xs md:text-sm" data-translate="Awaiting">Awaiting</div>
         </div>
     </div>
 
     <!-- Filter and Actions -->
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
-            <div class="flex items-center space-x-4">
-                <h2 class="text-xl font-semibold text-gray-800" data-translate="Payment Records">Payment Records</h2>
-                <div class="flex items-center space-x-2">
-                    <select id="statusFilter" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+    <div class="bg-white rounded-xl md:rounded-2xl shadow-sm border border-gray-100 p-4 md:p-6">
+        <div class="flex flex-col space-y-3 md:space-y-0 md:flex-row md:items-center md:justify-between">
+            <div class="flex flex-col md:flex-row md:items-center gap-3 md:gap-4">
+                <h2 class="text-lg md:text-xl font-semibold text-gray-800" data-translate="Payment Records">Payment Records</h2>
+                <div class="flex items-center gap-2">
+                    <select id="statusFilter" class="flex-1 md:flex-none px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         <option value="" data-translate="All Status">All Status</option>
                         <option value="pending" {% if status_filter == 'pending' %}selected{% endif %} data-translate="Pending">Pending</option>
                         <option value="processing" {% if status_filter == 'processing' %}selected{% endif %} data-translate="Processing">Processing</option>
@@ -168,17 +219,17 @@
                         <option value="rejected" {% if status_filter == 'rejected' %}selected{% endif %} data-translate="Rejected">Rejected</option>
                         <option value="reimbursed" {% if status_filter == 'reimbursed' %}selected{% endif %} data-translate="Reimbursed">Reimbursed</option>
                     </select>
-                    <button onclick="filterPayments()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                        <i class="fas fa-filter mr-2"></i><span data-translate="Filter">Filter</span>
+                    <button onclick="filterPayments()" class="px-3 md:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm">
+                        <i class="fas fa-filter mr-1 md:mr-2"></i><span class="hidden md:inline" data-translate="Filter">Filter</span>
                     </button>
                 </div>
             </div>
-            <div class="flex items-center space-x-3">
-                <button onclick="exportPayments()" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
-                    <i class="fas fa-download mr-2"></i><span data-translate="Export">Export</span>
+            <div class="flex items-center gap-2 md:gap-3">
+                <button onclick="exportPayments()" class="flex-1 md:flex-none px-3 md:px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm">
+                    <i class="fas fa-download mr-1 md:mr-2"></i><span data-translate="Export">Export</span>
                 </button>
-                <button onclick="openCreatePaymentModal()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                    <i class="fas fa-plus mr-2"></i><span data-translate="New Payment">New Payment</span>
+                <button onclick="openCreatePaymentModal()" class="flex-1 md:flex-none px-3 md:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm">
+                    <i class="fas fa-plus mr-1 md:mr-2"></i><span class="hidden md:inline" data-translate="New">New</span><span class="md:hidden">+</span>
                 </button>
             </div>
         </div>
@@ -323,7 +374,11 @@
             <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                 <div class="flex items-center space-x-3">
                     <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                        <i class="fas fa-{{ transaction.transaction_type == 'payment' and 'arrow-down' or 'arrow-up' }} text-blue-600 text-xs"></i>
+                        {% if transaction.transaction_type == 'payment' %}
+                            <i class="fas fa-arrow-down text-blue-600 text-xs"></i>
+                        {% else %}
+                            <i class="fas fa-arrow-up text-blue-600 text-xs"></i>
+                        {% endif %}
                     </div>
                     <div>
                         <p class="font-medium text-gray-800">{{ transaction.get_transaction_type_display }}</p>

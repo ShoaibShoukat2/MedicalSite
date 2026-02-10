@@ -1596,57 +1596,7 @@ def reschedule_appointment(request, appointment_id):
 
 
 # Blacklist Management Views
-
-def blacklist_view(request):
-    """Display blacklisted patients for the practitioner"""
-    practitioner_id = request.session.get('practitioner_id')
-    
-    if not practitioner_id:
-        return redirect('frontend:practitioner_login')
-    
-    practitioner = get_object_or_404(Practitioner, id=practitioner_id)
-    
-    # Get blacklisted patients
-    from .models import PatientBlacklist
-    blacklisted_patients = PatientBlacklist.objects.filter(
-        practitioner=practitioner,
-        status='active'
-    ).select_related('patient').order_by('-created_at')
-    
-    # Get patients with high cancellation counts (potential blacklist candidates)
-    from django.db.models import Count, Q
-    potential_blacklist = []
-    
-    # Find patients who have cancelled 3+ appointments with this practitioner
-    cancelled_appointments = Appointment.objects.filter(
-        practitioner=practitioner,
-        status='Cancelled'
-    ).values('patient').annotate(
-        cancellation_count=Count('id')
-    ).filter(cancellation_count__gte=3)
-    
-    for item in cancelled_appointments:
-        patient = Patient.objects.get(id=item['patient'])
-        # Check if not already blacklisted
-        if not PatientBlacklist.objects.filter(
-            practitioner=practitioner, 
-            patient=patient, 
-            status='active'
-        ).exists():
-            potential_blacklist.append({
-                'patient': patient,
-                'cancellation_count': item['cancellation_count']
-            })
-    
-    context = {
-        'practitioner': practitioner,
-        'blacklisted_patients': blacklisted_patients,
-        'potential_blacklist': potential_blacklist,
-        'total_blacklisted': blacklisted_patients.count(),
-        'potential_count': len(potential_blacklist),
-    }
-    
-    return render(request, 'practitionerdashboard/blacklist.html', context)
+# Note: The main blacklist_view is defined earlier in this file (around line 790)
 
 
 def add_to_blacklist(request, patient_id):
