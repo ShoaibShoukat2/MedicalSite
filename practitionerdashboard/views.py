@@ -730,9 +730,9 @@ def mypatient(request):
 
         # Fetch prescriptions and appointments for each patient
         for patient in patients:
-            patient.prescriptions = Prescription.objects.filter(patient=patient)
+            patient.prescription_list = Prescription.objects.filter(patient=patient)
             # Get all appointments for this patient with this practitioner
-            patient.appointments = Appointment.objects.filter(
+            patient.appointment_list = Appointment.objects.filter(
                 patient=patient,
                 practitioner_id=practitioner_id,
                 status='Accepted'
@@ -796,6 +796,19 @@ def blacklist_view(request):
     
     practitioner = get_object_or_404(Practitioner, id=practitioner_id)
     
+    # Auto-unblock expired blacklist entries
+    from .models import PatientBlacklist
+    today = timezone.now().date()
+    expired_blacklists = PatientBlacklist.objects.filter(
+        practitioner=practitioner,
+        is_active=True,
+        is_permanent=False,
+        unblock_date__lte=today
+    )
+    
+    for blacklist_entry in expired_blacklists:
+        blacklist_entry.check_and_auto_unblock()
+    
     # Get all patients who have appointments with this practitioner
     from django.db.models import Count, Q
     from collections import defaultdict
@@ -841,18 +854,33 @@ def blacklist_view(request):
     blacklisted_patients.sort(key=lambda p: p.cancellation_count, reverse=True)
     frequent_cancellers.sort(key=lambda p: p.cancellation_count, reverse=True)
     
+    # Get actual blacklist entries with expiration info
+    blacklist_entries = PatientBlacklist.objects.filter(
+        practitioner=practitioner,
+        is_active=True
+    ).select_related('patient').order_by('-blacklisted_at')
+    
+    # Add blacklist info to patients
+    blacklist_dict = {entry.patient.id: entry for entry in blacklist_entries}
+    for patient in blacklisted_patients:
+        if patient.id in blacklist_dict:
+            patient.blacklist_entry = blacklist_dict[patient.id]
+    
     # Get statistics
     total_cancelled_appointments = cancelled_appointments.count()
     total_blacklisted = len(blacklisted_patients)
     total_frequent_cancellers = len(frequent_cancellers)
+    total_officially_blacklisted = blacklist_entries.count()
     
     context = {
         'practitioner': practitioner,
         'blacklisted_patients': blacklisted_patients,
         'frequent_cancellers': frequent_cancellers,
+        'blacklist_entries': blacklist_entries,
         'total_cancelled_appointments': total_cancelled_appointments,
         'total_blacklisted': total_blacklisted,
         'total_frequent_cancellers': total_frequent_cancellers,
+        'total_officially_blacklisted': total_officially_blacklisted,
         'all_cancelled_appointments': cancelled_appointments[:20],  # Recent 20 for overview
     }
     
@@ -1611,15 +1639,23 @@ def add_to_blacklist(request, patient_id):
         patient = get_object_or_404(Patient, id=patient_id)
         
         # Get form data
-        reason = request.POST.get('reason', 'excessive_cancellations')
-        notes = request.POST.get('notes', '')
+        reason = request.POST.get('reason', 'late_cancellation')
+        description = request.POST.get('notes', '')
         
-        # Count cancellations
+        # Count cancellations for description
         cancellation_count = Appointment.objects.filter(
             practitioner=practitioner,
             patient=patient,
             status='Cancelled'
         ).count()
+        
+        # Add count to description if not provided
+        if not description:
+            description = f"Patient has {cancellation_count} cancelled appointments"
+        
+        # Calculate unblock date (30 days from now)
+        from datetime import timedelta
+        unblock_date = timezone.now().date() + timedelta(days=30)
         
         # Create or update blacklist entry
         from .models import PatientBlacklist
@@ -1628,18 +1664,20 @@ def add_to_blacklist(request, patient_id):
             patient=patient,
             defaults={
                 'reason': reason,
-                'cancellation_count': cancellation_count,
-                'notes': notes,
-                'status': 'active'
+                'description': description,
+                'is_permanent': False,
+                'unblock_date': unblock_date,
+                'is_active': True
             }
         )
         
         if not created:
             # Update existing entry
             blacklist_entry.reason = reason
-            blacklist_entry.cancellation_count = cancellation_count
-            blacklist_entry.notes = notes
-            blacklist_entry.status = 'active'
+            blacklist_entry.description = description
+            blacklist_entry.is_permanent = False
+            blacklist_entry.unblock_date = unblock_date
+            blacklist_entry.is_active = True
             blacklist_entry.save()
         
         # Send notification to practitioner
@@ -1676,10 +1714,9 @@ def remove_from_blacklist(request, blacklist_id):
             practitioner=practitioner
         )
         
-        notes = request.POST.get('notes', 'Removed by practitioner')
-        
-        # Remove from blacklist
-        blacklist_entry.remove_from_blacklist(notes)
+        # Remove from blacklist (set is_active to False)
+        blacklist_entry.is_active = False
+        blacklist_entry.save()
         
         # Send notification
         create_practitioner_notification(
@@ -1713,7 +1750,7 @@ def get_blacklist_stats(request):
     # Get statistics
     total_blacklisted = PatientBlacklist.objects.filter(
         practitioner=practitioner,
-        status='active'
+        is_active=True
     ).count()
     
     # Get patients with 3+ cancellations (potential blacklist)
@@ -1729,8 +1766,8 @@ def get_blacklist_stats(request):
     thirty_days_ago = timezone.now() - timedelta(days=30)
     recent_additions = PatientBlacklist.objects.filter(
         practitioner=practitioner,
-        created_at__gte=thirty_days_ago,
-        status='active'
+        blacklisted_at__gte=thirty_days_ago,
+        is_active=True
     ).count()
     
     return JsonResponse({
@@ -1747,6 +1784,7 @@ def auto_blacklist_check():
     """Utility function to automatically check and blacklist patients with excessive cancellations"""
     from .models import PatientBlacklist
     from django.db.models import Count
+    from datetime import timedelta
     
     # Find patients with 3+ cancellations who aren't already blacklisted
     excessive_cancellers = Appointment.objects.filter(
@@ -1757,6 +1795,9 @@ def auto_blacklist_check():
     
     auto_blacklisted = 0
     
+    # Calculate unblock date (30 days from now)
+    unblock_date = timezone.now().date() + timedelta(days=30)
+    
     for item in excessive_cancellers:
         patient = Patient.objects.get(id=item['patient'])
         practitioner = Practitioner.objects.get(id=item['practitioner'])
@@ -1765,24 +1806,25 @@ def auto_blacklist_check():
         if not PatientBlacklist.objects.filter(
             practitioner=practitioner,
             patient=patient,
-            status='active'
+            is_active=True
         ).exists():
             
-            # Auto-blacklist
+            # Auto-blacklist with 30-day expiration
             PatientBlacklist.objects.create(
                 practitioner=practitioner,
                 patient=patient,
-                reason='excessive_cancellations',
-                cancellation_count=item['cancellation_count'],
-                notes=f"Automatically blacklisted for {item['cancellation_count']} cancellations",
-                status='active'
+                reason='late_cancellation',
+                description=f"Automatically blacklisted for {item['cancellation_count']} cancellations. Will be unblocked on {unblock_date.strftime('%Y-%m-%d')}",
+                is_active=True,
+                is_permanent=False,
+                unblock_date=unblock_date
             )
             
             # Notify practitioner
             create_practitioner_notification(
                 practitioner=practitioner,
                 title="Patient Auto-Blacklisted",
-                message=f"Patient {patient.first_name} {patient.last_name} has been automatically blacklisted for excessive cancellations ({item['cancellation_count']} times).",
+                message=f"Patient {patient.first_name} {patient.last_name} has been automatically blacklisted for excessive cancellations ({item['cancellation_count']} times). Will be automatically unblocked on {unblock_date.strftime('%Y-%m-%d')}.",
                 notification_type='warning',
                 url='/practitioner-dashboard/blacklist/'
             )

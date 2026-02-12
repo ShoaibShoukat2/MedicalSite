@@ -304,3 +304,18 @@ class PatientBlacklist(models.Model):
             return timezone.now().date() < self.unblock_date
         
         return True
+    
+    def check_and_auto_unblock(self):
+        """Check if blacklist has expired and auto-unblock if needed"""
+        from django.utils import timezone
+        
+        if not self.is_active:
+            return False
+        
+        if not self.is_permanent and self.unblock_date:
+            if timezone.now().date() >= self.unblock_date:
+                self.is_active = False
+                self.save()
+                return True
+        
+        return False

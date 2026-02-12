@@ -41,7 +41,7 @@
                                 </div>
                             {% endif %}
                         </div>
-                        {% for appointment in patient.appointments.all %}
+                        {% for appointment in patient.appointment_list %}
                             <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-doctor-green rounded-full border-2 border-white flex items-center justify-center">
                                 <i class="fas fa-clock text-white text-xs"></i>
                             </div>
@@ -81,7 +81,7 @@
                             <i class="fas fa-calendar-check text-doctor-blue mr-2"></i>
                             <span data-translate="Appointments">Appointments</span>
                         </h4>
-                        {% for appointment in patient.appointments.all %}
+                        {% for appointment in patient.appointment_list %}
                             <div class="bg-green-50 p-3 rounded-xl border border-green-200 mb-2">
                                 <div class="flex items-center justify-between mb-2">
                                     <div class="flex-1">
@@ -134,9 +134,9 @@
                             <i class="fas fa-file-medical text-doctor-teal mr-2"></i>
                             <span data-translate="Prescriptions">Prescriptions</span>
                         </h4>
-                        {% if patient.prescriptions.all %}
+                        {% if patient.prescription_list %}
                             <div class="space-y-2 max-h-32 overflow-y-auto custom-scrollbar">
-                                {% for prescription in patient.prescriptions.all %}
+                                {% for prescription in patient.prescription_list %}
                                     <div class="bg-blue-50 p-3 rounded-xl border border-blue-200 flex items-center justify-between">
                                         <div class="flex-1 min-w-0">
                                             <p class="text-sm font-medium text-blue-800 truncate">{{ prescription.text }}</p>
@@ -162,7 +162,7 @@
 
                 <!-- Action Buttons -->
                 <div class="p-6 pt-0 space-y-3">
-                    {% with appointment=patient.appointments.all.0 %}
+                    {% with appointment=patient.appointment_list.0 %}
                         {% if appointment.video_call_link %}
                             <a href="{{ appointment.video_call_link }}" target="_blank" 
                                class="w-full bg-gradient-to-r from-doctor-blue to-doctor-dark-blue text-white py-3 px-4 rounded-xl font-medium text-center block hover:shadow-lg transition-all duration-300">

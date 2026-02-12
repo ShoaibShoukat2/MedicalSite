@@ -297,6 +297,24 @@
                                         <p class="font-medium text-gray-800 text-xs md:text-sm">{{ patient.last_cancellation|date:"M d, Y" }}</p>
                                     </div>
                                 </div>
+                                
+                                <!-- Blacklist Expiration Info -->
+                                {% if patient.blacklist_entry %}
+                                <div class="mb-3 md:mb-4 p-2 md:p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                                    <div class="flex items-center justify-between gap-2">
+                                        <div class="flex items-center gap-2">
+                                            <i class="fas fa-clock text-yellow-600 text-sm"></i>
+                                            <span class="text-xs md:text-sm font-medium text-gray-700" data-translate="Auto-unblock">Auto-unblock:</span>
+                                        </div>
+                                        <span class="text-xs md:text-sm font-bold text-yellow-700">
+                                            {{ patient.blacklist_entry.unblock_date|date:"M d, Y" }}
+                                        </span>
+                                    </div>
+                                    <p class="text-xs text-gray-600 mt-1">
+                                        <span data-translate="Blacklisted on">Blacklisted on</span>: {{ patient.blacklist_entry.blacklisted_at|date:"M d, Y" }}
+                                    </p>
+                                </div>
+                                {% endif %}
 
                                 <!-- Cancellation History -->
                                 <div class="border-t border-gray-200 pt-3 md:pt-4">
