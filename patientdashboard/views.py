@@ -196,6 +196,69 @@ def available_slots(request, practitioner_id):
             'slot_count': 0
         })
     
+    # Mini calendar days (same as main calendar for now)
+    mini_calendar_days = days
+    
+    # Week view data - get current week
+    week_start = selected_date - timedelta(days=selected_date.weekday())
+    week_days = []
+    
+    # Color palette for events
+    colors = [
+        {'bg': '#e3f2fd', 'text': '#1565c0', 'border': '#1976d2'},  # Blue
+        {'bg': '#fff9c4', 'text': '#f57f17', 'border': '#fbc02d'},  # Yellow
+        {'bg': '#fce4ec', 'text': '#c2185b', 'border': '#e91e63'},  # Pink
+        {'bg': '#e0f2f1', 'text': '#00695c', 'border': '#009688'},  # Teal
+        {'bg': '#f3e5f5', 'text': '#6a1b9a', 'border': '#9c27b0'},  # Purple
+        {'bg': '#fff3e0', 'text': '#e65100', 'border': '#ff9800'},  # Orange
+        {'bg': '#e8f5e9', 'text': '#2e7d32', 'border': '#4caf50'},  # Green
+    ]
+    
+    for i in range(7):
+        day_date = week_start + timedelta(days=i)
+        day_slots = AvailableSlot.objects.filter(
+            practitioner=practitioner,
+            status='available',
+            date=day_date
+        ).order_by('start_time')
+        
+        # Calculate position for each slot (48px per hour)
+        slots_with_position = []
+        for idx, slot in enumerate(day_slots):
+            hour = slot.start_time.hour
+            minute = slot.start_time.minute
+            top_position = (hour * 48) + (minute * 48 / 60)
+            
+            # Calculate height based on duration
+            duration_minutes = 30  # Default 30 minutes
+            if slot.end_time:
+                duration = (datetime.combine(day_date, slot.end_time) - 
+                           datetime.combine(day_date, slot.start_time)).seconds / 60
+                duration_minutes = duration
+            height = (duration_minutes * 48 / 60)
+            
+            # Assign color from palette
+            color = colors[idx % len(colors)]
+            
+            slots_with_position.append({
+                'id': slot.id,
+                'start_time': slot.start_time,
+                'end_time': slot.end_time,
+                'top_position': int(top_position),
+                'height': int(height),
+                'bg_color': color['bg'],
+                'text_color': color['text'],
+                'border_color': color['border']
+            })
+        
+        week_days.append({
+            'date': day_date,
+            'slots': slots_with_position
+        })
+    
+    # Hours for week view (0-23)
+    hours = [f"{h:02d}:00" for h in range(24)]
+    
     available_slots = AvailableSlot.objects.filter(
         practitioner=practitioner,
         status='available',
@@ -207,6 +270,9 @@ def available_slots(request, practitioner_id):
         'selected_date': selected_date,
         'today': timezone.now().date(),
         'days': days,
+        'mini_calendar_days': mini_calendar_days,
+        'week_days': week_days,
+        'hours': hours,
         'available_slots': available_slots,
         'specialty_name': practitioner.get_specialty_display(),
         'months': months,

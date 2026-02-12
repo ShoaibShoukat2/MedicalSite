@@ -1,0 +1,769 @@
+{% extends "practitionerdashboard/base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    /* French Calendar Style CSS for Practitioner */
+    body {
+        background: #f5f5f5;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+    
+    .calendar-wrapper {
+        display: flex;
+        gap: 0;
+        margin: 0;
+        min-height: 100vh;
+        background: white;
+    }
+    
+    /* Sidebar Styles */
+    .sidebar-calendar {
+        width: 240px;
+        background: white;
+        border-right: 1px solid #e0e0e0;
+        padding: 16px;
+        flex-shrink: 0;
+        overflow-y: auto;
+    }
+    
+    .create-button {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 20px;
+        background: #0d7377;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin-bottom: 20px;
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .create-button:hover {
+        background: #0a5f62;
+    }
+    
+    /* Mini Calendar */
+    .mini-calendar {
+        margin-bottom: 24px;
+    }
+    
+    .mini-calendar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        padding: 0 4px;
+    }
+    
+    .mini-calendar-title {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #333;
+    }
+    
+    .mini-nav-btn {
+        background: transparent;
+        border: none;
+        color: #666;
+        cursor: pointer;
+        padding: 4px;
+        border-radius: 4px;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .mini-nav-btn:hover {
+        background: #f0f0f0;
+    }
+    
+    .mini-calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 2px;
+    }
+    
+    .mini-weekday {
+        text-align: center;
+        font-size: 0.7rem;
+        color: #666;
+        padding: 4px 0;
+        font-weight: 600;
+    }
+    
+    .mini-day {
+        aspect-ratio: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        color: #333;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: background 0.2s ease;
+        position: relative;
+    }
+    
+    .mini-day:hover {
+        background: #f0f0f0;
+    }
+    
+    .mini-day.today {
+        background: #0d7377;
+        color: white;
+        font-weight: 600;
+    }
+    
+    .mini-day.selected {
+        background: #e3f2fd;
+        color: #0d7377;
+        font-weight: 600;
+        border: 2px solid #0d7377;
+    }
+    
+    .mini-day.other-month {
+        color: #bbb;
+    }
+    
+    .mini-day.has-slots::after {
+        content: '';
+        position: absolute;
+        bottom: 2px;
+        width: 5px;
+        height: 5px;
+        background: #0d7377;
+        border-radius: 50%;
+    }
+    
+    /* Sidebar Sections */
+    .sidebar-section {
+        margin-bottom: 20px;
+    }
+    
+    .sidebar-section-title {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #666;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .sidebar-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.875rem;
+        color: #333;
+        transition: background 0.2s ease;
+    }
+    
+    .sidebar-item:hover {
+        background: #f0f0f0;
+    }
+    
+    .sidebar-item.active {
+        background: #e3f2fd;
+        color: #0d7377;
+        font-weight: 500;
+    }
+    
+    .sidebar-item i {
+        width: 20px;
+        text-align: center;
+        color: #0d7377;
+    }
+    
+    /* Main Calendar Container */
+    .main-calendar-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        background: white;
+        overflow: hidden;
+    }
+    
+    /* Calendar Header */
+    .calendar-header {
+        background: white;
+        color: #333;
+        padding: 12px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #e0e0e0;
+        flex-shrink: 0;
+    }
+
+    .calendar-title {
+        font-size: 1.25rem;
+        font-weight: 400;
+        margin: 0;
+        color: #333;
+    }
+    
+    .calendar-nav {
+        display: flex;
+        gap: 4px;
+        align-items: center;
+    }
+    
+    .nav-btn {
+        background: white;
+        border: 1px solid #ddd;
+        color: #333;
+        padding: 6px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.8125rem;
+    }
+
+    .nav-btn:hover {
+        background: #f5f5f5;
+        border-color: #ccc;
+    }
+    
+    .nav-btn.today-btn {
+        background: white;
+        color: #0d7377;
+        font-weight: 600;
+        border: 1px solid #0d7377;
+    }
+
+    .nav-btn.today-btn:hover {
+        background: #e3f2fd;
+    }
+    
+    .view-toggle {
+        display: flex;
+        background: white;
+        border-radius: 4px;
+        padding: 0;
+        border: 1px solid #ddd;
+        gap: 0;
+    }
+
+    .view-btn {
+        padding: 6px 12px;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        border-radius: 0;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        color: #666;
+        font-size: 0.8125rem;
+        border-right: 1px solid #ddd;
+    }
+    
+    .view-btn:last-child {
+        border-right: none;
+    }
+
+    .view-btn.active {
+        background: #0d7377;
+        color: white;
+    }
+    
+    .view-btn:hover:not(.active) {
+        background: #f5f5f5;
+    }
+    
+    /* Week View Container */
+    .week-view-container {
+        display: none;
+        flex: 1;
+        overflow: auto;
+    }
+    
+    .week-view-container.active {
+        display: block;
+    }
+    
+    /* Week Header */
+    .week-header {
+        display: grid;
+        grid-template-columns: 60px repeat(7, 1fr);
+        border-bottom: 2px solid #e0e0e0;
+        background: #fafafa;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+    
+    .week-header-cell {
+        padding: 12px 8px;
+        text-align: center;
+        border-right: 1px solid #e8e8e8;
+    }
+    
+    .week-header-cell:first-child {
+        border-right: 1px solid #ddd;
+    }
+    
+    .week-day-name {
+        font-size: 0.7rem;
+        color: #666;
+        text-transform: uppercase;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+    
+    .week-day-number {
+        font-size: 1.5rem;
+        color: #333;
+        font-weight: 400;
+        margin-top: 4px;
+    }
+    
+    .week-day-number.today {
+        background: #0d7377;
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 500;
+    }
+    
+    /* Week Grid */
+    .week-grid {
+        display: grid;
+        grid-template-columns: 60px repeat(7, 1fr);
+        position: relative;
+        background: white;
+    }
+    
+    .time-column {
+        border-right: 1px solid #ddd;
+        background: #fafafa;
+    }
+    
+    .time-slot-label {
+        height: 48px;
+        padding: 0 8px;
+        font-size: 0.65rem;
+        color: #666;
+        text-align: right;
+        position: relative;
+        top: -6px;
+        font-weight: 500;
+    }
+    
+    .week-day-column {
+        border-right: 1px solid #e8e8e8;
+        position: relative;
+        min-height: 1200px;
+        background: white;
+    }
+    
+    .hour-line {
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: #e8e8e8;
+    }
+    
+    /* Colorful Event Blocks */
+    .week-event {
+        position: absolute;
+        left: 2px;
+        right: 2px;
+        border-radius: 4px;
+        padding: 6px 8px;
+        font-size: 0.75rem;
+        cursor: pointer;
+        overflow: hidden;
+        border-left: 4px solid;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        line-height: 1.3;
+    }
+    
+    .week-event:hover {
+        transform: translateX(3px);
+        box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        z-index: 10;
+    }
+    
+    .week-event strong {
+        display: block;
+        font-size: 0.8rem;
+        margin-bottom: 2px;
+    }
+    
+    .week-event.available {
+        cursor: pointer;
+    }
+    
+    .week-event.booked {
+        opacity: 0.7;
+        cursor: default;
+    }
+    
+    /* Month View */
+    .month-view-container {
+        display: block;
+        flex: 1;
+        overflow: auto;
+    }
+    
+    .month-view-container.hidden {
+        display: none;
+    }
+    
+    .calendar-grid {
+        padding: 0;
+    }
+
+    .week-days-header {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        background: #fafafa;
+        border-bottom: 2px solid #e0e0e0;
+    }
+
+    .week-day-header {
+        padding: 12px 8px;
+        text-align: center;
+        font-weight: 600;
+        color: #666;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+    }
+
+    .calendar-days {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        min-height: 500px;
+    }
+
+    .day-cell {
+        border-right: 1px solid #e8e8e8;
+        border-bottom: 1px solid #e8e8e8;
+        min-height: 100px;
+        padding: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        position: relative;
+        background: white;
+    }
+
+    .day-cell:hover {
+        background: #f9f9f9;
+        box-shadow: inset 0 0 0 1px #0d7377;
+    }
+
+    .day-cell.selected {
+        background: #e3f2fd;
+        border-color: #0d7377;
+        box-shadow: inset 0 0 0 2px #0d7377;
+    }
+    
+    .day-cell.today {
+        position: relative;
+    }
+    
+    .day-cell.today .day-number {
+        background: #0d7377;
+        color: white;
+        font-weight: 600;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .day-cell.other-month {
+        background: #fafafa;
+        color: #bbb;
+    }
+
+    .day-number {
+        font-weight: 500;
+        font-size: 0.875rem;
+        margin-bottom: 4px;
+        color: #333;
+    }
+
+    .day-indicator {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #0d7377;
+        display: inline-block;
+        margin-left: 4px;
+    }
+
+    .slots-info {
+        font-size: 0.7rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        margin-top: 4px;
+        padding: 2px 6px;
+        border-radius: 3px;
+        width: fit-content;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+        .sidebar-calendar {
+            width: 200px;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .sidebar-calendar {
+            display: none;
+        }
+        
+        .calendar-wrapper {
+            display: block;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="calendar-wrapper">
+    <!-- Sidebar -->
+    <div class="sidebar-calendar">
+        <button class="create-button" onclick="showAddSlotModal()">
+            <i class="fas fa-plus"></i>
+            <span>Add Availability</span>
+        </button>
+        
+        <!-- Planning Section -->
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Planning</div>
+            <div class="sidebar-item active">
+                <i class="fas fa-calendar"></i>
+                <span>My Schedule</span>
+            </div>
+            <div class="sidebar-item">
+                <i class="fas fa-users"></i>
+                <span>Patients</span>
+            </div>
+        </div>
+        
+        <!-- Mini Calendar -->
+        <div class="mini-calendar">
+            <div class="mini-calendar-header">
+                <button class="mini-nav-btn" onclick="navigateMiniMonth(-1)">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <span class="mini-calendar-title">{{ current_date|date:"F Y" }}</span>
+                <button class="mini-nav-btn" onclick="navigateMiniMonth(1)">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+            <div class="mini-calendar-grid">
+                <div class="mini-weekday">S</div>
+                <div class="mini-weekday">M</div>
+                <div class="mini-weekday">T</div>
+                <div class="mini-weekday">W</div>
+                <div class="mini-weekday">T</div>
+                <div class="mini-weekday">F</div>
+                <div class="mini-weekday">S</div>
+                {% for day in mini_calendar_days %}
+                <div class="mini-day {% if day.is_today %}today{% endif %} {% if not day.is_current_month %}other-month{% endif %} {% if day.has_slots %}has-slots{% endif %}"
+                     onclick="selectDate('{{ day.date|date:'Y-m-d' }}')">
+                    {{ day.date.day }}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Calendar -->
+    <div class="main-calendar-container">
+        <!-- Calendar Header -->
+        <div class="calendar-header">
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <h1 class="calendar-title">{{ current_date|date:"F Y" }}</h1>
+                <div class="calendar-nav">
+                    <button class="nav-btn" onclick="navigateMonth(-1)">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="nav-btn today-btn" onclick="navigateToToday()">
+                        Today
+                    </button>
+                    <button class="nav-btn" onclick="navigateMonth(1)">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="view-toggle">
+                <button class="view-btn" data-view="day">
+                    Day
+                </button>
+                <button class="view-btn active" data-view="week">
+                    Week
+                </button>
+                <button class="view-btn" data-view="month">
+                    Month
+                </button>
+            </div>
+        </div>
+
+        <!-- Week View (Default) -->
+        <div class="week-view-container active">
+            <div class="week-header">
+                <div class="week-header-cell"></div>
+                {% for day in week_days %}
+                <div class="week-header-cell">
+                    <div class="week-day-name">{{ day.date|date:"D" }}</div>
+                    <div class="week-day-number {% if day.is_today %}today{% endif %}">
+                        {{ day.date.day }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="week-grid">
+                <div class="time-column">
+                    {% for hour in hours %}
+                    <div class="time-slot-label">{{ hour }}</div>
+                    {% endfor %}
+                </div>
+                
+                {% for day in week_days %}
+                <div class="week-day-column">
+                    <!-- Hour lines -->
+                    {% for i in "123456789012345678901234"|make_list %}
+                    <div class="hour-line" style="top: {{ forloop.counter0|add:'0' }}px;"></div>
+                    {% endfor %}
+                    
+                    <!-- Slots -->
+                    {% for slot in day.slots %}
+                    <div class="week-event {% if slot.is_booked %}booked{% else %}available{% endif %}" 
+                         style="top: {{ slot.top_position }}px; height: {{ slot.height }}px; background: {{ slot.bg_color }}; color: {{ slot.text_color }}; border-left-color: {{ slot.border_color }};"
+                         onclick="{% if not slot.is_booked %}editSlot({{ slot.id }}){% endif %}"
+                         data-slot-id="{{ slot.id }}">
+                        <strong>{{ slot.start_time|time:"H:i" }}</strong>
+                        {% if slot.end_time %}
+                        <div style="font-size: 0.7rem; opacity: 0.9;">{{ slot.start_time|time:"H:i" }} - {{ slot.end_time|time:"H:i" }}</div>
+                        {% endif %}
+                        {% if slot.is_booked %}
+                        <div style="font-size: 0.65rem; margin-top: 2px;">Booked</div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Month View -->
+        <div class="month-view-container hidden">
+            <div class="calendar-grid">
+                <div class="week-days-header">
+                    <div class="week-day-header">Mon</div>
+                    <div class="week-day-header">Tue</div>
+                    <div class="week-day-header">Wed</div>
+                    <div class="week-day-header">Thu</div>
+                    <div class="week-day-header">Fri</div>
+                    <div class="week-day-header">Sat</div>
+                    <div class="week-day-header">Sun</div>
+                </div>
+
+                <div class="calendar-days">
+                    {% for day in calendar_days %}
+                    <div class="day-cell {% if day.is_today %}today{% endif %} {% if not day.is_current_month %}other-month{% endif %}"
+                         onclick="selectDate('{{ day.date|date:'Y-m-d' }}')">
+                        <div class="day-number">
+                            {{ day.date.day }}
+                            {% if day.slot_count > 0 %}
+                            <span class="day-indicator"></span>
+                            {% endif %}
+                        </div>
+                        {% if day.slot_count > 0 %}
+                        <div class="slots-info">
+                            <i class="fas fa-clock"></i>
+                            {{ day.slot_count }} slot{{ day.slot_count|pluralize }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// View toggle
+document.querySelectorAll('.view-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        const view = this.getAttribute('data-view');
+        const monthView = document.querySelector('.month-view-container');
+        const weekView = document.querySelector('.week-view-container');
+        
+        if (view === 'week') {
+            monthView.classList.add('hidden');
+            weekView.classList.add('active');
+        } else if (view === 'month') {
+            monthView.classList.remove('hidden');
+            weekView.classList.remove('active');
+        }
+    });
+});
+
+// Navigation functions
+function navigateMonth(direction) {
+    // Implement month navigation
+    window.location.href = `?month_offset=${direction}`;
+}
+
+function navigateToToday() {
+    window.location.href = window.location.pathname;
+}
+
+function navigateMiniMonth(direction) {
+    navigateMonth(direction);
+}
+
+function selectDate(date) {
+    window.location.href = `?date=${date}`;
+}
+
+function showAddSlotModal() {
+    // Show add slot modal
+    alert('Add slot functionality - integrate with your existing modal');
+}
+
+function editSlot(slotId) {
+    // Edit slot functionality
+    alert('Edit slot ' + slotId);
+}
+</script>
+{% endblock %}
