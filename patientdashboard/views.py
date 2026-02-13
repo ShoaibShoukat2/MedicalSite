@@ -623,7 +623,10 @@ def appointments_patients(request):
             appointment_datetime = timezone.make_aware(appointment_datetime)
             time_until_appointment = appointment_datetime - current_time
             
-            # Can cancel if more than 2 hours before appointment and not already cancelled
+            # Patient can always cancel if:
+            # 1. Appointment is not already cancelled
+            # 2. Appointment time has not passed
+            # 3. At least 2 hours before appointment (cancellation policy)
             appointment.can_cancel = (
                 appointment.status != 'Cancelled' and 
                 time_until_appointment >= timedelta(hours=2)

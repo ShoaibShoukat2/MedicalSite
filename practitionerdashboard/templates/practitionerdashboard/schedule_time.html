@@ -185,6 +185,44 @@
         font-family: 'Google Sans', Roboto, Arial, sans-serif;
     }
     
+    .calendar-header-center {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+    }
+    
+    .view-tabs {
+        display: flex;
+        gap: 4px;
+        background: #f1f3f4;
+        padding: 4px;
+        border-radius: 6px;
+    }
+    
+    .view-tab {
+        background: transparent;
+        border: none;
+        color: #5f6368;
+        padding: 8px 16px;
+        border-radius: 4px;
+        font-weight: 500;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-family: 'Google Sans', Roboto, Arial, sans-serif;
+    }
+    
+    .view-tab:hover {
+        background: rgba(26, 115, 232, 0.08);
+        color: #1a73e8;
+    }
+    
+    .view-tab.active {
+        background: white;
+        color: #1a73e8;
+        box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+    }
+    
     .month-navigation {
         display: flex;
         align-items: center;
@@ -209,6 +247,25 @@
         background: #f1f3f4;
     }
     
+    .today-btn {
+        background: white;
+        border: 1px solid #dadce0;
+        color: #5f6368;
+        padding: 8px 16px;
+        border-radius: 4px;
+        font-weight: 500;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-family: 'Google Sans', Roboto, Arial, sans-serif;
+    }
+    
+    .today-btn:hover {
+        background: #f1f3f4;
+        border-color: #1a73e8;
+        color: #1a73e8;
+    }
+    
     .current-month-display {
         color: #3c4043;
         font-weight: 400;
@@ -220,6 +277,166 @@
     
     .calendar-grid-container {
         padding: 0;
+    }
+    
+    /* Day View Styles */
+    .day-view-container {
+        display: none;
+        padding: 20px;
+    }
+    
+    .day-view-container.active {
+        display: block;
+    }
+    
+    .day-schedule {
+        background: white;
+        border: 1px solid #dadce0;
+        border-radius: 8px;
+    }
+    
+    .day-header {
+        padding: 16px 20px;
+        border-bottom: 1px solid #dadce0;
+        background: #f8f9fa;
+    }
+    
+    .day-date {
+        font-size: 18px;
+        font-weight: 500;
+        color: #3c4043;
+    }
+    
+    .time-slots-list {
+        padding: 20px;
+    }
+    
+    .time-slot-row {
+        display: flex;
+        align-items: center;
+        padding: 12px;
+        border-bottom: 1px solid #f1f3f4;
+        transition: background 0.2s;
+    }
+    
+    .time-slot-row:hover {
+        background: #f8f9fa;
+    }
+    
+    .time-label {
+        width: 100px;
+        font-size: 13px;
+        color: #5f6368;
+        font-weight: 500;
+    }
+    
+    .slot-content {
+        flex: 1;
+        padding: 12px 16px;
+        background: #e8f0fe;
+        border-left: 4px solid #1a73e8;
+        border-radius: 4px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .slot-info {
+        font-size: 14px;
+        color: #1a73e8;
+        font-weight: 500;
+    }
+    
+    /* Week View Styles */
+    .week-view-container {
+        display: none;
+        padding: 0;
+    }
+    
+    .week-view-container.active {
+        display: block;
+    }
+    
+    .week-grid {
+        display: grid;
+        grid-template-columns: 80px repeat(7, 1fr);
+        border-left: 1px solid #dadce0;
+        border-top: 1px solid #dadce0;
+    }
+    
+    .week-header {
+        display: contents;
+    }
+    
+    .week-time-label {
+        padding: 12px 8px;
+        text-align: center;
+        font-size: 11px;
+        color: #70757a;
+        font-weight: 500;
+        border-right: 1px solid #dadce0;
+        border-bottom: 1px solid #dadce0;
+        background: #f8f9fa;
+    }
+    
+    .week-day-header {
+        padding: 12px 8px;
+        text-align: center;
+        font-size: 12px;
+        color: #3c4043;
+        font-weight: 500;
+        border-right: 1px solid #dadce0;
+        border-bottom: 1px solid #dadce0;
+        background: white;
+    }
+    
+    .week-day-header.today {
+        background: #e8f0fe;
+        color: #1a73e8;
+    }
+    
+    .week-time-row {
+        display: contents;
+    }
+    
+    .week-time-cell {
+        padding: 8px;
+        border-right: 1px solid #dadce0;
+        border-bottom: 1px solid #dadce0;
+        min-height: 60px;
+        background: white;
+        position: relative;
+        cursor: pointer;
+        transition: background 0.1s;
+    }
+    
+    .week-time-cell:hover {
+        background: #f8f9fa;
+    }
+    
+    .week-time-cell.has-slot {
+        background: #e8f0fe;
+    }
+    
+    .week-slot-item {
+        background: #1a73e8;
+        color: white;
+        padding: 4px 6px;
+        border-radius: 3px;
+        font-size: 11px;
+        margin-bottom: 2px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    /* Month View Styles */
+    .month-view-container {
+        display: block;
+    }
+    
+    .month-view-container.active {
+        display: block;
     }
     
     .calendar-weekdays {
@@ -651,6 +868,69 @@
             border-right: none;
             border-bottom: 1px solid #dadce0;
         }
+        
+        .calendar-header-section {
+            flex-direction: column;
+            gap: 16px;
+            align-items: flex-start;
+        }
+        
+        .calendar-header-center {
+            width: 100%;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .view-tabs {
+            width: 100%;
+            justify-content: space-between;
+        }
+        
+        .view-tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px 8px;
+            font-size: 13px;
+        }
+        
+        .view-tab i {
+            display: block;
+            margin-bottom: 4px;
+        }
+        
+        .month-navigation {
+            width: 100%;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .current-month-display {
+            font-size: 16px;
+            order: -1;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        
+        .today-btn {
+            font-size: 13px;
+            padding: 8px 12px;
+        }
+        
+        .week-grid {
+            grid-template-columns: 60px repeat(7, 1fr);
+            font-size: 11px;
+        }
+        
+        .week-time-label {
+            font-size: 10px;
+            padding: 8px 4px;
+        }
+        
+        .week-day-header {
+            font-size: 10px;
+            padding: 8px 4px;
+        }
     }
     
     .toast {
@@ -754,33 +1034,73 @@
                 <div class="calendar-title">
                     Schedule Management
                 </div>
-                <div class="month-navigation">
-                    <button class="month-nav-btn" id="prevMonth" title="Previous month">
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                    <span class="current-month-display" id="currentMonth"></span>
-                    <button class="month-nav-btn" id="nextMonth" title="Next month">
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
+                <div class="calendar-header-center">
+                    <!-- View Tabs -->
+                    <div class="view-tabs">
+                        <button class="view-tab" id="dayViewTab" onclick="switchView('day')">
+                            <i class="fas fa-calendar-day"></i> Day
+                        </button>
+                        <button class="view-tab" id="weekViewTab" onclick="switchView('week')">
+                            <i class="fas fa-calendar-week"></i> Week
+                        </button>
+                        <button class="view-tab active" id="monthViewTab" onclick="switchView('month')">
+                            <i class="fas fa-calendar"></i> Month
+                        </button>
+                    </div>
+                    <!-- Month Navigation -->
+                    <div class="month-navigation">
+                        <button class="today-btn" id="todayBtn" title="Go to today">
+                            <i class="fas fa-calendar-day"></i> Today
+                        </button>
+                        <button class="month-nav-btn" id="prevMonth" title="Previous month">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <span class="current-month-display" id="currentMonth"></span>
+                        <button class="month-nav-btn" id="nextMonth" title="Next month">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
             
             <!-- Calendar Grid -->
             <div class="calendar-grid-container">
-                <!-- Weekday Headers -->
-                <div class="calendar-weekdays">
-                    <div class="weekday-header">Sun</div>
-                    <div class="weekday-header">Mon</div>
-                    <div class="weekday-header">Tue</div>
-                    <div class="weekday-header">Wed</div>
-                    <div class="weekday-header">Thu</div>
-                    <div class="weekday-header">Fri</div>
-                    <div class="weekday-header">Sat</div>
+                <!-- Month View -->
+                <div class="month-view-container active" id="monthView">
+                    <!-- Weekday Headers -->
+                    <div class="calendar-weekdays">
+                        <div class="weekday-header">Sun</div>
+                        <div class="weekday-header">Mon</div>
+                        <div class="weekday-header">Tue</div>
+                        <div class="weekday-header">Wed</div>
+                        <div class="weekday-header">Thu</div>
+                        <div class="weekday-header">Fri</div>
+                        <div class="weekday-header">Sat</div>
+                    </div>
+                    
+                    <!-- Days Grid -->
+                    <div class="calendar-days-grid" id="calendarDaysGrid">
+                        <!-- Days will be generated by JavaScript -->
+                    </div>
                 </div>
                 
-                <!-- Days Grid -->
-                <div class="calendar-days-grid" id="calendarDaysGrid">
-                    <!-- Days will be generated by JavaScript -->
+                <!-- Day View -->
+                <div class="day-view-container" id="dayView">
+                    <div class="day-schedule">
+                        <div class="day-header">
+                            <div class="day-date" id="dayViewDate"></div>
+                        </div>
+                        <div class="time-slots-list" id="dayTimeSlots">
+                            <!-- Time slots will be generated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Week View -->
+                <div class="week-view-container" id="weekView">
+                    <div class="week-grid" id="weekGrid">
+                        <!-- Week grid will be generated by JavaScript -->
+                    </div>
                 </div>
             </div>
             
@@ -943,6 +1263,183 @@
     let currentDate = new Date();
     let miniCurrentDate = new Date();
     let selectedDate = null;
+    let currentView = 'month'; // Default view
+    
+    // Switch View Function
+    function switchView(view) {
+        currentView = view;
+        
+        // Update active tab
+        document.querySelectorAll('.view-tab').forEach(tab => tab.classList.remove('active'));
+        document.getElementById(`${view}ViewTab`).classList.add('active');
+        
+        // Hide all views
+        document.getElementById('monthView').classList.remove('active');
+        document.getElementById('dayView').classList.remove('active');
+        document.getElementById('weekView').classList.remove('active');
+        
+        // Show appropriate view
+        if (view === 'day') {
+            document.getElementById('dayView').classList.add('active');
+            showDayView();
+        } else if (view === 'week') {
+            document.getElementById('weekView').classList.add('active');
+            showWeekView();
+        } else {
+            document.getElementById('monthView').classList.add('active');
+            showMonthView();
+        }
+        
+        updateCurrentMonth();
+    }
+    
+    function showDayView() {
+        const dateToShow = selectedDate || new Date();
+        const dateStr = formatDate(dateToShow);
+        const daySlots = slots.filter(slot => slot.date === dateStr);
+        
+        // Update day header
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('dayViewDate').textContent = dateToShow.toLocaleDateString('en-US', options);
+        
+        // Generate time slots for the day (9 AM to 6 PM)
+        const timeSlotsContainer = document.getElementById('dayTimeSlots');
+        timeSlotsContainer.innerHTML = '';
+        
+        if (daySlots.length === 0) {
+            timeSlotsContainer.innerHTML = `
+                <div class="empty-state" style="padding: 40px;">
+                    <i class="fas fa-calendar-plus"></i>
+                    <p style="font-size: 14px; font-weight: 400; margin-top: 8px; color: #5f6368;">
+                        No appointments scheduled for this day
+                    </p>
+                </div>
+            `;
+            return;
+        }
+        
+        // Show all appointments for the day
+        daySlots.forEach(slot => {
+            const slotRow = document.createElement('div');
+            slotRow.className = 'time-slot-row';
+            slotRow.innerHTML = `
+                <div class="time-label">${slot.start_time}</div>
+                <div class="slot-content">
+                    <div class="slot-info">
+                        <i class="fas fa-clock mr-2"></i>
+                        ${slot.start_time} - ${slot.end_time}
+                    </div>
+                    <button class="slot-remove-btn" onclick="removeSlotFromCalendar(${slot.id})" style="width: 24px; height: 24px;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            timeSlotsContainer.appendChild(slotRow);
+        });
+    }
+    
+    function showWeekView() {
+        const weekGrid = document.getElementById('weekGrid');
+        weekGrid.innerHTML = '';
+        
+        // Get start of week (Sunday)
+        const startOfWeek = new Date(currentDate);
+        startOfWeek.setDate(currentDate.getDate() - currentDate.getDay());
+        
+        // Create header row
+        const headerRow = document.createElement('div');
+        headerRow.className = 'week-header';
+        
+        // Empty cell for time column
+        const emptyCell = document.createElement('div');
+        emptyCell.className = 'week-time-label';
+        emptyCell.textContent = 'Time';
+        headerRow.appendChild(emptyCell);
+        
+        // Day headers
+        const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        for (let i = 0; i < 7; i++) {
+            const dayDate = new Date(startOfWeek);
+            dayDate.setDate(startOfWeek.getDate() + i);
+            
+            const dayHeader = document.createElement('div');
+            dayHeader.className = 'week-day-header';
+            
+            const compareDate = new Date(dayDate);
+            compareDate.setHours(0, 0, 0, 0);
+            
+            if (compareDate.getTime() === today.getTime()) {
+                dayHeader.classList.add('today');
+            }
+            
+            dayHeader.innerHTML = `
+                <div style="font-weight: 600;">${dayNames[i]}</div>
+                <div style="font-size: 18px; margin-top: 4px;">${dayDate.getDate()}</div>
+            `;
+            headerRow.appendChild(dayHeader);
+        }
+        
+        weekGrid.appendChild(emptyCell);
+        for (let i = 1; i < headerRow.children.length; i++) {
+            weekGrid.appendChild(headerRow.children[i].cloneNode(true));
+        }
+        
+        // Create time rows (9 AM to 6 PM)
+        for (let hour = 9; hour < 18; hour++) {
+            // Time label
+            const timeLabel = document.createElement('div');
+            timeLabel.className = 'week-time-label';
+            const displayHour = hour > 12 ? hour - 12 : hour;
+            const ampm = hour >= 12 ? 'PM' : 'AM';
+            timeLabel.textContent = `${displayHour}:00 ${ampm}`;
+            weekGrid.appendChild(timeLabel);
+            
+            // Day cells
+            for (let day = 0; day < 7; day++) {
+                const cellDate = new Date(startOfWeek);
+                cellDate.setDate(startOfWeek.getDate() + day);
+                const dateStr = formatDate(cellDate);
+                
+                const timeCell = document.createElement('div');
+                timeCell.className = 'week-time-cell';
+                
+                // Check for slots in this time period
+                const hourStr = hour.toString().padStart(2, '0');
+                const nextHourStr = (hour + 1).toString().padStart(2, '0');
+                const cellSlots = slots.filter(slot => {
+                    if (slot.date === dateStr) {
+                        const slotStart = slot.start_time.split(':')[0];
+                        return parseInt(slotStart) === hour;
+                    }
+                    return false;
+                });
+                
+                if (cellSlots.length > 0) {
+                    timeCell.classList.add('has-slot');
+                    cellSlots.forEach(slot => {
+                        const slotItem = document.createElement('div');
+                        slotItem.className = 'week-slot-item';
+                        slotItem.innerHTML = `
+                            <span>${slot.start_time}-${slot.end_time}</span>
+                            <button onclick="removeSlotFromCalendar(${slot.id})" style="background: rgba(255,255,255,0.2); border: none; color: white; cursor: pointer; border-radius: 3px; padding: 2px 4px;">
+                                <i class="fas fa-times" style="font-size: 10px;"></i>
+                            </button>
+                        `;
+                        timeCell.appendChild(slotItem);
+                    });
+                }
+                
+                weekGrid.appendChild(timeCell);
+            }
+        }
+    }
+    
+    function showMonthView() {
+        generateCalendar();
+    }
     
     // Generate Mini Calendar
     function generateMiniCalendar() {
@@ -1020,17 +1517,26 @@
             dayElement.addEventListener('click', () => {
                 // Update main calendar to this month
                 currentDate = new Date(fullDate);
-                generateCalendar();
-                updateCurrentMonth();
+                selectedDate = new Date(fullDate);
                 
-                // Select this date
-                const mainDayElements = document.querySelectorAll('.calendar-day');
-                mainDayElements.forEach(el => {
-                    const dayText = el.querySelector('.day-number');
-                    if (dayText && parseInt(dayText.textContent) === dayNum && !el.classList.contains('other-month')) {
-                        selectDate(fullDate, el);
-                    }
-                });
+                if (currentView === 'day') {
+                    showDayView();
+                } else if (currentView === 'week') {
+                    showWeekView();
+                } else {
+                    generateCalendar();
+                    
+                    // Select this date in month view
+                    const mainDayElements = document.querySelectorAll('.calendar-day');
+                    mainDayElements.forEach(el => {
+                        const dayText = el.querySelector('.day-number');
+                        if (dayText && parseInt(dayText.textContent) === dayNum && !el.classList.contains('other-month')) {
+                            selectDate(fullDate, el);
+                        }
+                    });
+                }
+                
+                updateCurrentMonth();
                 
                 // Update mini calendar selection
                 document.querySelectorAll('.mini-day.selected').forEach(el => el.classList.remove('selected'));
@@ -1229,8 +1735,30 @@
             'January', 'February', 'March', 'April', 'May', 'June',
             'July', 'August', 'September', 'October', 'November', 'December'
         ];
-        document.getElementById('currentMonth').textContent = 
-            `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+        
+        if (currentView === 'day') {
+            const options = { month: 'long', day: 'numeric', year: 'numeric' };
+            document.getElementById('currentMonth').textContent = currentDate.toLocaleDateString('en-US', options);
+        } else if (currentView === 'week') {
+            const startOfWeek = new Date(currentDate);
+            startOfWeek.setDate(currentDate.getDate() - currentDate.getDay());
+            const endOfWeek = new Date(startOfWeek);
+            endOfWeek.setDate(startOfWeek.getDate() + 6);
+            
+            const startMonth = monthNames[startOfWeek.getMonth()];
+            const endMonth = monthNames[endOfWeek.getMonth()];
+            
+            if (startOfWeek.getMonth() === endOfWeek.getMonth()) {
+                document.getElementById('currentMonth').textContent = 
+                    `${startMonth} ${startOfWeek.getDate()} - ${endOfWeek.getDate()}, ${startOfWeek.getFullYear()}`;
+            } else {
+                document.getElementById('currentMonth').textContent = 
+                    `${startMonth} ${startOfWeek.getDate()} - ${endMonth} ${endOfWeek.getDate()}, ${startOfWeek.getFullYear()}`;
+            }
+        } else {
+            document.getElementById('currentMonth').textContent = 
+                `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+        }
     }
     
     function removeSlotFromCalendar(slotId) {
@@ -1307,21 +1835,63 @@
         
         // Main calendar month navigation
         document.getElementById('prevMonth').addEventListener('click', () => {
-            currentDate.setMonth(currentDate.getMonth() - 1);
+            if (currentView === 'day') {
+                currentDate.setDate(currentDate.getDate() - 1);
+                selectedDate = new Date(currentDate);
+                showDayView();
+            } else if (currentView === 'week') {
+                currentDate.setDate(currentDate.getDate() - 7);
+                showWeekView();
+            } else {
+                currentDate.setMonth(currentDate.getMonth() - 1);
+            }
             miniCurrentDate = new Date(currentDate);
-            generateCalendar();
+            if (currentView === 'month') {
+                generateCalendar();
+            }
             updateCurrentMonth();
             generateMiniCalendar();
             updateMiniMonth();
         });
         
         document.getElementById('nextMonth').addEventListener('click', () => {
-            currentDate.setMonth(currentDate.getMonth() + 1);
+            if (currentView === 'day') {
+                currentDate.setDate(currentDate.getDate() + 1);
+                selectedDate = new Date(currentDate);
+                showDayView();
+            } else if (currentView === 'week') {
+                currentDate.setDate(currentDate.getDate() + 7);
+                showWeekView();
+            } else {
+                currentDate.setMonth(currentDate.getMonth() + 1);
+            }
             miniCurrentDate = new Date(currentDate);
-            generateCalendar();
+            if (currentView === 'month') {
+                generateCalendar();
+            }
             updateCurrentMonth();
             generateMiniCalendar();
             updateMiniMonth();
+        });
+        
+        // Today button
+        document.getElementById('todayBtn').addEventListener('click', () => {
+            currentDate = new Date();
+            miniCurrentDate = new Date();
+            selectedDate = new Date();
+            
+            if (currentView === 'day') {
+                showDayView();
+            } else if (currentView === 'week') {
+                showWeekView();
+            } else {
+                generateCalendar();
+            }
+            
+            updateCurrentMonth();
+            generateMiniCalendar();
+            updateMiniMonth();
+            showToast('Jumped to today', 'success');
         });
         
         // Mini calendar month navigation
