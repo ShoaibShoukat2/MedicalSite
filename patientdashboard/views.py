@@ -623,10 +623,15 @@ def appointments_patients(request):
             appointment_datetime = timezone.make_aware(appointment_datetime)
             time_until_appointment = appointment_datetime - current_time
             
-            # Patient can always cancel if:
-            # 1. Appointment is not already cancelled
-            # 2. Appointment time has not passed
-            # 3. At least 2 hours before appointment (cancellation policy)
+            # OPTION 1: Patient can cancel ANYTIME (No time restriction)
+            # Uncomment this to allow cancellation at any time:
+            # appointment.can_cancel = (
+            #     appointment.status != 'Cancelled' and 
+            #     time_until_appointment.total_seconds() > 0  # Only check if appointment hasn't passed
+            # )
+            
+            # OPTION 2: Patient can cancel with 2-hour policy (Current)
+            # Comment this out if you want Option 1:
             appointment.can_cancel = (
                 appointment.status != 'Cancelled' and 
                 time_until_appointment >= timedelta(hours=2)
@@ -1297,18 +1302,32 @@ def download_bill_pdf(request, bill_id):
 
 
 def cancel_appointment(request, appointment_id):
-    """Cancel the appointment by updating its status with reason - requires 2 hours advance notice."""
+    """
+    Cancel the appointment by updating its status with reason.
+    
+    OPTION 1: No time restriction (Cancel anytime)
+    OPTION 2: 2-hour policy (Current - requires 2 hours advance notice)
+    """
     appointment = get_object_or_404(Appointment, id=appointment_id)
 
     if appointment.status != "Cancelled":  # Prevent duplicate cancellations
-        # Check if cancellation is at least 2 hours before appointment
         from datetime import datetime, timedelta
         appointment_datetime = datetime.combine(appointment.slot.date, appointment.slot.start_time)
         appointment_datetime = timezone.make_aware(appointment_datetime)
         current_time = timezone.now()
         time_until_appointment = appointment_datetime - current_time
         
-        # Require at least 2 hours (120 minutes) advance notice
+        # OPTION 1: Allow cancellation ANYTIME (No time restriction)
+        # Uncomment this block to allow cancellation at any time:
+        # if time_until_appointment.total_seconds() <= 0:
+        #     return JsonResponse({
+        #         "success": False, 
+        #         "error": "Cancellation denied. Your appointment time has already passed.",
+        #         "appointment_passed": True
+        #     })
+        
+        # OPTION 2: Require at least 2 hours advance notice (Current)
+        # Comment this block out if you want Option 1:
         if time_until_appointment < timedelta(hours=2):
             # Calculate how much time is left
             hours_left = time_until_appointment.total_seconds() / 3600
