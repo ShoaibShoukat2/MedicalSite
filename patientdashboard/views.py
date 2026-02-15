@@ -623,15 +623,14 @@ def appointments_patients(request):
             appointment_datetime = timezone.make_aware(appointment_datetime)
             time_until_appointment = appointment_datetime - current_time
             
-            # Patient can ALWAYS cancel (anytime before appointment)
-            # Button will always show if appointment is not cancelled and hasn't passed
+            # Patient can always cancel if:
+            # 1. Appointment is not already cancelled
+            # 2. Appointment time has not passed
+            # 3. At least 2 hours before appointment (cancellation policy)
             appointment.can_cancel = (
                 appointment.status != 'Cancelled' and 
-                time_until_appointment.total_seconds() > 0  # Only check if appointment hasn't passed
+                time_until_appointment >= timedelta(hours=2)
             )
-            
-            # Check if within 2-hour policy window (for warning message)
-            appointment.within_policy = time_until_appointment >= timedelta(hours=2)
             
             # Calculate time remaining for display
             if time_until_appointment.total_seconds() > 0:
@@ -1298,56 +1297,42 @@ def download_bill_pdf(request, bill_id):
 
 
 def cancel_appointment(request, appointment_id):
-    """
-    Cancel the appointment by updating its status with reason.
-    Allows cancellation anytime but warns if within 2-hour policy window.
-    """
+    """Cancel the appointment by updating its status with reason - requires 2 hours advance notice."""
     appointment = get_object_or_404(Appointment, id=appointment_id)
 
     if appointment.status != "Cancelled":  # Prevent duplicate cancellations
+        # Check if cancellation is at least 2 hours before appointment
         from datetime import datetime, timedelta
         appointment_datetime = datetime.combine(appointment.slot.date, appointment.slot.start_time)
         appointment_datetime = timezone.make_aware(appointment_datetime)
         current_time = timezone.now()
         time_until_appointment = appointment_datetime - current_time
         
-        # Check if appointment has already passed
-        if time_until_appointment.total_seconds() <= 0:
-            return JsonResponse({
-                "success": False, 
-                "error": "Cancellation denied. Your appointment time has already passed.",
-                "appointment_passed": True
-            })
-        
-        # Check if within 2-hour policy window
-        within_policy = time_until_appointment >= timedelta(hours=2)
-        
-        # Get cancellation reason and confirmation from request
-        reason = request.POST.get('reason', 'Cancelled by patient')
-        late_cancel_confirmed = request.POST.get('late_cancel_confirmed', 'false') == 'true'
-        
-        # If within 2-hour window and not confirmed, send warning
-        if not within_policy and not late_cancel_confirmed:
+        # Require at least 2 hours (120 minutes) advance notice
+        if time_until_appointment < timedelta(hours=2):
+            # Calculate how much time is left
             hours_left = time_until_appointment.total_seconds() / 3600
-            hours_text = f"{hours_left:.1f} hours" if hours_left >= 1 else f"{int(hours_left * 60)} minutes"
+            if hours_left > 0:
+                hours_text = f"{hours_left:.1f} hours" if hours_left >= 1 else f"{int(hours_left * 60)} minutes"
+                error_message = f"Cancellation denied. You must cancel at least 2 hours before your appointment. Only {hours_text} remaining."
+            else:
+                error_message = "Cancellation denied. Your appointment time has already passed."
             
             return JsonResponse({
-                "success": False,
-                "requires_confirmation": True,
-                "warning": f"⚠️ Late Cancellation Warning",
-                "message": f"You are cancelling with only {hours_text} remaining. Our policy recommends cancelling at least 2 hours in advance to respect the practitioner's time. Do you still want to proceed?",
-                "time_remaining": hours_text,
-                "policy_hours": 2
+                "success": False, 
+                "error": error_message,
+                "policy_violation": True,
+                "hours_required": 2,
+                "time_remaining": hours_left if hours_left > 0 else 0
             })
         
-        # Proceed with cancellation
+        # Get cancellation reason from request
+        reason = request.POST.get('reason', 'Cancelled by patient')
+        
+        # Update appointment status and reason
         appointment.status = "Cancelled"
         appointment.cancellation_reason = reason
         appointment.cancelled_at = timezone.now()
-        
-        # Add flag if it was a late cancellation
-        if not within_policy:
-            appointment.late_cancellation = True
         appointment.save()
         
         # Send notifications to practitioner about patient cancellation
