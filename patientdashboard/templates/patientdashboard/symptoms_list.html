@@ -25,7 +25,7 @@
     <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 patient-card">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-patient-dark-gray text-sm font-medium">Total Symptoms</p>
+                <p class="text-patient-dark-gray text-sm font-medium" data-translate="Total Symptoms">Total Symptoms</p>
                 <p class="text-2xl font-bold text-patient-orange">{{ symptoms.count }}</p>
             </div>
             <div class="w-12 h-12 bg-gradient-to-br from-patient-orange to-orange-600 rounded-xl flex items-center justify-center">
@@ -37,7 +37,7 @@
     <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 patient-card">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-patient-dark-gray text-sm font-medium">This Month</p>
+                <p class="text-patient-dark-gray text-sm font-medium" data-translate="This Month">This Month</p>
                 <p class="text-2xl font-bold text-patient-blue">{{ month_symptoms|default:0 }}</p>
             </div>
             <div class="w-12 h-12 bg-gradient-to-br from-patient-blue to-patient-dark-blue rounded-xl flex items-center justify-center">
@@ -49,7 +49,7 @@
     <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 patient-card">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-patient-dark-gray text-sm font-medium">Recent</p>
+                <p class="text-patient-dark-gray text-sm font-medium" data-translate="Recent">Recent</p>
                 <p class="text-2xl font-bold text-patient-green">{{ recent_symptoms|default:0 }}</p>
             </div>
             <div class="w-12 h-12 bg-gradient-to-br from-patient-green to-green-600 rounded-xl flex items-center justify-center">
@@ -61,7 +61,7 @@
     <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 patient-card">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-patient-dark-gray text-sm font-medium">Appointments</p>
+                <p class="text-patient-dark-gray text-sm font-medium" data-translate="Appointments">Appointments</p>
                 <p class="text-2xl font-bold text-patient-purple">{{ appointment_symptoms|default:0 }}</p>
             </div>
             <div class="w-12 h-12 bg-gradient-to-br from-patient-purple to-purple-600 rounded-xl flex items-center justify-center">
@@ -74,8 +74,8 @@
 <!-- Symptoms List -->
 <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
     <div class="p-6 border-b border-gray-200">
-        <h2 class="text-xl font-bold text-patient-dark-blue">Symptom History</h2>
-        <p class="text-patient-dark-gray mt-1">View and manage your submitted symptoms</p>
+        <h2 class="text-xl font-bold text-patient-dark-blue" data-translate="Symptom History">Symptom History</h2>
+        <p class="text-patient-dark-gray mt-1" data-translate="View and manage your submitted symptoms">View and manage your submitted symptoms</p>
     </div>
     
     <div class="overflow-x-auto">
@@ -83,11 +83,11 @@
         <table class="w-full">
             <thead class="bg-patient-gray">
                 <tr>
-                    <th class="px-6 py-4 text-left text-sm font-semibold text-patient-dark-blue">Appointment</th>
-                    <th class="px-6 py-4 text-left text-sm font-semibold text-patient-dark-blue">Symptoms</th>
-                    <th class="px-6 py-4 text-left text-sm font-semibold text-patient-dark-blue">Severity</th>
-                    <th class="px-6 py-4 text-left text-sm font-semibold text-patient-dark-blue">Date Submitted</th>
-                    <th class="px-6 py-4 text-left text-sm font-semibold text-patient-dark-blue">Actions</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-patient-dark-blue" data-translate="Appointment">Appointment</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-patient-dark-blue" data-translate="Symptoms">Symptoms</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-patient-dark-blue" data-translate="Severity">Severity</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-patient-dark-blue" data-translate="Date Submitted">Date Submitted</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-patient-dark-blue" data-translate="Actions">Actions</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-200">
@@ -135,7 +135,7 @@
                             {{ symptom.severity }}
                         </span>
                         {% else %}
-                        <span class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm font-medium">Not specified</span>
+                        <span class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm font-medium" data-translate="Not specified">Not specified</span>
                         {% endif %}
                     </td>
                     <td class="px-6 py-4">
@@ -164,8 +164,8 @@
             <div class="w-24 h-24 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <i class="fas fa-notes-medical text-patient-orange text-4xl"></i>
             </div>
-            <h3 class="text-2xl font-semibold text-patient-dark-blue mb-4">No Symptoms Recorded</h3>
-            <p class="text-patient-dark-gray mb-8 max-w-md mx-auto">Start tracking your symptoms to help your healthcare provider better understand your condition.</p>
+            <h3 class="text-2xl font-semibold text-patient-dark-blue mb-4" data-translate="No Symptoms Recorded">No Symptoms Recorded</h3>
+            <p class="text-patient-dark-gray mb-8 max-w-md mx-auto" data-translate="Start tracking your symptoms to help your healthcare provider better understand your condition">Start tracking your symptoms to help your healthcare provider better understand your condition.</p>
             <a href="{% url 'patientdashboard:add_symptom' %}" class="inline-flex items-center px-6 py-3 bg-patient-orange text-white rounded-xl hover:bg-orange-600 transition-colors font-semibold">
                 <i class="fas fa-plus mr-2"></i>Add Your First Symptom
             </a>
@@ -179,7 +179,7 @@
     <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto">
         <div class="p-6 border-b border-gray-200">
             <div class="flex justify-between items-center">
-                <h3 class="text-xl font-bold text-patient-dark-blue">Symptom Details</h3>
+                <h3 class="text-xl font-bold text-patient-dark-blue" data-translate="Symptom Details">Symptom Details</h3>
                 <button onclick="closeSymptomModal()" class="text-gray-400 hover:text-gray-600">
                     <i class="fas fa-times text-xl"></i>
                 </button>

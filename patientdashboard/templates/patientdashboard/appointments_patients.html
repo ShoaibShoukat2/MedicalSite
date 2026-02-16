@@ -188,19 +188,19 @@
                                         <!-- Appointment has passed -->
                                         <div class="px-4 py-2 bg-gray-100 text-gray-600 rounded-lg border border-gray-300">
                                             <i class="fas fa-history mr-2"></i>
-                                            <span data-translate="Appointment Completed">Appointment Time Passed</span>
+                                            <span data-translate="Appointment Time Passed">Appointment Time Passed</span>
                                         </div>
                                     {% elif appointment.can_cancel %}
                                         <!-- Can cancel - more than 2 hours remaining -->
                                         <button class="cancel-btn px-4 py-2 border border-patient-red text-patient-red rounded-lg hover:bg-patient-red hover:text-white transition-colors" data-id="{{ appointment.id }}">
-                                            <i class="fas fa-times mr-2"></i><span data-translate="Cancel">Cancel Appointment</span>
+                                            <i class="fas fa-times mr-2"></i><span data-translate="Cancel Appointment">Cancel Appointment</span>
                                         </button>
                                     {% else %}
                                         <!-- Cannot cancel - less than 2 hours -->
                                         <div class="px-4 py-2 bg-orange-50 text-orange-700 rounded-lg border border-orange-200">
                                             <i class="fas fa-clock mr-2"></i>
-                                            <span data-translate="Too Late">Too Late to Cancel</span>
-                                            <span class="text-xs block mt-1">({{ appointment.time_remaining }} left)</span>
+                                            <span data-translate="Too Late to Cancel">Too Late to Cancel</span>
+                                            <span class="text-xs block mt-1">(<span data-translate="left">{{ appointment.time_remaining }} left</span>)</span>
                                         </div>
                                     {% endif %}
                                 {% else %}

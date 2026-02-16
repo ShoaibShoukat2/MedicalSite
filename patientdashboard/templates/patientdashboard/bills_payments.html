@@ -103,13 +103,13 @@
         <table class="w-full">
             <thead class="bg-patient-gray">
                 <tr>
-                    <th class="px-6 py-4 text-left text-sm font-semibold text-patient-dark-blue">Invoice #</th>
-                    <th class="px-6 py-4 text-left text-sm font-semibold text-patient-dark-blue">Date</th>
-                    <th class="px-6 py-4 text-left text-sm font-semibold text-patient-dark-blue">Doctor</th>
-                    <th class="px-6 py-4 text-left text-sm font-semibold text-patient-dark-blue">Service</th>
-                    <th class="px-6 py-4 text-left text-sm font-semibold text-patient-dark-blue">Amount</th>
-                    <th class="px-6 py-4 text-left text-sm font-semibold text-patient-dark-blue">Status</th>
-                    <th class="px-6 py-4 text-left text-sm font-semibold text-patient-dark-blue">Actions</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-patient-dark-blue" data-translate="Invoice #">Invoice #</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-patient-dark-blue" data-translate="Date">Date</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-patient-dark-blue" data-translate="Doctor">Doctor</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-patient-dark-blue" data-translate="Service">Service</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-patient-dark-blue" data-translate="Amount">Amount</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-patient-dark-blue" data-translate="Status">Status</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-patient-dark-blue" data-translate="Actions">Actions</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-200">
@@ -136,7 +136,7 @@
                         </div>
                     </td>
                     <td class="px-6 py-4">
-                        <div class="text-patient-dark-blue">Consultation</div>
+                        <div class="text-patient-dark-blue" data-translate="Consultation">Consultation</div>
                         <div class="text-sm text-patient-dark-gray">{{ bill.appointment.created_at|date:"M d, Y" }}</div>
                     </td>
                     <td class="px-6 py-4">
@@ -211,12 +211,12 @@
             <div class="flex space-x-2">
                 <a href="{% url 'patientdashboard:view_bill' bill.id %}" 
                    class="flex-1 px-3 py-2 bg-patient-blue text-white rounded-lg hover:bg-patient-dark-blue transition-colors text-sm text-center">
-                    View Details
+                    <span data-translate="View Details">View Details</span>
                 </a>
                 {% if not bill.is_paid %}
                 <a href="#" 
                    class="flex-1 px-3 py-2 bg-patient-green text-white rounded-lg hover:bg-green-700 transition-colors text-sm text-center">
-                    Pay Now
+                    <span data-translate="Pay Now">Pay Now</span>
                 </a>
                 {% endif %}
             </div>
