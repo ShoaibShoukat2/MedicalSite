@@ -9,7 +9,7 @@
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
         <div>
             <h1 class="text-2xl md:text-3xl font-bold mb-2" data-translate="My Symptoms">My Symptoms</h1>
-            <p class="text-white/90">Track and manage your health symptoms for better care</p>
+            <p class="text-white/90" data-translate="Track and manage your health symptoms for better care">Track and manage your health symptoms for better care</p>
         </div>
         <div class="mt-4 md:mt-0">
             <a href="{% url 'patientdashboard:add_symptom' %}" class="inline-flex items-center px-6 py-3 bg-white text-patient-orange rounded-xl hover:bg-orange-50 transition-all duration-300 font-semibold shadow-lg">
@@ -103,14 +103,14 @@
                                     {% if symptom.appointment %}
                                         Dr. {{ symptom.appointment.practitioner.first_name }} {{ symptom.appointment.practitioner.last_name }}
                                     {% else %}
-                                        General Symptom
+                                        <span data-translate="General Symptom">General Symptom</span>
                                     {% endif %}
                                 </div>
                                 <div class="text-sm text-patient-dark-gray">
                                     {% if symptom.appointment %}
                                         {{ symptom.appointment.slot.date|date:"M d, Y" }}
                                     {% else %}
-                                        Self-reported
+                                        <span data-translate="Self-reported">Self-reported</span>
                                     {% endif %}
                                 </div>
                             </div>
@@ -167,7 +167,7 @@
             <h3 class="text-2xl font-semibold text-patient-dark-blue mb-4" data-translate="No Symptoms Recorded">No Symptoms Recorded</h3>
             <p class="text-patient-dark-gray mb-8 max-w-md mx-auto" data-translate="Start tracking your symptoms to help your healthcare provider better understand your condition">Start tracking your symptoms to help your healthcare provider better understand your condition.</p>
             <a href="{% url 'patientdashboard:add_symptom' %}" class="inline-flex items-center px-6 py-3 bg-patient-orange text-white rounded-xl hover:bg-orange-600 transition-colors font-semibold">
-                <i class="fas fa-plus mr-2"></i>Add Your First Symptom
+                <i class="fas fa-plus mr-2"></i><span data-translate="Add Your First Symptom">Add Your First Symptom</span>
             </a>
         </div>
         {% endif %}

@@ -9,7 +9,7 @@
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
         <div>
             <h1 class="text-2xl md:text-3xl font-bold mb-2" data-translate="Add Symptom">Add New Symptom</h1>
-            <p class="text-white/90">Record your symptoms to help your healthcare provider</p>
+            <p class="text-white/90" data-translate="Record your symptoms to help your healthcare provider">Record your symptoms to help your healthcare provider</p>
         </div>
         <div class="mt-4 md:mt-0">
             <a href="{% url 'patientdashboard:symptoms_list' %}" class="inline-flex items-center px-6 py-3 bg-white text-patient-orange rounded-xl hover:bg-orange-50 transition-all duration-300 font-semibold shadow-lg">
@@ -30,8 +30,8 @@
                     <i class="fas fa-notes-medical text-patient-orange text-xl"></i>
                 </div>
                 <div>
-                    <h2 class="text-xl font-bold text-patient-dark-blue">Symptom Information</h2>
-                    <p class="text-patient-dark-gray">Please provide detailed information about your symptoms</p>
+                    <h2 class="text-xl font-bold text-patient-dark-blue" data-translate="Symptom Information">Symptom Information</h2>
+                    <p class="text-patient-dark-gray" data-translate="Please provide detailed information about your symptoms">Please provide detailed information about your symptoms</p>
                 </div>
             </div>
         </div>
@@ -47,24 +47,24 @@
                     <div>
                         <label for="appointment_id" class="block text-sm font-semibold text-patient-dark-blue mb-3">
                             <i class="fas fa-calendar-alt mr-2 text-patient-blue"></i>
-                            Related Appointment
+                            <span data-translate="Related Appointment">Related Appointment</span>
                         </label>
                         <select name="appointment_id" 
                                 id="appointment_id"
                                 class="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-patient-orange/50 focus:border-patient-orange transition-all duration-300 bg-white"
                                 required>
-                            <option value="">Select an appointment</option>
+                            <option value="" data-translate="Select an appointment">Select an appointment</option>
                             {% for app in appointments %}
                                 <option value="{{ app.id }}">
                                     Dr. {{ app.practitioner.first_name }} {{ app.practitioner.last_name }} - {{ app.slot.date|date:"M d, Y" }} at {{ app.slot.start_time|time:"h:i A" }}
                                 </option>
                             {% empty %}
-                                <option value="">No appointments available</option>
+                                <option value="" data-translate="No appointments available">No appointments available</option>
                             {% endfor %}
                         </select>
                         <p class="text-sm text-patient-dark-gray mt-2">
                             <i class="fas fa-info-circle mr-1"></i>
-                            Choose the appointment related to these symptoms
+                            <span data-translate="Choose the appointment related to these symptoms">Choose the appointment related to these symptoms</span>
                         </p>
                     </div>
 
@@ -72,15 +72,15 @@
                     <div>
                         <label class="block text-sm font-semibold text-patient-dark-blue mb-3">
                             <i class="fas fa-thermometer-half mr-2 text-patient-red"></i>
-                            Symptom Severity
+                            <span data-translate="Symptom Severity">Symptom Severity</span>
                         </label>
                         <div class="grid grid-cols-3 gap-3">
                             <label class="relative cursor-pointer">
                                 <input type="radio" name="severity" value="Low" class="sr-only peer" required>
                                 <div class="w-full p-4 bg-white border-2 border-gray-200 rounded-xl peer-checked:border-green-500 peer-checked:bg-green-50 transition-all duration-300 text-center hover:border-green-300">
                                     <i class="fas fa-smile text-green-500 text-2xl mb-2"></i>
-                                    <div class="font-semibold text-green-600">Low</div>
-                                    <div class="text-xs text-gray-500">Mild discomfort</div>
+                                    <div class="font-semibold text-green-600" data-translate="Low">Low</div>
+                                    <div class="text-xs text-gray-500" data-translate="Mild discomfort">Mild discomfort</div>
                                 </div>
                             </label>
                             
@@ -88,8 +88,8 @@
                                 <input type="radio" name="severity" value="Medium" class="sr-only peer">
                                 <div class="w-full p-4 bg-white border-2 border-gray-200 rounded-xl peer-checked:border-yellow-500 peer-checked:bg-yellow-50 transition-all duration-300 text-center hover:border-yellow-300">
                                     <i class="fas fa-meh text-yellow-500 text-2xl mb-2"></i>
-                                    <div class="font-semibold text-yellow-600">Medium</div>
-                                    <div class="text-xs text-gray-500">Moderate pain</div>
+                                    <div class="font-semibold text-yellow-600" data-translate="Medium">Medium</div>
+                                    <div class="text-xs text-gray-500" data-translate="Moderate pain">Moderate pain</div>
                                 </div>
                             </label>
                             
@@ -97,8 +97,8 @@
                                 <input type="radio" name="severity" value="High" class="sr-only peer">
                                 <div class="w-full p-4 bg-white border-2 border-gray-200 rounded-xl peer-checked:border-red-500 peer-checked:bg-red-50 transition-all duration-300 text-center hover:border-red-300">
                                     <i class="fas fa-frown text-red-500 text-2xl mb-2"></i>
-                                    <div class="font-semibold text-red-600">High</div>
-                                    <div class="text-xs text-gray-500">Severe pain</div>
+                                    <div class="font-semibold text-red-600" data-translate="High">High</div>
+                                    <div class="text-xs text-gray-500" data-translate="Severe pain">Severe pain</div>
                                 </div>
                             </label>
                         </div>
@@ -108,18 +108,18 @@
                     <div>
                         <label for="duration" class="block text-sm font-semibold text-patient-dark-blue mb-3">
                             <i class="fas fa-clock mr-2 text-patient-purple"></i>
-                            Duration
+                            <span data-translate="Duration">Duration</span>
                         </label>
                         <select name="duration" 
                                 id="duration"
                                 class="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-patient-orange/50 focus:border-patient-orange transition-all duration-300 bg-white">
-                            <option value="">Select duration</option>
-                            <option value="Less than 1 hour">Less than 1 hour</option>
-                            <option value="1-6 hours">1-6 hours</option>
-                            <option value="6-24 hours">6-24 hours</option>
-                            <option value="1-3 days">1-3 days</option>
-                            <option value="More than 3 days">More than 3 days</option>
-                            <option value="Ongoing">Ongoing</option>
+                            <option value="" data-translate="Select duration">Select duration</option>
+                            <option value="Less than 1 hour" data-translate="Less than 1 hour">Less than 1 hour</option>
+                            <option value="1-6 hours" data-translate="1-6 hours">1-6 hours</option>
+                            <option value="6-24 hours" data-translate="6-24 hours">6-24 hours</option>
+                            <option value="1-3 days" data-translate="1-3 days">1-3 days</option>
+                            <option value="More than 3 days" data-translate="More than 3 days">More than 3 days</option>
+                            <option value="Ongoing" data-translate="Ongoing">Ongoing</option>
                         </select>
                     </div>
                 </div>
@@ -130,7 +130,7 @@
                     <div>
                         <label for="details" class="block text-sm font-semibold text-patient-dark-blue mb-3">
                             <i class="fas fa-file-medical-alt mr-2 text-patient-green"></i>
-                            Symptom Details
+                            <span data-translate="Symptom Details">Symptom Details</span>
                         </label>
                         <textarea name="details" 
                                   id="details"
@@ -141,7 +141,7 @@
                         <div class="flex justify-between items-center mt-2">
                             <p class="text-sm text-patient-dark-gray">
                                 <i class="fas fa-info-circle mr-1"></i>
-                                Be as detailed as possible to help your doctor
+                                <span data-translate="Be as detailed as possible to help your doctor">Be as detailed as possible to help your doctor</span>
                             </p>
                             <span id="char-count" class="text-sm text-patient-dark-gray">0 characters</span>
                         </div>
@@ -151,7 +151,7 @@
                     <div>
                         <label for="additional_info" class="block text-sm font-semibold text-patient-dark-blue mb-3">
                             <i class="fas fa-plus-circle mr-2 text-patient-teal"></i>
-                            Additional Information (Optional)
+                            <span data-translate="Additional Information (Optional)">Additional Information (Optional)</span>
                         </label>
                         <textarea name="additional_info" 
                                   id="additional_info"
@@ -192,11 +192,11 @@
     <div class="bg-gradient-to-r from-patient-light-blue to-blue-50 rounded-2xl p-6">
         <h3 class="text-lg font-bold text-patient-dark-blue mb-4">
             <i class="fas fa-question-circle mr-2"></i>
-            Tips for Describing Symptoms
+            <span data-translate="Tips for Describing Symptoms">Tips for Describing Symptoms</span>
         </h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-                <h4 class="font-semibold text-patient-blue mb-2">Be Specific</h4>
+                <h4 class="font-semibold text-patient-blue mb-2" data-translate="Be Specific">Be Specific</h4>
                 <ul class="text-sm text-patient-dark-gray space-y-1">
                     <li>• Location of pain or discomfort</li>
                     <li>• Type of pain (sharp, dull, throbbing)</li>
@@ -204,7 +204,7 @@
                 </ul>
             </div>
             <div>
-                <h4 class="font-semibold text-patient-blue mb-2">Include Context</h4>
+                <h4 class="font-semibold text-patient-blue mb-2" data-translate="Include Context">Include Context</h4>
                 <ul class="text-sm text-patient-dark-gray space-y-1">
                     <li>• What triggers the symptoms</li>
                     <li>• What provides relief</li>

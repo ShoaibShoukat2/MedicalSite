@@ -160,7 +160,7 @@
                                         </button>
                                     {% else %}
                                         <button class="px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed" title="Video call will be available soon">
-                                            <i class="fas fa-video mr-2"></i>Call Preparing...
+                                            <i class="fas fa-video mr-2"></i><span data-translate="Call Preparing...">Call Preparing...</span>
                                         </button>
                                     {% endif %}
                                 {% elif appointment.status == 'Pending' %}
@@ -177,10 +177,10 @@
                                     </button>
                                 {% else %}
                                     <button disabled class="px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed">
-                                        <i class="fas fa-video mr-2"></i>Call Not Available
+                                        <i class="fas fa-video mr-2"></i><span data-translate="Call Not Available">Call Not Available</span>
                                     </button>
                                     <button disabled class="px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed">
-                                        <i class="fas fa-comments mr-2"></i>Chat Not Available
+                                        <i class="fas fa-comments mr-2"></i><span data-translate="Chat Not Available">Chat Not Available</span>
                                     </button>
                                 {% endif %}
                                 {% if appointment.status != 'Cancelled' %}
@@ -220,10 +220,10 @@
                     <div class="w-24 h-24 bg-patient-light-blue rounded-full flex items-center justify-center mx-auto mb-4">
                         <i class="fas fa-calendar-alt text-patient-blue text-3xl"></i>
                     </div>
-                    <h3 class="text-xl font-semibold text-patient-dark-blue mb-2">No Upcoming Appointments</h3>
-                    <p class="text-patient-dark-gray mb-6">Book your first appointment to get started with your healthcare journey.</p>
+                    <h3 class="text-xl font-semibold text-patient-dark-blue mb-2" data-translate="No Upcoming Appointments">No Upcoming Appointments</h3>
+                    <p class="text-patient-dark-gray mb-6" data-translate="Book your first appointment to get started with your healthcare journey.">Book your first appointment to get started with your healthcare journey.</p>
                     <a href="{% url 'patient_dashboard:specialty_selection' %}" class="inline-flex items-center px-6 py-3 bg-patient-blue text-white rounded-xl hover:bg-patient-dark-blue transition-colors font-semibold">
-                        <i class="fas fa-plus mr-2"></i>Book Your First Appointment
+                        <i class="fas fa-plus mr-2"></i><span data-translate="Book Your First Appointment">Book Your First Appointment</span>
                     </a>
                 </div>
             {% endif %}
@@ -268,8 +268,8 @@
                     <div class="w-24 h-24 bg-patient-light-green rounded-full flex items-center justify-center mx-auto mb-4">
                         <i class="fas fa-check-circle text-patient-green text-3xl"></i>
                     </div>
-                    <h3 class="text-xl font-semibold text-patient-dark-blue mb-2">No Completed Appointments</h3>
-                    <p class="text-patient-dark-gray">Your completed appointments will appear here.</p>
+                    <h3 class="text-xl font-semibold text-patient-dark-blue mb-2" data-translate="No Completed Appointments">No Completed Appointments</h3>
+                    <p class="text-patient-dark-gray" data-translate="Your completed appointments will appear here.">Your completed appointments will appear here.</p>
                 </div>
             {% endif %}
         </div>
@@ -326,8 +326,8 @@
                     <div class="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
                         <i class="fas fa-times-circle text-patient-red text-3xl"></i>
                     </div>
-                    <h3 class="text-xl font-semibold text-patient-dark-blue mb-2">No Cancelled Appointments</h3>
-                    <p class="text-patient-dark-gray">Your cancelled appointments will appear here.</p>
+                    <h3 class="text-xl font-semibold text-patient-dark-blue mb-2" data-translate="No Cancelled Appointments">No Cancelled Appointments</h3>
+                    <p class="text-patient-dark-gray" data-translate="Your cancelled appointments will appear here.">Your cancelled appointments will appear here.</p>
                 </div>
             {% endif %}
         </div>
