@@ -9,13 +9,13 @@
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
         <div>
             <h1 class="text-2xl md:text-3xl font-bold mb-2" data-translate="Interactive Exercises">Interactive Exercises</h1>
-            <p class="text-white/90">Engage in various exercises tailored to your rehabilitation needs</p>
+            <p class="text-white/90" data-translate="Engage in various exercises tailored to your rehabilitation needs">Engage in various exercises tailored to your rehabilitation needs</p>
         </div>
         <div class="mt-4 md:mt-0">
             <div class="flex items-center space-x-4">
                 <div class="text-center">
                     <div class="text-2xl font-bold">{{ exercises|length }}</div>
-                    <div class="text-sm text-white/80">Available</div>
+                    <div class="text-sm text-white/80" data-translate="Available">Available</div>
                 </div>
                 <div class="w-px h-12 bg-white/20"></div>
                 <div class="text-center">
@@ -32,7 +32,7 @@
     <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 patient-card">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-patient-dark-gray text-sm font-medium">Cardio</p>
+                <p class="text-patient-dark-gray text-sm font-medium" data-translate="Cardio">Cardio</p>
                 <p class="text-2xl font-bold text-patient-red">3</p>
             </div>
             <div class="w-12 h-12 bg-gradient-to-br from-patient-red to-red-600 rounded-xl flex items-center justify-center">
@@ -44,7 +44,7 @@
     <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 patient-card">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-patient-dark-gray text-sm font-medium">Strength</p>
+                <p class="text-patient-dark-gray text-sm font-medium" data-translate="Strength">Strength</p>
                 <p class="text-2xl font-bold text-patient-blue">4</p>
             </div>
             <div class="w-12 h-12 bg-gradient-to-br from-patient-blue to-patient-dark-blue rounded-xl flex items-center justify-center">
@@ -56,7 +56,7 @@
     <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 patient-card">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-patient-dark-gray text-sm font-medium">Flexibility</p>
+                <p class="text-patient-dark-gray text-sm font-medium" data-translate="Flexibility">Flexibility</p>
                 <p class="text-2xl font-bold text-patient-purple">2</p>
             </div>
             <div class="w-12 h-12 bg-gradient-to-br from-patient-purple to-purple-600 rounded-xl flex items-center justify-center">
@@ -68,7 +68,7 @@
     <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 patient-card">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-patient-dark-gray text-sm font-medium">Balance</p>
+                <p class="text-patient-dark-gray text-sm font-medium" data-translate="Balance">Balance</p>
                 <p class="text-2xl font-bold text-patient-teal">2</p>
             </div>
             <div class="w-12 h-12 bg-gradient-to-br from-patient-teal to-teal-600 rounded-xl flex items-center justify-center">
@@ -136,7 +136,7 @@
             <h3 class="text-2xl font-semibold text-patient-dark-blue mb-4" data-translate="No Exercises Available">No Exercises Available</h3>
             <p class="text-patient-dark-gray mb-8 max-w-md mx-auto" data-translate="Exercise programs will be assigned by your healthcare provider based on your treatment plan">Exercise programs will be assigned by your healthcare provider based on your treatment plan.</p>
             <a href="{% url 'patientdashboard:appointments_patients' %}" class="inline-flex items-center px-6 py-3 bg-patient-blue text-white rounded-xl hover:bg-patient-dark-blue transition-colors font-semibold">
-                <i class="fas fa-calendar-plus mr-2"></i>Book Appointment
+                <i class="fas fa-calendar-plus mr-2"></i><span data-translate="Book Appointment">Book Appointment</span>
             </a>
         </div>
     </div>
@@ -157,8 +157,8 @@
             </div>
         </div>
         <div class="p-6">
-            <h3 class="text-xl font-bold text-patient-dark-blue mb-2">Walking Exercise</h3>
-            <p class="text-patient-dark-gray mb-4 text-sm">A gentle walking routine to improve cardiovascular health and mobility.</p>
+            <h3 class="text-xl font-bold text-patient-dark-blue mb-2" data-translate="Walking Exercise">Walking Exercise</h3>
+            <p class="text-patient-dark-gray mb-4 text-sm" data-translate="A gentle walking routine to improve cardiovascular health and mobility.">A gentle walking routine to improve cardiovascular health and mobility.</p>
             <div class="flex items-center justify-between mb-4 text-sm text-patient-dark-gray">
                 <div class="flex items-center">
                     <i class="fas fa-clock mr-1"></i>
@@ -166,7 +166,7 @@
                 </div>
                 <div class="flex items-center">
                     <i class="fas fa-signal mr-1"></i>
-                    <span>Beginner</span>
+                    <span data-translate="Beginner">Beginner</span>
                 </div>
                 <div class="flex items-center">
                     <i class="fas fa-fire mr-1"></i>
@@ -174,7 +174,7 @@
                 </div>
             </div>
             <button class="w-full inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl hover:from-red-600 hover:to-red-700 transition-all duration-300 font-semibold shadow-lg">
-                <i class="fas fa-play mr-2"></i>Start Exercise
+                <i class="fas fa-play mr-2"></i><span data-translate="Start Exercise">Start Exercise</span>
             </button>
         </div>
     </div>
@@ -190,8 +190,8 @@
             </div>
         </div>
         <div class="p-6">
-            <h3 class="text-xl font-bold text-patient-dark-blue mb-2">Arm Strengthening</h3>
-            <p class="text-patient-dark-gray mb-4 text-sm">Build upper body strength with these targeted arm exercises.</p>
+            <h3 class="text-xl font-bold text-patient-dark-blue mb-2" data-translate="Arm Strengthening">Arm Strengthening</h3>
+            <p class="text-patient-dark-gray mb-4 text-sm" data-translate="Build upper body strength with these targeted arm exercises.">Build upper body strength with these targeted arm exercises.</p>
             <div class="flex items-center justify-between mb-4 text-sm text-patient-dark-gray">
                 <div class="flex items-center">
                     <i class="fas fa-clock mr-1"></i>
@@ -199,7 +199,7 @@
                 </div>
                 <div class="flex items-center">
                     <i class="fas fa-signal mr-1"></i>
-                    <span>Intermediate</span>
+                    <span data-translate="Intermediate">Intermediate</span>
                 </div>
                 <div class="flex items-center">
                     <i class="fas fa-fire mr-1"></i>
@@ -207,7 +207,7 @@
                 </div>
             </div>
             <button class="w-full inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 font-semibold shadow-lg">
-                <i class="fas fa-play mr-2"></i>Start Exercise
+                <i class="fas fa-play mr-2"></i><span data-translate="Start Exercise">Start Exercise</span>
             </button>
         </div>
     </div>
@@ -223,8 +223,8 @@
             </div>
         </div>
         <div class="p-6">
-            <h3 class="text-xl font-bold text-patient-dark-blue mb-2">Stretching Routine</h3>
-            <p class="text-patient-dark-gray mb-4 text-sm">Improve flexibility and reduce muscle tension with gentle stretches.</p>
+            <h3 class="text-xl font-bold text-patient-dark-blue mb-2" data-translate="Stretching Routine">Stretching Routine</h3>
+            <p class="text-patient-dark-gray mb-4 text-sm" data-translate="Improve flexibility and reduce muscle tension with gentle stretches.">Improve flexibility and reduce muscle tension with gentle stretches.</p>
             <div class="flex items-center justify-between mb-4 text-sm text-patient-dark-gray">
                 <div class="flex items-center">
                     <i class="fas fa-clock mr-1"></i>
@@ -232,7 +232,7 @@
                 </div>
                 <div class="flex items-center">
                     <i class="fas fa-signal mr-1"></i>
-                    <span>Beginner</span>
+                    <span data-translate="Beginner">Beginner</span>
                 </div>
                 <div class="flex items-center">
                     <i class="fas fa-fire mr-1"></i>
@@ -240,7 +240,7 @@
                 </div>
             </div>
             <button class="w-full inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl hover:from-purple-600 hover:to-purple-700 transition-all duration-300 font-semibold shadow-lg">
-                <i class="fas fa-play mr-2"></i>Start Exercise
+                <i class="fas fa-play mr-2"></i><span data-translate="Start Exercise">Start Exercise</span>
             </button>
         </div>
     </div>
