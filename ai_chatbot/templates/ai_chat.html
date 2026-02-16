@@ -3,78 +3,541 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Chatbot with Voice</title>
+    <title>AI Medical Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: Arial, sans-serif; }
-        #chatbox { width: 50%; margin: auto; border: 1px solid #ccc; padding: 10px; background: #f9f9f9; }
-        .message { padding: 5px; margin: 5px 0; }
-        .user { text-align: right; color: blue; }
-        .bot { text-align: left; color: green; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .chat-wrapper {
+            width: 100%;
+            max-width: 450px;
+            height: 650px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-avatar {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .header-info h2 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .header-info p {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #4ade80;
+            border-radius: 50%;
+            margin-right: 6px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .messages-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f8fafc;
+        }
+
+        .messages-area::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .messages-area::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+
+        .welcome-box {
+            text-align: center;
+            padding: 30px 20px;
+            background: white;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .welcome-box h3 {
+            font-size: 20px;
+            color: #1e293b;
+            margin-bottom: 10px;
+        }
+
+        .welcome-box p {
+            font-size: 14px;
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .quick-btns {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .quick-btn {
+            padding: 12px 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .quick-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .message {
+            display: flex;
+            margin-bottom: 15px;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message-bubble {
+            max-width: 75%;
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .message.bot .message-bubble {
+            background: white;
+            color: #1e293b;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .message.user .message-bubble {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .typing {
+            display: none;
+            padding: 12px 16px;
+            background: white;
+            border-radius: 16px;
+            border-bottom-left-radius: 4px;
+            width: fit-content;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .typing.active {
+            display: block;
+        }
+
+        .typing span {
+            height: 8px;
+            width: 8px;
+            background: #94a3b8;
+            border-radius: 50%;
+            display: inline-block;
+            margin: 0 2px;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing span:nth-child(2) { animation-delay: 0.2s; }
+        .typing span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-8px); }
+        }
+
+        .input-area {
+            padding: 15px;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-box {
+            flex: 1;
+            position: relative;
+        }
+
+        #userInput {
+            width: 100%;
+            padding: 12px 45px 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 25px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        #userInput:focus {
+            border-color: #667eea;
+        }
+
+        .voice-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: #64748b;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .voice-icon:hover {
+            color: #667eea;
+        }
+
+        .send-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+
+        .send-icon:hover {
+            transform: scale(1.05);
+        }
+
+        .send-icon:active {
+            transform: scale(0.95);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 0;
+            }
+
+            .chat-wrapper {
+                max-width: 100%;
+                height: 100vh;
+                border-radius: 0;
+            }
+
+            .chat-header {
+                padding: 16px;
+            }
+
+            .header-avatar {
+                width: 45px;
+                height: 45px;
+                font-size: 20px;
+            }
+
+            .header-info h2 {
+                font-size: 16px;
+            }
+
+            .header-info p {
+                font-size: 12px;
+            }
+
+            .messages-area {
+                padding: 15px;
+            }
+
+            .welcome-box {
+                padding: 20px 15px;
+            }
+
+            .welcome-box h3 {
+                font-size: 18px;
+            }
+
+            .welcome-box p {
+                font-size: 13px;
+            }
+
+            .quick-btn {
+                padding: 10px 14px;
+                font-size: 13px;
+            }
+
+            .message-bubble {
+                max-width: 80%;
+                font-size: 13px;
+                padding: 10px 14px;
+            }
+
+            .input-area {
+                padding: 12px;
+            }
+
+            #userInput {
+                padding: 10px 40px 10px 14px;
+                font-size: 13px;
+            }
+
+            .send-icon {
+                width: 42px;
+                height: 42px;
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .message-bubble {
+                max-width: 85%;
+            }
+
+            .quick-btn {
+                font-size: 12px;
+            }
+        }
     </style>
 </head>
 <body>
+    <div class="chat-wrapper">
+        <!-- Header -->
+        <div class="chat-header">
+            <div class="header-avatar">
+                <i class="fas fa-robot"></i>
+            </div>
+            <div class="header-info">
+                <h2>AI Medical Assistant</h2>
+                <p><span class="status-dot"></span>Online & Ready</p>
+            </div>
+        </div>
 
-    <div id="chatbox">
-        <h2>AI Chatbot with Voice</h2>
-        <div id="messages"></div>
-        <input type="text" id="user-input" placeholder="Ask me anything...">
-        <button onclick="sendMessage()">Send</button>
-        <button onclick="startVoiceInput()">🎙️ Voice Input</button>
-        <button onclick="speakLastResponse()">🔊 Speak</button>
+        <!-- Messages Area -->
+        <div class="messages-area" id="messagesArea">
+            <div class="welcome-box">
+                <h3>👋 Welcome!</h3>
+                <p>I'm your AI Medical Assistant. Ask me about symptoms, appointments, or find specialists.</p>
+                <div class="quick-btns">
+                    <button class="quick-btn" onclick="quickMsg('I have flu symptoms')">
+                        <i class="fas fa-thermometer"></i> Flu Symptoms
+                    </button>
+                    <button class="quick-btn" onclick="quickMsg('Book an appointment')">
+                        <i class="fas fa-calendar"></i> Book Appointment
+                    </button>
+                    <button class="quick-btn" onclick="quickMsg('Find a specialist')">
+                        <i class="fas fa-user-doctor"></i> Find Specialist
+                    </button>
+                </div>
+            </div>
+            
+            <div class="typing" id="typingIndicator">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="input-area">
+            <div class="input-box">
+                <input type="text" id="userInput" placeholder="Type your message..." autocomplete="off">
+                <button class="voice-icon" onclick="toggleVoice()" title="Voice input">
+                    <i class="fas fa-microphone"></i>
+                </button>
+            </div>
+            <button class="send-icon" onclick="sendMsg()" title="Send">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
     </div>
 
     <script>
         let chatSocket;
-        let reconnectInterval = 3000;  // 3 seconds retry interval
-        let patientId = "{{ patient_id|default:'' }}";  // Ensure patient_id is passed
-    
-        function connectWebSocket() {
-            chatSocket = new WebSocket("ws://" + window.location.host + "/ws/ai-chat/");
-    
-            chatSocket.onopen = function () {
-                console.log("AI Chatbot WebSocket connected.");
+        let patientId = "{{ patient_id|default:'' }}";
+        let recognition;
+
+        // WebSocket Connection
+        function connectWS() {
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            chatSocket = new WebSocket(protocol + "//" + window.location.host + "/ws/ai-chat/");
+
+            chatSocket.onopen = () => console.log("WebSocket connected");
+
+            chatSocket.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                hideTyping();
+                if (data.status === 'success') {
+                    addBotMsg(data.message);
+                } else if (data.error) {
+                    addBotMsg("Sorry, an error occurred. Please try again.");
+                }
             };
-    
-            chatSocket.onmessage = function(event) {
-                let data = JSON.parse(event.data);
-                let botMessage = data.message;
-                document.getElementById("messages").innerHTML += `<div class="message bot"><b>Bot:</b> ${botMessage}</div>`;
+
+            chatSocket.onerror = (error) => {
+                console.error("WebSocket error:", error);
+                hideTyping();
             };
-    
-            chatSocket.onerror = function (error) {
-                console.error("WebSocket Error:", error);
-            };
-    
-            chatSocket.onclose = function(event) {
-                console.log("WebSocket closed. Reconnecting in 3 seconds...");
-                setTimeout(connectWebSocket, reconnectInterval);
+
+            chatSocket.onclose = () => {
+                console.log("WebSocket closed. Reconnecting...");
+                setTimeout(connectWS, 3000);
             };
         }
-    
-        function sendMessage() {
-            let userInput = document.getElementById("user-input").value;
-    
-            if (userInput.trim() === "") return;
-    
-            // Ensure patientId is present
+
+        function sendMsg() {
+            const input = document.getElementById('userInput');
+            const message = input.value.trim();
+
+            if (!message) return;
+
             if (!patientId) {
-                alert("Error: Patient ID is missing. Please log in again.");
-                window.location.href = "/patient-login/";  // Redirect to login
+                alert("Please log in first");
                 return;
             }
-    
-            document.getElementById("messages").innerHTML += `<div class="message user"><b>You:</b> ${userInput}</div>`;
-    
-            chatSocket.send(JSON.stringify({ 
-                "message": userInput,
-                "patient_id": patientId  // Send patient ID
+
+            // Remove welcome box
+            const welcome = document.querySelector('.welcome-box');
+            if (welcome) welcome.remove();
+
+            addUserMsg(message);
+            showTyping();
+
+            chatSocket.send(JSON.stringify({
+                message: message,
+                patient_id: patientId
             }));
-    
-            document.getElementById("user-input").value = "";
+
+            input.value = '';
         }
-    
-        connectWebSocket();  // Initialize WebSocket connection
+
+        function addUserMsg(text) {
+            const area = document.getElementById('messagesArea');
+            const msg = document.createElement('div');
+            msg.className = 'message user';
+            msg.innerHTML = `<div class="message-bubble">${escapeHtml(text)}</div>`;
+            area.appendChild(msg);
+            scrollDown();
+        }
+
+        function addBotMsg(text) {
+            const area = document.getElementById('messagesArea');
+            const msg = document.createElement('div');
+            msg.className = 'message bot';
+            msg.innerHTML = `<div class="message-bubble">${escapeHtml(text)}</div>`;
+            area.appendChild(msg);
+            scrollDown();
+        }
+
+        function showTyping() {
+            document.getElementById('typingIndicator').classList.add('active');
+            scrollDown();
+        }
+
+        function hideTyping() {
+            document.getElementById('typingIndicator').classList.remove('active');
+        }
+
+        function scrollDown() {
+            const area = document.getElementById('messagesArea');
+            area.scrollTop = area.scrollHeight;
+        }
+
+        function quickMsg(text) {
+            document.getElementById('userInput').value = text;
+            sendMsg();
+        }
+
+        function toggleVoice() {
+            if (!recognition) {
+                if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                    recognition = new SpeechRecognition();
+                    recognition.lang = 'en-US';
+                    recognition.onresult = (event) => {
+                        document.getElementById('userInput').value = event.results[0][0].transcript;
+                    };
+                } else {
+                    alert('Voice input not supported');
+                    return;
+                }
+            }
+            recognition.start();
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Enter to send
+        document.getElementById('userInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMsg();
+        });
+
+        // Initialize
+        connectWS();
     </script>
-    
 </body>
 </html>

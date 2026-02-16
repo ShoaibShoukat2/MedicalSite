@@ -618,43 +618,91 @@ def appointments_patients(request):
         from datetime import datetime, timedelta
         current_time = timezone.now()
         
+        print(f"🕐 Current Time (timezone aware): {current_time}")
+        
         for appointment in all_appointments:
+            # Combine date and time properly
             appointment_datetime = datetime.combine(appointment.slot.date, appointment.slot.start_time)
-            appointment_datetime = timezone.make_aware(appointment_datetime)
+            
+            # Make timezone aware if not already
+            if timezone.is_naive(appointment_datetime):
+                appointment_datetime = timezone.make_aware(appointment_datetime)
+            
             time_until_appointment = appointment_datetime - current_time
             
-            # Patient can always cancel if:
+            print(f"📅 Appointment {appointment.id}:")
+            print(f"   - Date: {appointment.slot.date}")
+            print(f"   - Time: {appointment.slot.start_time}")
+            print(f"   - Combined DateTime: {appointment_datetime}")
+            print(f"   - Time Until: {time_until_appointment}")
+            print(f"   - Hours Until: {time_until_appointment.total_seconds() / 3600}")
+            
+            # Check if appointment has passed
+            has_passed = time_until_appointment.total_seconds() < 0
+            
+            # Patient can cancel if:
             # 1. Appointment is not already cancelled
-            # 2. Appointment time has not passed
+            # 2. Appointment has not passed
             # 3. At least 2 hours before appointment (cancellation policy)
             appointment.can_cancel = (
                 appointment.status != 'Cancelled' and 
+                not has_passed and
                 time_until_appointment >= timedelta(hours=2)
             )
             
+            print(f"   - Status: {appointment.status}")
+            print(f"   - Has Passed: {has_passed}")
+            print(f"   - Can Cancel: {appointment.can_cancel}")
+            
             # Calculate time remaining for display
-            if time_until_appointment.total_seconds() > 0:
-                hours_remaining = time_until_appointment.total_seconds() / 3600
-                if hours_remaining < 2:
-                    if hours_remaining >= 1:
-                        appointment.time_remaining = f"{hours_remaining:.1f} hours"
-                    else:
-                        minutes_remaining = int(hours_remaining * 60)
-                        appointment.time_remaining = f"{minutes_remaining} minutes"
-                else:
-                    appointment.time_remaining = "More than 2 hours"
-            else:
+            if has_passed:
                 appointment.time_remaining = "Appointment passed"
+                # Auto-update status to Completed if appointment passed and still Pending/Accepted
+                if appointment.status in ['Pending', 'Accepted']:
+                    days_passed = abs(time_until_appointment.days)
+                    if days_passed > 0:
+                        appointment.time_remaining = f"Passed {days_passed} day{'s' if days_passed > 1 else ''} ago"
+                    else:
+                        hours_passed = abs(time_until_appointment.total_seconds() / 3600)
+                        if hours_passed >= 1:
+                            appointment.time_remaining = f"Passed {hours_passed:.0f} hour{'s' if hours_passed > 1 else ''} ago"
+                        else:
+                            minutes_passed = abs(time_until_appointment.total_seconds() / 60)
+                            appointment.time_remaining = f"Passed {minutes_passed:.0f} minute{'s' if minutes_passed > 1 else ''} ago"
+            else:
+                hours_remaining = time_until_appointment.total_seconds() / 3600
+                days_remaining = time_until_appointment.days
+                
+                if days_remaining > 0:
+                    appointment.time_remaining = f"{days_remaining} day{'s' if days_remaining > 1 else ''} remaining"
+                elif hours_remaining >= 2:
+                    appointment.time_remaining = f"{hours_remaining:.1f} hours remaining"
+                elif hours_remaining >= 1:
+                    appointment.time_remaining = f"{hours_remaining:.1f} hour remaining"
+                else:
+                    minutes_remaining = int(hours_remaining * 60)
+                    appointment.time_remaining = f"{minutes_remaining} minute{'s' if minutes_remaining != 1 else ''} remaining"
+            
+            print(f"   - Time Remaining Display: {appointment.time_remaining}")
+            print("---")
         
         # Separate appointments by status
-        upcoming_appointments = all_appointments.filter(status__in=['Pending', 'Accepted'])
-        completed_appointments = all_appointments.filter(status='Completed')
-        cancelled_appointments = all_appointments.filter(status='Cancelled')
+        upcoming_appointments = []
+        completed_appointments = []
+        cancelled_appointments = []
+        
+        for appointment in all_appointments:
+            if appointment.status in ['Pending', 'Accepted']:
+                upcoming_appointments.append(appointment)
+            elif appointment.status == 'Completed':
+                completed_appointments.append(appointment)
+            elif appointment.status == 'Cancelled':
+                cancelled_appointments.append(appointment)
         
         # Calculate counts for stats
-        upcoming_count = upcoming_appointments.count()
-        completed_count = completed_appointments.count()
-        cancelled_count = cancelled_appointments.count()
+        upcoming_count = len(upcoming_appointments)
+        completed_count = len(completed_appointments)
+        cancelled_count = len(cancelled_appointments)
         
         # Get this month's appointments
         from datetime import datetime
