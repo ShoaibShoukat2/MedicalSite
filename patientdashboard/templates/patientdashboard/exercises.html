@@ -101,7 +101,7 @@
         <!-- Exercise Content -->
         <div class="p-6">
             <h3 class="text-xl font-bold text-patient-dark-blue mb-2">{{ exercise.name }}</h3>
-            <p class="text-patient-dark-gray mb-4 text-sm">{{ exercise.description|default:"Improve your health with this targeted exercise routine." }}</p>
+            <p class="text-patient-dark-gray mb-4 text-sm" data-translate="{{ exercise.description|default:'Improve your health with this targeted exercise routine.' }}">{{ exercise.description|default:"Improve your health with this targeted exercise routine." }}</p>
             
             <!-- Exercise Stats -->
             <div class="flex items-center justify-between mb-4 text-sm text-patient-dark-gray">
@@ -111,11 +111,11 @@
                 </div>
                 <div class="flex items-center">
                     <i class="fas fa-signal mr-1"></i>
-                    <span>{{ exercise.difficulty|default:"Beginner" }}</span>
+                    <span data-translate="{{ exercise.difficulty|default:'Beginner' }}">{{ exercise.difficulty|default:"Beginner" }}</span>
                 </div>
                 <div class="flex items-center">
                     <i class="fas fa-fire mr-1"></i>
-                    <span>{{ exercise.calories|default:"50" }} cal</span>
+                    <span>{{ exercise.calories|default:"50" }} <span data-translate="cal">cal</span></span>
                 </div>
             </div>
             
@@ -153,7 +153,7 @@
                 <i class="fas fa-heartbeat text-6xl text-red-500/50"></i>
             </div>
             <div class="absolute top-4 right-4">
-                <span class="px-3 py-1 bg-white/90 text-red-600 rounded-full text-sm font-medium">Cardio</span>
+                <span class="px-3 py-1 bg-white/90 text-red-600 rounded-full text-sm font-medium" data-translate="Cardio">Cardio</span>
             </div>
         </div>
         <div class="p-6">
@@ -162,7 +162,7 @@
             <div class="flex items-center justify-between mb-4 text-sm text-patient-dark-gray">
                 <div class="flex items-center">
                     <i class="fas fa-clock mr-1"></i>
-                    <span>20 min</span>
+                    <span>20 <span data-translate="min">min</span></span>
                 </div>
                 <div class="flex items-center">
                     <i class="fas fa-signal mr-1"></i>
@@ -170,7 +170,7 @@
                 </div>
                 <div class="flex items-center">
                     <i class="fas fa-fire mr-1"></i>
-                    <span>80 cal</span>
+                    <span>80 <span data-translate="cal">cal</span></span>
                 </div>
             </div>
             <button class="w-full inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl hover:from-red-600 hover:to-red-700 transition-all duration-300 font-semibold shadow-lg">
@@ -186,7 +186,7 @@
                 <i class="fas fa-dumbbell text-6xl text-blue-500/50"></i>
             </div>
             <div class="absolute top-4 right-4">
-                <span class="px-3 py-1 bg-white/90 text-blue-600 rounded-full text-sm font-medium">Strength</span>
+                <span class="px-3 py-1 bg-white/90 text-blue-600 rounded-full text-sm font-medium" data-translate="Strength">Strength</span>
             </div>
         </div>
         <div class="p-6">
@@ -195,7 +195,7 @@
             <div class="flex items-center justify-between mb-4 text-sm text-patient-dark-gray">
                 <div class="flex items-center">
                     <i class="fas fa-clock mr-1"></i>
-                    <span>15 min</span>
+                    <span>15 <span data-translate="min">min</span></span>
                 </div>
                 <div class="flex items-center">
                     <i class="fas fa-signal mr-1"></i>
@@ -203,7 +203,7 @@
                 </div>
                 <div class="flex items-center">
                     <i class="fas fa-fire mr-1"></i>
-                    <span>60 cal</span>
+                    <span>60 <span data-translate="cal">cal</span></span>
                 </div>
             </div>
             <button class="w-full inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 font-semibold shadow-lg">
@@ -219,7 +219,7 @@
                 <i class="fas fa-leaf text-6xl text-purple-500/50"></i>
             </div>
             <div class="absolute top-4 right-4">
-                <span class="px-3 py-1 bg-white/90 text-purple-600 rounded-full text-sm font-medium">Flexibility</span>
+                <span class="px-3 py-1 bg-white/90 text-purple-600 rounded-full text-sm font-medium" data-translate="Flexibility">Flexibility</span>
             </div>
         </div>
         <div class="p-6">
@@ -228,7 +228,7 @@
             <div class="flex items-center justify-between mb-4 text-sm text-patient-dark-gray">
                 <div class="flex items-center">
                     <i class="fas fa-clock mr-1"></i>
-                    <span>10 min</span>
+                    <span>10 <span data-translate="min">min</span></span>
                 </div>
                 <div class="flex items-center">
                     <i class="fas fa-signal mr-1"></i>
@@ -236,7 +236,7 @@
                 </div>
                 <div class="flex items-center">
                     <i class="fas fa-fire mr-1"></i>
-                    <span>30 cal</span>
+                    <span>30 <span data-translate="cal">cal</span></span>
                 </div>
             </div>
             <button class="w-full inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl hover:from-purple-600 hover:to-purple-700 transition-all duration-300 font-semibold shadow-lg">
