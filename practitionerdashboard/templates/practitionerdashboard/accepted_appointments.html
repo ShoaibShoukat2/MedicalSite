@@ -8,11 +8,12 @@
     <div class="flex items-center justify-between">
       <div>
         <h1 class="text-3xl font-bold text-doctor-dark-blue mb-2" data-translate="Accepted Appointments">Accepted Appointments</h1>
-        <p class="text-doctor-dark-gray">Manage all your confirmed appointments and patient interactions.</p>
+        <p class="text-doctor-dark-gray" data-translate="Manage all your confirmed appointments and patient interactions.">Manage all your confirmed appointments and patient interactions.</p>
       </div>
       <div class="hidden md:flex items-center space-x-4">
         <div class="text-right">
-          <p class="text-sm text-doctor-dark-gray">Total Accepted</p>
+          <div class="text-right">
+          <p class="text-sm text-doctor-dark-gray" data-translate="Total Accepted">Total Accepted</p>
           <p class="font-semibold text-doctor-green text-2xl">{{ total_accepted }}</p>
         </div>
       </div>
@@ -29,12 +30,12 @@
             <div class="w-12 h-12 bg-gradient-to-br from-doctor-green to-emerald-600 rounded-xl flex items-center justify-center">
               <i class="fas fa-calendar-day text-white text-lg"></i>
             </div>
-            <span class="px-3 py-1 bg-doctor-light-green text-doctor-green text-sm font-medium rounded-full">
+            <span class="px-3 py-1 bg-doctor-light-green text-doctor-green text-sm font-medium rounded-full" data-translate="Today">
               Today
             </span>
           </div>
           <h3 class="text-3xl font-bold text-doctor-dark-blue mb-1">{{ today_count }}</h3>
-          <p class="text-sm text-doctor-dark-gray">Today's appointments</p>
+          <p class="text-sm text-doctor-dark-gray" data-translate="Today's appointments">Today's appointments</p>
         </div>
         <div class="opacity-10">
           <i class="fas fa-calendar-day text-6xl text-doctor-green"></i>
@@ -50,12 +51,12 @@
             <div class="w-12 h-12 bg-gradient-to-br from-doctor-blue to-blue-600 rounded-xl flex items-center justify-center">
               <i class="fas fa-clock text-white text-lg"></i>
             </div>
-            <span class="px-3 py-1 bg-doctor-light-blue text-doctor-blue text-sm font-medium rounded-full">
+            <span class="px-3 py-1 bg-doctor-light-blue text-doctor-blue text-sm font-medium rounded-full" data-translate="Upcoming">
               Upcoming
             </span>
           </div>
           <h3 class="text-3xl font-bold text-doctor-dark-blue mb-1">{{ upcoming_count }}</h3>
-          <p class="text-sm text-doctor-dark-gray">Future appointments</p>
+          <p class="text-sm text-doctor-dark-gray" data-translate="Future appointments">Future appointments</p>
         </div>
         <div class="opacity-10">
           <i class="fas fa-clock text-6xl text-doctor-blue"></i>
@@ -71,12 +72,12 @@
             <div class="w-12 h-12 bg-gradient-to-br from-doctor-purple to-purple-600 rounded-xl flex items-center justify-center">
               <i class="fas fa-history text-white text-lg"></i>
             </div>
-            <span class="px-3 py-1 bg-purple-100 text-doctor-purple text-sm font-medium rounded-full">
+            <span class="px-3 py-1 bg-purple-100 text-doctor-purple text-sm font-medium rounded-full" data-translate="Completed">
               Completed
             </span>
           </div>
           <h3 class="text-3xl font-bold text-doctor-dark-blue mb-1">{{ past_count }}</h3>
-          <p class="text-sm text-doctor-dark-gray">Past appointments</p>
+          <p class="text-sm text-doctor-dark-gray" data-translate="Past appointments">Past appointments</p>
         </div>
         <div class="opacity-10">
           <i class="fas fa-history text-6xl text-doctor-purple"></i>
@@ -92,9 +93,9 @@
       <div class="flex items-center justify-between">
         <div>
           <h2 class="text-2xl font-bold mb-2">
-            <i class="fas fa-check-circle mr-3"></i>Accepted Appointments
+            <i class="fas fa-check-circle mr-3"></i><span data-translate="Accepted Appointments">Accepted Appointments</span>
           </h2>
-          <p class="text-green-100">All confirmed appointments with video call and chat access</p>
+          <p class="text-green-100" data-translate="All confirmed appointments with video call and chat access">All confirmed appointments with video call and chat access</p>
         </div>
       </div>
     </div>
@@ -103,19 +104,19 @@
     <div class="border-b border-gray-200 bg-gray-50">
       <nav class="flex space-x-8 px-6" id="appointmentTabs">
         <button class="tab-button active py-4 px-2 border-b-2 border-doctor-green text-doctor-green font-medium transition-colors" data-tab="today">
-          <i class="fas fa-calendar-day mr-2"></i>Today's Appointments
+          <i class="fas fa-calendar-day mr-2"></i><span data-translate="Today's Appointments">Today's Appointments</span>
           <span class="ml-2 bg-doctor-green text-white text-xs px-2 py-1 rounded-full">{{ today_count }}</span>
         </button>
         <button class="tab-button py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-doctor-green font-medium transition-colors" data-tab="upcoming">
-          <i class="fas fa-clock mr-2"></i>Upcoming
+          <i class="fas fa-clock mr-2"></i><span data-translate="Upcoming">Upcoming</span>
           <span class="ml-2 bg-blue-500 text-white text-xs px-2 py-1 rounded-full">{{ upcoming_count }}</span>
         </button>
         <button class="tab-button py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-doctor-green font-medium transition-colors" data-tab="past">
-          <i class="fas fa-history mr-2"></i>Past Appointments
+          <i class="fas fa-history mr-2"></i><span data-translate="Past Appointments">Past Appointments</span>
           <span class="ml-2 bg-purple-500 text-white text-xs px-2 py-1 rounded-full">{{ past_count }}</span>
         </button>
         <button class="tab-button py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-doctor-green font-medium transition-colors" data-tab="all">
-          <i class="fas fa-list mr-2"></i>All Accepted
+          <i class="fas fa-list mr-2"></i><span data-translate="All Accepted">All Accepted</span>
           <span class="ml-2 bg-gray-500 text-white text-xs px-2 py-1 rounded-full">{{ total_accepted }}</span>
         </button>
       </nav>
@@ -200,8 +201,8 @@
             <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <i class="fas fa-calendar-day text-gray-400 text-3xl"></i>
             </div>
-            <h3 class="text-xl font-semibold text-doctor-dark-blue mb-2">No accepted appointments for today</h3>
-            <p class="text-doctor-dark-gray">Your schedule is clear for today!</p>
+            <h3 class="text-xl font-semibold text-doctor-dark-blue mb-2" data-translate="No accepted appointments for today">No accepted appointments for today</h3>
+            <p class="text-doctor-dark-gray" data-translate="Your schedule is clear for today!">Your schedule is clear for today!</p>
           </div>
         {% endif %}
       </div>
@@ -463,7 +464,7 @@
     <div class="p-6 border-b border-gray-200">
       <div class="flex items-center justify-between">
         <h2 class="text-2xl font-bold text-doctor-dark-blue">
-          <i class="fas fa-user-circle mr-3 text-doctor-blue"></i>Patient Information
+          <i class="fas fa-user-circle mr-3 text-doctor-blue"></i><span data-translate="Patient Information">Patient Information</span>
         </h2>
         <button onclick="closePatientModal()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
           <i class="fas fa-times text-gray-500"></i>
@@ -480,23 +481,23 @@
         <div class="md:col-span-2 space-y-4">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="bg-gray-50 p-4 rounded-xl border-l-4 border-doctor-blue">
-              <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Full Name</label>
+              <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide" data-translate="Full Name">Full Name</label>
               <p id="patientName" class="font-medium text-doctor-dark-blue mt-1"></p>
             </div>
             <div class="bg-gray-50 p-4 rounded-xl border-l-4 border-doctor-green">
-              <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Gender</label>
+              <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide" data-translate="Gender">Gender</label>
               <p id="patientGender" class="font-medium text-doctor-dark-blue mt-1"></p>
             </div>
             <div class="bg-gray-50 p-4 rounded-xl border-l-4 border-doctor-purple">
-              <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Phone</label>
+              <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide" data-translate="Phone">Phone</label>
               <p id="patientPhone" class="font-medium text-doctor-dark-blue mt-1"></p>
             </div>
             <div class="bg-gray-50 p-4 rounded-xl border-l-4 border-doctor-orange">
-              <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Date of Birth</label>
+              <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide" data-translate="Date of Birth">Date of Birth</label>
               <p id="patientDob" class="font-medium text-doctor-dark-blue mt-1"></p>
             </div>
             <div class="md:col-span-2 bg-gray-50 p-4 rounded-xl border-l-4 border-doctor-teal">
-              <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Email</label>
+              <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide" data-translate="Email">Email</label>
               <p id="patientEmail" class="font-medium text-doctor-dark-blue mt-1"></p>
             </div>
           </div>
@@ -505,7 +506,7 @@
     </div>
     <div class="p-6 border-t border-gray-200 flex justify-end">
       <button onclick="closePatientModal()" class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
-        <i class="fas fa-times mr-2"></i>Close
+        <i class="fas fa-times mr-2"></i><span data-translate="Close">Close</span>
       </button>
     </div>
   </div>
@@ -517,7 +518,7 @@
     <div class="p-6 border-b border-gray-200">
       <div class="flex items-center justify-between">
         <h2 class="text-xl font-bold text-doctor-dark-blue">
-          <i class="fas fa-clipboard-list mr-3 text-doctor-blue"></i>Patient Symptoms
+          <i class="fas fa-clipboard-list mr-3 text-doctor-blue"></i><span data-translate="Patient Symptoms">Patient Symptoms</span>
         </h2>
         <button onclick="closeSymptomModal()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
           <i class="fas fa-times text-gray-500"></i>
@@ -532,7 +533,7 @@
     </div>
     <div class="p-6 border-t border-gray-200 flex justify-end">
       <button onclick="closeSymptomModal()" class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
-        Close
+        <span data-translate="Close">Close</span>
       </button>
     </div>
   </div>

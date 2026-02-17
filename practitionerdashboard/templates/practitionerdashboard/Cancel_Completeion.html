@@ -8,7 +8,7 @@
         <div class="flex items-center justify-between">
             <div>
                 <h1 class="text-3xl font-bold text-doctor-dark-blue mb-2" data-translate="Appointment History">Appointment History</h1>
-                <p class="text-doctor-dark-gray">View completed and cancelled appointments</p>
+                <p class="text-doctor-dark-gray" data-translate="View completed and cancelled appointments">View completed and cancelled appointments</p>
             </div>
             <div class="hidden md:flex items-center space-x-4">
                 <div class="w-12 h-12 bg-gradient-to-br from-doctor-blue to-doctor-purple rounded-xl flex items-center justify-center">
@@ -24,11 +24,11 @@
         <div class="border-b border-gray-200 bg-gray-50">
             <nav class="flex space-x-8 px-6" id="appointmentTabs">
                 <button class="tab-button active py-4 px-2 border-b-2 border-doctor-blue text-doctor-blue font-medium transition-colors" data-tab="completed">
-                    <i class="fas fa-check-circle mr-2"></i>Completed Appointments
+                    <i class="fas fa-check-circle mr-2"></i><span data-translate="Completed Appointments">Completed Appointments</span>
                     <span class="ml-2 bg-doctor-green text-white text-xs px-2 py-1 rounded-full">3</span>
                 </button>
                 <button class="tab-button py-4 px-2 border-b-2 border-transparent text-gray-500 hover:text-doctor-blue font-medium transition-colors" data-tab="cancelled">
-                    <i class="fas fa-times-circle mr-2"></i>Cancelled Appointments
+                    <i class="fas fa-times-circle mr-2"></i><span data-translate="Cancelled Appointments">Cancelled Appointments</span>
                     <span class="ml-2 bg-doctor-red text-white text-xs px-2 py-1 rounded-full">{{ cancelled_appointments|length }}</span>
                 </button>
             </nav>
@@ -42,13 +42,13 @@
                     <table class="w-full">
                         <thead>
                             <tr class="border-b border-gray-200">
-                                <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Patient Name</th>
-                                <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Date</th>
-                                <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Time</th>
-                                <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Service</th>
-                                <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Duration</th>
-                                <th class="text-center py-4 px-4 font-semibold text-doctor-dark-blue">Status</th>
-                                <th class="text-right py-4 px-4 font-semibold text-doctor-dark-blue">Actions</th>
+                                <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Patient Name">Patient Name</th>
+                                <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Date">Date</th>
+                                <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Time">Time</th>
+                                <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Service">Service</th>
+                                <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Duration">Duration</th>
+                                <th class="text-center py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Status">Status</th>
+                                <th class="text-right py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Actions">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100">
@@ -166,12 +166,12 @@
                         <table class="w-full">
                             <thead>
                                 <tr class="border-b border-gray-200">
-                                    <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Patient Name</th>
-                                    <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Date</th>
-                                    <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Time</th>
-                                    <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Reason</th>
-                                    <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue">Cancelled By</th>
-                                    <th class="text-right py-4 px-4 font-semibold text-doctor-dark-blue">Actions</th>
+                                    <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Patient Name">Patient Name</th>
+                                    <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Date">Date</th>
+                                    <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Time">Time</th>
+                                    <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Reason">Reason</th>
+                                    <th class="text-left py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Cancelled By">Cancelled By</th>
+                                    <th class="text-right py-4 px-4 font-semibold text-doctor-dark-blue" data-translate="Actions">Actions</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-100">
@@ -216,8 +216,8 @@
                         <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                             <i class="fas fa-calendar-times text-gray-400 text-3xl"></i>
                         </div>
-                        <h3 class="text-xl font-semibold text-doctor-dark-blue mb-2">No Cancelled Appointments</h3>
-                        <p class="text-doctor-dark-gray">Great! You have no cancelled appointments.</p>
+                        <h3 class="text-xl font-semibold text-doctor-dark-blue mb-2" data-translate="No Cancelled Appointments">No Cancelled Appointments</h3>
+                        <p class="text-doctor-dark-gray" data-translate="Great! You have no cancelled appointments.">Great! You have no cancelled appointments.</p>
                     </div>
                 {% endif %}
             </div>
@@ -231,7 +231,7 @@
         <div class="p-6 border-b border-gray-200">
             <div class="flex items-center justify-between">
                 <h2 class="text-2xl font-bold text-doctor-dark-blue">
-                    <i class="fas fa-calendar-alt mr-3 text-doctor-blue"></i>Appointment Details
+                    <i class="fas fa-calendar-alt mr-3 text-doctor-blue"></i><span data-translate="Appointment Details">Appointment Details</span>
                 </h2>
                 <button onclick="closeDetailsModal()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
                     <i class="fas fa-times text-gray-500"></i>
@@ -244,19 +244,19 @@
             <div>
                 <h3 class="text-lg font-semibold text-doctor-dark-blue mb-4 flex items-center">
                     <i class="fas fa-user text-doctor-blue mr-2"></i>
-                    Patient Information
+                    <span data-translate="Patient Information">Patient Information</span>
                 </h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="bg-gray-50 p-4 rounded-xl border-l-4 border-doctor-blue">
-                        <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Name</label>
+                        <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide" data-translate="Name">Name</label>
                         <p id="modalPatientName" class="font-medium text-doctor-dark-blue mt-1"></p>
                     </div>
                     <div class="bg-gray-50 p-4 rounded-xl border-l-4 border-doctor-green">
-                        <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Email</label>
+                        <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide" data-translate="Email">Email</label>
                         <p id="modalPatientEmail" class="font-medium text-doctor-dark-blue mt-1"></p>
                     </div>
                     <div class="bg-gray-50 p-4 rounded-xl border-l-4 border-doctor-purple">
-                        <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Phone</label>
+                        <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide" data-translate="Phone">Phone</label>
                         <p id="modalPatientPhone" class="font-medium text-doctor-dark-blue mt-1"></p>
                     </div>
                 </div>
@@ -266,27 +266,27 @@
             <div>
                 <h3 class="text-lg font-semibold text-doctor-dark-blue mb-4 flex items-center">
                     <i class="fas fa-calendar-check text-doctor-blue mr-2"></i>
-                    Appointment Information
+                    <span data-translate="Appointment Information">Appointment Information</span>
                 </h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="bg-gray-50 p-4 rounded-xl border-l-4 border-doctor-orange">
-                        <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Date</label>
+                        <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide" data-translate="Date">Date</label>
                         <p id="modalAppointmentDate" class="font-medium text-doctor-dark-blue mt-1"></p>
                     </div>
                     <div class="bg-gray-50 p-4 rounded-xl border-l-4 border-doctor-teal">
-                        <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Time</label>
+                        <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide" data-translate="Time">Time</label>
                         <p id="modalAppointmentTime" class="font-medium text-doctor-dark-blue mt-1"></p>
                     </div>
                     <div class="bg-gray-50 p-4 rounded-xl border-l-4 border-indigo-500" id="serviceSection">
-                        <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Service</label>
+                        <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide" data-translate="Service">Service</label>
                         <p id="modalAppointmentService" class="font-medium text-doctor-dark-blue mt-1"></p>
                     </div>
                     <div class="bg-gray-50 p-4 rounded-xl border-l-4 border-pink-500" id="durationSection">
-                        <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Duration</label>
+                        <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide" data-translate="Duration">Duration</label>
                         <p id="modalAppointmentDuration" class="font-medium text-doctor-dark-blue mt-1"></p>
                     </div>
                     <div class="bg-gray-50 p-4 rounded-xl border-l-4 border-gray-500">
-                        <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</label>
+                        <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide" data-translate="Status">Status</label>
                         <p id="modalAppointmentStatus" class="font-medium text-doctor-dark-blue mt-1"></p>
                     </div>
                 </div>
@@ -306,7 +306,7 @@
         
         <div class="p-6 border-t border-gray-200 flex justify-end">
             <button onclick="closeDetailsModal()" class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
-                <i class="fas fa-times mr-2"></i>Close
+                <i class="fas fa-times mr-2"></i><span data-translate="Close">Close</span>
             </button>
         </div>
     </div>

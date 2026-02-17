@@ -1128,6 +1128,7 @@ const practitionerTranslations = {
         'Manage your professional information and settings': 'Gérez vos informations professionnelles et paramètres',
         'Profile Information': 'Informations de Profil',
         'Email Address': 'Adresse Email',
+        'Email': 'Email',
         'Specialty': 'Spécialité',
         'Professional Bio': 'Biographie Professionnelle',
         'Update Profile Photo': 'Mettre à jour la Photo de Profil',
@@ -1166,8 +1167,40 @@ const practitionerTranslations = {
         'No future appointments scheduled yet.': 'Aucun rendez-vous futur programmé pour l\'instant.',
         'No past accepted appointments': 'Aucun rendez-vous accepté passé',
         'No completed appointments yet.': 'Aucun rendez-vous terminé pour l\'instant.',
+        'Manage all your confirmed appointments and patient interactions.': 'Gérez tous vos rendez-vous confirmés et interactions avec les patients.',
+        'Total Accepted': 'Total Accepté',
+        'Today\'s appointments': 'Rendez-vous d\'aujourd\'hui',
+        'Future appointments': 'Rendez-vous futurs',
+        'Past appointments': 'Rendez-vous passés',
+        'All confirmed appointments with video call and chat access': 'Tous les rendez-vous confirmés avec accès vidéo et chat',
+        'Today\'s Appointments': 'Rendez-vous d\'Aujourd\'hui',
+        'All Accepted': 'Tous Acceptés',
+        'No accepted appointments for today': 'Aucun rendez-vous accepté pour aujourd\'hui',
+        'Date & Time': 'Date et Heure',
+        'Full Name': 'Nom Complet',
+        'Gender': 'Genre',
+        'Date of Birth': 'Date de Naissance',
+        'Patient Symptoms': 'Symptômes du Patient',
+        'No symptoms submitted': 'Aucun symptôme soumis',
+        'Start Video Call': 'Démarrer l\'Appel Vidéo',
+        'Chat with Patient': 'Discuter avec le Patient',
+        'View Medical Records': 'Voir les Dossiers Médicaux',
         'Unavailable': 'Indisponible',
         'Accepted Today': 'Accepté Aujourd\'hui',
+        'Appointment History': 'Historique des Rendez-vous',
+        'View completed and cancelled appointments': 'Voir les rendez-vous terminés et annulés',
+        'Completed Appointments': 'Rendez-vous Terminés',
+        'Cancelled Appointments': 'Rendez-vous Annulés',
+        'Patient Name': 'Nom du Patient',
+        'Date': 'Date',
+        'Service': 'Service',
+        'Duration': 'Durée',
+        'Cancelled By': 'Annulé Par',
+        'No Cancelled Appointments': 'Aucun Rendez-vous Annulé',
+        'Great! You have no cancelled appointments.': 'Parfait ! Vous n\'avez aucun rendez-vous annulé.',
+        'Appointment Details': 'Détails du Rendez-vous',
+        'Appointment Information': 'Informations du Rendez-vous',
+        'Name': 'Nom',
         'Migrate to Zoom': 'Migrer vers Zoom',
         'Convert existing Jitsi Meet appointments to Zoom meetings': 'Convertir les rendez-vous Jitsi Meet existants en réunions Zoom',
         'Check Status': 'Vérifier le Statut',
@@ -1469,6 +1502,10 @@ const practitionerLanguageNames = {
 // Initialize language system when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🏥 Initializing Practitioner Language System...');
+    console.log('🔍 Checking if elements exist...');
+    console.log('   - Language Button:', document.getElementById('practitionerLanguageBtn') ? '✅ Found' : '❌ Not Found');
+    console.log('   - Language Dropdown:', document.getElementById('practitionerLangDropdown') ? '✅ Found' : '❌ Not Found');
+    console.log('   - Language Options:', document.querySelectorAll('.practitioner-lang-option').length, 'found');
     
     // Wait a bit for all elements to load
     setTimeout(function() {
@@ -1512,13 +1549,17 @@ function initializePractitionerLanguageSystem() {
         e.preventDefault();
         e.stopPropagation();
         console.log('🖱️ Language button clicked!');
+        console.log('   Current dropdown display:', langDropdown.style.display);
         
         const isHidden = langDropdown.style.display === 'none' || langDropdown.style.display === '';
+        console.log('   Is hidden?', isHidden);
         
         if (isHidden) {
             langDropdown.style.display = 'block';
+            langDropdown.style.visibility = 'visible';
+            langDropdown.style.opacity = '1';
             if (chevron) chevron.style.transform = 'rotate(180deg)';
-            console.log('📂 Dropdown opened');
+            console.log('📂 Dropdown opened - display:', langDropdown.style.display);
         } else {
             langDropdown.style.display = 'none';
             if (chevron) chevron.style.transform = 'rotate(0deg)';
