@@ -100,7 +100,7 @@
         
         <!-- Exercise Content -->
         <div class="p-6">
-            <h3 class="text-xl font-bold text-patient-dark-blue mb-2">{{ exercise.name }}</h3>
+            <h3 class="text-xl font-bold text-patient-dark-blue mb-2" data-translate="{{ exercise.name }}">{{ exercise.name }}</h3>
             <p class="text-patient-dark-gray mb-4 text-sm" data-translate="{{ exercise.description|default:'Improve your health with this targeted exercise routine.' }}">{{ exercise.description|default:"Improve your health with this targeted exercise routine." }}</p>
             
             <!-- Exercise Stats -->

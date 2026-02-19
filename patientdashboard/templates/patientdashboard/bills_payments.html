@@ -145,11 +145,11 @@
                     <td class="px-6 py-4">
                         {% if bill.is_paid %}
                         <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
-                            <i class="fas fa-check-circle mr-1"></i>Paid
+                            <i class="fas fa-check-circle mr-1"></i><span data-translate="Paid">Paid</span>
                         </span>
                         {% else %}
                         <span class="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm font-medium">
-                            <i class="fas fa-clock mr-1"></i>Pending
+                            <i class="fas fa-clock mr-1"></i><span data-translate="Pending">Pending</span>
                         </span>
                         {% endif %}
                     </td>
@@ -189,9 +189,9 @@
                 <div class="text-right">
                     <div class="text-xl font-bold text-patient-dark-blue">${{ bill.amount|floatformat:0 }}</div>
                     {% if bill.is_paid %}
-                    <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">Paid</span>
+                    <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium" data-translate="Paid">Paid</span>
                     {% else %}
-                    <span class="px-2 py-1 bg-orange-100 text-orange-800 rounded-full text-xs font-medium">Pending</span>
+                    <span class="px-2 py-1 bg-orange-100 text-orange-800 rounded-full text-xs font-medium" data-translate="Pending">Pending</span>
                     {% endif %}
                 </div>
             </div>
@@ -204,7 +204,7 @@
                     <div class="font-medium text-patient-dark-blue text-sm">
                         Dr. {{ bill.appointment.practitioner.first_name }} {{ bill.appointment.practitioner.last_name }}
                     </div>
-                    <div class="text-xs text-patient-dark-gray">Consultation</div>
+                    <div class="text-xs text-patient-dark-gray" data-translate="Consultation">Consultation</div>
                 </div>
             </div>
             
@@ -230,13 +230,13 @@
         <div class="w-24 h-24 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <i class="fas fa-file-invoice-dollar text-patient-purple text-4xl"></i>
         </div>
-        <h3 class="text-2xl font-semibold text-patient-dark-blue mb-4">No Bills Found</h3>
-        <p class="text-patient-dark-gray mb-8 max-w-md mx-auto">
+        <h3 class="text-2xl font-semibold text-patient-dark-blue mb-4" data-translate="No Bills Found">No Bills Found</h3>
+        <p class="text-patient-dark-gray mb-8 max-w-md mx-auto" data-translate="You don't have any billing records yet. Bills will appear here after your appointments.">
             You don't have any billing records yet. Bills will appear here after your appointments.
         </p>
         <a href="{% url 'patient_dashboard:specialty_selection' %}" 
            class="inline-flex items-center px-6 py-3 bg-patient-purple text-white rounded-xl hover:bg-purple-700 transition-colors font-semibold">
-            <i class="fas fa-calendar-plus mr-2"></i>Book Your First Appointment
+            <i class="fas fa-calendar-plus mr-2"></i><span data-translate="Book Your First Appointment">Book Your First Appointment</span>
         </a>
     </div>
     {% endif %}
