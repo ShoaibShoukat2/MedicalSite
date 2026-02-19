@@ -11,19 +11,19 @@
                 <div>
                     <h1 class="text-3xl font-bold text-doctor-dark-blue mb-2 flex items-center">
                         <i class="fas fa-calendar-check mr-3 text-doctor-blue"></i>
-                        Appointment Management
+                        <span data-translate="Appointment Management">Appointment Management</span>
                     </h1>
-                    <p class="text-doctor-dark-gray">Manage your patient appointments efficiently</p>
+                    <p class="text-doctor-dark-gray" data-translate="Manage your patient appointments efficiently">Manage your patient appointments efficiently</p>
                 </div>
                 <div class="flex flex-wrap gap-2">
                     <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-blue-100 text-blue-800">
-                        {{ total_appointments }} Total
+                        {{ total_appointments }} <span data-translate="Total">Total</span>
                     </span>
                     <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-yellow-100 text-yellow-800">
-                        {{ pending_count }} Pending
+                        {{ pending_count }} <span data-translate="Pending">Pending</span>
                     </span>
                     <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-green-100 text-green-800">
-                        {{ accepted_count }} Accepted
+                        {{ accepted_count }} <span data-translate="Accepted">Accepted</span>
                     </span>
                 </div>
             </div>
@@ -36,7 +36,7 @@
                 <div class="text-center">
                     <i class="fas fa-calendar-day text-4xl mb-4 opacity-90"></i>
                     <h3 class="text-3xl font-bold mb-2">{{ today_count }}</h3>
-                    <p class="text-blue-100 font-medium">Today's Appointments</p>
+                    <p class="text-blue-100 font-medium" data-translate="Today's Appointments">Today's Appointments</p>
                 </div>
             </div>
 
@@ -45,7 +45,7 @@
                 <div class="text-center">
                     <i class="fas fa-clock text-4xl mb-4 opacity-90"></i>
                     <h3 class="text-3xl font-bold mb-2">{{ pending_count }}</h3>
-                    <p class="text-yellow-100 font-medium">Pending Approval</p>
+                    <p class="text-yellow-100 font-medium" data-translate="Pending Approval">Pending Approval</p>
                 </div>
             </div>
 
@@ -54,7 +54,7 @@
                 <div class="text-center">
                     <i class="fas fa-check-circle text-4xl mb-4 opacity-90"></i>
                     <h3 class="text-3xl font-bold mb-2">{{ accepted_count }}</h3>
-                    <p class="text-green-100 font-medium">Confirmed</p>
+                    <p class="text-green-100 font-medium" data-translate="Confirmed">Confirmed</p>
                 </div>
             </div>
 
@@ -63,7 +63,7 @@
                 <div class="text-center">
                     <i class="fas fa-video text-4xl mb-4 opacity-90"></i>
                     <h3 class="text-3xl font-bold mb-2">{{ upcoming_appointments.count }}</h3>
-                    <p class="text-teal-100 font-medium">Upcoming (7 days)</p>
+                    <p class="text-teal-100 font-medium" data-translate="Upcoming (7 days)">Upcoming (7 days)</p>
                 </div>
             </div>
         </div>
@@ -74,26 +74,26 @@
                 <nav class="flex flex-wrap gap-2" id="appointmentTabs">
                     <button class="tab-btn active flex-1 min-w-fit px-6 py-3 rounded-xl font-semibold text-sm transition-all duration-300 flex items-center justify-center" data-tab="all">
                         <i class="fas fa-list mr-2"></i>
-                        <span class="hidden sm:inline">All Appointments</span>
-                        <span class="sm:hidden">All</span>
+                        <span class="hidden sm:inline" data-translate="All Appointments">All Appointments</span>
+                        <span class="sm:hidden" data-translate="All">All</span>
                         <span class="ml-2 bg-white bg-opacity-20 px-2 py-1 rounded-full text-xs">{{ total_appointments }}</span>
                     </button>
                     <button class="tab-btn flex-1 min-w-fit px-6 py-3 rounded-xl font-semibold text-sm transition-all duration-300 flex items-center justify-center" data-tab="today">
                         <i class="fas fa-calendar-day mr-2"></i>
-                        <span class="hidden sm:inline">Today</span>
-                        <span class="sm:hidden">Today</span>
+                        <span class="hidden sm:inline" data-translate="Today">Today</span>
+                        <span class="sm:hidden" data-translate="Today">Today</span>
                         <span class="ml-2 bg-white bg-opacity-20 px-2 py-1 rounded-full text-xs">{{ today_count }}</span>
                     </button>
                     <button class="tab-btn flex-1 min-w-fit px-6 py-3 rounded-xl font-semibold text-sm transition-all duration-300 flex items-center justify-center" data-tab="pending">
                         <i class="fas fa-clock mr-2"></i>
-                        <span class="hidden sm:inline">Pending</span>
-                        <span class="sm:hidden">Pending</span>
+                        <span class="hidden sm:inline" data-translate="Pending">Pending</span>
+                        <span class="sm:hidden" data-translate="Pending">Pending</span>
                         <span class="ml-2 bg-white bg-opacity-20 px-2 py-1 rounded-full text-xs">{{ pending_count }}</span>
                     </button>
                     <button class="tab-btn flex-1 min-w-fit px-6 py-3 rounded-xl font-semibold text-sm transition-all duration-300 flex items-center justify-center" data-tab="accepted">
                         <i class="fas fa-check mr-2"></i>
-                        <span class="hidden sm:inline">Accepted</span>
-                        <span class="sm:hidden">Accepted</span>
+                        <span class="hidden sm:inline" data-translate="Accepted">Accepted</span>
+                        <span class="sm:hidden" data-translate="Accepted">Accepted</span>
                         <span class="ml-2 bg-white bg-opacity-20 px-2 py-1 rounded-full text-xs">{{ accepted_count }}</span>
                     </button>
                 </nav>
@@ -111,8 +111,8 @@
                     {% empty %}
                         <div class="text-center py-16">
                             <i class="fas fa-calendar-times text-6xl text-gray-300 mb-4"></i>
-                            <h3 class="text-xl font-semibold text-gray-500 mb-2">No appointments found</h3>
-                            <p class="text-gray-400">You don't have any appointments yet.</p>
+                            <h3 class="text-xl font-semibold text-gray-500 mb-2" data-translate="No appointments found">No appointments found</h3>
+                            <p class="text-gray-400" data-translate="You don't have any appointments yet.">You don't have any appointments yet.</p>
                         </div>
                     {% endfor %}
                 </div>
@@ -126,8 +126,8 @@
                     {% empty %}
                         <div class="text-center py-16">
                             <i class="fas fa-calendar-day text-6xl text-gray-300 mb-4"></i>
-                            <h3 class="text-xl font-semibold text-gray-500 mb-2">No appointments today</h3>
-                            <p class="text-gray-400">You have a free day today!</p>
+                            <h3 class="text-xl font-semibold text-gray-500 mb-2" data-translate="No appointments today">No appointments today</h3>
+                            <p class="text-gray-400" data-translate="You have a free day today!">You have a free day today!</p>
                         </div>
                     {% endfor %}
                 </div>
@@ -141,8 +141,8 @@
                     {% empty %}
                         <div class="text-center py-16">
                             <i class="fas fa-check-circle text-6xl text-green-300 mb-4"></i>
-                            <h3 class="text-xl font-semibold text-gray-500 mb-2">All caught up!</h3>
-                            <p class="text-gray-400">No pending appointments to review.</p>
+                            <h3 class="text-xl font-semibold text-gray-500 mb-2" data-translate="All caught up!">All caught up!</h3>
+                            <p class="text-gray-400" data-translate="No pending appointments to review.">No pending appointments to review.</p>
                         </div>
                     {% endfor %}
                 </div>
@@ -156,8 +156,8 @@
                     {% empty %}
                         <div class="text-center py-16">
                             <i class="fas fa-calendar-check text-6xl text-gray-300 mb-4"></i>
-                            <h3 class="text-xl font-semibold text-gray-500 mb-2">No confirmed appointments</h3>
-                            <p class="text-gray-400">No appointments have been confirmed yet.</p>
+                            <h3 class="text-xl font-semibold text-gray-500 mb-2" data-translate="No confirmed appointments">No confirmed appointments</h3>
+                            <p class="text-gray-400" data-translate="No appointments have been confirmed yet.">No appointments have been confirmed yet.</p>
                         </div>
                     {% endfor %}
                 </div>
@@ -171,26 +171,26 @@
     <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 max-h-96 overflow-y-auto">
         <div class="p-6 border-b border-gray-200">
             <div class="flex justify-between items-center">
-                <h2 class="text-xl font-bold text-doctor-dark-blue">Cancel Appointment</h2>
+                <h2 class="text-xl font-bold text-doctor-dark-blue" data-translate="Cancel Appointment">Cancel Appointment</h2>
                 <button onclick="closeCancelModal()" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
             </div>
         </div>
         <form id="cancelForm" method="POST" class="p-6">
             {% csrf_token %}
-            <p class="text-gray-600 mb-4">Are you sure you want to cancel this appointment?</p>
+            <p class="text-gray-600 mb-4" data-translate="Are you sure you want to cancel this appointment?">Are you sure you want to cancel this appointment?</p>
             <div class="mb-4">
-                <label for="cancelReason" class="block text-sm font-semibold text-gray-700 mb-2">Reason for cancellation:</label>
+                <label for="cancelReason" class="block text-sm font-semibold text-gray-700 mb-2" data-translate="Reason for cancellation:">Reason for cancellation:</label>
                 <textarea class="w-full border-2 border-gray-300 rounded-xl px-4 py-3 text-gray-900 focus:border-doctor-blue focus:ring-4 focus:ring-doctor-blue/10 transition-all duration-300" id="cancelReason" name="reason" rows="3" required></textarea>
             </div>
             <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6">
                 <div class="flex items-center text-yellow-800">
                     <i class="fas fa-exclamation-triangle mr-2 text-yellow-600"></i>
-                    <span class="text-sm">The patient will be notified via email and SMS about this cancellation.</span>
+                    <span class="text-sm" data-translate="The patient will be notified via email and SMS about this cancellation.">The patient will be notified via email and SMS about this cancellation.</span>
                 </div>
             </div>
             <div class="flex justify-end space-x-3">
-                <button type="button" onclick="closeCancelModal()" class="px-6 py-2 text-gray-600 hover:text-gray-800 font-medium transition-colors duration-200">Keep Appointment</button>
-                <button type="submit" class="px-6 py-2 bg-doctor-red hover:bg-red-700 text-white rounded-lg font-medium transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">Cancel Appointment</button>
+                <button type="button" onclick="closeCancelModal()" class="px-6 py-2 text-gray-600 hover:text-gray-800 font-medium transition-colors duration-200" data-translate="Keep Appointment">Keep Appointment</button>
+                <button type="submit" class="px-6 py-2 bg-doctor-red hover:bg-red-700 text-white rounded-lg font-medium transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg" data-translate="Cancel Appointment">Cancel Appointment</button>
             </div>
         </form>
     </div>

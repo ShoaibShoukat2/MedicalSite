@@ -232,12 +232,12 @@
                                                     <span class="text-sm text-gray-500 font-normal">{{ room.practitioner.doctor_type|default:"General Practice" }}</span>
                                                 {% else %}
                                                     {{ room.patient.first_name }} {{ room.patient.last_name }}
-                                                    <span class="text-sm text-gray-500 font-normal">Patient</span>
+                                                    <span class="text-sm text-gray-500 font-normal" data-translate="Patient">Patient</span>
                                                 {% endif %}
                                             </h3>
                                             {% with last_message=room.last_messages.0 %}
                                                 {% if last_message %}
-                                                    <span class="text-xs text-gray-500 flex-shrink-0">{{ last_message.timestamp|timesince }} ago</span>
+                                                    <span class="text-xs text-gray-500 flex-shrink-0">{{ last_message.timestamp|timesince }} <span data-translate="ago">ago</span></span>
                                                 {% endif %}
                                             {% endwith %}
                                         </div>
@@ -248,7 +248,7 @@
                                                 <div class="flex items-center justify-between">
                                                     <p class="text-sm text-gray-600 truncate flex-1">
                                                         {% if last_message.sender_type == user_type %}
-                                                            <span class="text-gray-500">You:</span>
+                                                            <span class="text-gray-500" data-translate="You:">You:</span>
                                                         {% endif %}
                                                         {{ last_message.content }}
                                                     </p>
@@ -259,7 +259,7 @@
                                                     {% endif %}
                                                 </div>
                                             {% else %}
-                                                <p class="text-sm text-gray-400 italic">Start your conversation...</p>
+                                                <p class="text-sm text-gray-400 italic" data-translate="Start your conversation...">Start your conversation...</p>
                                             {% endif %}
                                         {% endwith %}
                                     </div>

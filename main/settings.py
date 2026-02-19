@@ -249,6 +249,7 @@ EMAIL_USE_LOCALTIME = False
 
 
 
+
 ELEVENLABS_API_KEY = env('ELEVENLABS_API_KEY', default='your_default_elevenlabs_key')
 
 # Access the variables
