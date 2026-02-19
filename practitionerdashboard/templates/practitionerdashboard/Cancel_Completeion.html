@@ -71,13 +71,13 @@
                                     <p class="text-sm text-doctor-blue">10:00 AM</p>
                                 </td>
                                 <td class="py-4 px-4">
-                                    <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">General Checkup</span>
+                                    <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium" data-translate="General Checkup">General Checkup</span>
                                 </td>
                                 <td class="py-4 px-4">
                                     <p class="text-sm text-doctor-dark-gray">30 mins</p>
                                 </td>
                                 <td class="py-4 px-4 text-center">
-                                    <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">Completed</span>
+                                    <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium" data-translate="Completed">Completed</span>
                                 </td>
                                 <td class="py-4 px-4 text-right">
                                     <button onclick="openDetailsModal('completed', 'John Smith', 'john.smith@email.com', '(555) 123-4567', 'Feb 13, 2025', '10:00 AM', 'General Checkup', '30 mins', 'Completed', 'Regular checkup completed. Patient in good health. Follow-up in 6 months recommended.')" 
@@ -105,13 +105,13 @@
                                     <p class="text-sm text-doctor-blue">2:30 PM</p>
                                 </td>
                                 <td class="py-4 px-4">
-                                    <span class="px-3 py-1 bg-teal-100 text-teal-800 rounded-full text-sm font-medium">Dental Cleaning</span>
+                                    <span class="px-3 py-1 bg-teal-100 text-teal-800 rounded-full text-sm font-medium" data-translate="Dental Cleaning">Dental Cleaning</span>
                                 </td>
                                 <td class="py-4 px-4">
                                     <p class="text-sm text-doctor-dark-gray">45 mins</p>
                                 </td>
                                 <td class="py-4 px-4 text-center">
-                                    <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">Completed</span>
+                                    <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium" data-translate="Completed">Completed</span>
                                 </td>
                                 <td class="py-4 px-4 text-right">
                                     <button onclick="openDetailsModal('completed', 'Sarah Johnson', 'sarah.johnson@email.com', '(555) 234-5678', 'Feb 12, 2025', '2:30 PM', 'Dental Cleaning', '45 mins', 'Completed', 'Routine cleaning completed. Recommended improved flossing technique.')" 
@@ -139,13 +139,13 @@
                                     <p class="text-sm text-doctor-blue">11:15 AM</p>
                                 </td>
                                 <td class="py-4 px-4">
-                                    <span class="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm font-medium">Consultation</span>
+                                    <span class="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm font-medium" data-translate="Consultation">Consultation</span>
                                 </td>
                                 <td class="py-4 px-4">
                                     <p class="text-sm text-doctor-dark-gray">60 mins</p>
                                 </td>
                                 <td class="py-4 px-4 text-center">
-                                    <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">Completed</span>
+                                    <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium" data-translate="Completed">Completed</span>
                                 </td>
                                 <td class="py-4 px-4 text-right">
                                     <button onclick="openDetailsModal('completed', 'Michael Brown', 'michael.brown@email.com', '(555) 345-6789', 'Feb 11, 2025', '11:15 AM', 'Consultation', '60 mins', 'Completed', 'Initial consultation completed. Treatment plan discussed and agreed upon.')" 
@@ -296,7 +296,7 @@
             <div id="notesSection">
                 <h3 class="text-lg font-semibold text-doctor-dark-blue mb-4 flex items-center">
                     <i class="fas fa-sticky-note text-doctor-blue mr-2"></i>
-                    <span id="notesTitle">Notes</span>
+                    <span id="notesTitle" data-translate="Notes">Notes</span>
                 </h3>
                 <div class="bg-blue-50 p-4 rounded-xl border-l-4 border-doctor-blue">
                     <p id="modalAppointmentNotes" class="text-doctor-dark-gray"></p>
@@ -357,14 +357,21 @@ function openDetailsModal(type, name, email, phone, date, time, service, duratio
         document.getElementById('modalAppointmentDuration').textContent = duration;
         document.getElementById('serviceSection').style.display = 'block';
         document.getElementById('durationSection').style.display = 'block';
-        document.getElementById('notesTitle').textContent = 'Notes';
+        document.getElementById('notesTitle').textContent = document.getElementById('notesTitle').getAttribute('data-translate') || 'Notes';
+        document.getElementById('notesTitle').setAttribute('data-translate', 'Notes');
     } else {
         document.getElementById('serviceSection').style.display = 'none';
         document.getElementById('durationSection').style.display = 'none';
         document.getElementById('notesTitle').textContent = 'Cancellation Reason';
+        document.getElementById('notesTitle').setAttribute('data-translate', 'Cancellation Reason');
     }
     
     document.getElementById('appointmentDetailsModal').classList.remove('hidden');
+    
+    // Trigger translation update for modal content
+    if (typeof translatePage === 'function') {
+        translatePage();
+    }
 }
 
 function closeDetailsModal() {

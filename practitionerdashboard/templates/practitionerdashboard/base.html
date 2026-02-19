@@ -221,7 +221,7 @@
         
         /* Language Dropdown Specific Styles */
         #practitionerLangDropdown {
-            z-index: 9999 !important;
+            z-index: 99999 !important;
             position: absolute !important;
         }
         
@@ -236,13 +236,19 @@
         /* Ensure language selector container has proper positioning */
         .language-selector-container {
             position: relative;
-            z-index: 1000;
+            z-index: 10000;
+        }
+        
+        /* Ensure header has high z-index */
+        header {
+            position: relative;
+            z-index: 9999 !important;
         }
         
         /* Language selector button improvements */
         #practitionerLanguageBtn {
             position: relative;
-            z-index: 1001;
+            z-index: 100001;
             cursor: pointer;
         }
         
@@ -415,7 +421,7 @@
                             </button>
                             
                             <!-- Language Dropdown -->
-                            <div id="practitionerLangDropdown" class="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-2xl border border-gray-200 py-2 z-[9999]" style="display: none;">
+                            <div id="practitionerLangDropdown" class="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-2xl border border-gray-200 py-2 z-[99999]" style="display: none; z-index: 99999 !important; position: absolute !important;">
                                 <div class="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide border-b border-gray-100" data-translate="Select Language">Select Language</div>
                                 <button class="practitioner-lang-option w-full text-left px-4 py-3 hover:bg-doctor-light-blue text-gray-700 hover:text-doctor-dark-blue transition-colors duration-200 flex items-center space-x-3" data-lang="en" data-name="English">
                                     <span class="w-6 h-4 bg-gradient-to-r from-blue-500 to-red-500 rounded-sm flex items-center justify-center text-white text-xs font-bold">EN</span>
@@ -1203,6 +1209,15 @@ const practitionerTranslations = {
         'Great! You have no cancelled appointments.': 'Parfait ! Vous n\'avez aucun rendez-vous annulé.',
         'Appointment Details': 'Détails du Rendez-vous',
         'Appointment Information': 'Informations du Rendez-vous',
+        'Name': 'Nom',
+        'Phone': 'Téléphone',
+        'Notes': 'Notes',
+        'Cancellation Reason': 'Raison de l\'Annulation',
+        'Patient Request': 'Demande du Patient',
+        'Completed': 'Terminé',
+        'General Checkup': 'Examen Général',
+        'Dental Cleaning': 'Nettoyage Dentaire',
+        'Consultation': 'Consultation',
         'Name': 'Nom',
         'Migrate to Zoom': 'Migrer vers Zoom',
         'Convert existing Jitsi Meet appointments to Zoom meetings': 'Convertir les rendez-vous Jitsi Meet existants en réunions Zoom',

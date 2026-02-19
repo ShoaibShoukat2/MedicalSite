@@ -987,7 +987,7 @@
         <div class="sidebar-header">
             <div class="sidebar-title">
                 <i class="fas fa-calendar" style="color: #1a73e8;"></i>
-                Schedule
+                <span data-translate="Schedule">Schedule</span>
             </div>
         </div>
         
@@ -1020,7 +1020,7 @@
         <div style="margin-top: 20px;">
             <button class="btn-add-slot" style="width: 100%; justify-content: center;" onclick="document.getElementById('slotDate').focus()">
                 <i class="fas fa-plus"></i>
-                Add Appointment
+                <span data-translate="Add Appointment">Add Appointment</span>
             </button>
         </div>
     </div>
@@ -1031,26 +1031,26 @@
         <div class="calendar-card">
             <!-- Calendar Header -->
             <div class="calendar-header-section">
-                <div class="calendar-title">
+                <div class="calendar-title" data-translate="Schedule Management">
                     Schedule Management
                 </div>
                 <div class="calendar-header-center">
                     <!-- View Tabs -->
                     <div class="view-tabs">
                         <button class="view-tab" id="dayViewTab" onclick="switchView('day')">
-                            <i class="fas fa-calendar-day"></i> Day
+                            <i class="fas fa-calendar-day"></i> <span data-translate="Day">Day</span>
                         </button>
                         <button class="view-tab" id="weekViewTab" onclick="switchView('week')">
-                            <i class="fas fa-calendar-week"></i> Week
+                            <i class="fas fa-calendar-week"></i> <span data-translate="Week">Week</span>
                         </button>
                         <button class="view-tab active" id="monthViewTab" onclick="switchView('month')">
-                            <i class="fas fa-calendar"></i> Month
+                            <i class="fas fa-calendar"></i> <span data-translate="Month">Month</span>
                         </button>
                     </div>
                     <!-- Month Navigation -->
                     <div class="month-navigation">
                         <button class="today-btn" id="todayBtn" title="Go to today">
-                            <i class="fas fa-calendar-day"></i> Today
+                            <i class="fas fa-calendar-day"></i> <span data-translate="Today">Today</span>
                         </button>
                         <button class="month-nav-btn" id="prevMonth" title="Previous month">
                             <i class="fas fa-chevron-left"></i>
@@ -1069,13 +1069,13 @@
                 <div class="month-view-container active" id="monthView">
                     <!-- Weekday Headers -->
                     <div class="calendar-weekdays">
-                        <div class="weekday-header">Sun</div>
-                        <div class="weekday-header">Mon</div>
-                        <div class="weekday-header">Tue</div>
-                        <div class="weekday-header">Wed</div>
-                        <div class="weekday-header">Thu</div>
-                        <div class="weekday-header">Fri</div>
-                        <div class="weekday-header">Sat</div>
+                        <div class="weekday-header" data-translate="Sun">Sun</div>
+                        <div class="weekday-header" data-translate="Mon">Mon</div>
+                        <div class="weekday-header" data-translate="Tue">Tue</div>
+                        <div class="weekday-header" data-translate="Wed">Wed</div>
+                        <div class="weekday-header" data-translate="Thu">Thu</div>
+                        <div class="weekday-header" data-translate="Fri">Fri</div>
+                        <div class="weekday-header" data-translate="Sat">Sat</div>
                     </div>
                     
                     <!-- Days Grid -->
@@ -1108,14 +1108,14 @@
             <div class="add-appointment-section">
                 <div class="section-title">
                     <i class="fas fa-plus-circle" style="color: #1a73e8;"></i>
-                    Add New Appointment
+                    <span data-translate="Add New Appointment">Add New Appointment</span>
                 </div>
                 
                 <!-- Quick Time Slots -->
                 <div class="quick-time-slots">
                     <div class="quick-slots-label">
                         <i class="fas fa-clock" style="color: #5f6368;"></i>
-                        Quick Time Slots
+                        <span data-translate="Quick Time Slots">Quick Time Slots</span>
                     </div>
                     <div class="quick-slots-grid">
                         <button type="button" class="quick-slot-btn" data-start="09:00" data-end="10:00">9:00 AM</button>
@@ -1134,24 +1134,24 @@
                 <form class="appointment-form" id="addSlotForm">
                     {% csrf_token %}
                     <div class="form-group">
-                        <label>Date</label>
+                        <label data-translate="Date">Date</label>
                         <input type="date" id="slotDate" class="form-control" required>
                     </div>
                     <div class="form-group">
-                        <label>Start Time</label>
+                        <label data-translate="Start Time">Start Time</label>
                         <input type="time" id="startTime" class="form-control" required>
                     </div>
                     <div class="form-group">
-                        <label>End Time</label>
+                        <label data-translate="End Time">End Time</label>
                         <input type="time" id="endTime" class="form-control" required>
                     </div>
                     <button type="submit" class="btn-add-slot">
                         <i class="fas fa-plus"></i>
-                        Add Slot
+                        <span data-translate="Add Slot">Add Slot</span>
                     </button>
                     <button type="button" class="btn-available-times" onclick="showAvailableSlots()">
                         <i class="fas fa-clock"></i>
-                        Available Times
+                        <span data-translate="Available Times">Available Times</span>
                     </button>
                 </form>
                 
@@ -1159,7 +1159,7 @@
                 <div class="calendar-legend">
                     <div class="section-title" style="font-size: 14px; margin-bottom: 12px;">
                         <i class="fas fa-info-circle" style="color: #5f6368;"></i>
-                        Calendar Guide
+                        <span data-translate="Calendar Guide">Calendar Guide</span>
                     </div>
                     <div class="legend-grid">
                         <div class="legend-item">
@@ -1167,8 +1167,8 @@
                                 <i class="fas fa-calendar-day" style="color: #1a73e8; font-size: 12px;"></i>
                             </div>
                             <div class="legend-text">
-                                <div class="legend-title">Today</div>
-                                <div class="legend-desc">Current date</div>
+                                <div class="legend-title" data-translate="Today">Today</div>
+                                <div class="legend-desc" data-translate="Current date">Current date</div>
                             </div>
                         </div>
                         <div class="legend-item">
@@ -1176,8 +1176,8 @@
                                 3
                             </div>
                             <div class="legend-text">
-                                <div class="legend-title">Appointments</div>
-                                <div class="legend-desc">Scheduled slots</div>
+                                <div class="legend-title" data-translate="Appointments">Appointments</div>
+                                <div class="legend-desc" data-translate="Scheduled slots">Scheduled slots</div>
                             </div>
                         </div>
                         <div class="legend-item">
@@ -1185,8 +1185,8 @@
                                 <i class="fas fa-check" style="color: #1a73e8; font-size: 12px;"></i>
                             </div>
                             <div class="legend-text">
-                                <div class="legend-title">Selected</div>
-                                <div class="legend-desc">Chosen date</div>
+                                <div class="legend-title" data-translate="Selected">Selected</div>
+                                <div class="legend-desc" data-translate="Chosen date">Chosen date</div>
                             </div>
                         </div>
                         <div class="legend-item">
@@ -1194,15 +1194,15 @@
                                 <i class="fas fa-ban" style="color: #5f6368; font-size: 12px;"></i>
                             </div>
                             <div class="legend-text">
-                                <div class="legend-title">Past Date</div>
-                                <div class="legend-desc">Cannot select</div>
+                                <div class="legend-title" data-translate="Past Date">Past Date</div>
+                                <div class="legend-desc" data-translate="Cannot select">Cannot select</div>
                             </div>
                         </div>
                     </div>
                     <div class="tip-box">
                         <p>
                             <i class="fas fa-lightbulb" style="color: #1a73e8; margin-right: 8px;"></i>
-                            <strong>Tip:</strong> Click on any date to select it, then use quick time slots or enter custom times.
+                            <strong data-translate="Tip:">Tip:</strong> <span data-translate="Click on any date to select it, then use quick time slots or enter custom times.">Click on any date to select it, then use quick time slots or enter custom times.</span>
                         </p>
                     </div>
                 </div>
@@ -1213,7 +1213,7 @@
         <div class="appointments-list">
             <div class="section-title">
                 <i class="fas fa-list" style="color: #1a73e8;"></i>
-                Your Appointments
+                <span data-translate="Your Appointments">Your Appointments</span>
             </div>
             <div id="appointmentsList">
                 {% for slot in slots %}
@@ -1224,7 +1224,7 @@
                         </div>
                         <button class="btn-remove remove-slot" data-id="{{ slot.id }}">
                             <i class="fas fa-trash mr-1"></i>
-                            Remove
+                            <span data-translate="Remove">Remove</span>
                         </button>
                     </div>
                 {% empty %}
