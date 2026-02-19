@@ -1548,7 +1548,30 @@
     }
     
     function updateMiniMonth() {
-        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        // Get current language
+        const currentLang = localStorage.getItem('practitionerLanguage') || 'en';
+        
+        // Month abbreviations based on language
+        let monthNames;
+        if (currentLang === 'fr' && typeof practitionerTranslations !== 'undefined' && practitionerTranslations['fr']) {
+            monthNames = [
+                practitionerTranslations['fr']['Jan'] || 'Jan',
+                practitionerTranslations['fr']['Feb'] || 'Feb',
+                practitionerTranslations['fr']['Mar'] || 'Mar',
+                practitionerTranslations['fr']['Apr'] || 'Apr',
+                practitionerTranslations['fr']['May'] || 'May',
+                practitionerTranslations['fr']['Jun'] || 'Jun',
+                practitionerTranslations['fr']['Jul'] || 'Jul',
+                practitionerTranslations['fr']['Aug'] || 'Aug',
+                practitionerTranslations['fr']['Sep'] || 'Sep',
+                practitionerTranslations['fr']['Oct'] || 'Oct',
+                practitionerTranslations['fr']['Nov'] || 'Nov',
+                practitionerTranslations['fr']['Dec'] || 'Dec'
+            ];
+        } else {
+            monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        }
+        
         document.getElementById('miniCurrentMonth').textContent = 
             `${monthNames[miniCurrentDate.getMonth()]} ${miniCurrentDate.getFullYear()}`;
     }
@@ -1731,10 +1754,32 @@
     }
     
     function updateCurrentMonth() {
-        const monthNames = [
-            'January', 'February', 'March', 'April', 'May', 'June',
-            'July', 'August', 'September', 'October', 'November', 'December'
-        ];
+        // Get current language
+        const currentLang = localStorage.getItem('practitionerLanguage') || 'en';
+        
+        // Month names based on language
+        let monthNames;
+        if (currentLang === 'fr' && typeof practitionerTranslations !== 'undefined' && practitionerTranslations['fr']) {
+            monthNames = [
+                practitionerTranslations['fr']['January'] || 'January',
+                practitionerTranslations['fr']['February'] || 'February',
+                practitionerTranslations['fr']['March'] || 'March',
+                practitionerTranslations['fr']['April'] || 'April',
+                practitionerTranslations['fr']['May'] || 'May',
+                practitionerTranslations['fr']['June'] || 'June',
+                practitionerTranslations['fr']['July'] || 'July',
+                practitionerTranslations['fr']['August'] || 'August',
+                practitionerTranslations['fr']['September'] || 'September',
+                practitionerTranslations['fr']['October'] || 'October',
+                practitionerTranslations['fr']['November'] || 'November',
+                practitionerTranslations['fr']['December'] || 'December'
+            ];
+        } else {
+            monthNames = [
+                'January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'
+            ];
+        }
         
         if (currentView === 'day') {
             const options = { month: 'long', day: 'numeric', year: 'numeric' };

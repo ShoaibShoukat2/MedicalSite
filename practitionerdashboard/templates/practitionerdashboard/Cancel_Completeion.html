@@ -65,16 +65,16 @@
                                     </div>
                                 </td>
                                 <td class="py-4 px-4">
-                                    <p class="font-medium text-doctor-dark-blue">Feb 13, 2025</p>
+                                    <p class="font-medium text-doctor-dark-blue"><span class="translate-date">Feb 13, 2025</span></p>
                                 </td>
                                 <td class="py-4 px-4">
-                                    <p class="text-sm text-doctor-blue">10:00 AM</p>
+                                    <p class="text-sm text-doctor-blue"><span class="translate-time">10:00 AM</span></p>
                                 </td>
                                 <td class="py-4 px-4">
                                     <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium" data-translate="General Checkup">General Checkup</span>
                                 </td>
                                 <td class="py-4 px-4">
-                                    <p class="text-sm text-doctor-dark-gray">30 mins</p>
+                                    <p class="text-sm text-doctor-dark-gray"><span class="translate-duration">30 mins</span></p>
                                 </td>
                                 <td class="py-4 px-4 text-center">
                                     <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium" data-translate="Completed">Completed</span>
@@ -99,16 +99,16 @@
                                     </div>
                                 </td>
                                 <td class="py-4 px-4">
-                                    <p class="font-medium text-doctor-dark-blue">Feb 12, 2025</p>
+                                    <p class="font-medium text-doctor-dark-blue"><span class="translate-date">Feb 12, 2025</span></p>
                                 </td>
                                 <td class="py-4 px-4">
-                                    <p class="text-sm text-doctor-blue">2:30 PM</p>
+                                    <p class="text-sm text-doctor-blue"><span class="translate-time">2:30 PM</span></p>
                                 </td>
                                 <td class="py-4 px-4">
                                     <span class="px-3 py-1 bg-teal-100 text-teal-800 rounded-full text-sm font-medium" data-translate="Dental Cleaning">Dental Cleaning</span>
                                 </td>
                                 <td class="py-4 px-4">
-                                    <p class="text-sm text-doctor-dark-gray">45 mins</p>
+                                    <p class="text-sm text-doctor-dark-gray"><span class="translate-duration">45 mins</span></p>
                                 </td>
                                 <td class="py-4 px-4 text-center">
                                     <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium" data-translate="Completed">Completed</span>
@@ -133,16 +133,16 @@
                                     </div>
                                 </td>
                                 <td class="py-4 px-4">
-                                    <p class="font-medium text-doctor-dark-blue">Feb 11, 2025</p>
+                                    <p class="font-medium text-doctor-dark-blue"><span class="translate-date">Feb 11, 2025</span></p>
                                 </td>
                                 <td class="py-4 px-4">
-                                    <p class="text-sm text-doctor-blue">11:15 AM</p>
+                                    <p class="text-sm text-doctor-blue"><span class="translate-time">11:15 AM</span></p>
                                 </td>
                                 <td class="py-4 px-4">
                                     <span class="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm font-medium" data-translate="Consultation">Consultation</span>
                                 </td>
                                 <td class="py-4 px-4">
-                                    <p class="text-sm text-doctor-dark-gray">60 mins</p>
+                                    <p class="text-sm text-doctor-dark-gray"><span class="translate-duration">60 mins</span></p>
                                 </td>
                                 <td class="py-4 px-4 text-center">
                                     <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium" data-translate="Completed">Completed</span>
@@ -339,7 +339,87 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById(targetTab).classList.add('active');
         });
     });
+    
+    // Listen for language changes to re-translate dynamic content
+    window.addEventListener('languageChanged', function() {
+        translateDynamicContent();
+    });
+    
+    // Initial translation
+    translateDynamicContent();
 });
+
+// Function to translate dynamic content in tables
+function translateDynamicContent() {
+    // Get current language
+    const currentLang = localStorage.getItem('practitionerLanguage') || 'en';
+    
+    // Only translate if not English
+    if (currentLang === 'en') return;
+    
+    // Check if translations exist
+    if (typeof practitionerTranslations === 'undefined' || !practitionerTranslations[currentLang]) return;
+    
+    const translations = practitionerTranslations[currentLang];
+    
+    // Translate service badges in completed appointments table
+    document.querySelectorAll('[data-translate="General Checkup"]').forEach(el => {
+        if (translations['General Checkup']) {
+            el.textContent = translations['General Checkup'];
+        }
+    });
+    
+    document.querySelectorAll('[data-translate="Dental Cleaning"]').forEach(el => {
+        if (translations['Dental Cleaning']) {
+            el.textContent = translations['Dental Cleaning'];
+        }
+    });
+    
+    document.querySelectorAll('[data-translate="Consultation"]').forEach(el => {
+        if (translations['Consultation']) {
+            el.textContent = translations['Consultation'];
+        }
+    });
+    
+    document.querySelectorAll('[data-translate="Completed"]').forEach(el => {
+        if (translations['Completed']) {
+            el.textContent = translations['Completed'];
+        }
+    });
+    
+    // Translate dates (month names)
+    document.querySelectorAll('.translate-date').forEach(el => {
+        let dateText = el.textContent;
+        // Replace month abbreviations
+        ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].forEach(month => {
+            if (dateText.includes(month) && translations[month]) {
+                dateText = dateText.replace(month, translations[month]);
+            }
+        });
+        el.textContent = dateText;
+    });
+    
+    // Translate times (AM/PM)
+    document.querySelectorAll('.translate-time').forEach(el => {
+        let timeText = el.textContent;
+        if (timeText.includes('AM') && translations['AM']) {
+            timeText = timeText.replace('AM', translations['AM']);
+        }
+        if (timeText.includes('PM') && translations['PM']) {
+            timeText = timeText.replace('PM', translations['PM']);
+        }
+        el.textContent = timeText;
+    });
+    
+    // Translate durations (mins)
+    document.querySelectorAll('.translate-duration').forEach(el => {
+        let durationText = el.textContent;
+        if (durationText.includes('mins') && translations['mins']) {
+            durationText = durationText.replace('mins', translations['mins']);
+        }
+        el.textContent = durationText;
+    });
+}
 
 // Modal functions
 function openDetailsModal(type, name, email, phone, date, time, service, duration, status, notes) {
