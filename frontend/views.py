@@ -92,13 +92,39 @@ def patient_signup(request):
         # Generate OTP
         otp = generate_otp()
         try:
-            send_mail(
-                'Your OTP for Email Verification',
-                f'Your OTP for email verification is {otp}.',
-                'no-reply@yourdomain.com',
-                [email],
-                fail_silently=False,
+            from django.core.mail import EmailMultiAlternatives
+            from django.conf import settings
+            
+            subject = 'Your OTP for Email Verification'
+            text_content = f'Your OTP for email verification is {otp}. This code will expire in 10 minutes.'
+            html_content = f'''
+            <html>
+                <body style="font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4;">
+                    <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                        <h2 style="color: #0066CC; text-align: center;">Email Verification</h2>
+                        <p style="font-size: 16px; color: #333;">Hello,</p>
+                        <p style="font-size: 16px; color: #333;">Your OTP for email verification is:</p>
+                        <div style="background-color: #f0f8ff; padding: 20px; text-align: center; border-radius: 5px; margin: 20px 0;">
+                            <h1 style="color: #0066CC; font-size: 36px; margin: 0; letter-spacing: 5px;">{otp}</h1>
+                        </div>
+                        <p style="font-size: 14px; color: #666;">This code will expire in 10 minutes.</p>
+                        <p style="font-size: 14px; color: #666;">If you didn't request this code, please ignore this email.</p>
+                        <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
+                        <p style="font-size: 12px; color: #999; text-align: center;">This is an automated message, please do not reply.</p>
+                    </div>
+                </body>
+            </html>
+            '''
+            
+            msg = EmailMultiAlternatives(
+                subject,
+                text_content,
+                settings.DEFAULT_FROM_EMAIL,
+                [email]
             )
+            msg.attach_alternative(html_content, "text/html")
+            msg.send(fail_silently=False)
+            
             # Hash password and save session data
             hashed_password = make_password(password)
             request.session['otp'] = otp
@@ -205,15 +231,38 @@ def practitioner_signup(request):
         # Generate OTP and send it to the provided email
         otp = generate_otp()
         try:
+            from django.core.mail import EmailMultiAlternatives
+            from django.conf import settings
             
+            subject = 'Your OTP for Email Verification'
+            text_content = f'Your OTP for email verification is {otp}. This code will expire in 10 minutes.'
+            html_content = f'''
+            <html>
+                <body style="font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4;">
+                    <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                        <h2 style="color: #1e40af; text-align: center;">Practitioner Email Verification</h2>
+                        <p style="font-size: 16px; color: #333;">Hello Dr. {first_name} {last_name},</p>
+                        <p style="font-size: 16px; color: #333;">Your OTP for email verification is:</p>
+                        <div style="background-color: #dbeafe; padding: 20px; text-align: center; border-radius: 5px; margin: 20px 0;">
+                            <h1 style="color: #1e40af; font-size: 36px; margin: 0; letter-spacing: 5px;">{otp}</h1>
+                        </div>
+                        <p style="font-size: 14px; color: #666;">This code will expire in 10 minutes.</p>
+                        <p style="font-size: 14px; color: #666;">If you didn't request this code, please ignore this email.</p>
+                        <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
+                        <p style="font-size: 12px; color: #999; text-align: center;">This is an automated message, please do not reply.</p>
+                    </div>
+                </body>
+            </html>
+            '''
             
-            send_mail(
-                'Your OTP for Email Verification',
-                f'Your OTP for email verification is {otp}.',
-                'no-reply@yourdomain.com',
-                [email],
-                fail_silently=False,
+            msg = EmailMultiAlternatives(
+                subject,
+                text_content,
+                settings.DEFAULT_FROM_EMAIL,
+                [email]
             )
+            msg.attach_alternative(html_content, "text/html")
+            msg.send(fail_silently=False)
 
             # Save OTP and practitioner data in session for later verification
             request.session['otp'] = otp

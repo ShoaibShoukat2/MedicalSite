@@ -232,7 +232,8 @@ EMAIL_USE_TLS = True  # Use TLS instead of SSL
 EMAIL_USE_SSL = False  # Don't use SSL when using TLS
 EMAIL_HOST_USER = 'reeduvie@gmail.com'  # Your email address
 EMAIL_HOST_PASSWORD = 'rxkz iwfa rdgf qrvd'  
-DEFAULT_FROM_EMAIL = 'shoaibahmadbhatti6252@gmail.com'
+DEFAULT_FROM_EMAIL = 'reeduvie@gmail.com'  # Changed to match EMAIL_HOST_USER
+SERVER_EMAIL = 'reeduvie@gmail.com'  # For error emails
 
 
 
