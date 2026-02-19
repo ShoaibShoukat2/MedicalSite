@@ -91,39 +91,27 @@ def patient_signup(request):
 
         # Generate OTP
         otp = generate_otp()
+        
+        # Validate email deliverability
+        from .email_utils import validate_email_deliverability, send_otp_email
+        
+        is_valid, validation_error = validate_email_deliverability(email)
+        if not is_valid:
+            context['error_message'] = validation_error
+            return render(request, 'Patient.html', context)
+        
         try:
-            from django.core.mail import EmailMultiAlternatives
-            from django.conf import settings
-            
-            subject = 'Your OTP for Email Verification'
-            text_content = f'Your OTP for email verification is {otp}. This code will expire in 10 minutes.'
-            html_content = f'''
-            <html>
-                <body style="font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4;">
-                    <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                        <h2 style="color: #0066CC; text-align: center;">Email Verification</h2>
-                        <p style="font-size: 16px; color: #333;">Hello,</p>
-                        <p style="font-size: 16px; color: #333;">Your OTP for email verification is:</p>
-                        <div style="background-color: #f0f8ff; padding: 20px; text-align: center; border-radius: 5px; margin: 20px 0;">
-                            <h1 style="color: #0066CC; font-size: 36px; margin: 0; letter-spacing: 5px;">{otp}</h1>
-                        </div>
-                        <p style="font-size: 14px; color: #666;">This code will expire in 10 minutes.</p>
-                        <p style="font-size: 14px; color: #666;">If you didn't request this code, please ignore this email.</p>
-                        <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
-                        <p style="font-size: 12px; color: #999; text-align: center;">This is an automated message, please do not reply.</p>
-                    </div>
-                </body>
-            </html>
-            '''
-            
-            msg = EmailMultiAlternatives(
-                subject,
-                text_content,
-                settings.DEFAULT_FROM_EMAIL,
-                [email]
+            # Send OTP email with enhanced deliverability
+            success, error_message = send_otp_email(
+                recipient_email=email,
+                otp=otp,
+                user_name=f"{first_name} {last_name}",
+                user_type="patient"
             )
-            msg.attach_alternative(html_content, "text/html")
-            msg.send(fail_silently=False)
+            
+            if not success:
+                context['error_message'] = f"Failed to send OTP: {error_message}"
+                return render(request, 'Patient.html', context)
             
             # Hash password and save session data
             hashed_password = make_password(password)
@@ -230,39 +218,27 @@ def practitioner_signup(request):
 
         # Generate OTP and send it to the provided email
         otp = generate_otp()
+        
+        # Validate email deliverability
+        from .email_utils import validate_email_deliverability, send_otp_email
+        
+        is_valid, validation_error = validate_email_deliverability(email)
+        if not is_valid:
+            messages.error(request, validation_error)
+            return redirect('frontend:practitioner_signup')
+        
         try:
-            from django.core.mail import EmailMultiAlternatives
-            from django.conf import settings
-            
-            subject = 'Your OTP for Email Verification'
-            text_content = f'Your OTP for email verification is {otp}. This code will expire in 10 minutes.'
-            html_content = f'''
-            <html>
-                <body style="font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4;">
-                    <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                        <h2 style="color: #1e40af; text-align: center;">Practitioner Email Verification</h2>
-                        <p style="font-size: 16px; color: #333;">Hello Dr. {first_name} {last_name},</p>
-                        <p style="font-size: 16px; color: #333;">Your OTP for email verification is:</p>
-                        <div style="background-color: #dbeafe; padding: 20px; text-align: center; border-radius: 5px; margin: 20px 0;">
-                            <h1 style="color: #1e40af; font-size: 36px; margin: 0; letter-spacing: 5px;">{otp}</h1>
-                        </div>
-                        <p style="font-size: 14px; color: #666;">This code will expire in 10 minutes.</p>
-                        <p style="font-size: 14px; color: #666;">If you didn't request this code, please ignore this email.</p>
-                        <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
-                        <p style="font-size: 12px; color: #999; text-align: center;">This is an automated message, please do not reply.</p>
-                    </div>
-                </body>
-            </html>
-            '''
-            
-            msg = EmailMultiAlternatives(
-                subject,
-                text_content,
-                settings.DEFAULT_FROM_EMAIL,
-                [email]
+            # Send OTP email with enhanced deliverability
+            success, error_message = send_otp_email(
+                recipient_email=email,
+                otp=otp,
+                user_name=f"{first_name} {last_name}",
+                user_type="practitioner"
             )
-            msg.attach_alternative(html_content, "text/html")
-            msg.send(fail_silently=False)
+            
+            if not success:
+                messages.error(request, f"Failed to send OTP: {error_message}")
+                return redirect('frontend:practitioner_signup')
 
             # Save OTP and practitioner data in session for later verification
             request.session['otp'] = otp

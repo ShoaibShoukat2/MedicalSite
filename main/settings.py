@@ -235,6 +235,12 @@ EMAIL_HOST_PASSWORD = 'rxkz iwfa rdgf qrvd'
 DEFAULT_FROM_EMAIL = 'reeduvie@gmail.com'  # Changed to match EMAIL_HOST_USER
 SERVER_EMAIL = 'reeduvie@gmail.com'  # For error emails
 
+# Email timeout settings for better reliability
+EMAIL_TIMEOUT = 30  # 30 seconds timeout
+
+# Additional email headers for better deliverability
+EMAIL_USE_LOCALTIME = False
+
 
 
 
