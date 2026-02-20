@@ -9,13 +9,13 @@
             </video>
             <div class="video-overlay header-text">
                 <div class="caption">
-                    <h6>Healing begins within</h6>
-                    <h2>Find the Best <em style="color:SteelBlue;">Health</em> Advice</h2>
+                    <h6 data-translate="Healing begins within">Healing begins within</h6>
+                    <h2><span data-translate="Find the Best">Find the Best</span> <em style="color:SteelBlue;" data-translate="Health">Health</em> <span data-translate="Advice">Advice</span></h2>
                     <div class="row justify-content-center">
                         <div class="row justify-content-center">
                             <div class="col-md-8">
                                 <div class="input-group shadow-lg rounded-pill">
-                                    <input type="text" class="form-control border-light py-3 px-4" placeholder="Search for doctors, services, or specialties..." aria-label="Search" aria-describedby="basic-addon2" style="border-radius: 30px; font-size: 18px; padding-left: 20px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); transition: all 0.3s ease;">
+                                    <input type="text" class="form-control border-light py-3 px-4" data-translate-placeholder="Search for doctors, services, or specialties..." placeholder="Search for doctors, services, or specialties..." aria-label="Search" aria-describedby="basic-addon2" style="border-radius: 30px; font-size: 18px; padding-left: 20px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); transition: all 0.3s ease;">
                                     <button class="btn btn-primary rounded-pill shadow-sm" type="button" id="basic-addon2" style="border-radius: 30px; background-color: #28a745; color: white; padding: 12px 25px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); font-size: 18px;">
                                         <i class="fas fa-search"></i>
                                     </button>
@@ -36,17 +36,17 @@
 
 
             <br>
-            <h2 class="text-center mb-4 font-weight-bold text-primary" style="animation: fadeInUp 1.5s ease;">Our Premium Services</h2>
+            <h2 class="text-center mb-4 font-weight-bold text-primary" style="animation: fadeInUp 1.5s ease;" data-translate="Our Premium Services">Our Premium Services</h2>
             <div class="row">
                 <!-- Service Cards with Hover Effects -->
                 <div class="col-md-6 mb-4">
                     <div class="card shadow-lg border-light rounded w-100 h-100 d-flex flex-column hover-animate">
                         <div class="card-body text-center flex-grow-1 d-flex flex-column align-items-center p-5">
                             <i class="fas fa-stethoscope fa-4x mb-3" style="color: #007bff;"></i>
-                            <h5 class="card-title font-weight-bold">Health Care</h5>
-                            <p class="card-text text-muted">World-class medical services for a healthy, active life.</p>
+                            <h5 class="card-title font-weight-bold" data-translate="Health Care">Health Care</h5>
+                            <p class="card-text text-muted" data-translate="World-class medical services for a healthy, active life.">World-class medical services for a healthy, active life.</p>
                             <a href="#" class="btn btn-primary btn-lg mt-3">
-                                Learn More <i class="fas fa-arrow-right"></i>
+                                <span data-translate="Learn More">Learn More</span> <i class="fas fa-arrow-right"></i>
                             </a>
                         </div>
                     </div>
@@ -55,10 +55,10 @@
                     <div class="card shadow-lg border-light rounded w-100 h-100 d-flex flex-column hover-animate">
                         <div class="card-body text-center flex-grow-1 d-flex flex-column align-items-center p-5">
                             <i class="fas fa-running fa-4x mb-3" style="color: #007bff;"></i>
-                            <h5 class="card-title font-weight-bold">Physical Therapy</h5>
-                            <p class="card-text text-muted">Restoring strength and mobility through personalized care.</p>
+                            <h5 class="card-title font-weight-bold" data-translate="Physical Therapy">Physical Therapy</h5>
+                            <p class="card-text text-muted" data-translate="Restoring strength and mobility through personalized care.">Restoring strength and mobility through personalized care.</p>
                             <a href="#" class="btn btn-primary btn-lg mt-3">
-                                Learn More <i class="fas fa-arrow-right"></i>
+                                <span data-translate="Learn More">Learn More</span> <i class="fas fa-arrow-right"></i>
                             </a>
                         </div>
                     </div>
@@ -70,8 +70,8 @@
         <section class="section-specialities py-5 bg-light">
             <div class="container">
                 <div class="section-header text-center mb-5">
-                    <h2 class="fw-bold display-4" style="animation: fadeInUp 2s ease;">Explore Our Specialities</h2>
-                    <p class="text-muted fs-5">Comprehensive care options for every need.</p>
+                    <h2 class="fw-bold display-4" style="animation: fadeInUp 2s ease;" data-translate="Explore Our Specialities">Explore Our Specialities</h2>
+                    <p class="text-muted fs-5" data-translate="Comprehensive care options for every need.">Comprehensive care options for every need.</p>
                 </div>
                 <div id="specialitiesCarousel" class="carousel slide" data-bs-ride="carousel" style="animation: slideInUp 2s ease;">
                     <div class="carousel-inner">
@@ -84,8 +84,8 @@
                                             <img src="{% static 'img/specialities/specialities-01.png' %}" class="img-fluid rounded-circle p-3 border border-3" alt="Urology" style="width: 180px; height: 180px; object-fit: cover;">
                                         </div>
                                         <div class="card-body">
-                                            <h5 class="fw-semibold">Urology</h5>
-                                            <p class="text-muted small">Advanced solutions for urological health.</p>
+                                            <h5 class="fw-semibold" data-translate="Urology">Urology</h5>
+                                            <p class="text-muted small" data-translate="Advanced solutions for urological health.">Advanced solutions for urological health.</p>
                                         </div>
                                     </div>
                                 </div>
@@ -96,8 +96,8 @@
                                             <img src="{% static 'img/specialities/specialities-03.png' %}" class="img-fluid rounded-circle p-3 border border-3" alt="Orthopedic" style="width: 180px; height: 180px; object-fit: cover;">
                                         </div>
                                         <div class="card-body">
-                                            <h5 class="fw-semibold">Orthopedic</h5>
-                                            <p class="text-muted small">Specialized treatments for bones and joints.</p>
+                                            <h5 class="fw-semibold" data-translate="Orthopedic">Orthopedic</h5>
+                                            <p class="text-muted small" data-translate="Specialized treatments for bones and joints.">Specialized treatments for bones and joints.</p>
                                         </div>
                                     </div>
                                 </div>
@@ -108,8 +108,8 @@
                                             <img src="{% static 'img/specialities/specialities-03.png' %}" class="img-fluid rounded-circle p-3 border border-3" alt="Orthopedic" style="width: 180px; height: 180px; object-fit: cover;">
                                         </div>
                                         <div class="card-body">
-                                            <h5 class="fw-semibold">Orthopedic</h5>
-                                            <p class="text-muted small">Specialized treatments for bones and joints.</p>
+                                            <h5 class="fw-semibold" data-translate="Orthopedic">Orthopedic</h5>
+                                            <p class="text-muted small" data-translate="Specialized treatments for bones and joints.">Specialized treatments for bones and joints.</p>
                                         </div>
                                     </div>
                                 </div>
@@ -119,11 +119,11 @@
                     <!-- Carousel Controls -->
                     <button class="carousel-control-prev" type="button" data-bs-target="#specialitiesCarousel" data-bs-slide="prev">
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
+                        <span class="visually-hidden" data-translate="Previous">Previous</span>
                     </button>
                     <button class="carousel-control-next" type="button" data-bs-target="#specialitiesCarousel" data-bs-slide="next">
                         <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
+                        <span class="visually-hidden" data-translate="Next">Next</span>
                     </button>
                 </div>
             </div>
@@ -132,7 +132,7 @@
 
         <!-- Meet Our Doctors Section -->
         <div class="container my-5">
-            <h2 class="text-center mb-4 font-weight-bold text-primary" style="animation: fadeInUp 2s ease;">Meet Our Renowned Doctors</h2>
+            <h2 class="text-center mb-4 font-weight-bold text-primary" style="animation: fadeInUp 2s ease;" data-translate="Meet Our Renowned Doctors">Meet Our Renowned Doctors</h2>
             <div class="row">
                 <div class="col-md-4 mb-4 d-flex">
                     <div class="card shadow-lg border-light rounded w-100 h-100 hover-animate">
@@ -140,10 +140,10 @@
                             <div class="mx-auto mb-3" style="width: 160px; height: 160px; overflow: hidden; border-radius: 50%; border: 5px solid #007bff;">
                                 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsQVbkGTsmJeYbJwcdkQxOShKcCI29m20kEsuSCHi_hAiYwSnxUZqEKiPewg&s" class="img-fluid" alt="Doctor 1" style="object-fit: cover;">
                             </div>
-                            <h5 class="card-title font-weight-bold">Dr. John Doe</h5>
-                            <p class="card-text text-muted">Cardiologist</p>
-                            <h6 class="text-primary mb-3">Specialized in Heart Diseases</h6>
-                            <a href="#" class="btn btn-outline-primary mt-3">View Profile</a>
+                            <h5 class="card-title font-weight-bold" data-translate="Dr. John Doe">Dr. John Doe</h5>
+                            <p class="card-text text-muted" data-translate="Cardiologist">Cardiologist</p>
+                            <h6 class="text-primary mb-3" data-translate="Specialized in Heart Diseases">Specialized in Heart Diseases</h6>
+                            <a href="#" class="btn btn-outline-primary mt-3"><span data-translate="View Profile">View Profile</span></a>
                         </div>
                     </div>
                 </div>
@@ -153,10 +153,10 @@
                             <div class="mx-auto mb-3" style="width: 160px; height: 160px; overflow: hidden; border-radius: 50%; border: 5px solid #007bff;">
                                 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsQVbkGTsmJeYbJwcdkQxOShKcCI29m20kEsuSCHi_hAiYwSnxUZqEKiPewg&s" class="img-fluid" alt="Doctor 1" style="object-fit: cover;">
                             </div>
-                            <h5 class="card-title font-weight-bold">Dr. John Doe</h5>
-                            <p class="card-text text-muted">Cardiologist</p>
-                            <h6 class="text-primary mb-3">Specialized in Heart Diseases</h6>
-                            <a href="#" class="btn btn-outline-primary mt-3">View Profile</a>
+                            <h5 class="card-title font-weight-bold" data-translate="Dr. John Doe">Dr. John Doe</h5>
+                            <p class="card-text text-muted" data-translate="Cardiologist">Cardiologist</p>
+                            <h6 class="text-primary mb-3" data-translate="Specialized in Heart Diseases">Specialized in Heart Diseases</h6>
+                            <a href="#" class="btn btn-outline-primary mt-3"><span data-translate="View Profile">View Profile</span></a>
                         </div>
 
                     </div>
@@ -167,10 +167,10 @@
                             <div class="mx-auto mb-3" style="width: 160px; height: 160px; overflow: hidden; border-radius: 50%; border: 5px solid #007bff;">
                                 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsQVbkGTsmJeYbJwcdkQxOShKcCI29m20kEsuSCHi_hAiYwSnxUZqEKiPewg&s" class="img-fluid" alt="Doctor 1" style="object-fit: cover;">
                             </div>
-                            <h5 class="card-title font-weight-bold">Dr. John Doe</h5>
-                            <p class="card-text text-muted">Cardiologist</p>
-                            <h6 class="text-primary mb-3">Specialized in Heart Diseases</h6>
-                            <a href="#" class="btn btn-outline-primary mt-3">View Profile</a>
+                            <h5 class="card-title font-weight-bold" data-translate="Dr. John Doe">Dr. John Doe</h5>
+                            <p class="card-text text-muted" data-translate="Cardiologist">Cardiologist</p>
+                            <h6 class="text-primary mb-3" data-translate="Specialized in Heart Diseases">Specialized in Heart Diseases</h6>
+                            <a href="#" class="btn btn-outline-primary mt-3"><span data-translate="View Profile">View Profile</span></a>
                         </div>
                     </div>
                 </div>

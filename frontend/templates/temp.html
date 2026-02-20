@@ -516,6 +516,172 @@
             color: var(--primary-blue);
         }
         
+        /* Footer Responsive Styles */
+        @media (max-width: 992px) {
+            .footer {
+                padding: 50px 0 20px;
+            }
+            
+            .footer h5 {
+                font-size: 1.1rem;
+                margin-bottom: 20px;
+            }
+            
+            .footer .col-lg-3 {
+                margin-bottom: 30px;
+            }
+            
+            .footer .social-icons a {
+                font-size: 1.3rem;
+                width: 38px;
+                height: 38px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .footer {
+                padding: 40px 0 20px;
+                text-align: center;
+            }
+            
+            .footer h5 {
+                font-size: 1rem;
+                margin-bottom: 15px;
+            }
+            
+            .footer h5::after {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            
+            .footer .col-md-6 {
+                margin-bottom: 25px;
+            }
+            
+            .footer a {
+                font-size: 0.9rem;
+                padding: 0.2rem 0;
+            }
+            
+            .footer a:hover {
+                transform: translateX(0);
+            }
+            
+            .footer .social-icons {
+                margin-top: 15px;
+                text-align: center;
+            }
+            
+            .footer .social-icons a {
+                font-size: 1.2rem;
+                width: 36px;
+                height: 36px;
+                margin: 0 8px;
+            }
+            
+            .footer .list-unstyled {
+                padding-left: 0;
+            }
+            
+            .footer .list-unstyled li {
+                margin-bottom: 10px;
+            }
+            
+            .footer .row.mt-4 {
+                padding-top: 20px;
+                margin-top: 30px;
+            }
+            
+            .footer .row.mt-4 .col-md-6 {
+                margin-bottom: 15px;
+            }
+            
+            .footer .row.mt-4 a {
+                font-size: 0.85rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .footer {
+                padding: 30px 15px 15px;
+            }
+            
+            .footer h5 {
+                font-size: 0.95rem;
+                margin-bottom: 12px;
+            }
+            
+            .footer a {
+                font-size: 0.85rem;
+            }
+            
+            .footer .social-icons a {
+                font-size: 1.1rem;
+                width: 34px;
+                height: 34px;
+                margin: 0 6px;
+            }
+            
+            .footer .list-unstyled li {
+                margin-bottom: 8px;
+                font-size: 0.85rem;
+            }
+            
+            .footer .list-unstyled li i {
+                font-size: 0.85rem;
+            }
+            
+            .footer .row.mt-4 {
+                padding-top: 15px;
+                margin-top: 20px;
+            }
+            
+            .footer .row.mt-4 p,
+            .footer .row.mt-4 a {
+                font-size: 0.8rem;
+            }
+            
+            .footer .row.mt-4 .mx-2 {
+                margin: 0 0.5rem !important;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .footer {
+                padding: 25px 10px 12px;
+            }
+            
+            .footer h5 {
+                font-size: 0.9rem;
+                margin-bottom: 10px;
+            }
+            
+            .footer a {
+                font-size: 0.8rem;
+            }
+            
+            .footer .social-icons a {
+                font-size: 1rem;
+                width: 32px;
+                height: 32px;
+                margin: 0 5px;
+            }
+            
+            .footer .list-unstyled li {
+                margin-bottom: 6px;
+                font-size: 0.8rem;
+            }
+            
+            .footer .row.mt-4 p,
+            .footer .row.mt-4 a {
+                font-size: 0.75rem;
+            }
+            
+            .footer img {
+                max-width: 120px !important;
+            }
+        }
+        
         /* Professional Animation and Interaction Styles */
         .hover-animate {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -1012,117 +1178,7 @@
     <!-- Main content goes here -->
     {% endblock temp_index %}
         
-    <footer class="footer">
-        <div class="container">
-            <div class="row">
-                <!-- Logo Section -->
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <a href="/">
-                    <img src="{% static 'MedicalSiteLogo.svg' %}" alt="Logo" class="img-fluid mb-3" style="max-width: 150px;">
-
-
-                    </a>
-                    <div class="social-icons">
-                        <a href="#"><i class="fab fa-facebook me-3"></i></a>
-                        <a href="#"><i class="fab fa-twitter me-3"></i></a>
-                        <a href="#"><i class="fab fa-linkedin me-3"></i></a>
-                        <a href="#"><i class="fab fa-instagram me-3"></i></a>
-                        <a href="#"><i class="fab fa-dribbble"></i></a>
-                    </div>
-                </div>
-
-                  <!-- For Patients Section -->
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <h5 class="text-uppercase">For Patients</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="/">Search for Doctors</a></li>
-                        <li><a href="{% url 'frontend:patient_login' %}">Login</a></li>
-                        <li><a href="{% url 'frontend:patient_signup' %}">Register</a></li>
-                        <li>
-                            {% if request.session.patient_id %}
-                                <a href="{% url 'patient_dashboard:appointments_patients' %}">Patient Dashboard</a>
-                            {% else %}
-                                <a href="{% url 'frontend:patient_login' %}">Patient Dashboard</a>
-                            {% endif %}
-                        </li>
-
-
-                    </ul>
-
-                </div>
-                 <!-- For Doctors Section -->
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <h5 class="text-uppercase">For Doctors</h5>
-                    <ul class="list-unstyled">
-                        <li>
-                            <a href="{% if request.session.practitioner_id %}
-                                        {% url 'practitioner_dashboard:dashboard' %}
-                                    {% elif request.user.is_authenticated and request.user.is_practitioner %}
-                                        {% url 'practitioner_dashboard:dashboard' %}
-                                    {% else %}
-                                        {% url 'frontend:practitioner_login' %}
-                                    {% endif %}">
-                                Appointments
-                            </a>
-                        </li>
-
-
-                        <li>
-                            <a href="{% if request.session.practitioner_id %}
-                                        {% url 'practitioner_dashboard:chat' %}
-                                    {% elif request.user.is_authenticated and request.user.is_practitioner %}
-                                        {% url 'practitioner_dashboard:chat' %}
-                                    {% else %}
-                                        {% url 'frontend:practitioner_login' %}
-                                    {% endif %}">
-                                Chat
-                            </a>
-                        </li>
-
-                        <li><a href="{% url 'frontend:practitioner_login' %}">Login</a></li>
-                        <li><a href="{% url 'frontend:practitioner_signup' %}">Register</a></li>
-                        <li>
-                            <a href="{% if request.session.practitioner_id %}
-                                        {% url 'practitioner_dashboard:dashboard' %}
-                                    {% elif request.user.is_authenticated and request.user.is_practitioner %}
-                                        {% url 'practitioner_dashboard:dashboard' %}
-                                    {% else %}
-                                        {% url 'frontend:practitioner_login' %}
-                                    {% endif %}">
-                                Doctor Dashboard
-                            </a>
-                        </li>
-
-
-
-                    </ul>
-                </div>
-
-                <!-- Contact Us Section -->
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <h5 class="text-uppercase">Contact Us</h5>
-                    <ul class="list-unstyled">
-                        <li><i class="fas fa-map-marker-alt me-2"></i> 3556 Beech Street, San Francisco</li>
-                        <li><i class="fas fa-phone me-2"></i> +1 315 369 5943</li>
-                        <li><i class="fas fa-envelope me-2"></i> Reeducaive@example.com</li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Bottom Footer -->
-<!-- Bottom Footer continued -->
-<div class="row mt-4 pt-3 border-top">
-    <div class="col-md-6 text-center text-md-start">
-        <p class="mb-0">&copy; 2025 Reeducaive. All Rights Reserved.</p>
-    </div>
-    <div class="col-md-6 text-center text-md-end">
-        <a href="#">Terms and Conditions</a>
-        <span class="mx-2">|</span>
-        <a href="#">Policy</a>
-    </div>
-</div>
-</div>
-</footer>
+  
 
     <!-- Modern JavaScript for Tailwind -->
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
@@ -1313,8 +1369,30 @@
                 'Your medical information is protected with industry-standard security': 'Vos informations médicales sont protégées par une sécurité standard de l\'industrie',
                 'Medical Specialties': 'Spécialités Médicales',
                 'Find specialists across various medical fields': 'Trouvez des spécialistes dans divers domaines médicaux',
+                'Cardiology': 'Cardiologie',
+                'Heart and cardiovascular specialists': 'Spécialistes du cœur et cardiovasculaires',
+                'Neurology': 'Neurologie',
+                'Brain and nervous system experts': 'Experts du cerveau et du système nerveux',
+                'Orthopedics': 'Orthopédie',
+                'Bone and joint specialists': 'Spécialistes des os et des articulations',
+                'Ophthalmology': 'Ophtalmologie',
+                'Eye care professionals': 'Professionnels des soins oculaires',
+                'Dentistry': 'Dentisterie',
+                'Dental care specialists': 'Spécialistes des soins dentaires',
+                'Pediatrics': 'Pédiatrie',
+                'Children\'s healthcare experts': 'Experts en soins de santé pour enfants',
+                'Gynecology': 'Gynécologie',
+                'Women\'s health specialists': 'Spécialistes de la santé des femmes',
+                'Pulmonology': 'Pneumologie',
+                'Respiratory system experts': 'Experts du système respiratoire',
                 'How It Works': 'Comment ça marche',
                 'Get started in just three simple steps': 'Commencez en seulement trois étapes simples',
+                'Search & Find': 'Rechercher et Trouver',
+                'Search for healthcare providers by specialty, location, or name. Browse profiles and read reviews.': 'Recherchez des prestataires de soins par spécialité, lieu ou nom. Parcourez les profils et lisez les avis.',
+                'Book Appointment': 'Réserver un Rendez-vous',
+                'Select your preferred time slot and book your appointment instantly. Receive confirmation immediately.': 'Sélectionnez votre créneau horaire préféré et réservez votre rendez-vous instantanément. Recevez une confirmation immédiatement.',
+                'Get Care': 'Recevoir des Soins',
+                'Attend your appointment and receive quality healthcare. Follow up through our secure messaging system.': 'Assistez à votre rendez-vous et recevez des soins de qualité. Effectuez un suivi via notre système de messagerie sécurisé.',
                 'Ready to Get Started?': 'Prêt à commencer?',
                 'Join thousands of patients who trust our platform for their healthcare needs': 'Rejoignez des milliers de patients qui font confiance à notre plateforme pour leurs besoins de santé',
                 'Sign Up as Patient': 'S\'inscrire comme Patient',
