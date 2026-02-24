@@ -1026,32 +1026,20 @@
                                     <span class="text-xl">🇺🇸</span>
                                     <span class="font-medium">English</span>
                                 </a>
-                                <a href="#" onclick="changeLanguage('ur')" class="flex items-center space-x-3 px-4 py-3 hover:bg-medical-light-blue transition-colors">
-                                    <span class="text-xl">🇵🇰</span>
-                                    <span class="font-medium">اردو</span>
-                                </a>
-                                <a href="#" onclick="changeLanguage('ar')" class="flex items-center space-x-3 px-4 py-3 hover:bg-medical-light-blue transition-colors">
-                                    <span class="text-xl">🇸🇦</span>
-                                    <span class="font-medium">العربية</span>
-                                </a>
-                                <a href="#" onclick="changeLanguage('hi')" class="flex items-center space-x-3 px-4 py-3 hover:bg-medical-light-blue transition-colors">
-                                    <span class="text-xl">🇮🇳</span>
-                                    <span class="font-medium">हिन्दी</span>
-                                </a>
                                 <a href="#" onclick="changeLanguage('es')" class="flex items-center space-x-3 px-4 py-3 hover:bg-medical-light-blue transition-colors">
-                                    <span class="text-xl">🇪🇸</span>
+                                    <span class="text-xl">��</span>
                                     <span class="font-medium">Español</span>
                                 </a>
                                 <a href="#" onclick="changeLanguage('fr')" class="flex items-center space-x-3 px-4 py-3 hover:bg-medical-light-blue transition-colors">
-                                    <span class="text-xl">🇫🇷</span>
+                                    <span class="text-xl">��</span>
                                     <span class="font-medium">Français</span>
                                 </a>
                                 <a href="#" onclick="changeLanguage('de')" class="flex items-center space-x-3 px-4 py-3 hover:bg-medical-light-blue transition-colors">
-                                    <span class="text-xl">🇩🇪</span>
+                                    <span class="text-xl">��</span>
                                     <span class="font-medium">Deutsch</span>
                                 </a>
                                 <a href="#" onclick="changeLanguage('zh')" class="flex items-center space-x-3 px-4 py-3 hover:bg-medical-light-blue transition-colors">
-                                    <span class="text-xl">🇨🇳</span>
+                                    <span class="text-xl">��</span>
                                     <span class="font-medium">中文</span>
                                 </a>
                             </div>
@@ -1147,14 +1135,17 @@
                                 <button onclick="changeLanguage('en')" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-medical-light-blue transition-colors">
                                     <span>🇺🇸</span><span class="text-sm">English</span>
                                 </button>
-                                <button onclick="changeLanguage('ur')" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-medical-light-blue transition-colors">
-                                    <span>🇵🇰</span><span class="text-sm">اردو</span>
+                                <button onclick="changeLanguage('es')" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-medical-light-blue transition-colors">
+                                    <span>��</span><span class="text-sm">Español</span>
                                 </button>
-                                <button onclick="changeLanguage('ar')" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-medical-light-blue transition-colors">
-                                    <span>🇸🇦</span><span class="text-sm">العربية</span>
+                                <button onclick="changeLanguage('fr')" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-medical-light-blue transition-colors">
+                                    <span>��</span><span class="text-sm">Français</span>
                                 </button>
-                                <button onclick="changeLanguage('hi')" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-medical-light-blue transition-colors">
-                                    <span>🇮🇳</span><span class="text-sm">हिन्दी</span>
+                                <button onclick="changeLanguage('de')" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-medical-light-blue transition-colors">
+                                    <span>��</span><span class="text-sm">Deutsch</span>
+                                </button>
+                                <button onclick="changeLanguage('zh')" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-medical-light-blue transition-colors">
+                                    <span>🇨🇳</span><span class="text-sm">中文</span>
                                 </button>
                             </div>
                         </div>
@@ -1192,6 +1183,8 @@
         // Ensure global scope
         console.log('Loading language system...');
         
+
+
         // Language System
         const translations = {
             en: {
@@ -1224,99 +1217,6 @@
                 'Practitioner Login': 'Practitioner Login',
                 'Welcome': 'Welcome',
                 'Logout': 'Logout'
-            },
-            'ur': {
-                'Find a Practitioner & Book Appointment': 'ڈاکٹر تلاش کریں اور اپائنٹمنٹ بک کریں',
-                'Connect with qualified healthcare professionals': 'قابل صحت کی دیکھ بھال کرنے والے پیشہ ور افراد سے رابطہ کریں اور وہ دیکھ بھال حاصل کریں جس کے آپ مستحق ہیں۔',
-                'Search Doctors': 'ڈاکٹر تلاش کریں',
-                'Search by practitioner name, specialty, or location...': 'ڈاکٹر کے نام، خصوصیت، یا مقام کے ذریعے تلاش کریں...',
-                'Why Choose Our Platform?': 'ہمارا پلیٹ فارم کیوں منتخب کریں؟',
-                'Experience healthcare the modern way': 'جدید طریقے سے صحت کی دیکھ بھال کا تجربہ کریں',
-                'Qualified Practitioners': 'قابل ڈاکٹرز',
-                'Easy Booking': 'آسان بکنگ',
-                'Secure Communication': 'محفوظ رابطہ',
-                'Mobile Friendly': 'موبائل فرینڈلی',
-                'HIPAA Compliant': 'HIPAA کمپلائنٹ',
-                'AI Assistant': 'AI اسسٹنٹ',
-                'Get instant help with our intelligent medical assistant available 24/7': 'ہمارے ذہین طبی معاون سے 24/7 فوری مدد حاصل کریں',
-                'Schedule appointments instantly with our user-friendly booking system': 'ہمارے صارف دوست بکنگ سسٹم کے ساتھ فوری طور پر اپائنٹمنٹ شیڈول کریں',
-                'Chat securely with your healthcare providers through our encrypted platform': 'ہمارے خفیہ کردہ پلیٹ فارم کے ذریعے اپنے صحت کی دیکھ بھال فراہم کرنے والوں سے محفوظ طریقے سے بات کریں',
-                'Access your healthcare anywhere, anytime with our responsive design': 'ہمارے ریسپانسیو ڈیزائن کے ساتھ کہیں بھی، کسی بھی وقت اپنی صحت کی دیکھ بھال تک رسائی حاصل کریں',
-                'Your medical information is protected with industry-standard security': 'آپ کی طبی معلومات صنعتی معیار کی سیکیورٹی کے ساتھ محفوظ ہیں',
-                'Medical Specialties': 'طبی خصوصیات',
-                'Find specialists across various medical fields': 'مختلف طبی شعبوں میں ماہرین تلاش کریں',
-                'How It Works': 'یہ کیسے کام کرتا ہے',
-                'Get started in just three simple steps': 'صرف تین آسان مراحل میں شروع کریں',
-                'Ready to Get Started?': 'شروع کرنے کے لیے تیار ہیں؟',
-                'Join thousands of patients who trust our platform for their healthcare needs': 'ہزاروں مریضوں میں شامل ہوں جو اپنی صحت کی ضروریات کے لیے ہمارے پلیٹ فارم پر بھروسہ کرتے ہیں',
-                'Sign Up as Patient': 'مریض کے طور پر سائن اپ کریں',
-                'Join as Practitioner': 'ڈاکٹر کے طور پر شامل ہوں',
-                'Patient Login': 'مریض لاگ ان',
-                'Practitioner Login': 'ڈاکٹر لاگ ان',
-                'Welcome': 'خوش آمدید',
-                'Logout': 'لاگ آؤٹ'
-            },
-            'ar': {
-                'Find a Practitioner & Book Appointment': 'ابحث عن طبيب واحجز موعداً',
-                'Connect with qualified healthcare professionals': 'تواصل مع المهنيين المؤهلين في مجال الرعاية الصحية واحصل على الرعاية التي تستحقها.',
-                'Search Doctors': 'البحث عن الأطباء',
-                'Search by practitioner name, specialty, or location...': 'البحث بالاسم أو التخصص أو الموقع...',
-                'Why Choose Our Platform?': 'لماذا تختار منصتنا؟',
-                'Experience healthcare the modern way': 'اختبر الرعاية الصحية بالطريقة الحديثة',
-                'Qualified Practitioners': 'أطباء مؤهلون',
-                'Easy Booking': 'حجز سهل',
-                'Secure Communication': 'تواصل آمن',
-                'Mobile Friendly': 'متوافق مع الهاتف المحمول',
-                'HIPAA Compliant': 'متوافق مع HIPAA',
-                'AI Assistant': 'مساعد ذكي',
-                'Get instant help with our intelligent medical assistant available 24/7': 'احصل على مساعدة فورية من مساعدنا الطبي الذكي المتاح على مدار الساعة',
-                'Schedule appointments instantly with our user-friendly booking system': 'احجز المواعيد فوراً باستخدام نظام الحجز السهل الاستخدام',
-                'Chat securely with your healthcare providers through our encrypted platform': 'تحدث بأمان مع مقدمي الرعاية الصحية من خلال منصتنا المشفرة',
-                'Access your healthcare anywhere, anytime with our responsive design': 'اوصل إلى رعايتك الصحية في أي مكان وأي وقت مع تصميمنا المتجاوب',
-                'Your medical information is protected with industry-standard security': 'معلوماتك الطبية محمية بأمان يلبي معايير الصناعة',
-                'Medical Specialties': 'التخصصات الطبية',
-                'Find specialists across various medical fields': 'ابحث عن المتخصصين في مختلف المجالات الطبية',
-                'How It Works': 'كيف يعمل',
-                'Get started in just three simple steps': 'ابدأ في ثلاث خطوات بسيطة فقط',
-                'Ready to Get Started?': 'مستعد للبدء؟',
-                'Join thousands of patients who trust our platform for their healthcare needs': 'انضم إلى آلاف المرضى الذين يثقون في منصتنا لاحتياجاتهم الصحية',
-                'Sign Up as Patient': 'التسجيل كمريض',
-                'Join as Practitioner': 'انضم كطبيب',
-                'Patient Login': 'تسجيل دخول المريض',
-                'Practitioner Login': 'تسجيل دخول الطبيب',
-                'Welcome': 'مرحباً',
-                'Logout': 'تسجيل الخروج'
-            },
-            'hi': {
-                'Find a Practitioner & Book Appointment': 'डॉक्टर खोजें और अपॉइंटमेंट बुक करें',
-                'Connect with qualified healthcare professionals': 'योग्य स्वास्थ्य सेवा पेशेवरों से जुड़ें और वह देखभाल प्राप्त करें जिसके आप हकदार हैं।',
-                'Search Doctors': 'डॉक्टर खोजें',
-                'Search by practitioner name, specialty, or location...': 'डॉक्टर के नाम, विशेषता, या स्थान से खोजें...',
-                'Why Choose Our Platform?': 'हमारा प्लेटफॉर्म क्यों चुनें?',
-                'Experience healthcare the modern way': 'आधुनिक तरीके से स्वास्थ्य सेवा का अनुभव करें',
-                'Qualified Practitioners': 'योग्य चिकित्सक',
-                'Easy Booking': 'आसान बुकिंग',
-                'Secure Communication': 'सुरक्षित संचार',
-                'Mobile Friendly': 'मोबाइल फ्रेंडली',
-                'HIPAA Compliant': 'HIPAA अनुपालित',
-                'AI Assistant': 'AI सहायक',
-                'Get instant help with our intelligent medical assistant available 24/7': 'हमारे बुद्धिमान चिकित्सा सहायक से 24/7 तत्काल सहायता प्राप्त करें',
-                'Schedule appointments instantly with our user-friendly booking system': 'हमारे उपयोगकर्ता-अनुकूल बुकिंग सिस्टम के साथ तुरंत अपॉइंटमेंट शेड्यूल करें',
-                'Chat securely with your healthcare providers through our encrypted platform': 'हमारे एन्क्रिप्टेड प्लेटफॉर्म के माध्यम से अपने स्वास्थ्य सेवा प्रदाताओं के साथ सुरक्षित रूप से चैट करें',
-                'Access your healthcare anywhere, anytime with our responsive design': 'हमारे रिस्पॉन्सिव डिज़ाइन के साथ कहीं भी, कभी भी अपनी स्वास्थ्य सेवा तक पहुंचें',
-                'Your medical information is protected with industry-standard security': 'आपकी चिकित्सा जानकारी उद्योग-मानक सुरक्षा के साथ सुरक्षित है',
-                'Medical Specialties': 'चिकित्सा विशेषताएं',
-                'Find specialists across various medical fields': 'विभिन्न चिकित्सा क्षेत्रों में विशेषज्ञ खोजें',
-                'How It Works': 'यह कैसे काम करता है',
-                'Get started in just three simple steps': 'केवल तीन सरल चरणों में शुरू करें',
-                'Ready to Get Started?': 'शुरू करने के लिए तैयार हैं?',
-                'Join thousands of patients who trust our platform for their healthcare needs': 'हजारों मरीजों में शामिल हों जो अपनी स्वास्थ्य आवश्यकताओं के लिए हमारे प्लेटफॉर्म पर भरोसा करते हैं',
-                'Sign Up as Patient': 'मरीज़ के रूप में साइन अप करें',
-                'Join as Practitioner': 'चिकित्सक के रूप में जुड़ें',
-                'Patient Login': 'मरीज़ लॉगिन',
-                'Practitioner Login': 'चिकित्सक लॉगिन',
-                'Welcome': 'स्वागत है',
-                'Logout': 'लॉगआउट'
             },
             'es': {
                 'Find a Practitioner & Book Appointment': 'Encuentra un Médico y Reserva una Cita',
@@ -1469,9 +1369,6 @@
         // Language names for display
         const languageNames = {
             'en': 'English',
-            'ur': 'اردو',
-            'ar': 'العربية',
-            'hi': 'हिन्दी',
             'es': 'Español',
             'fr': 'Français',
             'de': 'Deutsch',
@@ -1489,14 +1386,9 @@
                     currentLangElement.textContent = languageNames[langCode];
                 }
                 
-                // Set document direction for RTL languages
-                if (langCode === 'ur' || langCode === 'ar') {
-                    document.documentElement.setAttribute('dir', 'rtl');
-                    document.documentElement.setAttribute('lang', langCode);
-                } else {
-                    document.documentElement.setAttribute('dir', 'ltr');
-                    document.documentElement.setAttribute('lang', langCode);
-                }
+                // Set document direction for RTL languages (none currently)
+                document.documentElement.setAttribute('dir', 'ltr');
+                document.documentElement.setAttribute('lang', langCode);
                 
                 // Store language preference
                 localStorage.setItem('selectedLanguage', langCode);
@@ -1616,21 +1508,6 @@
                     welcome: "Hello! I'm Dr. Amanda, your AI medical assistant. How can I help you today?",
                     thinking: "Dr. Amanda is analyzing your question",
                     placeholder: "Type your health question here..."
-                },
-                'ur': {
-                    welcome: "سلام! میں ڈاکٹر امانڈا ہوں، آپ کی AI طبی معاون۔ آج میں آپ کی کیسے مدد کر سکتی ہوں؟",
-                    thinking: "ڈاکٹر امانڈا آپ کے سوال کا تجزیہ کر رہی ہے",
-                    placeholder: "یہاں اپنا صحت کا سوال ٹائپ کریں..."
-                },
-                'ar': {
-                    welcome: "مرحباً! أنا الدكتورة أماندا، مساعدتك الطبية الذكية. كيف يمكنني مساعدتك اليوم؟",
-                    thinking: "الدكتورة أماندا تحلل سؤالك",
-                    placeholder: "اكتب سؤالك الصحي هنا..."
-                },
-                'hi': {
-                    welcome: "नमस्ते! मैं डॉ. अमांडा हूं, आपकी AI चिकित्सा सहायक। आज मैं आपकी कैसे मदद कर सकती हूं?",
-                    thinking: "डॉ. अमांडा आपके प्रश्न का विश्लेषण कर रही है",
-                    placeholder: "यहाँ अपना स्वास्थ्य प्रश्न टाइप करें..."
                 }
             };
             

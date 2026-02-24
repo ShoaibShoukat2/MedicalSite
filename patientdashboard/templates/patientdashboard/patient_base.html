@@ -198,13 +198,15 @@
         .notification-text-patient-teal { color: #008B8B; }
         .notification-bg-patient-teal { background-color: #008B8B; }
         
+
         /* Smooth Transitions */
         .smooth-transition {
             transition: all 0.3s ease;
         }
+
         
         /* Custom Scrollbar */
-        .custom-scrollbar::-webkit-scrollbar {
+        .custom-scrollbar::-webkit-scrollbar {a
             width: 6px;
         }
         
@@ -253,19 +255,48 @@
             z-index: 99999 !important;
             width: 16rem !important;
             max-width: calc(100vw - 2rem) !important;
+            max-height: 400px !important;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
             background: rgba(255, 255, 255, 0.98) !important;
             backdrop-filter: blur(20px) !important;
             border-radius: 1rem !important;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
             border: 1px solid rgba(229, 231, 235, 0.5) !important;
             transform-origin: top right !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            scrollbar-width: thin !important;
+            scrollbar-color: rgba(59, 130, 246, 0.5) rgba(243, 244, 246, 0.5) !important;
+        }
+        
+        /* Custom scrollbar for webkit browsers */
+        #languageDropdown::-webkit-scrollbar {
+            width: 6px !important;
+        }
+        
+        #languageDropdown::-webkit-scrollbar-track {
+            background: rgba(243, 244, 246, 0.5) !important;
+            border-radius: 10px !important;
+        }
+        
+        #languageDropdown::-webkit-scrollbar-thumb {
+            background: rgba(59, 130, 246, 0.5) !important;
+            border-radius: 10px !important;
+        }
+        
+        #languageDropdown::-webkit-scrollbar-thumb:hover {
+            background: rgba(59, 130, 246, 0.7) !important;
+        }
+        
+        #languageDropdown.hidden {
+            display: none !important;
             opacity: 0 !important;
             transform: scale(0.95) translateY(-10px) !important;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
             pointer-events: none !important;
         }
         
         #languageDropdown:not(.hidden) {
+            display: block !important;
             opacity: 1 !important;
             transform: scale(1) translateY(0) !important;
             pointer-events: auto !important;
@@ -289,6 +320,7 @@
                 right: -1rem !important;
                 width: calc(100vw - 2rem) !important;
                 max-width: 20rem !important;
+                max-height: 350px !important;
             }
             
             #languageSelector {
@@ -305,6 +337,7 @@
             #languageDropdown {
                 right: -0.5rem !important;
                 width: calc(100vw - 1rem) !important;
+                max-height: 300px !important;
             }
         }
         
@@ -409,6 +442,7 @@
             #languageDropdown {
                 width: calc(100vw - 2rem) !important;
                 right: -1rem !important;
+                max-height: 280px !important;
             }
         }
         
@@ -917,7 +951,7 @@
                     <div class="flex items-center space-x-1 sm:space-x-2 md:space-x-4">
                         <!-- Language Selector -->
                         <div class="relative language-selector-container">
-                            <button id="languageSelector" class="flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-patient-blue to-patient-purple text-white hover:from-patient-dark-blue hover:to-patient-blue rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105" onclick="toggleLanguageDropdown()">
+                            <button id="languageSelector" type="button" onclick="event.preventDefault(); event.stopPropagation(); var d=document.getElementById('languageDropdown'); var c=document.getElementById('languageChevron'); if(d.classList.contains('hidden')){d.classList.remove('hidden'); d.style.display='block'; if(c)c.style.transform='rotate(180deg)';} else{d.classList.add('hidden'); d.style.display='none'; if(c)c.style.transform='rotate(0deg)';}" class="flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-patient-blue to-patient-purple text-white hover:from-patient-dark-blue hover:to-patient-blue rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
                                 <i class="fas fa-globe text-sm"></i>
                                 <span id="currentLanguage" class="text-sm font-medium hidden sm:inline">English</span>
                                 <i class="fas fa-chevron-down text-xs transition-transform duration-200" id="languageChevron"></i>
@@ -929,7 +963,7 @@
                                     <i class="fas fa-language mr-2"></i><span data-translate="Choose Language">Choose Language</span>
                                 </div>
                                 
-                                <button onclick="changeLanguage('en', 'English')" class="language-option w-full text-left px-4 py-3 hover:bg-gradient-to-r hover:from-patient-light-blue hover:to-blue-50 text-gray-700 hover:text-patient-dark-blue transition-all duration-200 flex items-center space-x-3 group">
+                                <button onclick="changeDashboardLanguage('en')" class="language-option w-full text-left px-4 py-3 hover:bg-gradient-to-r hover:from-patient-light-blue hover:to-blue-50 text-gray-700 hover:text-patient-dark-blue transition-all duration-200 flex items-center space-x-3 group">
                                     <span class="w-8 h-6 bg-gradient-to-r from-blue-600 to-red-600 rounded-md flex items-center justify-center text-white text-xs font-bold shadow-sm group-hover:shadow-md transition-shadow">🇺🇸</span>
                                     <div class="flex flex-col">
                                         <span class="font-medium">English</span>
@@ -937,31 +971,7 @@
                                     </div>
                                 </button>
                                 
-                                <button onclick="changeLanguage('ur', 'اردو')" class="language-option w-full text-left px-4 py-3 hover:bg-gradient-to-r hover:from-patient-light-blue hover:to-blue-50 text-gray-700 hover:text-patient-dark-blue transition-all duration-200 flex items-center space-x-3 group">
-                                    <span class="w-8 h-6 bg-gradient-to-r from-green-600 to-green-700 rounded-md flex items-center justify-center text-white text-xs font-bold shadow-sm group-hover:shadow-md transition-shadow">🇵🇰</span>
-                                    <div class="flex flex-col">
-                                        <span class="font-medium">اردو</span>
-                                        <span class="text-xs text-gray-500">Pakistan</span>
-                                    </div>
-                                </button>
-                                
-                                <button onclick="changeLanguage('ar', 'العربية')" class="language-option w-full text-left px-4 py-3 hover:bg-gradient-to-r hover:from-patient-light-blue hover:to-blue-50 text-gray-700 hover:text-patient-dark-blue transition-all duration-200 flex items-center space-x-3 group">
-                                    <span class="w-8 h-6 bg-gradient-to-r from-green-700 to-green-800 rounded-md flex items-center justify-center text-white text-xs font-bold shadow-sm group-hover:shadow-md transition-shadow">🇸🇦</span>
-                                    <div class="flex flex-col">
-                                        <span class="font-medium">العربية</span>
-                                        <span class="text-xs text-gray-500">Saudi Arabia</span>
-                                    </div>
-                                </button>
-                                
-                                <button onclick="changeLanguage('hi', 'हिंदी')" class="language-option w-full text-left px-4 py-3 hover:bg-gradient-to-r hover:from-patient-light-blue hover:to-blue-50 text-gray-700 hover:text-patient-dark-blue transition-all duration-200 flex items-center space-x-3 group">
-                                    <span class="w-8 h-6 bg-gradient-to-r from-orange-500 to-orange-600 rounded-md flex items-center justify-center text-white text-xs font-bold shadow-sm group-hover:shadow-md transition-shadow">🇮🇳</span>
-                                    <div class="flex flex-col">
-                                        <span class="font-medium">हिंदी</span>
-                                        <span class="text-xs text-gray-500">India</span>
-                                    </div>
-                                </button>
-                                
-                                <button onclick="changeLanguage('es', 'Español')" class="language-option w-full text-left px-4 py-3 hover:bg-gradient-to-r hover:from-patient-light-blue hover:to-blue-50 text-gray-700 hover:text-patient-dark-blue transition-all duration-200 flex items-center space-x-3 group">
+                                <button onclick="changeDashboardLanguage('es')" class="language-option w-full text-left px-4 py-3 hover:bg-gradient-to-r hover:from-patient-light-blue hover:to-blue-50 text-gray-700 hover:text-patient-dark-blue transition-all duration-200 flex items-center space-x-3 group">
                                     <span class="w-8 h-6 bg-gradient-to-r from-red-600 to-yellow-500 rounded-md flex items-center justify-center text-white text-xs font-bold shadow-sm group-hover:shadow-md transition-shadow">🇪🇸</span>
                                     <div class="flex flex-col">
                                         <span class="font-medium">Español</span>
@@ -969,7 +979,7 @@
                                     </div>
                                 </button>
                                 
-                                <button onclick="changeLanguage('fr', 'Français')" class="language-option w-full text-left px-4 py-3 hover:bg-gradient-to-r hover:from-patient-light-blue hover:to-blue-50 text-gray-700 hover:text-patient-dark-blue transition-all duration-200 flex items-center space-x-3 group">
+                                <button onclick="changeDashboardLanguage('fr')" class="language-option w-full text-left px-4 py-3 hover:bg-gradient-to-r hover:from-patient-light-blue hover:to-blue-50 text-gray-700 hover:text-patient-dark-blue transition-all duration-200 flex items-center space-x-3 group">
                                     <span class="w-8 h-6 bg-gradient-to-r from-blue-700 to-red-700 rounded-md flex items-center justify-center text-white text-xs font-bold shadow-sm group-hover:shadow-md transition-shadow">🇫🇷</span>
                                     <div class="flex flex-col">
                                         <span class="font-medium">Français</span>
@@ -977,7 +987,7 @@
                                     </div>
                                 </button>
                                 
-                                <button onclick="changeLanguage('de', 'Deutsch')" class="language-option w-full text-left px-4 py-3 hover:bg-gradient-to-r hover:from-patient-light-blue hover:to-blue-50 text-gray-700 hover:text-patient-dark-blue transition-all duration-200 flex items-center space-x-3 group">
+                                <button onclick="changeDashboardLanguage('de')" class="language-option w-full text-left px-4 py-3 hover:bg-gradient-to-r hover:from-patient-light-blue hover:to-blue-50 text-gray-700 hover:text-patient-dark-blue transition-all duration-200 flex items-center space-x-3 group">
                                     <span class="w-8 h-6 bg-gradient-to-r from-black to-red-700 rounded-md flex items-center justify-center text-white text-xs font-bold shadow-sm group-hover:shadow-md transition-shadow">🇩🇪</span>
                                     <div class="flex flex-col">
                                         <span class="font-medium">Deutsch</span>
@@ -985,7 +995,39 @@
                                     </div>
                                 </button>
                                 
-                                <button onclick="changeLanguage('zh', '中文')" class="language-option w-full text-left px-4 py-3 hover:bg-gradient-to-r hover:from-patient-light-blue hover:to-blue-50 text-gray-700 hover:text-patient-dark-blue transition-all duration-200 flex items-center space-x-3 group">
+                                <button onclick="changeDashboardLanguage('it')" class="language-option w-full text-left px-4 py-3 hover:bg-gradient-to-r hover:from-patient-light-blue hover:to-blue-50 text-gray-700 hover:text-patient-dark-blue transition-all duration-200 flex items-center space-x-3 group">
+                                    <span class="w-8 h-6 bg-gradient-to-r from-green-600 via-white to-red-600 rounded-md flex items-center justify-center text-white text-xs font-bold shadow-sm group-hover:shadow-md transition-shadow">🇮🇹</span>
+                                    <div class="flex flex-col">
+                                        <span class="font-medium">Italiano</span>
+                                        <span class="text-xs text-gray-500">Italy</span>
+                                    </div>
+                                </button>
+                                
+                                <button onclick="changeDashboardLanguage('pt')" class="language-option w-full text-left px-4 py-3 hover:bg-gradient-to-r hover:from-patient-light-blue hover:to-blue-50 text-gray-700 hover:text-patient-dark-blue transition-all duration-200 flex items-center space-x-3 group">
+                                    <span class="w-8 h-6 bg-gradient-to-r from-green-600 to-red-600 rounded-md flex items-center justify-center text-white text-xs font-bold shadow-sm group-hover:shadow-md transition-shadow">🇵🇹</span>
+                                    <div class="flex flex-col">
+                                        <span class="font-medium">Português</span>
+                                        <span class="text-xs text-gray-500">Portugal</span>
+                                    </div>
+                                </button>
+                                
+                                <button onclick="changeDashboardLanguage('pl')" class="language-option w-full text-left px-4 py-3 hover:bg-gradient-to-r hover:from-patient-light-blue hover:to-blue-50 text-gray-700 hover:text-patient-dark-blue transition-all duration-200 flex items-center space-x-3 group">
+                                    <span class="w-8 h-6 bg-gradient-to-r from-white to-red-600 rounded-md flex items-center justify-center text-white text-xs font-bold shadow-sm group-hover:shadow-md transition-shadow">🇵🇱</span>
+                                    <div class="flex flex-col">
+                                        <span class="font-medium">Polski</span>
+                                        <span class="text-xs text-gray-500">Poland</span>
+                                    </div>
+                                </button>
+                                
+                                <button onclick="changeDashboardLanguage('ja')" class="language-option w-full text-left px-4 py-3 hover:bg-gradient-to-r hover:from-patient-light-blue hover:to-blue-50 text-gray-700 hover:text-patient-dark-blue transition-all duration-200 flex items-center space-x-3 group">
+                                    <span class="w-8 h-6 bg-gradient-to-r from-white to-red-600 rounded-md flex items-center justify-center text-white text-xs font-bold shadow-sm group-hover:shadow-md transition-shadow">🇯🇵</span>
+                                    <div class="flex flex-col">
+                                        <span class="font-medium">日本語</span>
+                                        <span class="text-xs text-gray-500">Japan</span>
+                                    </div>
+                                </button>
+                                
+                                <button onclick="changeDashboardLanguage('zh')" class="language-option w-full text-left px-4 py-3 hover:bg-gradient-to-r hover:from-patient-light-blue hover:to-blue-50 text-gray-700 hover:text-patient-dark-blue transition-all duration-200 flex items-center space-x-3 group">
                                     <span class="w-8 h-6 bg-gradient-to-r from-red-700 to-yellow-600 rounded-md flex items-center justify-center text-white text-xs font-bold shadow-sm group-hover:shadow-md transition-shadow">🇨🇳</span>
                                     <div class="flex flex-col">
                                         <span class="font-medium">中文</span>
@@ -1679,8 +1721,341 @@ const dashboardTranslations = {
         'Manage your healthcare appointments and consultations': 'Gestiona tus citas médicas y consultas',
         'Chat': 'Chat',
         'Join Call': 'Unirse a Llamada',
-        'Cancel': 'Cancelar',
-        'Add Symptoms': 'Agregar Síntomas'
+        'Add Symptoms': 'Agregar Síntomas',
+        'Patient Portal': 'Portal del Paciente',
+        'Healthcare Dashboard': 'Panel de Salud',
+        'Welcome back!': '¡Bienvenido de nuevo!',
+        'Patient Dashboard': 'Panel del Paciente',
+        'Choose Language': 'Elegir Idioma',
+        'Notifications': 'Notificaciones',
+        'Mark all read': 'Marcar todo como leído',
+        'No notifications': 'Sin notificaciones',
+        'You\'re all caught up!': '¡Estás al día!',
+        'View All Notifications': 'Ver Todas las Notificaciones',
+        'My Profile': 'Mi Perfil',
+        'Manage your personal information and preferences': 'Gestiona tu información personal y preferencias',
+        'Edit Profile': 'Editar Perfil',
+        'Personal Information': 'Información Personal',
+        'Contact Information': 'Información de Contacto',
+        'Full Name': 'Nombre Completo',
+        'Gender': 'Género',
+        'Date of Birth': 'Fecha de Nacimiento',
+        'Email Address': 'Correo Electrónico',
+        'Mobile Phone': 'Teléfono Móvil',
+        'Greeting Preference': 'Preferencia de Saludo',
+        'Not specified': 'No especificado',
+        'Greeting': 'Saludo',
+        'Select greeting': 'Seleccionar saludo',
+        'First Name': 'Nombre',
+        'Last Name': 'Apellido',
+        'Select gender': 'Seleccionar género',
+        'Male': 'Masculino',
+        'Female': 'Femenino',
+        'Other': 'Otro',
+        'Profile Photo': 'Foto de Perfil',
+        'Save Changes': 'Guardar Cambios',
+        'Cancellation Policy': 'Política de Cancelación',
+        'No Reviews Available': 'Sin Reseñas Disponibles',
+        'You don\'t have any practitioners eligible for review yet. Complete an appointment to leave a review.': 'Aún no tienes profesionales elegibles para reseñar. Completa una cita para dejar una reseña.',
+        'Book Your First Appointment': 'Reserva Tu Primera Cita',
+        'Review Guidelines': 'Pautas de Reseñas',
+        'Be Honest': 'Sé Honesto',
+        'Share your genuine experience to help other patients': 'Comparte tu experiencia genuina para ayudar a otros pacientes',
+        'Be Respectful': 'Sé Respetuoso',
+        'Keep your feedback constructive and professional': 'Mantén tus comentarios constructivos y profesionales',
+        'Stay Safe': 'Mantente Seguro',
+        'Don\'t share personal medical information in reviews': 'No compartas información médica personal en las reseñas',
+        'Rate Your Experience': 'Califica Tu Experiencia',
+        'Click stars to rate from 1 to 5': 'Haz clic en las estrellas para calificar del 1 al 5',
+        'Your Feedback': 'Tu Opinión',
+        'Submit Review': 'Enviar Reseña',
+        'Review Completed': 'Reseña Completada',
+        'Your Feedback:': 'Tu Opinión:',
+        'Reviewed on': 'Reseñado el',
+        'Doctor\'s Response:': 'Respuesta del Doctor:',
+        'Specialist': 'Especialista',
+        
+        // Symptoms Page Specific
+        'My Symptoms': 'Mis Síntomas',
+        'Track and manage your health symptoms for better care': 'Rastrea y gestiona tus síntomas de salud para una mejor atención',
+        'Add New Symptom': 'Agregar Nuevo Síntoma',
+        'Total Symptoms': 'Total de Síntomas',
+        'Recent': 'Reciente',
+        'Symptom History': 'Historial de Síntomas',
+        'View and manage your submitted symptoms': 'Ver y gestionar tus síntomas enviados',
+        'Appointment': 'Cita',
+        'Severity': 'Gravedad',
+        'Date Submitted': 'Fecha de Envío',
+        'Actions': 'Acciones',
+        'General Symptom': 'Síntoma General',
+        'Self-reported': 'Auto-reportado',
+        'No Symptoms Recorded': 'Sin Síntomas Registrados',
+        'Start tracking your symptoms to help your healthcare provider better understand your condition': 'Comienza a rastrear tus síntomas para ayudar a tu proveedor de salud a entender mejor tu condición',
+        'Add Your First Symptom': 'Agrega Tu Primer Síntoma',
+        'Symptom Details': 'Detalles del Síntoma',
+        
+        // Add Symptom Page Specific
+        'Record your symptoms to help your healthcare provider': 'Registra tus síntomas para ayudar a tu proveedor de salud',
+        'Symptom Information': 'Información del Síntoma',
+        'Please provide detailed information about your symptoms': 'Por favor proporciona información detallada sobre tus síntomas',
+        'Related Appointment': 'Cita Relacionada',
+        'Select an appointment': 'Seleccionar una cita',
+        'No appointments available': 'No hay citas disponibles',
+        'Choose the appointment related to these symptoms': 'Elige la cita relacionada con estos síntomas',
+        'Symptom Severity': 'Gravedad del Síntoma',
+        'Low': 'Baja',
+        'Mild discomfort': 'Molestia leve',
+        'Medium': 'Media',
+        'Moderate pain': 'Dolor moderado',
+        'High': 'Alta',
+        'Severe pain': 'Dolor severo',
+        'Duration': 'Duración',
+        'Select duration': 'Seleccionar duración',
+        'Less than 1 hour': 'Menos de 1 hora',
+        '1-6 hours': '1-6 horas',
+        '6-24 hours': '6-24 horas',
+        '1-3 days': '1-3 días',
+        'More than 3 days': 'Más de 3 días',
+        'Ongoing': 'En curso',
+        'Additional Information (Optional)': 'Información Adicional (Opcional)',
+        'Be as detailed as possible to help your doctor': 'Sé lo más detallado posible para ayudar a tu doctor',
+        'Tips for Describing Symptoms': 'Consejos para Describir Síntomas',
+        'Be Specific': 'Sé Específico',
+        'Include Context': 'Incluye Contexto',
+        
+        // Appointments Page Specific
+        'No Upcoming Appointments': 'Sin Citas Próximas',
+        'Book your first appointment to get started with your healthcare journey.': 'Reserva tu primera cita para comenzar tu viaje de atención médica.',
+        'No Completed Appointments': 'Sin Citas Completadas',
+        'Your completed appointments will appear here.': 'Tus citas completadas aparecerán aquí.',
+        'No Cancelled Appointments': 'Sin Citas Canceladas',
+        'Your cancelled appointments will appear here.': 'Tus citas canceladas aparecerán aquí.',
+        'Call Preparing...': 'Preparando Llamada...',
+        'Call Not Available': 'Llamada No Disponible',
+        'Chat Not Available': 'Chat No Disponible',
+        'Cancel Appointment': 'Cancelar Cita',
+        'Appointment Time Passed': 'Hora de Cita Pasada',
+        'Too Late to Cancel': 'Demasiado Tarde para Cancelar',
+        'left': 'restante',
+        'Appointments must be cancelled at least': 'Las citas deben cancelarse al menos',
+        'This policy helps protect our practitioners\' time and ensures fair scheduling for all patients.': 'Esta política ayuda a proteger el tiempo de nuestros profesionales y garantiza una programación justa para todos los pacientes.',
+        'Need help? Contact our support team for assistance with urgent changes.': '¿Necesitas ayuda? Contacta a nuestro equipo de soporte para asistencia con cambios urgentes.',
+        
+        // Exercise Page Specific
+        'Engage in various exercises tailored to your rehabilitation needs': 'Participa en varios ejercicios adaptados a tus necesidades de rehabilitación',
+        'Available': 'Disponible',
+        'Cardio': 'Cardio',
+        'Strength': 'Fuerza',
+        'Flexibility': 'Flexibilidad',
+        'Balance': 'Equilibrio',
+        'No Exercises Available': 'Sin Ejercicios Disponibles',
+        'Exercise programs will be assigned by your healthcare provider based on your treatment plan': 'Los programas de ejercicios serán asignados por tu proveedor de salud según tu plan de tratamiento',
+        'Walking Exercise': 'Ejercicio de Caminata',
+        'A gentle walking routine to improve cardiovascular health and mobility.': 'Una rutina de caminata suave para mejorar la salud cardiovascular y la movilidad.',
+        'Beginner': 'Principiante',
+        'Intermediate': 'Intermedio',
+        'Advanced': 'Avanzado',
+        'Arm Strengthening': 'Fortalecimiento de Brazos',
+        'Build upper body strength with these targeted arm exercises.': 'Desarrolla fuerza en la parte superior del cuerpo con estos ejercicios dirigidos para brazos.',
+        'Stretching Routine': 'Rutina de Estiramiento',
+        'Improve flexibility and reduce muscle tension with gentle stretches.': 'Mejora la flexibilidad y reduce la tensión muscular con estiramientos suaves.',
+        'Basic Yoga': 'Yoga Básico',
+        'Leg Exercises': 'Ejercicios de Piernas',
+        'Arm Exercises': 'Ejercicios de Brazos',
+        
+        // Exercise Tutorial Page
+        'Tutorial': 'Tutorial',
+        'Follow the steps below to complete the exercise.': 'Sigue los pasos a continuación para completar el ejercicio.',
+        'Step': 'Paso',
+        'Back': 'Atrás',
+        'Next Step': 'Siguiente Paso',
+        'Exercise Completed!': '¡Ejercicio Completado!',
+        'Great job! Your progress has been recorded.': '¡Buen trabajo! Tu progreso ha sido registrado.',
+        'Return to Exercises': 'Volver a Ejercicios',
+        'min': 'min',
+        'cal': 'cal',
+        'Improve your health with this targeted exercise routine.': 'Mejora tu salud con esta rutina de ejercicios dirigida.',
+        
+        // Profile Page
+        'Patient': 'Paciente',
+        
+        // Bills & Payments Page
+        'Manage your medical bills and payment history': 'Gestiona tus facturas médicas e historial de pagos',
+        'Total Bills': 'Total de Facturas',
+        'Total Amount': 'Monto Total',
+        'Paid Bills': 'Facturas Pagadas',
+        'Average Bill': 'Factura Promedio',
+        'Billing History': 'Historial de Facturación',
+        'View and manage your medical bills': 'Ver y gestionar tus facturas médicas',
+        'Filter': 'Filtrar',
+        'Export': 'Exportar',
+        'Pay Now': 'Pagar Ahora',
+        'Insurance Payment': 'Pago de Seguro',
+        'Secure Payment': 'Pago Seguro',
+        'Complete your consultation payment securely': 'Completa tu pago de consulta de forma segura',
+        'Social Security Payment': 'Pago de Seguridad Social',
+        'Secure payment with Social Security compliance': 'Pago seguro con cumplimiento de Seguridad Social',
+        
+        // Specialty Selection Page
+        'Select a specialty to find available doctors and schedule your consultation': 'Selecciona una especialidad para encontrar médicos disponibles y programar tu consulta',
+        'Specialties': 'Especialidades',
+        'Doctors': 'Médicos',
+        'No Specialties Available': 'Sin Especialidades Disponibles',
+        'Please contact support for assistance with booking appointments.': 'Por favor contacta a soporte para asistencia con la reserva de citas.',
+        'Helping you regain daily living skills and independence': 'Ayudándote a recuperar habilidades de vida diaria e independencia',
+        'Physical rehabilitation and movement therapy': 'Rehabilitación física y terapia de movimiento',
+        'Brain function assessment and cognitive therapy': 'Evaluación de función cerebral y terapia cognitiva',
+        'Communication and swallowing disorder treatment': 'Tratamiento de trastornos de comunicación y deglución',
+        'Mental health counseling and therapy': 'Consejería y terapia de salud mental',
+        'Spine and musculoskeletal system care': 'Cuidado de columna y sistema musculoesquelético',
+        'Diet planning and nutritional guidance': 'Planificación de dieta y orientación nutricional',
+        'Primary healthcare and general medical care': 'Atención primaria de salud y cuidado médico general',
+        'Professional healthcare consultation': 'Consulta profesional de atención médica',
+        'View Doctors': 'Ver Médicos',
+        'Need Help Choosing?': '¿Necesitas Ayuda para Elegir?',
+        'Call Support': 'Llamar a Soporte',
+        'Get help choosing the right specialist': 'Obtén ayuda para elegir el especialista adecuado',
+        'Live Chat': 'Chat en Vivo',
+        'Chat with our medical advisors': 'Chatea con nuestros asesores médicos',
+        'FAQ': 'Preguntas Frecuentes',
+        'Find answers to common questions': 'Encuentra respuestas a preguntas comunes',
+        
+        // Specialty Titles
+        'Occupational Therapist': 'Terapeuta Ocupacional',
+        'Physiotherapist': 'Fisioterapeuta',
+        'Neuropsychologist': 'Neuropsicólogo',
+        'Speech Therapist': 'Terapeuta del Habla',
+        'Psychologist': 'Psicólogo',
+        'Chiropractor': 'Quiropráctico',
+        'Nutritionist': 'Nutricionista',
+        'General Practitioner': 'Médico General',
+        
+        // Social Security Payment
+        'Social Security Number': 'Número de Seguro Social',
+        'Required for Medicare/Medicaid processing': 'Requerido para procesamiento de Medicare/Medicaid',
+        'Medicare ID': 'ID de Medicare',
+        'Insurance Provider': 'Proveedor de Seguro',
+        'Policy Number': 'Número de Póliza',
+        'Primary Diagnosis': 'Diagnóstico Principal',
+        'Referring Physician': 'Médico Referente',
+        'Medical Necessity': 'Necesidad Médica',
+        'Financial Responsibility': 'Responsabilidad Financiera',
+        'I understand my financial responsibility for services not covered by insurance': 'Entiendo mi responsabilidad financiera por servicios no cubiertos por el seguro',
+        'HIPAA Compliance': 'Cumplimiento HIPAA',
+        'I acknowledge receipt of HIPAA privacy practices notice': 'Reconozco la recepción del aviso de prácticas de privacidad HIPAA',
+        'Reschedule': 'Reprogramar',
+        'View Details': 'Ver Detalles',
+        'Download Receipt': 'Descargar Recibo',
+        'No appointments found': 'No se encontraron citas',
+        'You don\'t have any appointments yet': 'Aún no tienes citas',
+        'Book your first appointment': 'Reserva tu primera cita',
+        'General Practice': 'Medicina General',
+        'Confirmed': 'Confirmado',
+        
+        // Chat/Message Doctors Page
+        'Connect with healthcare professionals directly': 'Conéctate directamente con profesionales de la salud',
+        'My Conversations': 'Mis Conversaciones',
+        'Search doctors by name or specialty...': 'Buscar médicos por nombre o especialidad...',
+        'All Specialties': 'Todas las Especialidades',
+        'Cardiology': 'Cardiología',
+        'Dermatology': 'Dermatología',
+        'Pediatrics': 'Pediatría',
+        'Orthopedics': 'Ortopedia',
+        'Neurology': 'Neurología',
+        'Psychiatry': 'Psiquiatría',
+        'Continue Chat': 'Continuar Chat',
+        'Start Chat': 'Iniciar Chat',
+        'No doctors available': 'No hay médicos disponibles',
+        'Please check back later for available healthcare professionals.': 'Por favor vuelve más tarde para ver profesionales de salud disponibles.',
+        'Starting conversation...': 'Iniciando conversación...',
+        'Chat started with': 'Chat iniciado con',
+        'Error starting chat': 'Error al iniciar chat',
+        'per consultation': 'por consulta',
+        'reviews': 'reseñas',
+        'new': 'nuevo',
+        'My Messages': 'Mis Mensajes',
+        'Connect with your healthcare providers': 'Conéctate con tus proveedores de salud',
+        'New Message': 'Nuevo Mensaje',
+        'Search conversations...': 'Buscar conversaciones...',
+        'No Messages Yet': 'Sin Mensajes Aún',
+        'Start chatting with your healthcare providers': 'Comienza a chatear con tus proveedores de salud',
+        'Start Messaging': 'Comenzar a Enviar Mensajes',
+        'Welcome to Medical Chat': 'Bienvenido al Chat Médico',
+        'Select a conversation from the left to start messaging with your healthcare team': 'Selecciona una conversación de la izquierda para comenzar a enviar mensajes a tu equipo médico',
+        'Your conversations are secure and private': 'Tus conversaciones son seguras y privadas',
+        'Loading conversation...': 'Cargando conversación...',
+        'ago': 'hace',
+        'You:': 'Tú:',
+        'Start your conversation...': 'Comienza tu conversación...',
+        'Pending': 'Pendiente',
+        'Accepted': 'Aceptado',
+        'Rejected': 'Rechazado',
+        'Loading...': 'Cargando...',
+        'Please wait': 'Por favor espera',
+        'Success': 'Éxito',
+        'Error': 'Error',
+        'Warning': 'Advertencia',
+        'Information': 'Información',
+        'Close': 'Cerrar',
+        'Continue': 'Continuar',
+        'Next': 'Siguiente',
+        'Previous': 'Anterior',
+        'Finish': 'Finalizar',
+        'Submit': 'Enviar',
+        'Reset': 'Restablecer',
+        'Clear': 'Limpiar',
+        'Choose from': 'Elige entre',
+        'available specialists': 'especialistas disponibles',
+        'years exp.': 'años de exp.',
+        'consultation': 'consulta',
+        'View Profile': 'Ver Perfil',
+        'Next available:': 'Próxima disponibilidad:',
+        'Today': 'Hoy',
+        'Video consultation': 'Consulta por video',
+        'Verified': 'Verificado',
+        'Load More Doctors': 'Cargar Más Médicos',
+        
+        // Additional translations for all pages
+        'Invoice #': 'Factura #',
+        'Date': 'Fecha',
+        'Doctor': 'Doctor',
+        'Service': 'Servicio',
+        'Amount': 'Monto',
+        'Status': 'Estado',
+        'Paid': 'Pagado',
+        'Consultation': 'Consulta',
+        'No Bills Found': 'No se Encontraron Facturas',
+        'You don\'t have any billing records yet. Bills will appear here after your appointments.': 'Aún no tienes registros de facturación. Las facturas aparecerán aquí después de tus citas.',
+        'hours in advance': 'horas de anticipación',
+        'Personal emergency': 'Emergencia personal',
+        'Schedule conflict': 'Conflicto de horario',
+        'Feeling better': 'Sintiéndome mejor',
+        'Transportation issues': 'Problemas de transporte',
+        'Financial reasons': 'Razones financieras',
+        'Please specify...': 'Por favor especifica...',
+        'Submit Cancellation': 'Enviar Cancelación',
+        'Cancellation Reason': 'Razón de Cancelación',
+        'Please provide a reason for cancelling this appointment:': 'Por favor proporciona una razón para cancelar esta cita:',
+        'Draft Found': 'Borrador Encontrado',
+        'You have an unsaved draft from': 'Tienes un borrador sin guardar de',
+        'Restore Draft': 'Restaurar Borrador',
+        'Discard': 'Descartar',
+        'Draft Saved!': '¡Borrador Guardado!',
+        'characters': 'caracteres',
+        'Location of pain or discomfort': 'Ubicación del dolor o malestar',
+        'Type of pain (sharp, dull, throbbing)': 'Tipo de dolor (agudo, sordo, palpitante)',
+        'When symptoms occur': 'Cuándo ocurren los síntomas',
+        'What triggers the symptoms': 'Qué desencadena los síntomas',
+        'What provides relief': 'Qué proporciona alivio',
+        'How it affects daily activities': 'Cómo afecta las actividades diarias',
+        'Read more...': 'Leer más...',
+        'Reason:': 'Razón:',
+        'Cancelled on': 'Cancelado el',
+        'at': 'a las',
+        'Please describe your symptoms in detail...': 'Por favor describe tus síntomas en detalle...',
+        'Describe your symptoms': 'Describe tus síntomas',
+        'Any medications taken, previous similar symptoms, family history, etc.': 'Cualquier medicamento tomado, síntomas similares previos, historial familiar, etc.',
+        'Please provide more detailed information about your symptoms (at least 20 characters).': 'Por favor proporciona información más detallada sobre tus síntomas (al menos 20 caracteres).'
     },
     'fr': {
         'Dashboard': 'Tableau de Bord',
@@ -2413,23 +2788,356 @@ const dashboardTranslations = {
         'Manage your healthcare appointments and consultations': 'Verwalten Sie Ihre Arzttermine und Beratungen',
         'Chat': 'Chat',
         'Join Call': 'Anruf Beitreten',
-        'Cancel': 'Abbrechen',
-        'Add Symptoms': 'Symptome Hinzufügen'
+        'Add Symptoms': 'Symptome Hinzufügen',
+        'Patient Portal': 'Patientenportal',
+        'Healthcare Dashboard': 'Gesundheits-Dashboard',
+        'Welcome back!': 'Willkommen zurück!',
+        'Patient Dashboard': 'Patienten-Dashboard',
+        'Choose Language': 'Sprache Wählen',
+        'Notifications': 'Benachrichtigungen',
+        'Mark all read': 'Alle als gelesen markieren',
+        'No notifications': 'Keine Benachrichtigungen',
+        'You\'re all caught up!': 'Sie sind auf dem neuesten Stand!',
+        'View All Notifications': 'Alle Benachrichtigungen Anzeigen',
+        'My Profile': 'Mein Profil',
+        'Manage your personal information and preferences': 'Verwalten Sie Ihre persönlichen Informationen und Einstellungen',
+        'Edit Profile': 'Profil Bearbeiten',
+        'Personal Information': 'Persönliche Informationen',
+        'Contact Information': 'Kontaktinformationen',
+        'Full Name': 'Vollständiger Name',
+        'Gender': 'Geschlecht',
+        'Date of Birth': 'Geburtsdatum',
+        'Email Address': 'E-Mail-Adresse',
+        'Mobile Phone': 'Mobiltelefon',
+        'Greeting Preference': 'Anrede-Präferenz',
+        'Not specified': 'Nicht angegeben',
+        'Greeting': 'Anrede',
+        'Select greeting': 'Anrede wählen',
+        'First Name': 'Vorname',
+        'Last Name': 'Nachname',
+        'Select gender': 'Geschlecht wählen',
+        'Male': 'Männlich',
+        'Female': 'Weiblich',
+        'Other': 'Andere',
+        'Profile Photo': 'Profilfoto',
+        'Save Changes': 'Änderungen Speichern',
+        'Cancellation Policy': 'Stornierungsbedingungen',
+        'No Reviews Available': 'Keine Bewertungen Verfügbar',
+        'You don\'t have any practitioners eligible for review yet. Complete an appointment to leave a review.': 'Sie haben noch keine Ärzte, die bewertet werden können. Schließen Sie einen Termin ab, um eine Bewertung abzugeben.',
+        'Book Your First Appointment': 'Buchen Sie Ihren Ersten Termin',
+        'Review Guidelines': 'Bewertungsrichtlinien',
+        'Be Honest': 'Seien Sie Ehrlich',
+        'Share your genuine experience to help other patients': 'Teilen Sie Ihre echte Erfahrung, um anderen Patienten zu helfen',
+        'Be Respectful': 'Seien Sie Respektvoll',
+        'Keep your feedback constructive and professional': 'Halten Sie Ihr Feedback konstruktiv und professionell',
+        'Stay Safe': 'Bleiben Sie Sicher',
+        'Don\'t share personal medical information in reviews': 'Teilen Sie keine persönlichen medizinischen Informationen in Bewertungen',
+        'Rate Your Experience': 'Bewerten Sie Ihre Erfahrung',
+        'Click stars to rate from 1 to 5': 'Klicken Sie auf Sterne, um von 1 bis 5 zu bewerten',
+        'Your Feedback': 'Ihr Feedback',
+        'Submit Review': 'Bewertung Absenden',
+        'Review Completed': 'Bewertung Abgeschlossen',
+        'Your Feedback:': 'Ihr Feedback:',
+        'Reviewed on': 'Bewertet am',
+        'Doctor\'s Response:': 'Antwort des Arztes:',
+        'Specialist': 'Spezialist',
+        
+        // Symptoms Page Specific
+        'My Symptoms': 'Meine Symptome',
+        'Track and manage your health symptoms for better care': 'Verfolgen und verwalten Sie Ihre Gesundheitssymptome für bessere Pflege',
+        'Add New Symptom': 'Neues Symptom Hinzufügen',
+        'Total Symptoms': 'Gesamte Symptome',
+        'Recent': 'Kürzlich',
+        'Symptom History': 'Symptomverlauf',
+        'View and manage your submitted symptoms': 'Anzeigen und verwalten Sie Ihre eingereichten Symptome',
+        'Appointment': 'Termin',
+        'Severity': 'Schweregrad',
+        'Date Submitted': 'Eingereicht am',
+        'Actions': 'Aktionen',
+        'General Symptom': 'Allgemeines Symptom',
+        'Self-reported': 'Selbst gemeldet',
+        'No Symptoms Recorded': 'Keine Symptome Aufgezeichnet',
+        'Start tracking your symptoms to help your healthcare provider better understand your condition': 'Beginnen Sie mit der Verfolgung Ihrer Symptome, um Ihrem Arzt zu helfen, Ihren Zustand besser zu verstehen',
+        'Add Your First Symptom': 'Fügen Sie Ihr Erstes Symptom Hinzu',
+        'Symptom Details': 'Symptomdetails',
+        
+        // Add Symptom Page Specific
+        'Record your symptoms to help your healthcare provider': 'Erfassen Sie Ihre Symptome, um Ihrem Arzt zu helfen',
+        'Symptom Information': 'Symptominformationen',
+        'Please provide detailed information about your symptoms': 'Bitte geben Sie detaillierte Informationen zu Ihren Symptomen an',
+        'Related Appointment': 'Zugehöriger Termin',
+        'Select an appointment': 'Termin auswählen',
+        'No appointments available': 'Keine Termine verfügbar',
+        'Choose the appointment related to these symptoms': 'Wählen Sie den Termin aus, der mit diesen Symptomen zusammenhängt',
+        'Symptom Severity': 'Symptomschweregrad',
+        'Low': 'Niedrig',
+        'Mild discomfort': 'Leichte Beschwerden',
+        'Medium': 'Mittel',
+        'Moderate pain': 'Mäßige Schmerzen',
+        'High': 'Hoch',
+        'Severe pain': 'Starke Schmerzen',
+        'Duration': 'Dauer',
+        'Select duration': 'Dauer auswählen',
+        'Less than 1 hour': 'Weniger als 1 Stunde',
+        '1-6 hours': '1-6 Stunden',
+        '6-24 hours': '6-24 Stunden',
+        '1-3 days': '1-3 Tage',
+        'More than 3 days': 'Mehr als 3 Tage',
+        'Ongoing': 'Andauernd',
+        'Additional Information (Optional)': 'Zusätzliche Informationen (Optional)',
+        'Be as detailed as possible to help your doctor': 'Seien Sie so detailliert wie möglich, um Ihrem Arzt zu helfen',
+        'Tips for Describing Symptoms': 'Tipps zur Beschreibung von Symptomen',
+        'Be Specific': 'Seien Sie Spezifisch',
+        'Include Context': 'Kontext Einbeziehen',
+        
+        // Appointments Page Specific
+        'No Upcoming Appointments': 'Keine Bevorstehenden Termine',
+        'Book your first appointment to get started with your healthcare journey.': 'Buchen Sie Ihren ersten Termin, um Ihre Gesundheitsreise zu beginnen.',
+        'No Completed Appointments': 'Keine Abgeschlossenen Termine',
+        'Your completed appointments will appear here.': 'Ihre abgeschlossenen Termine werden hier angezeigt.',
+        'No Cancelled Appointments': 'Keine Stornierten Termine',
+        'Your cancelled appointments will appear here.': 'Ihre stornierten Termine werden hier angezeigt.',
+        'Call Preparing...': 'Anruf wird Vorbereitet...',
+        'Call Not Available': 'Anruf Nicht Verfügbar',
+        'Chat Not Available': 'Chat Nicht Verfügbar',
+        'Cancel Appointment': 'Termin Stornieren',
+        'Appointment Time Passed': 'Terminzeit Abgelaufen',
+        'Too Late to Cancel': 'Zu Spät zum Stornieren',
+        'left': 'übrig',
+        'Appointments must be cancelled at least': 'Termine müssen mindestens storniert werden',
+        'This policy helps protect our practitioners\' time and ensures fair scheduling for all patients.': 'Diese Richtlinie hilft, die Zeit unserer Ärzte zu schützen und eine faire Terminplanung für alle Patienten zu gewährleisten.',
+        'Need help? Contact our support team for assistance with urgent changes.': 'Brauchen Sie Hilfe? Kontaktieren Sie unser Support-Team für Unterstützung bei dringenden Änderungen.',
+        
+        // Exercise Page Specific
+        'Engage in various exercises tailored to your rehabilitation needs': 'Nehmen Sie an verschiedenen Übungen teil, die auf Ihre Rehabilitationsbedürfnisse zugeschnitten sind',
+        'Available': 'Verfügbar',
+        'Cardio': 'Kardio',
+        'Strength': 'Kraft',
+        'Flexibility': 'Flexibilität',
+        'Balance': 'Balance',
+        'No Exercises Available': 'Keine Übungen Verfügbar',
+        'Exercise programs will be assigned by your healthcare provider based on your treatment plan': 'Übungsprogramme werden von Ihrem Arzt basierend auf Ihrem Behandlungsplan zugewiesen',
+        'Walking Exercise': 'Gehübung',
+        'A gentle walking routine to improve cardiovascular health and mobility.': 'Eine sanfte Gehroutine zur Verbesserung der kardiovaskulären Gesundheit und Mobilität.',
+        'Beginner': 'Anfänger',
+        'Intermediate': 'Fortgeschritten',
+        'Advanced': 'Experte',
+        'Arm Strengthening': 'Armkräftigung',
+        'Build upper body strength with these targeted arm exercises.': 'Bauen Sie Oberkörperkraft mit diesen gezielten Armübungen auf.',
+        'Stretching Routine': 'Dehnroutine',
+        'Improve flexibility and reduce muscle tension with gentle stretches.': 'Verbessern Sie die Flexibilität und reduzieren Sie Muskelverspannungen mit sanften Dehnungen.',
+        'Basic Yoga': 'Basis Yoga',
+        'Leg Exercises': 'Beinübungen',
+        'Arm Exercises': 'Armübungen',
+        
+        // Exercise Tutorial Page
+        'Tutorial': 'Anleitung',
+        'Follow the steps below to complete the exercise.': 'Folgen Sie den Schritten unten, um die Übung abzuschließen.',
+        'Step': 'Schritt',
+        'Back': 'Zurück',
+        'Next Step': 'Nächster Schritt',
+        'Exercise Completed!': 'Übung Abgeschlossen!',
+        'Great job! Your progress has been recorded.': 'Großartige Arbeit! Ihr Fortschritt wurde aufgezeichnet.',
+        'Return to Exercises': 'Zurück zu Übungen',
+        'min': 'Min',
+        'cal': 'Kal',
+        'Improve your health with this targeted exercise routine.': 'Verbessern Sie Ihre Gesundheit mit dieser gezielten Übungsroutine.',
+        
+        // Profile Page
+        'Patient': 'Patient',
+        
+        // Bills & Payments Page
+        'Manage your medical bills and payment history': 'Verwalten Sie Ihre Arztrechnungen und Zahlungshistorie',
+        'Total Bills': 'Gesamte Rechnungen',
+        'Total Amount': 'Gesamtbetrag',
+        'Paid Bills': 'Bezahlte Rechnungen',
+        'Average Bill': 'Durchschnittliche Rechnung',
+        'Billing History': 'Rechnungshistorie',
+        'View and manage your medical bills': 'Anzeigen und verwalten Sie Ihre Arztrechnungen',
+        'Filter': 'Filtern',
+        'Export': 'Exportieren',
+        'Pay Now': 'Jetzt Bezahlen',
+        'Insurance Payment': 'Versicherungszahlung',
+        'Secure Payment': 'Sichere Zahlung',
+        'Complete your consultation payment securely': 'Schließen Sie Ihre Beratungszahlung sicher ab',
+        'Social Security Payment': 'Sozialversicherungszahlung',
+        'Secure payment with Social Security compliance': 'Sichere Zahlung mit Sozialversicherungskonformität',
+        
+        // Specialty Selection Page
+        'Select a specialty to find available doctors and schedule your consultation': 'Wählen Sie eine Fachrichtung, um verfügbare Ärzte zu finden und Ihre Beratung zu planen',
+        'Specialties': 'Fachrichtungen',
+        'Doctors': 'Ärzte',
+        'No Specialties Available': 'Keine Fachrichtungen Verfügbar',
+        'Please contact support for assistance with booking appointments.': 'Bitte kontaktieren Sie den Support für Hilfe bei der Terminbuchung.',
+        'Helping you regain daily living skills and independence': 'Hilft Ihnen, alltägliche Lebenskompetenzen und Unabhängigkeit wiederzuerlangen',
+        'Physical rehabilitation and movement therapy': 'Physikalische Rehabilitation und Bewegungstherapie',
+        'Brain function assessment and cognitive therapy': 'Gehirnfunktionsbewertung und kognitive Therapie',
+        'Communication and swallowing disorder treatment': 'Behandlung von Kommunikations- und Schluckstörungen',
+        'Mental health counseling and therapy': 'Beratung und Therapie für psychische Gesundheit',
+        'Spine and musculoskeletal system care': 'Wirbelsäulen- und Muskel-Skelett-System-Pflege',
+        'Diet planning and nutritional guidance': 'Ernährungsplanung und Ernährungsberatung',
+        'Primary healthcare and general medical care': 'Primärversorgung und allgemeine medizinische Versorgung',
+        'Professional healthcare consultation': 'Professionelle Gesundheitsberatung',
+        'View Doctors': 'Ärzte Anzeigen',
+        'Need Help Choosing?': 'Brauchen Sie Hilfe bei der Auswahl?',
+        'Call Support': 'Support Anrufen',
+        'Get help choosing the right specialist': 'Erhalten Sie Hilfe bei der Auswahl des richtigen Spezialisten',
+        'Live Chat': 'Live-Chat',
+        'Chat with our medical advisors': 'Chatten Sie mit unseren medizinischen Beratern',
+        'FAQ': 'FAQ',
+        'Find answers to common questions': 'Finden Sie Antworten auf häufige Fragen',
+        
+        // Specialty Titles
+        'Occupational Therapist': 'Ergotherapeut',
+        'Physiotherapist': 'Physiotherapeut',
+        'Neuropsychologist': 'Neuropsychologe',
+        'Speech Therapist': 'Logopäde',
+        'Psychologist': 'Psychologe',
+        'Chiropractor': 'Chiropraktiker',
+        'Nutritionist': 'Ernährungsberater',
+        'General Practitioner': 'Allgemeinarzt',
+        
+        // Social Security Payment
+        'Social Security Number': 'Sozialversicherungsnummer',
+        'Required for Medicare/Medicaid processing': 'Erforderlich für Medicare/Medicaid-Verarbeitung',
+        'Medicare ID': 'Medicare-ID',
+        'Insurance Provider': 'Versicherungsanbieter',
+        'Policy Number': 'Versicherungsnummer',
+        'Primary Diagnosis': 'Hauptdiagnose',
+        'Referring Physician': 'Überweisender Arzt',
+        'Medical Necessity': 'Medizinische Notwendigkeit',
+        'Financial Responsibility': 'Finanzielle Verantwortung',
+        'I understand my financial responsibility for services not covered by insurance': 'Ich verstehe meine finanzielle Verantwortung für nicht versicherte Leistungen',
+        'HIPAA Compliance': 'HIPAA-Konformität',
+        'I acknowledge receipt of HIPAA privacy practices notice': 'Ich bestätige den Erhalt der HIPAA-Datenschutzhinweise',
+        'Reschedule': 'Umplanen',
+        'View Details': 'Details Anzeigen',
+        'Download Receipt': 'Quittung Herunterladen',
+        'No appointments found': 'Keine Termine gefunden',
+        'You don\'t have any appointments yet': 'Sie haben noch keine Termine',
+        'Book your first appointment': 'Buchen Sie Ihren ersten Termin',
+        'General Practice': 'Allgemeinmedizin',
+        'Confirmed': 'Bestätigt',
+        
+        // Chat/Message Doctors Page
+        'Connect with healthcare professionals directly': 'Verbinden Sie sich direkt mit Gesundheitsfachkräften',
+        'My Conversations': 'Meine Unterhaltungen',
+        'Search doctors by name or specialty...': 'Ärzte nach Name oder Fachgebiet suchen...',
+        'All Specialties': 'Alle Fachrichtungen',
+        'Cardiology': 'Kardiologie',
+        'Dermatology': 'Dermatologie',
+        'Pediatrics': 'Pädiatrie',
+        'Orthopedics': 'Orthopädie',
+        'Neurology': 'Neurologie',
+        'Psychiatry': 'Psychiatrie',
+        'Continue Chat': 'Chat Fortsetzen',
+        'Start Chat': 'Chat Starten',
+        'No doctors available': 'Keine Ärzte verfügbar',
+        'Please check back later for available healthcare professionals.': 'Bitte schauen Sie später nach verfügbaren Gesundheitsfachkräften.',
+        'Starting conversation...': 'Unterhaltung wird gestartet...',
+        'Chat started with': 'Chat gestartet mit',
+        'Error starting chat': 'Fehler beim Starten des Chats',
+        'per consultation': 'pro Beratung',
+        'reviews': 'Bewertungen',
+        'new': 'neu',
+        'My Messages': 'Meine Nachrichten',
+        'Connect with your healthcare providers': 'Verbinden Sie sich mit Ihren Gesundheitsdienstleistern',
+        'New Message': 'Neue Nachricht',
+        'Search conversations...': 'Unterhaltungen suchen...',
+        'No Messages Yet': 'Noch Keine Nachrichten',
+        'Start chatting with your healthcare providers': 'Beginnen Sie mit Ihren Gesundheitsdienstleistern zu chatten',
+        'Start Messaging': 'Nachrichten Starten',
+        'Welcome to Medical Chat': 'Willkommen im Medizinischen Chat',
+        'Select a conversation from the left to start messaging with your healthcare team': 'Wählen Sie eine Unterhaltung links aus, um mit Ihrem Gesundheitsteam zu chatten',
+        'Your conversations are secure and private': 'Ihre Unterhaltungen sind sicher und privat',
+        'Loading conversation...': 'Unterhaltung wird geladen...',
+        'ago': 'vor',
+        'You:': 'Sie:',
+        'Start your conversation...': 'Beginnen Sie Ihre Unterhaltung...',
+        'Pending': 'Ausstehend',
+        'Accepted': 'Akzeptiert',
+        'Rejected': 'Abgelehnt',
+        'Loading...': 'Wird geladen...',
+        'Please wait': 'Bitte warten',
+        'Success': 'Erfolg',
+        'Error': 'Fehler',
+        'Warning': 'Warnung',
+        'Information': 'Information',
+        'Close': 'Schließen',
+        'Continue': 'Fortfahren',
+        'Next': 'Weiter',
+        'Previous': 'Zurück',
+        'Finish': 'Beenden',
+        'Submit': 'Absenden',
+        'Reset': 'Zurücksetzen',
+        'Clear': 'Löschen',
+        'Choose from': 'Wählen Sie aus',
+        'available specialists': 'verfügbare Spezialisten',
+        'years exp.': 'Jahre Erfahrung',
+        'consultation': 'Beratung',
+        'View Profile': 'Profil Anzeigen',
+        'Next available:': 'Nächste Verfügbarkeit:',
+        'Today': 'Heute',
+        'Video consultation': 'Videoberatung',
+        'Verified': 'Verifiziert',
+        'Load More Doctors': 'Mehr Ärzte Laden',
+        
+        // Additional translations for all pages
+        'Invoice #': 'Rechnung #',
+        'Date': 'Datum',
+        'Doctor': 'Arzt',
+        'Service': 'Leistung',
+        'Amount': 'Betrag',
+        'Status': 'Status',
+        'Paid': 'Bezahlt',
+        'Consultation': 'Beratung',
+        'No Bills Found': 'Keine Rechnungen Gefunden',
+        'You don\'t have any billing records yet. Bills will appear here after your appointments.': 'Sie haben noch keine Rechnungsunterlagen. Rechnungen werden hier nach Ihren Terminen angezeigt.',
+        'hours in advance': 'Stunden im Voraus',
+        'Personal emergency': 'Persönlicher Notfall',
+        'Schedule conflict': 'Terminkonflikt',
+        'Feeling better': 'Fühle mich besser',
+        'Transportation issues': 'Transportprobleme',
+        'Financial reasons': 'Finanzielle Gründe',
+        'Please specify...': 'Bitte angeben...',
+        'Submit Cancellation': 'Stornierung Absenden',
+        'Cancellation Reason': 'Stornierungsgrund',
+        'Please provide a reason for cancelling this appointment:': 'Bitte geben Sie einen Grund für die Stornierung dieses Termins an:',
+        'Draft Found': 'Entwurf Gefunden',
+        'You have an unsaved draft from': 'Sie haben einen nicht gespeicherten Entwurf von',
+        'Restore Draft': 'Entwurf Wiederherstellen',
+        'Discard': 'Verwerfen',
+        'Draft Saved!': 'Entwurf Gespeichert!',
+        'characters': 'Zeichen',
+        'Location of pain or discomfort': 'Ort der Schmerzen oder Beschwerden',
+        'Type of pain (sharp, dull, throbbing)': 'Art der Schmerzen (scharf, dumpf, pochend)',
+        'When symptoms occur': 'Wann Symptome auftreten',
+        'What triggers the symptoms': 'Was die Symptome auslöst',
+        'What provides relief': 'Was Linderung verschafft',
+        'How it affects daily activities': 'Wie es tägliche Aktivitäten beeinflusst',
+        'Read more...': 'Mehr lesen...',
+        'Reason:': 'Grund:',
+        'Cancelled on': 'Storniert am',
+        'at': 'um',
+        'Please describe your symptoms in detail...': 'Bitte beschreiben Sie Ihre Symptome im Detail...',
+        'Describe your symptoms': 'Beschreiben Sie Ihre Symptome',
+        'Any medications taken, previous similar symptoms, family history, etc.': 'Eingenommene Medikamente, frühere ähnliche Symptome, Familiengeschichte usw.',
+        'Please provide more detailed information about your symptoms (at least 20 characters).': 'Bitte geben Sie detailliertere Informationen zu Ihren Symptomen an (mindestens 20 Zeichen).'
     },
     'zh': {
         'Dashboard': '仪表板',
         'Profile': '个人资料',
-        'Book Appointment': '预约',
+        'Book Appointment': '预约挂号',
         'Bills & Payments': '账单和付款',
         'Exercises': '锻炼',
         'Symptoms': '症状',
-        'Reviews': '评论',
+        'Reviews': '评价',
         'Message Doctors': '给医生留言',
         'Search': '搜索医生、专科...',
-        'Logout': '登出',
+        'Logout': '退出登录',
         'Patient Profile': '患者档案',
         'My Appointments': '我的预约',
-        'Book New Appointment': '预约新的',
+        'Book New Appointment': '预约新挂号',
         'Interactive Exercises': '互动锻炼',
         'Start Exercise': '开始锻炼',
         'Add Symptom': '添加症状',
@@ -2437,9 +3145,9 @@ const dashboardTranslations = {
         'Submit Symptom': '提交症状',
         'Cancel': '取消',
         'Save Draft': '保存草稿',
-        'Practitioner Reviews': '医生评论',
+        'Practitioner Reviews': '医生评价',
         'Share your experience and help other patients': '分享您的经验并帮助其他患者',
-        'To Review': '待评论',
+        'To Review': '待评价',
         'Completed': '已完成',
         'Total Appointments': '总预约数',
         'Upcoming': '即将到来',
@@ -2448,108 +3156,427 @@ const dashboardTranslations = {
         'Manage your healthcare appointments and consultations': '管理您的医疗预约和咨询',
         'Chat': '聊天',
         'Join Call': '加入通话',
-        'Cancel': '取消',
-        'Add Symptoms': '添加症状'
+        'Add Symptoms': '添加症状',
+        'Patient Portal': '患者门户',
+        'Healthcare Dashboard': '医疗仪表板',
+        'Welcome back!': '欢迎回来！',
+        'Patient Dashboard': '患者仪表板',
+        'Choose Language': '选择语言',
+        'Notifications': '通知',
+        'Mark all read': '全部标记为已读',
+        'No notifications': '没有通知',
+        'You\'re all caught up!': '您已查看所有内容！',
+        'View All Notifications': '查看所有通知',
+        'My Profile': '我的资料',
+        'Manage your personal information and preferences': '管理您的个人信息和偏好',
+        'Edit Profile': '编辑资料',
+        'Personal Information': '个人信息',
+        'Contact Information': '联系信息',
+        'Full Name': '全名',
+        'Gender': '性别',
+        'Date of Birth': '出生日期',
+        'Email Address': '电子邮件地址',
+        'Mobile Phone': '手机号码',
+        'Greeting Preference': '称呼偏好',
+        'Not specified': '未指定',
+        'Greeting': '称呼',
+        'Select greeting': '选择称呼',
+        'First Name': '名字',
+        'Last Name': '姓氏',
+        'Select gender': '选择性别',
+        'Male': '男',
+        'Female': '女',
+        'Other': '其他',
+        'Profile Photo': '头像照片',
+        'Save Changes': '保存更改',
+        'Cancellation Policy': '取消政策',
+        'No Reviews Available': '暂无评价',
+        'You don\'t have any practitioners eligible for review yet. Complete an appointment to leave a review.': '您还没有可以评价的医生。完成预约后即可留下评价。',
+        'Book Your First Appointment': '预约您的第一次挂号',
+        'Review Guidelines': '评价指南',
+        'Be Honest': '诚实评价',
+        'Share your genuine experience to help other patients': '分享您的真实体验以帮助其他患者',
+        'Be Respectful': '保持尊重',
+        'Keep your feedback constructive and professional': '保持您的反馈建设性和专业性',
+        'Stay Safe': '保持安全',
+        'Don\'t share personal medical information in reviews': '不要在评价中分享个人医疗信息',
+        'Rate Your Experience': '评价您的体验',
+        'Click stars to rate from 1 to 5': '点击星星评分，从1到5',
+        'Your Feedback': '您的反馈',
+        'Submit Review': '提交评价',
+        'Review Completed': '评价已完成',
+        'Your Feedback:': '您的反馈：',
+        'Reviewed on': '评价于',
+        'Doctor\'s Response:': '医生的回复：',
+        'Specialist': '专科医生',
+        
+        // Symptoms Page Specific
+        'My Symptoms': '我的症状',
+        'Track and manage your health symptoms for better care': '跟踪和管理您的健康症状以获得更好的护理',
+        'Add New Symptom': '添加新症状',
+        'Total Symptoms': '总症状数',
+        'Recent': '最近',
+        'Symptom History': '症状历史',
+        'View and manage your submitted symptoms': '查看和管理您提交的症状',
+        'Appointment': '预约',
+        'Severity': '严重程度',
+        'Date Submitted': '提交日期',
+        'Actions': '操作',
+        'General Symptom': '一般症状',
+        'Self-reported': '自我报告',
+        'No Symptoms Recorded': '未记录症状',
+        'Start tracking your symptoms to help your healthcare provider better understand your condition': '开始跟踪您的症状，帮助您的医疗服务提供者更好地了解您的状况',
+        'Add Your First Symptom': '添加您的第一个症状',
+        'Symptom Details': '症状详情',
+        
+        // Add Symptom Page Specific
+        'Record your symptoms to help your healthcare provider': '记录您的症状以帮助您的医疗服务提供者',
+        'Symptom Information': '症状信息',
+        'Please provide detailed information about your symptoms': '请提供有关您症状的详细信息',
+        'Related Appointment': '相关预约',
+        'Select an appointment': '选择预约',
+        'No appointments available': '没有可用的预约',
+        'Choose the appointment related to these symptoms': '选择与这些症状相关的预约',
+        'Symptom Severity': '症状严重程度',
+        'Low': '轻度',
+        'Mild discomfort': '轻微不适',
+        'Medium': '中度',
+        'Moderate pain': '中度疼痛',
+        'High': '重度',
+        'Severe pain': '严重疼痛',
+        'Duration': '持续时间',
+        'Select duration': '选择持续时间',
+        'Less than 1 hour': '少于1小时',
+        '1-6 hours': '1-6小时',
+        '6-24 hours': '6-24小时',
+        '1-3 days': '1-3天',
+        'More than 3 days': '超过3天',
+        'Ongoing': '持续中',
+        'Additional Information (Optional)': '附加信息（可选）',
+        'Be as detailed as possible to help your doctor': '尽可能详细以帮助您的医生',
+        'Tips for Describing Symptoms': '描述症状的提示',
+        'Be Specific': '具体说明',
+        'Include Context': '包含背景',
+        
+        // Appointments Page Specific
+        'No Upcoming Appointments': '没有即将到来的预约',
+        'Book your first appointment to get started with your healthcare journey.': '预约您的第一次挂号，开始您的医疗之旅。',
+        'No Completed Appointments': '没有已完成的预约',
+        'Your completed appointments will appear here.': '您已完成的预约将显示在这里。',
+        'No Cancelled Appointments': '没有已取消的预约',
+        'Your cancelled appointments will appear here.': '您已取消的预约将显示在这里。',
+        'Call Preparing...': '通话准备中...',
+        'Call Not Available': '通话不可用',
+        'Chat Not Available': '聊天不可用',
+        'Cancel Appointment': '取消预约',
+        'Appointment Time Passed': '预约时间已过',
+        'Too Late to Cancel': '取消为时已晚',
+        'left': '剩余',
+        'Appointments must be cancelled at least': '预约必须至少提前取消',
+        'This policy helps protect our practitioners\' time and ensures fair scheduling for all patients.': '此政策有助于保护我们医生的时间，并确保为所有患者公平安排时间。',
+        'Need help? Contact our support team for assistance with urgent changes.': '需要帮助？联系我们的支持团队以获得紧急更改的帮助。',
+        
+        // Exercise Page Specific
+        'Engage in various exercises tailored to your rehabilitation needs': '参与针对您康复需求量身定制的各种锻炼',
+        'Available': '可用',
+        'Cardio': '有氧运动',
+        'Strength': '力量训练',
+        'Flexibility': '柔韧性',
+        'Balance': '平衡',
+        'No Exercises Available': '没有可用的锻炼',
+        'Exercise programs will be assigned by your healthcare provider based on your treatment plan': '锻炼计划将由您的医疗服务提供者根据您的治疗计划分配',
+        'Walking Exercise': '步行锻炼',
+        'A gentle walking routine to improve cardiovascular health and mobility.': '温和的步行例程，以改善心血管健康和活动能力。',
+        'Beginner': '初学者',
+        'Intermediate': '中级',
+        'Advanced': '高级',
+        'Arm Strengthening': '手臂力量训练',
+        'Build upper body strength with these targeted arm exercises.': '通过这些针对性的手臂锻炼来增强上半身力量。',
+        'Stretching Routine': '拉伸例程',
+        'Improve flexibility and reduce muscle tension with gentle stretches.': '通过温和的拉伸来提高柔韧性并减少肌肉紧张。',
+        'Basic Yoga': '基础瑜伽',
+        'Leg Exercises': '腿部锻炼',
+        'Arm Exercises': '手臂锻炼',
+        
+        // Exercise Tutorial Page
+        'Tutorial': '教程',
+        'Follow the steps below to complete the exercise.': '按照以下步骤完成锻炼。',
+        'Step': '步骤',
+        'Back': '返回',
+        'Next Step': '下一步',
+        'Exercise Completed!': '锻炼完成！',
+        'Great job! Your progress has been recorded.': '做得好！您的进度已被记录。',
+        'Return to Exercises': '返回锻炼',
+        'min': '分钟',
+        'cal': '卡路里',
+        'Improve your health with this targeted exercise routine.': '通过这个针对性的锻炼例程改善您的健康。',
+        
+        // Profile Page
+        'Patient': '患者',
+        
+        // Bills & Payments Page
+        'Manage your medical bills and payment history': '管理您的医疗账单和付款历史',
+        'Total Bills': '总账单数',
+        'Total Amount': '总金额',
+        'Paid Bills': '已付账单',
+        'Average Bill': '平均账单',
+        'Billing History': '账单历史',
+        'View and manage your medical bills': '查看和管理您的医疗账单',
+        'Filter': '筛选',
+        'Export': '导出',
+        'Pay Now': '立即支付',
+        'Insurance Payment': '保险支付',
+        'Secure Payment': '安全支付',
+        'Complete your consultation payment securely': '安全地完成您的咨询付款',
+        'Social Security Payment': '社会保障支付',
+        'Secure payment with Social Security compliance': '符合社会保障的安全支付',
+        
+        // Specialty Selection Page
+        'Select a specialty to find available doctors and schedule your consultation': '选择专科以查找可用的医生并安排您的咨询',
+        'Specialties': '专科',
+        'Doctors': '医生',
+        'No Specialties Available': '没有可用的专科',
+        'Please contact support for assistance with booking appointments.': '请联系支持以获得预约帮助。',
+        'Helping you regain daily living skills and independence': '帮助您恢复日常生活技能和独立性',
+        'Physical rehabilitation and movement therapy': '物理康复和运动疗法',
+        'Brain function assessment and cognitive therapy': '脑功能评估和认知疗法',
+        'Communication and swallowing disorder treatment': '沟通和吞咽障碍治疗',
+        'Mental health counseling and therapy': '心理健康咨询和治疗',
+        'Spine and musculoskeletal system care': '脊柱和肌肉骨骼系统护理',
+        'Diet planning and nutritional guidance': '饮食计划和营养指导',
+        'Primary healthcare and general medical care': '初级医疗保健和一般医疗护理',
+        'Professional healthcare consultation': '专业医疗咨询',
+        'View Doctors': '查看医生',
+        'Need Help Choosing?': '需要帮助选择？',
+        'Call Support': '致电支持',
+        'Get help choosing the right specialist': '获得帮助选择合适的专科医生',
+        'Live Chat': '在线聊天',
+        'Chat with our medical advisors': '与我们的医疗顾问聊天',
+        'FAQ': '常见问题',
+        'Find answers to common questions': '查找常见问题的答案',
+        
+        // Specialty Titles
+        'Occupational Therapist': '职业治疗师',
+        'Physiotherapist': '物理治疗师',
+        'Neuropsychologist': '神经心理学家',
+        'Speech Therapist': '言语治疗师',
+        'Psychologist': '心理学家',
+        'Chiropractor': '脊椎按摩师',
+        'Nutritionist': '营养师',
+        'General Practitioner': '全科医生',
+        
+        // Social Security Payment
+        'Social Security Number': '社会保障号码',
+        'Required for Medicare/Medicaid processing': 'Medicare/Medicaid处理所需',
+        'Medicare ID': 'Medicare ID',
+        'Insurance Provider': '保险提供商',
+        'Policy Number': '保单号码',
+        'Primary Diagnosis': '主要诊断',
+        'Referring Physician': '转诊医生',
+        'Medical Necessity': '医疗必要性',
+        'Financial Responsibility': '财务责任',
+        'I understand my financial responsibility for services not covered by insurance': '我了解我对保险未涵盖服务的财务责任',
+        'HIPAA Compliance': 'HIPAA合规性',
+        'I acknowledge receipt of HIPAA privacy practices notice': '我确认收到HIPAA隐私实践通知',
+        'Reschedule': '重新安排',
+        'View Details': '查看详情',
+        'Download Receipt': '下载收据',
+        'No appointments found': '未找到预约',
+        'You don\'t have any appointments yet': '您还没有任何预约',
+        'Book your first appointment': '预约您的第一次挂号',
+        'General Practice': '全科医学',
+        'Confirmed': '已确认',
+        
+        // Chat/Message Doctors Page
+        'Connect with healthcare professionals directly': '直接与医疗专业人员联系',
+        'My Conversations': '我的对话',
+        'Search doctors by name or specialty...': '按姓名或专科搜索医生...',
+        'All Specialties': '所有专科',
+        'Cardiology': '心脏病学',
+        'Dermatology': '皮肤病学',
+        'Pediatrics': '儿科',
+        'Orthopedics': '骨科',
+        'Neurology': '神经病学',
+        'Psychiatry': '精神病学',
+        'Continue Chat': '继续聊天',
+        'Start Chat': '开始聊天',
+        'No doctors available': '没有可用的医生',
+        'Please check back later for available healthcare professionals.': '请稍后查看可用的医疗专业人员。',
+        'Starting conversation...': '开始对话...',
+        'Chat started with': '与...开始聊天',
+        'Error starting chat': '开始聊天时出错',
+        'per consultation': '每次咨询',
+        'reviews': '评价',
+        'new': '新',
+        'My Messages': '我的消息',
+        'Connect with your healthcare providers': '与您的医疗服务提供者联系',
+        'New Message': '新消息',
+        'Search conversations...': '搜索对话...',
+        'No Messages Yet': '还没有消息',
+        'Start chatting with your healthcare providers': '开始与您的医疗服务提供者聊天',
+        'Start Messaging': '开始发送消息',
+        'Welcome to Medical Chat': '欢迎来到医疗聊天',
+        'Select a conversation from the left to start messaging with your healthcare team': '从左侧选择对话以开始与您的医疗团队发送消息',
+        'Your conversations are secure and private': '您的对话是安全和私密的',
+        'Loading conversation...': '加载对话...',
+        'ago': '前',
+        'You:': '您：',
+        'Start your conversation...': '开始您的对话...',
+        'Pending': '待处理',
+        'Accepted': '已接受',
+        'Rejected': '已拒绝',
+        'Loading...': '加载中...',
+        'Please wait': '请稍候',
+        'Success': '成功',
+        'Error': '错误',
+        'Warning': '警告',
+        'Information': '信息',
+        'Close': '关闭',
+        'Continue': '继续',
+        'Next': '下一个',
+        'Previous': '上一个',
+        'Finish': '完成',
+        'Submit': '提交',
+        'Reset': '重置',
+        'Clear': '清除',
+        'Choose from': '从...中选择',
+        'available specialists': '可用专科医生',
+        'years exp.': '年经验',
+        'consultation': '咨询',
+        'View Profile': '查看资料',
+        'Next available:': '下次可用：',
+        'Today': '今天',
+        'Video consultation': '视频咨询',
+        'Verified': '已验证',
+        'Load More Doctors': '加载更多医生',
+        
+        // Additional translations for all pages
+        'Invoice #': '发票 #',
+        'Date': '日期',
+        'Doctor': '医生',
+        'Service': '服务',
+        'Amount': '金额',
+        'Status': '状态',
+        'Paid': '已支付',
+        'Consultation': '咨询',
+        'No Bills Found': '未找到账单',
+        'You don\'t have any billing records yet. Bills will appear here after your appointments.': '您还没有任何账单记录。预约后账单将显示在这里。',
+        'hours in advance': '小时提前',
+        'Personal emergency': '个人紧急情况',
+        'Schedule conflict': '时间冲突',
+        'Feeling better': '感觉好转',
+        'Transportation issues': '交通问题',
+        'Financial reasons': '经济原因',
+        'Please specify...': '请说明...',
+        'Submit Cancellation': '提交取消',
+        'Cancellation Reason': '取消原因',
+        'Please provide a reason for cancelling this appointment:': '请提供取消此预约的原因：',
+        'Draft Found': '找到草稿',
+        'You have an unsaved draft from': '您有一个未保存的草稿来自',
+        'Restore Draft': '恢复草稿',
+        'Discard': '丢弃',
+        'Draft Saved!': '草稿已保存！',
+        'characters': '字符',
+        'Location of pain or discomfort': '疼痛或不适的位置',
+        'Type of pain (sharp, dull, throbbing)': '疼痛类型（尖锐、钝痛、跳痛）',
+        'When symptoms occur': '症状何时发生',
+        'What triggers the symptoms': '什么触发症状',
+        'What provides relief': '什么提供缓解',
+        'How it affects daily activities': '如何影响日常活动',
+        'Read more...': '阅读更多...',
+        'Reason:': '原因：',
+        'Cancelled on': '取消于',
+        'at': '在',
+        'Please describe your symptoms in detail...': '请详细描述您的症状...',
+        'Describe your symptoms': '描述您的症状',
+        'Any medications taken, previous similar symptoms, family history, etc.': '服用的任何药物、以前的类似症状、家族史等。',
+        'Please provide more detailed information about your symptoms (at least 20 characters).': '请提供有关您症状的更详细信息（至少20个字符）。'
     }
 };
 
-const dashboardLanguageNames = {
-    'en': 'English',
-    'ur': 'اردو',
-    'ar': 'العربية',
-    'hi': 'हिन्दी',
-    'es': 'Español',
-    'fr': 'Français',
-    'de': 'Deutsch',
-    'zh': '中文'
-};
-
-// Dashboard Language Change Function (unified with main language system)
-window.changeDashboardLanguage = function(langCode) {
-    const langName = dashboardLanguageNames[langCode] || 'English';
-    changeLanguage(langCode, langName);
-};
-
-// Translate Dashboard Content
-function translateDashboard(langCode) {
-    try {
-        const translation = dashboardTranslations[langCode] || dashboardTranslations['en'];
-        
-        if (!translation) {
-            console.error('No translation found for language:', langCode);
-            return;
-        }
-        
-        let translatedCount = 0;
-        let missingTranslations = [];
-        
-        // Translate all elements with data-translate attribute
-        document.querySelectorAll('[data-translate]').forEach(element => {
-            const key = element.getAttribute('data-translate');
-            if (translation[key]) {
-                if (element.tagName === 'INPUT' && (element.type === 'text' || element.type === 'search')) {
-                    element.placeholder = translation[key];
-                } else {
-                    element.textContent = translation[key];
-                }
-                translatedCount++;
-            } else {
-                missingTranslations.push(key);
-                // Keep original text if translation is missing
-                console.warn(`Missing translation for "${key}" in language "${langCode}"`);
-            }
-        });
-        
-        if (missingTranslations.length > 0) {
-            console.warn(`Missing translations for ${langCode}:`, missingTranslations);
-        }
-        
-        console.log(`Dashboard translation completed: ${translatedCount} elements translated to ${langCode}`);
-    } catch (error) {
-        console.error('Error in translateDashboard:', error);
+// Language Dropdown Functionality - Global function for inline onclick
+window.toggleLanguageDropdown = function(event) {
+    console.log('=== toggleLanguageDropdown called ===');
+    
+    if (event) {
+        event.preventDefault();
+        event.stopPropagation();
     }
-}
-
-
-
-// Language Dropdown Functionality
-function toggleLanguageDropdown() {
+    
     const dropdown = document.getElementById('languageDropdown');
     const chevron = document.getElementById('languageChevron');
-    const button = document.getElementById('languageSelector');
     
-    if (!dropdown || !chevron || !button) {
-        console.error('Language dropdown elements not found');
+    console.log('Dropdown element:', dropdown);
+    console.log('Chevron element:', chevron);
+    
+    if (!dropdown) {
+        console.error('❌ Language dropdown not found!');
         return;
     }
     
     const isHidden = dropdown.classList.contains('hidden');
+    console.log('Dropdown is currently hidden:', isHidden);
     
     if (isHidden) {
         // Show dropdown
         dropdown.classList.remove('hidden');
-        chevron.style.transform = 'rotate(180deg)';
-        
-        // Position dropdown properly for mobile
-        if (window.innerWidth <= 768) {
-            const rect = button.getBoundingClientRect();
-            const viewportWidth = window.innerWidth;
-            
-            // Ensure dropdown doesn't go off-screen
-            if (rect.right < 256) { // 16rem = 256px
-                dropdown.style.right = 'auto';
-                dropdown.style.left = '0';
-            } else {
-                dropdown.style.right = '0';
-                dropdown.style.left = 'auto';
-            }
+        dropdown.style.display = 'block';
+        if (chevron) {
+            chevron.style.transform = 'rotate(180deg)';
         }
+        console.log('✅ Dropdown opened');
     } else {
         // Hide dropdown
         dropdown.classList.add('hidden');
-        chevron.style.transform = 'rotate(0deg)';
+        dropdown.style.display = 'none';
+        if (chevron) {
+            chevron.style.transform = 'rotate(0deg)';
+        }
+        console.log('✅ Dropdown closed');
     }
-}
+};
+
+console.log('✅ toggleLanguageDropdown function registered');
+
+// Attach event listener to language selector button
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('=== Attaching language selector event listener ===');
+    
+    const languageSelector = document.getElementById('languageSelector');
+    console.log('Language selector button found:', !!languageSelector);
+    
+    if (languageSelector) {
+        // Remove any existing listeners by cloning
+        const newButton = languageSelector.cloneNode(true);
+        languageSelector.parentNode.replaceChild(newButton, languageSelector);
+        
+        // Add click event listener
+        newButton.addEventListener('click', function(event) {
+            console.log('🔵 Language selector button clicked!');
+            toggleLanguageDropdown(event);
+        });
+        
+        console.log('✅ Event listener attached to language selector');
+    } else {
+        console.error('❌ Language selector button not found!');
+    }
+});
+
+// Backup: Also try on window load
+window.addEventListener('load', function() {
+    const languageSelector = document.getElementById('languageSelector');
+    if (languageSelector && !languageSelector.hasAttribute('data-listener-attached')) {
+        console.log('🔄 Attaching language selector via window.load (backup)');
+        languageSelector.setAttribute('data-listener-attached', 'true');
+        
+        languageSelector.addEventListener('click', function(event) {
+            console.log('🔵 Language selector clicked (backup listener)!');
+            toggleLanguageDropdown(event);
+        });
+        
+        console.log('✅ Backup event listener attached');
+    }
+});
 
 // Close dropdown when clicking outside
 document.addEventListener('click', function(event) {
@@ -2557,130 +3584,13 @@ document.addEventListener('click', function(event) {
     const languageDropdown = document.getElementById('languageDropdown');
     const chevron = document.getElementById('languageChevron');
     
-    if (languageSelector && languageDropdown && !languageSelector.contains(event.target)) {
+    if (languageSelector && languageDropdown && !languageSelector.contains(event.target) && !languageDropdown.contains(event.target)) {
         languageDropdown.classList.add('hidden');
+        languageDropdown.style.display = 'none';
         if (chevron) {
             chevron.style.transform = 'rotate(0deg)';
         }
     }
-});
-
-// Enhanced Language Change Function with RTL Support
-function changeLanguage(langCode, langName) {
-    try {
-        console.log('Changing language to:', langCode, langName);
-        
-        // Update current language display
-        const currentLangElement = document.getElementById('currentLanguage');
-        if (currentLangElement) {
-            currentLangElement.textContent = langName;
-        }
-        
-        // Store language preference
-        localStorage.setItem('patientLanguage', langCode);
-        localStorage.setItem('patientLanguageName', langName);
-        localStorage.setItem('selectedLanguage', langCode);
-        
-        // Apply RTL for Arabic and Urdu
-        const rtlLanguages = ['ar', 'ur'];
-        const htmlElement = document.documentElement;
-        
-        if (rtlLanguages.includes(langCode)) {
-            htmlElement.setAttribute('dir', 'rtl');
-            htmlElement.setAttribute('lang', langCode);
-            document.body.classList.add('rtl-layout');
-        } else {
-            htmlElement.setAttribute('dir', 'ltr');
-            htmlElement.setAttribute('lang', langCode);
-            document.body.classList.remove('rtl-layout');
-        }
-        
-        // Translate all elements with data-translate attribute
-        translateDashboard(langCode);
-        
-        // Close dropdown
-        const dropdown = document.getElementById('languageDropdown');
-        const chevron = document.getElementById('languageChevron');
-        if (dropdown) {
-            dropdown.classList.add('hidden');
-        }
-        if (chevron) {
-            chevron.style.transform = 'rotate(0deg)';
-        }
-        
-        // Show success message
-        showLanguageChangeNotification(langName);
-        
-        console.log('Language changed successfully to:', langCode);
-    } catch (error) {
-        console.error('Error changing language:', error);
-    }
-}
-
-// Show language change notification
-function showLanguageChangeNotification(langName) {
-    // Create notification element
-    const notification = document.createElement('div');
-    notification.className = 'fixed top-4 right-4 bg-patient-green text-white px-6 py-3 rounded-xl shadow-lg transform translate-x-full transition-transform duration-300';
-    notification.style.zIndex = '99999';
-    notification.innerHTML = `
-        <div class="flex items-center space-x-3">
-            <i class="fas fa-check-circle text-lg"></i>
-            <span class="font-medium">Language changed to ${langName}</span>
-        </div>
-    `;
-    
-    document.body.appendChild(notification);
-    
-    // Animate in
-    setTimeout(() => {
-        notification.style.transform = 'translateX(0)';
-    }, 100);
-    
-    // Animate out and remove
-    setTimeout(() => {
-        notification.style.transform = 'translateX(100%)';
-        setTimeout(() => {
-            if (document.body.contains(notification)) {
-                document.body.removeChild(notification);
-            }
-        }, 300);
-    }, 3000);
-}
-
-// Load saved language on page load
-document.addEventListener('DOMContentLoaded', function() {
-    // Small delay to ensure all elements are rendered
-    setTimeout(() => {
-        const savedLang = localStorage.getItem('patientLanguage') || localStorage.getItem('selectedLanguage') || 'en';
-        const savedLangName = localStorage.getItem('patientLanguageName') || dashboardLanguageNames[savedLang] || 'English';
-        
-        console.log('Loading saved language:', savedLang, savedLangName);
-        
-        // Update display without showing notification
-        const currentLangElement = document.getElementById('currentLanguage');
-        if (currentLangElement) {
-            currentLangElement.textContent = savedLangName;
-        }
-        
-        // Always apply language translation (including English to ensure consistency)
-        translateDashboard(savedLang);
-        
-        // Apply RTL if needed
-        const rtlLanguages = ['ar', 'ur'];
-        if (rtlLanguages.includes(savedLang)) {
-            document.documentElement.setAttribute('dir', 'rtl');
-            document.documentElement.setAttribute('lang', savedLang);
-            document.body.classList.add('rtl-layout');
-        } else {
-            // Ensure LTR is set for non-RTL languages
-            document.documentElement.setAttribute('dir', 'ltr');
-            document.documentElement.setAttribute('lang', savedLang);
-            document.body.classList.remove('rtl-layout');
-        }
-        
-        console.log('Language applied on page load:', savedLang);
-    }, 100); // 100ms delay to ensure DOM is ready
 });
 
 // Mobile Sidebar Toggle Function
@@ -2969,9 +3879,96 @@ document.addEventListener('click', function(event) {
 
 // Initialize notification system
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM Content Loaded - Initializing notifications...');
     updateNotificationBadge();
 });
+
+// Language names mapping (needed before changeDashboardLanguage)
+// Only define if not already defined by language_system.html
+if (!window.dashboardLanguageNames) {
+    window.dashboardLanguageNames = {
+        'en': 'English',
+        'es': 'Español',
+        'fr': 'Français',
+        'de': 'Deutsch',
+        'it': 'Italiano',
+        'pt': 'Português',
+        'pl': 'Polski',
+        'ja': '日本語',
+        'zh': '中文'
+    };
+}
+
+// Define changeDashboardLanguage globally before it's used
+window.changeDashboardLanguage = function(langCode) {
+    console.log('changeDashboardLanguage called with:', langCode);
+    
+    try {
+        // Update current language display in header
+        const currentLangElement = document.getElementById('currentLanguage');
+        if (currentLangElement) {
+            currentLangElement.textContent = window.dashboardLanguageNames[langCode] || langCode;
+            console.log('Updated currentLanguage to:', window.dashboardLanguageNames[langCode]);
+        }
+        
+        // Close dropdown
+        const dropdown = document.getElementById('languageDropdown');
+        const chevron = document.getElementById('languageChevron');
+        if (dropdown) {
+            dropdown.classList.add('hidden');
+        }
+        if (chevron) {
+            chevron.style.transform = 'rotate(0deg)';
+        }
+        
+        // Set document direction for RTL languages
+        // Set document direction (all remaining languages are LTR)
+        document.documentElement.setAttribute('dir', 'ltr');
+        document.documentElement.setAttribute('lang', langCode);
+        document.body.style.direction = 'ltr';
+        document.body.classList.remove('rtl-layout');
+        console.log('Applied LTR for:', langCode);
+        
+        // Store language preference FIRST before reload
+        localStorage.setItem('selectedLanguage', langCode);
+        localStorage.setItem('patientLanguage', langCode);
+        localStorage.setItem('patientLanguageName', window.dashboardLanguageNames[langCode]);
+        console.log('✅ Stored language preference:', langCode);
+        
+        // Show success notification with reload message
+        const notification = document.createElement('div');
+        notification.className = 'fixed top-20 right-4 bg-patient-green text-white px-6 py-3 rounded-xl shadow-lg z-[99999] transform translate-x-full transition-transform duration-300';
+        notification.innerHTML = `
+            <div class="flex items-center space-x-3">
+                <i class="fas fa-check-circle text-lg"></i>
+                <span class="font-medium">Language changed to ${window.dashboardLanguageNames[langCode]}. Reloading page...</span>
+            </div>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Animate in
+        setTimeout(() => {
+            notification.style.transform = 'translateX(0)';
+        }, 100);
+        
+        // Reload page after short delay for better UX
+        setTimeout(() => {
+            console.log('🔄 Reloading page for complete translation...');
+            window.location.reload();
+        }, 800);
+        
+        console.log('✅ Language change initiated, page will reload');
+    } catch (error) {
+        console.error('❌ Error in changeDashboardLanguage:', error);
+    }
+};
+
+console.log('changeDashboardLanguage function defined and ready');
 </script>
+
+<!-- Include Language System -->
+{% include 'language_system.html' %}
 
 </body>
 
