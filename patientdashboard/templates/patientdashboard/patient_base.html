@@ -1034,6 +1034,46 @@
                                         <span class="text-xs text-gray-500">China</span>
                                     </div>
                                 </button>
+                                
+                                <button onclick="changeDashboardLanguage('tr')" class="language-option w-full text-left px-4 py-3 hover:bg-gradient-to-r hover:from-patient-light-blue hover:to-blue-50 text-gray-700 hover:text-patient-dark-blue transition-all duration-200 flex items-center space-x-3 group">
+                                    <span class="w-8 h-6 bg-gradient-to-r from-red-600 to-red-600 rounded-md flex items-center justify-center text-white text-xs font-bold shadow-sm group-hover:shadow-md transition-shadow">🇹🇷</span>
+                                    <div class="flex flex-col">
+                                        <span class="font-medium">Türkçe</span>
+                                        <span class="text-xs text-gray-500">Turkey</span>
+                                    </div>
+                                </button>
+                                
+                                <button onclick="changeDashboardLanguage('ko')" class="language-option w-full text-left px-4 py-3 hover:bg-gradient-to-r hover:from-patient-light-blue hover:to-blue-50 text-gray-700 hover:text-patient-dark-blue transition-all duration-200 flex items-center space-x-3 group">
+                                    <span class="w-8 h-6 bg-gradient-to-r from-blue-700 to-red-600 rounded-md flex items-center justify-center text-white text-xs font-bold shadow-sm group-hover:shadow-md transition-shadow">🇰🇷</span>
+                                    <div class="flex flex-col">
+                                        <span class="font-medium">한국어</span>
+                                        <span class="text-xs text-gray-500">Korea</span>
+                                    </div>
+                                </button>
+                                
+                                <button onclick="changeDashboardLanguage('ru')" class="language-option w-full text-left px-4 py-3 hover:bg-gradient-to-r hover:from-patient-light-blue hover:to-blue-50 text-gray-700 hover:text-patient-dark-blue transition-all duration-200 flex items-center space-x-3 group">
+                                    <span class="w-8 h-6 bg-gradient-to-r from-white via-blue-600 to-red-600 rounded-md flex items-center justify-center text-white text-xs font-bold shadow-sm group-hover:shadow-md transition-shadow">🇷🇺</span>
+                                    <div class="flex flex-col">
+                                        <span class="font-medium">Русский</span>
+                                        <span class="text-xs text-gray-500">Russia</span>
+                                    </div>
+                                </button>
+                                
+                                <button onclick="changeDashboardLanguage('uk')" class="language-option w-full text-left px-4 py-3 hover:bg-gradient-to-r hover:from-patient-light-blue hover:to-blue-50 text-gray-700 hover:text-patient-dark-blue transition-all duration-200 flex items-center space-x-3 group">
+                                    <span class="w-8 h-6 bg-gradient-to-r from-blue-500 to-yellow-400 rounded-md flex items-center justify-center text-white text-xs font-bold shadow-sm group-hover:shadow-md transition-shadow">🇺🇦</span>
+                                    <div class="flex flex-col">
+                                        <span class="font-medium">Українська</span>
+                                        <span class="text-xs text-gray-500">Ukraine</span>
+                                    </div>
+                                </button>
+                                
+                                <button onclick="changeDashboardLanguage('hi')" class="language-option w-full text-left px-4 py-3 hover:bg-gradient-to-r hover:from-patient-light-blue hover:to-blue-50 text-gray-700 hover:text-patient-dark-blue transition-all duration-200 flex items-center space-x-3 group">
+                                    <span class="w-8 h-6 bg-gradient-to-r from-orange-500 via-white to-green-600 rounded-md flex items-center justify-center text-white text-xs font-bold shadow-sm group-hover:shadow-md transition-shadow">🇮🇳</span>
+                                    <div class="flex flex-col">
+                                        <span class="font-medium">हिन्दी</span>
+                                        <span class="text-xs text-gray-500">India</span>
+                                    </div>
+                                </button>
                             </div>
                         </div>
 
@@ -3895,7 +3935,12 @@ if (!window.dashboardLanguageNames) {
         'pt': 'Português',
         'pl': 'Polski',
         'ja': '日本語',
-        'zh': '中文'
+        'zh': '中文',
+        'tr': 'Türkçe',
+        'ko': '한국어',
+        'ru': 'Русский',
+        'uk': 'Українська',
+        'hi': 'हिन्दी'
     };
 }
 

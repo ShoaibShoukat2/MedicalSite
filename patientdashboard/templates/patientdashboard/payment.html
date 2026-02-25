@@ -177,28 +177,28 @@
                     </div>
                     <div class="summary-details">
                         <div class="summary-detail">
-                            <span>Date:</span>
+                            <span data-translate="Date">Date:</span>
                             <span>16 Nov 2019</span>
                         </div>
                         <div class="summary-detail">
-                            <span>Time:</span>
+                            <span data-translate="Time">Time:</span>
                             <span>10:00 AM</span>
                         </div>
                         <div class="summary-detail">
-                            <span>Consulting Fee:</span>
+                            <span data-translate="Consulting Fee">Consulting Fee:</span>
                             <span>$100</span>
                         </div>
                         <div class="summary-detail">
-                            <span>Booking Fee:</span>
+                            <span data-translate="Booking Fee">Booking Fee:</span>
                             <span>$10</span>
                         </div>
                         <div class="summary-detail">
-                            <span>Video Call:</span>
+                            <span data-translate="Video Call">Video Call:</span>
                             <span>$50</span>
                         </div>
                         <hr>
                         <div class="total-amount">
-                            <span>Total: $160</span>
+                            <span data-translate="Total">Total: $160</span>
                         </div>
                     </div>
                 </div>
@@ -208,67 +208,67 @@
             <!-- Personal Information Section -->
             <div class="card mb-4">
                 <div class="card-body">
-                    <h5 class="section-heading">Personal Information</h5>
+                    <h5 class="section-heading" data-translate="Personal Information">Personal Information</h5>
                     <div class="row">
                         <div class="col-md-6">
-                            <input type="text" class="form-control" placeholder="First Name">
+                            <input type="text" class="form-control" placeholder="First Name" data-translate="First Name">
                         </div>
                         <div class="col-md-6">
-                            <input type="text" class="form-control" placeholder="Last Name">
+                            <input type="text" class="form-control" placeholder="Last Name" data-translate="Last Name">
                         </div>
                         <div class="col-md-6">
-                            <input type="email" class="form-control" placeholder="Email">
+                            <input type="email" class="form-control" placeholder="Email" data-translate="Email">
                         </div>
                         <div class="col-md-6">
-                            <input type="text" class="form-control" placeholder="Phone">
+                            <input type="text" class="form-control" placeholder="Phone" data-translate="Phone">
                         </div>
                     </div>
-                    <p class="mt-3 mb-0">Existing Customer? <a href="#" class="text-primary">Click here to login</a></p>
+                    <p class="mt-3 mb-0"><span data-translate="Existing Customer?">Existing Customer?</span> <a href="#" class="text-primary" data-translate="Click here to login">Click here to login</a></p>
                 </div>
             </div>
 
             <!-- Payment Method Section -->
             <div class="card mb-4">
                 <div class="card-body">
-                    <h5 class="section-heading">Payment Method</h5>
+                    <h5 class="section-heading" data-translate="Payment Method">Payment Method</h5>
                     <div class="payment-methods">
                         <div class="form-check mb-3">
                             <input class="form-check-input" type="radio" name="paymentMethod" id="creditCard" checked>
-                            <label class="form-check-label" for="creditCard">Credit Card</label>
+                            <label class="form-check-label" for="creditCard" data-translate="Credit Card">Credit Card</label>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
-                                <input type="text" class="form-control" placeholder="Name on Card">
+                                <input type="text" class="form-control" placeholder="Name on Card" data-translate="Name on Card">
                             </div>
                             <div class="col-md-6">
-                                <input type="text" class="form-control" placeholder="Card Number">
+                                <input type="text" class="form-control" placeholder="Card Number" data-translate="Card Number">
                             </div>
                             <div class="col-md-4">
-                                <input type="text" class="form-control" placeholder="MM">
+                                <input type="text" class="form-control" placeholder="MM" data-translate="MM">
                             </div>
                             <div class="col-md-4">
-                                <input type="text" class="form-control" placeholder="YY">
+                                <input type="text" class="form-control" placeholder="YY" data-translate="YY">
                             </div>
                             <div class="col-md-4">
-                                <input type="text" class="form-control" placeholder="CVV">
+                                <input type="text" class="form-control" placeholder="CVV" data-translate="CVV">
                             </div>
                         </div>
                         <div class="form-check mt-3">
                             <input class="form-check-input" type="radio" name="paymentMethod" id="paypal">
-                            <label class="form-check-label" for="paypal">PayPal</label>
+                            <label class="form-check-label" for="paypal" data-translate="PayPal">PayPal</label>
                         </div>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="terms">
                         <label class="form-check-label" for="terms">
-                            I have read and accept <a href="#" class="text-primary">Terms & Conditions</a>
+                            <span data-translate="I have read and accept">I have read and accept</span> <a href="#" class="text-primary" data-translate="Terms & Conditions">Terms & Conditions</a>
                         </label>
                     </div>
                 </div>
             </div>
 
             <div class="text-center text-md-left mb-4">
-                <a href="{% url 'patientdashboard:booking_success' %}" class="btn btn-pay">Confirm and Pay</a>
+                <a href="{% url 'patientdashboard:booking_success' %}" class="btn btn-pay" data-translate="Confirm and Pay">Confirm and Pay</a>
             </div>
         </div>
 

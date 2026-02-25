@@ -163,9 +163,9 @@
     <!-- Dropdown for Specialization -->
     <div class="row">
         <div class="col-md-12 mb-3">
-            <label for="specialization" class="form-label">Select Specialization</label>
+            <label for="specialization" class="form-label" data-translate="Select Specialty">Select Specialization</label>
             <select id="specialization" class="form-control">
-                <option value="">Select Specialization</option>
+                <option value="" data-translate="Select Specialty">Select Specialization</option>
                 {% for key, value in SPECIALTY_CHOICES %}
                     <option value="{{ key }}">{{ value }}</option>
                 {% endfor %}
@@ -175,7 +175,7 @@
 
     <!-- Practitioners List -->
     <div id="practitioners-container" class="row">
-        <p class="text-muted">Please select a specialization.</p>
+        <p class="text-muted" data-translate="Please select a specialization.">Please select a specialization.</p>
     </div>
 </div>
 
@@ -207,10 +207,10 @@
                                     <h5 class="card-title">${practitioner.first_name} ${practitioner.last_name}</h5>
                                     <p class="card-text text-muted">${practitioner.specialty}</p>
                                     <div class="d-flex justify-content-center gap-2">
-                                        <button class="btn btn-primary btn-sm view-profile-btn" data-id="${practitioner.id}">
+                                        <button class="btn btn-primary btn-sm view-profile-btn" data-id="${practitioner.id}" data-translate="View Profile">
                                             View Profile
                                         </button>
-                                        <button class="btn btn-outline-primary btn-sm select-practitioner-btn" data-id="${practitioner.id}">
+                                        <button class="btn btn-outline-primary btn-sm select-practitioner-btn" data-id="${practitioner.id}" data-translate="Book Appointment">
                                             Book Appointment
                                         </button>
                                     </div>
@@ -222,10 +222,10 @@
 
                     attachCardListeners();
                 } else {
-                    practitionersContainer.innerHTML = '<p class="text-muted">No practitioners available for the selected specialization.</p>';
+                    practitionersContainer.innerHTML = '<p class="text-muted" data-translate="No practitioners available for the selected specialization.">No practitioners available for the selected specialization.</p>';
                 }
             } else {
-                practitionersContainer.innerHTML = '<p class="text-muted">No practitioners available. Please select a specialization.</p>';
+                practitionersContainer.innerHTML = '<p class="text-muted" data-translate="No practitioners available. Please select a specialization.">No practitioners available. Please select a specialization.</p>';
             }
         });
 

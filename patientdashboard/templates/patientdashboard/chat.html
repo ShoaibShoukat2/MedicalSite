@@ -126,11 +126,11 @@
                             <i class="fas fa-comment-medical text-3xl sm:text-4xl lg:text-5xl text-white"></i>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white mb-1 sm:mb-2 tracking-tight">My Messages</h1>
+                            <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white mb-1 sm:mb-2 tracking-tight" data-translate="My Messages">My Messages</h1>
                             <p class="text-blue-100 text-sm sm:text-base lg:text-lg flex items-center font-medium">
                                 <i class="fas fa-shield-alt mr-2 text-green-300"></i>
-                                <span class="hidden sm:inline">Secure, encrypted communication with your doctors</span>
-                                <span class="sm:hidden">Secure messaging</span>
+                                <span class="hidden sm:inline" data-translate="Secure, encrypted communication with your doctors">Secure, encrypted communication with your doctors</span>
+                                <span class="sm:hidden" data-translate="Secure messaging">Secure messaging</span>
                             </p>
                             <div class="flex flex-wrap items-center gap-2 mt-2 sm:mt-3">
                                 <span class="text-white text-xs sm:text-sm bg-white bg-opacity-20 px-2 sm:px-3 py-1 rounded-full">
@@ -178,7 +178,7 @@
         {% if existing_chats %}
             <div class="mb-4 sm:mb-6">
                 <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-3 sm:mb-4 flex items-center px-2 sm:px-0">
-                    <span class="gradient-text">Active Conversations</span>
+                    <span class="gradient-text" data-translate="Active Conversations">Active Conversations</span>
                     <span class="ml-2 sm:ml-3 bg-patient-blue text-white text-xs sm:text-sm px-2 sm:px-3 py-1 rounded-full">{{ existing_chats|length }}</span>
                 </h2>
             </div>
@@ -274,7 +274,7 @@
                         <!-- Action Button -->
                         <button class="w-full bg-gradient-to-r from-patient-blue to-indigo-600 text-white font-bold py-3 sm:py-4 px-4 sm:px-6 rounded-lg sm:rounded-xl hover:from-patient-dark-blue hover:to-indigo-700 transition-all duration-300 shadow-lg hover:shadow-2xl transform hover:scale-105 flex items-center justify-center group text-sm sm:text-base">
                             <i class="fas fa-comment-dots mr-2 text-base sm:text-lg group-hover:animate-bounce"></i>
-                            <span>Open Chat</span>
+                            <span data-translate="Open Chat">Open Chat</span>
                             <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
                         </button>
                     </div>
@@ -294,16 +294,16 @@
                     </div>
                     
                     <h2 class="text-4xl font-extrabold mb-4">
-                        <span class="gradient-text">No Conversations Yet</span>
+                        <span class="gradient-text" data-translate="No Conversations Yet">No Conversations Yet</span>
                     </h2>
-                    <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
+                    <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed" data-translate="Start chatting with your healthcare providers after your appointments are accepted.">
                         Start chatting with your healthcare providers after your appointments are accepted.
                     </p>
 
                     {% if practitioners %}
                         <div class="mb-10">
-                            <h3 class="text-3xl font-bold text-gray-900 mb-2">Available Doctors</h3>
-                            <p class="text-gray-600 mb-8">Click on any doctor to start a conversation</p>
+                            <h3 class="text-3xl font-bold text-gray-900 mb-2" data-translate="Available Doctors">Available Doctors</h3>
+                            <p class="text-gray-600 mb-8" data-translate="Click on any doctor to start a conversation">Click on any doctor to start a conversation</p>
                             
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
                                 {% for practitioner in practitioners %}
@@ -334,7 +334,7 @@
                                     </div>
                                     <button class="w-full bg-gradient-to-r from-patient-blue to-indigo-600 text-white font-bold py-3 px-4 rounded-xl hover:from-patient-dark-blue hover:to-indigo-700 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center group">
                                         <i class="fas fa-comment-medical mr-2 group-hover:animate-bounce"></i>
-                                        <span>Start Chat</span>
+                                        <span data-translate="Start Chat">Start Chat</span>
                                         <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
                                     </button>
                                 </div>

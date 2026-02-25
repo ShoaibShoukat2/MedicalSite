@@ -183,7 +183,7 @@
                         <li class="mb-2"><i class="far fa-money-bill-alt me-2"></i>${{ practitioner.price|default:"-" }}</li>
                     </ul>
                     <div class="clinic-booking">
-                        <a href="{% url 'patient_dashboard:specialty_selection' %}" class="btn btn-primary">Book Appointment</a>
+                        <a href="{% url 'patient_dashboard:specialty_selection' %}" class="btn btn-primary" data-translate="Book Appointment">Book Appointment</a>
                     </div>
                 </div>
             </div>
@@ -193,10 +193,10 @@
     <!-- Tabs Navigation - Update to include Reviews tab -->
     <ul class="nav nav-tabs mb-3" id="profileTabs" role="tablist">
         <li class="nav-item">
-            <a class="nav-link" id="overview-tab" data-bs-toggle="tab" href="#overview" role="tab">OVERVIEW</a>
+            <a class="nav-link" id="overview-tab" data-bs-toggle="tab" href="#overview" role="tab" data-translate="Overview">OVERVIEW</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link active" id="reviews-tab" data-bs-toggle="tab" href="#reviews" role="tab">REVIEWS</a>
+            <a class="nav-link active" id="reviews-tab" data-bs-toggle="tab" href="#reviews" role="tab" data-translate="Reviews">REVIEWS</a>
         </li>
     </ul>
 
@@ -204,13 +204,13 @@
     <div class="tab-content">
         <!-- Overview Tab - Keep your existing code -->
         <div class="tab-pane fade" id="overview" role="tabpanel">
-            <h5 class="mb-3">About {{ practitioner.first_name }}</h5>
+            <h5 class="mb-3" data-translate="About">About {{ practitioner.first_name }}</h5>
             <p>{{ practitioner.description|default:"No description available." }}</p>
         </div>
         
         <!-- Reviews Tab -->
         <div class="tab-pane fade show active" id="reviews" role="tabpanel">
-            <h3 class="mb-4">Patient Reviews</h3>
+            <h3 class="mb-4" data-translate="Patient Reviews">Patient Reviews</h3>
             
             {% if reviews %}
                 <div class="review-section">
@@ -241,18 +241,18 @@
                 </div>
             {% else %}
                 <div class="alert alert-info">
-                    No reviews yet. Be the first to review this practitioner!
+                    <span data-translate="No reviews yet. Be the first to review this practitioner!">No reviews yet. Be the first to review this practitioner!</span>
                 </div>
             {% endif %}
             
             <!-- Review Form -->
             {% if is_patient_logged_in %}
                 <div class="review-form">
-                    <h5 class="mb-3">Write a Review</h5>
+                    <h5 class="mb-3" data-translate="Write a Review">Write a Review</h5>
                     <form method="post">
                         {% csrf_token %}
                         <div class="mb-3">
-                            <label class="form-label">Rating</label>
+                            <label class="form-label" data-translate="Rating">Rating</label>
                             <div class="star-rating">
                                 <input type="radio" id="star5" name="rating" value="5" />
                                 <label for="star5" title="5 stars"></label>
@@ -267,10 +267,10 @@
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Your Experience</label>
-                            <textarea name="feedback" class="form-control" rows="4" placeholder="Share your experience with this practitioner"></textarea>
+                            <label class="form-label" data-translate="Your Experience">Your Experience</label>
+                            <textarea name="feedback" class="form-control" rows="4" placeholder="Share your experience with this practitioner" data-translate="Share your experience with this practitioner"></textarea>
                         </div>
-                        <button type="submit" class="btn btn-primary">Submit Review</button>
+                        <button type="submit" class="btn btn-primary" data-translate="Submit Review">Submit Review</button>
                     </form>
                 </div>
             {% else %}

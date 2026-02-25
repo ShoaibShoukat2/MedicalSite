@@ -8,12 +8,12 @@
 <div class="bg-gradient-to-r from-patient-teal to-teal-600 rounded-2xl p-6 mb-8 text-white">
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
         <div>
-            <h1 class="text-2xl md:text-3xl font-bold mb-2">Search Results</h1>
+            <h1 class="text-2xl md:text-3xl font-bold mb-2" data-translate="Search Results">Search Results</h1>
             <p class="text-white/90">
                 {% if query %}
-                    Found {{ page_obj.paginator.count }} results for "{{ query }}"
+                    <span data-translate="Found">Found</span> {{ page_obj.paginator.count }} <span data-translate="results for">results for</span> "{{ query }}"
                 {% else %}
-                    Browse all available doctors
+                    <span data-translate="Browse all available doctors">Browse all available doctors</span>
                 {% endif %}
             </p>
         </div>
@@ -21,12 +21,12 @@
             <div class="flex items-center space-x-4">
                 <div class="text-center">
                     <div class="text-2xl font-bold">{{ page_obj.paginator.count|default:0 }}</div>
-                    <div class="text-sm text-white/80">Results</div>
+                    <div class="text-sm text-white/80" data-translate="Results">Results</div>
                 </div>
                 <div class="w-px h-12 bg-white/20"></div>
                 <div class="text-center">
                     <div class="text-2xl font-bold">{{ page_obj.paginator.num_pages|default:1 }}</div>
-                    <div class="text-sm text-white/80">Pages</div>
+                    <div class="text-sm text-white/80" data-translate="Pages">Pages</div>
                 </div>
             </div>
         </div>
@@ -36,45 +36,45 @@
 <!-- Advanced Search Filters -->
 <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 mb-8">
     <div class="flex items-center justify-between mb-4">
-        <h2 class="text-lg font-bold text-patient-dark-blue">Filter Results</h2>
+        <h2 class="text-lg font-bold text-patient-dark-blue" data-translate="Filter Results">Filter Results</h2>
         <button onclick="toggleFilters()" class="lg:hidden px-4 py-2 bg-patient-teal/10 text-patient-teal rounded-lg">
-            <i class="fas fa-filter mr-2"></i>Filters
+            <i class="fas fa-filter mr-2"></i><span data-translate="Filters">Filters</span>
         </button>
     </div>
     
     <form method="get" action="{% url 'patientdashboard:search' %}" id="search-filters" class="hidden lg:block">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
-                <label class="block text-sm font-medium text-patient-dark-gray mb-2">Search Query</label>
+                <label class="block text-sm font-medium text-patient-dark-gray mb-2" data-translate="Search Query">Search Query</label>
                 <input type="text" 
                        name="query" 
                        value="{{ query }}" 
                        class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-patient-teal/50 focus:border-patient-teal" 
-                       placeholder="Doctor name or specialty">
+                       placeholder="Doctor name or specialty" data-translate="Doctor name or specialty">
             </div>
             
             <div>
-                <label class="block text-sm font-medium text-patient-dark-gray mb-2">Gender</label>
+                <label class="block text-sm font-medium text-patient-dark-gray mb-2" data-translate="Gender">Gender</label>
                 <select name="gender" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-patient-teal/50 focus:border-patient-teal">
-                    <option value="">Any Gender</option>
-                    <option value="male" {% if gender == "male" %}selected{% endif %}>Male</option>
-                    <option value="female" {% if gender == "female" %}selected{% endif %}>Female</option>
+                    <option value="" data-translate="Any Gender">Any Gender</option>
+                    <option value="male" {% if gender == "male" %}selected{% endif %} data-translate="Male">Male</option>
+                    <option value="female" {% if gender == "female" %}selected{% endif %} data-translate="Female">Female</option>
                 </select>
             </div>
             
             <div>
-                <label class="block text-sm font-medium text-patient-dark-gray mb-2">Location</label>
+                <label class="block text-sm font-medium text-patient-dark-gray mb-2" data-translate="Location">Location</label>
                 <input type="text" 
                        name="location" 
                        value="{{ location }}" 
                        class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-patient-teal/50 focus:border-patient-teal" 
-                       placeholder="City or area">
+                       placeholder="City or area" data-translate="City or area">
             </div>
             
             <div>
-                <label class="block text-sm font-medium text-patient-dark-gray mb-2">Specialty</label>
+                <label class="block text-sm font-medium text-patient-dark-gray mb-2" data-translate="Specialty">Specialty</label>
                 <select name="specialty" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-patient-teal/50 focus:border-patient-teal">
-                    <option value="">All Specialties</option>
+                    <option value="" data-translate="All Specialties">All Specialties</option>
                     {% for key, value in practitioner.SPECIALTY_CHOICES %}
                         <option value="{{ key }}" {% if specialty == key %}selected{% endif %}>{{ value }}</option>
                     {% endfor %}
@@ -84,10 +84,10 @@
         
         <div class="flex flex-col sm:flex-row gap-4 mt-6">
             <button type="submit" class="px-6 py-3 bg-patient-teal text-white rounded-xl hover:bg-teal-700 transition-colors font-semibold">
-                <i class="fas fa-search mr-2"></i>Apply Filters
+                <i class="fas fa-search mr-2"></i><span data-translate="Apply Filters">Apply Filters</span>
             </button>
             <a href="{% url 'patientdashboard:search' %}" class="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors font-semibold text-center">
-                <i class="fas fa-times mr-2"></i>Clear All
+                <i class="fas fa-times mr-2"></i><span data-translate="Clear All">Clear All</span>
             </a>
         </div>
     </form>
@@ -166,11 +166,11 @@
             <div class="flex flex-col sm:flex-row gap-3">
                 <a href="{% url 'patientdashboard:practitioner_profile' practitioner.id %}" 
                    class="flex-1 px-4 py-3 border-2 border-patient-teal text-patient-teal rounded-xl hover:bg-patient-teal hover:text-white transition-all duration-300 font-semibold text-center">
-                    <i class="fas fa-user mr-2"></i>View Profile
+                    <i class="fas fa-user mr-2"></i><span data-translate="View Profile">View Profile</span>
                 </a>
                 <a href="{% url 'patientdashboard:available_slots' practitioner.id %}" 
                    class="flex-1 px-4 py-3 bg-patient-teal text-white rounded-xl hover:bg-teal-700 transition-all duration-300 font-semibold text-center shadow-lg">
-                    <i class="fas fa-calendar-plus mr-2"></i>Book Now
+                    <i class="fas fa-calendar-plus mr-2"></i><span data-translate="Book Now">Book Now</span>
                 </a>
             </div>
         </div>
@@ -217,22 +217,22 @@
     <div class="w-24 h-24 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-6">
         <i class="fas fa-search text-patient-teal text-4xl"></i>
     </div>
-    <h3 class="text-2xl font-semibold text-patient-dark-blue mb-4">No Results Found</h3>
+    <h3 class="text-2xl font-semibold text-patient-dark-blue mb-4" data-translate="No Results Found">No Results Found</h3>
     <p class="text-patient-dark-gray mb-8 max-w-md mx-auto">
         {% if query %}
-            We couldn't find any doctors matching "{{ query }}". Try adjusting your search criteria.
+            <span data-translate="We couldn't find any doctors matching">We couldn't find any doctors matching</span> "{{ query }}". <span data-translate="Try adjusting your search criteria.">Try adjusting your search criteria.</span>
         {% else %}
-            No doctors available at the moment. Please try again later.
+            <span data-translate="No doctors available at the moment. Please try again later.">No doctors available at the moment. Please try again later.</span>
         {% endif %}
     </p>
     <div class="flex flex-col sm:flex-row gap-4 justify-center">
         <a href="{% url 'patientdashboard:specialty_selection' %}" 
            class="inline-flex items-center px-6 py-3 bg-patient-teal text-white rounded-xl hover:bg-teal-700 transition-colors font-semibold">
-            <i class="fas fa-stethoscope mr-2"></i>Browse Specialties
+            <i class="fas fa-stethoscope mr-2"></i><span data-translate="Browse Specialties">Browse Specialties</span>
         </a>
         <button onclick="clearSearch()" 
                 class="inline-flex items-center px-6 py-3 border-2 border-patient-teal text-patient-teal rounded-xl hover:bg-patient-teal hover:text-white transition-colors font-semibold">
-            <i class="fas fa-times mr-2"></i>Clear Search
+            <i class="fas fa-times mr-2"></i><span data-translate="Clear Search">Clear Search</span>
         </button>
     </div>
 </div>

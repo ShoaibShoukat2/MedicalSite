@@ -6,6 +6,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reeducaive</title>
+    
+    <!-- Include Language Translation System -->
+    {% include 'language_system.html' %}
+    
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -1021,26 +1025,62 @@
                                 <span id="current-language" class="font-medium">English</span>
                                 <i class="fas fa-chevron-down text-xs"></i>
                             </button>
-                            <div id="language-dropdown" class="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 hidden z-50">
+                            <div id="language-dropdown" class="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 hidden z-50 max-h-96 overflow-y-auto">
                                 <a href="#" onclick="changeLanguage('en')" class="flex items-center space-x-3 px-4 py-3 hover:bg-medical-light-blue transition-colors">
-                                    <span class="text-xl">🇺🇸</span>
+                                    <span class="text-xl">🇬🇧</span>
                                     <span class="font-medium">English</span>
                                 </a>
                                 <a href="#" onclick="changeLanguage('es')" class="flex items-center space-x-3 px-4 py-3 hover:bg-medical-light-blue transition-colors">
-                                    <span class="text-xl">��</span>
+                                    <span class="text-xl">🇪🇸</span>
                                     <span class="font-medium">Español</span>
                                 </a>
                                 <a href="#" onclick="changeLanguage('fr')" class="flex items-center space-x-3 px-4 py-3 hover:bg-medical-light-blue transition-colors">
-                                    <span class="text-xl">��</span>
+                                    <span class="text-xl">🇫🇷</span>
                                     <span class="font-medium">Français</span>
                                 </a>
                                 <a href="#" onclick="changeLanguage('de')" class="flex items-center space-x-3 px-4 py-3 hover:bg-medical-light-blue transition-colors">
-                                    <span class="text-xl">��</span>
+                                    <span class="text-xl">🇩🇪</span>
                                     <span class="font-medium">Deutsch</span>
                                 </a>
+                                <a href="#" onclick="changeLanguage('it')" class="flex items-center space-x-3 px-4 py-3 hover:bg-medical-light-blue transition-colors">
+                                    <span class="text-xl">🇮🇹</span>
+                                    <span class="font-medium">Italiano</span>
+                                </a>
+                                <a href="#" onclick="changeLanguage('pt')" class="flex items-center space-x-3 px-4 py-3 hover:bg-medical-light-blue transition-colors">
+                                    <span class="text-xl">🇵🇹</span>
+                                    <span class="font-medium">Português</span>
+                                </a>
+                                <a href="#" onclick="changeLanguage('pl')" class="flex items-center space-x-3 px-4 py-3 hover:bg-medical-light-blue transition-colors">
+                                    <span class="text-xl">🇵🇱</span>
+                                    <span class="font-medium">Polski</span>
+                                </a>
+                                <a href="#" onclick="changeLanguage('ja')" class="flex items-center space-x-3 px-4 py-3 hover:bg-medical-light-blue transition-colors">
+                                    <span class="text-xl">🇯🇵</span>
+                                    <span class="font-medium">日本語</span>
+                                </a>
                                 <a href="#" onclick="changeLanguage('zh')" class="flex items-center space-x-3 px-4 py-3 hover:bg-medical-light-blue transition-colors">
-                                    <span class="text-xl">��</span>
+                                    <span class="text-xl">🇨🇳</span>
                                     <span class="font-medium">中文</span>
+                                </a>
+                                <a href="#" onclick="changeLanguage('tr')" class="flex items-center space-x-3 px-4 py-3 hover:bg-medical-light-blue transition-colors">
+                                    <span class="text-xl">🇹🇷</span>
+                                    <span class="font-medium">Türkçe</span>
+                                </a>
+                                <a href="#" onclick="changeLanguage('ko')" class="flex items-center space-x-3 px-4 py-3 hover:bg-medical-light-blue transition-colors">
+                                    <span class="text-xl">🇰🇷</span>
+                                    <span class="font-medium">한국어</span>
+                                </a>
+                                <a href="#" onclick="changeLanguage('ru')" class="flex items-center space-x-3 px-4 py-3 hover:bg-medical-light-blue transition-colors">
+                                    <span class="text-xl">🇷🇺</span>
+                                    <span class="font-medium">Русский</span>
+                                </a>
+                                <a href="#" onclick="changeLanguage('uk')" class="flex items-center space-x-3 px-4 py-3 hover:bg-medical-light-blue transition-colors">
+                                    <span class="text-xl">🇺🇦</span>
+                                    <span class="font-medium">Українська</span>
+                                </a>
+                                <a href="#" onclick="changeLanguage('hi')" class="flex items-center space-x-3 px-4 py-3 hover:bg-medical-light-blue transition-colors">
+                                    <span class="text-xl">🇮🇳</span>
+                                    <span class="font-medium">हिन्दी</span>
                                 </a>
                             </div>
                         </div>
@@ -1185,194 +1225,25 @@
         
 
 
-        // Language System
-        const translations = {
-            en: {
-                'Find a Practitioner & Book Appointment': 'Find a Practitioner & Book Appointment',
-                'Connect with qualified healthcare professionals': 'Connect with qualified healthcare professionals and get the care you deserve. Our platform makes it easy to find, book, and manage your medical appointments.',
-                'Search Doctors': 'Search Doctors',
-                'Search by practitioner name, specialty, or location...': 'Search by practitioner name, specialty, or location...',
-                'Why Choose Our Platform?': 'Why Choose Our Platform?',
-                'Experience healthcare the modern way': 'Experience healthcare the modern way with our comprehensive medical platform',
-                'Qualified Practitioners': 'Qualified Practitioners',
-                'Easy Booking': 'Easy Booking',
-                'Secure Communication': 'Secure Communication',
-                'Mobile Friendly': 'Mobile Friendly',
-                'HIPAA Compliant': 'HIPAA Compliant',
-                'AI Assistant': 'AI Assistant',
-                'Get instant help with our intelligent medical assistant available 24/7': 'Get instant help with our intelligent medical assistant available 24/7',
-                'Schedule appointments instantly with our user-friendly booking system': 'Schedule appointments instantly with our user-friendly booking system',
-                'Chat securely with your healthcare providers through our encrypted platform': 'Chat securely with your healthcare providers through our encrypted platform',
-                'Access your healthcare anywhere, anytime with our responsive design': 'Access your healthcare anywhere, anytime with our responsive design',
-                'Your medical information is protected with industry-standard security': 'Your medical information is protected with industry-standard security',
-                'Medical Specialties': 'Medical Specialties',
-                'Find specialists across various medical fields': 'Find specialists across various medical fields',
-                'How It Works': 'How It Works',
-                'Get started in just three simple steps': 'Get started in just three simple steps',
-                'Ready to Get Started?': 'Ready to Get Started?',
-                'Join thousands of patients who trust our platform for their healthcare needs': 'Join thousands of patients who trust our platform for their healthcare needs',
-                'Sign Up as Patient': 'Sign Up as Patient',
-                'Join as Practitioner': 'Join as Practitioner',
-                'Patient Login': 'Patient Login',
-                'Practitioner Login': 'Practitioner Login',
-                'Welcome': 'Welcome',
-                'Logout': 'Logout'
-            },
-            'es': {
-                'Find a Practitioner & Book Appointment': 'Encuentra un Médico y Reserva una Cita',
-                'Connect with qualified healthcare professionals': 'Conéctate con profesionales de la salud calificados',
-                'Search by practitioner name, specialty, or location...': 'Buscar por nombre del médico, especialidad o ubicación...',
-                'Search Doctors': 'Buscar Médicos',
-                'Why Choose Our Platform?': '¿Por qué elegir nuestra plataforma?',
-                'Experience healthcare the modern way': 'Experimenta la atención médica de manera moderna',
-                'Qualified Practitioners': 'Profesionales Calificados',
-                'Easy Booking': 'Reserva Fácil',
-                'Secure Communication': 'Comunicación Segura',
-                'Mobile Friendly': 'Compatible con Móviles',
-                'HIPAA Compliant': 'Cumple con HIPAA',
-                'AI Assistant': 'Asistente IA',
-                'Get instant help with our intelligent medical assistant available 24/7': 'Obtén ayuda instantánea con nuestro asistente médico inteligente disponible 24/7',
-                'Schedule appointments instantly with our user-friendly booking system': 'Programa citas al instante con nuestro sistema de reservas fácil de usar',
-                'Chat securely with your healthcare providers through our encrypted platform': 'Chatea de forma segura con tus proveedores de atención médica a través de nuestra plataforma encriptada',
-                'Access your healthcare anywhere, anytime with our responsive design': 'Accede a tu atención médica en cualquier lugar, en cualquier momento con nuestro diseño responsivo',
-                'Your medical information is protected with industry-standard security': 'Tu información médica está protegida con seguridad estándar de la industria',
-                'Medical Specialties': 'Especialidades Médicas',
-                'Find specialists across various medical fields': 'Encuentra especialistas en varios campos médicos',
-                'How It Works': 'Cómo Funciona',
-                'Get started in just three simple steps': 'Comienza en solo tres pasos simples',
-                'Ready to Get Started?': '¿Listo para comenzar?',
-                'Join thousands of patients who trust our platform for their healthcare needs': 'Únete a miles de pacientes que confían en nuestra plataforma para sus necesidades de atención médica',
-                'Sign Up as Patient': 'Registrarse como Paciente',
-                'Join as Practitioner': 'Unirse como Médico',
-                'Patient Login': 'Iniciar Sesión Paciente',
-                'Practitioner Login': 'Iniciar Sesión Médico',
-                'Welcome': 'Bienvenido',
-                'Logout': 'Cerrar Sesión'
-            },
-            'fr': {
-                'Find a Practitioner & Book Appointment': 'Trouvez un Praticien et Réservez un Rendez-vous',
-                'Connect with qualified healthcare professionals': 'Connectez-vous avec des professionnels de santé qualifiés',
-                'Search by practitioner name, specialty, or location...': 'Rechercher par nom de praticien, spécialité ou lieu...',
-                'Search Doctors': 'Rechercher des Médecins',
-                'Why Choose Our Platform?': 'Pourquoi choisir notre plateforme?',
-                'Experience healthcare the modern way': 'Découvrez les soins de santé à la manière moderne',
-                'Qualified Practitioners': 'Praticiens Qualifiés',
-                'Easy Booking': 'Réservation Facile',
-                'Secure Communication': 'Communication Sécurisée',
-                'Mobile Friendly': 'Compatible Mobile',
-                'HIPAA Compliant': 'Conforme HIPAA',
-                'AI Assistant': 'Assistant IA',
-                'Get instant help with our intelligent medical assistant available 24/7': 'Obtenez une aide instantanée avec notre assistant médical intelligent disponible 24h/24 et 7j/7',
-                'Schedule appointments instantly with our user-friendly booking system': 'Planifiez des rendez-vous instantanément avec notre système de réservation convivial',
-                'Chat securely with your healthcare providers through our encrypted platform': 'Discutez en toute sécurité avec vos prestataires de soins via notre plateforme cryptée',
-                'Access your healthcare anywhere, anytime with our responsive design': 'Accédez à vos soins de santé partout, à tout moment avec notre design réactif',
-                'Your medical information is protected with industry-standard security': 'Vos informations médicales sont protégées par une sécurité standard de l\'industrie',
-                'Medical Specialties': 'Spécialités Médicales',
-                'Find specialists across various medical fields': 'Trouvez des spécialistes dans divers domaines médicaux',
-                'Cardiology': 'Cardiologie',
-                'Heart and cardiovascular specialists': 'Spécialistes du cœur et cardiovasculaires',
-                'Neurology': 'Neurologie',
-                'Brain and nervous system experts': 'Experts du cerveau et du système nerveux',
-                'Orthopedics': 'Orthopédie',
-                'Bone and joint specialists': 'Spécialistes des os et des articulations',
-                'Ophthalmology': 'Ophtalmologie',
-                'Eye care professionals': 'Professionnels des soins oculaires',
-                'Dentistry': 'Dentisterie',
-                'Dental care specialists': 'Spécialistes des soins dentaires',
-                'Pediatrics': 'Pédiatrie',
-                'Children\'s healthcare experts': 'Experts en soins de santé pour enfants',
-                'Gynecology': 'Gynécologie',
-                'Women\'s health specialists': 'Spécialistes de la santé des femmes',
-                'Pulmonology': 'Pneumologie',
-                'Respiratory system experts': 'Experts du système respiratoire',
-                'How It Works': 'Comment ça marche',
-                'Get started in just three simple steps': 'Commencez en seulement trois étapes simples',
-                'Search & Find': 'Rechercher et Trouver',
-                'Search for healthcare providers by specialty, location, or name. Browse profiles and read reviews.': 'Recherchez des prestataires de soins par spécialité, lieu ou nom. Parcourez les profils et lisez les avis.',
-                'Book Appointment': 'Réserver un Rendez-vous',
-                'Select your preferred time slot and book your appointment instantly. Receive confirmation immediately.': 'Sélectionnez votre créneau horaire préféré et réservez votre rendez-vous instantanément. Recevez une confirmation immédiatement.',
-                'Get Care': 'Recevoir des Soins',
-                'Attend your appointment and receive quality healthcare. Follow up through our secure messaging system.': 'Assistez à votre rendez-vous et recevez des soins de qualité. Effectuez un suivi via notre système de messagerie sécurisé.',
-                'Ready to Get Started?': 'Prêt à commencer?',
-                'Join thousands of patients who trust our platform for their healthcare needs': 'Rejoignez des milliers de patients qui font confiance à notre plateforme pour leurs besoins de santé',
-                'Sign Up as Patient': 'S\'inscrire comme Patient',
-                'Join as Practitioner': 'Rejoindre comme Praticien',
-                'Patient Login': 'Connexion Patient',
-                'Practitioner Login': 'Connexion Praticien',
-                'Welcome': 'Bienvenue',
-                'Logout': 'Déconnexion'
-            },
-            'de': {
-                'Find a Practitioner & Book Appointment': 'Finden Sie einen Arzt und buchen Sie einen Termin',
-                'Connect with qualified healthcare professionals': 'Verbinden Sie sich mit qualifizierten Gesundheitsfachkräften',
-                'Search by practitioner name, specialty, or location...': 'Suchen Sie nach Arztname, Fachgebiet oder Standort...',
-                'Search Doctors': 'Ärzte suchen',
-                'Why Choose Our Platform?': 'Warum unsere Plattform wählen?',
-                'Experience healthcare the modern way': 'Erleben Sie Gesundheitsversorgung auf moderne Art',
-                'Qualified Practitioners': 'Qualifizierte Ärzte',
-                'Easy Booking': 'Einfache Buchung',
-                'Secure Communication': 'Sichere Kommunikation',
-                'Mobile Friendly': 'Mobilfreundlich',
-                'HIPAA Compliant': 'HIPAA-konform',
-                'AI Assistant': 'KI-Assistent',
-                'Get instant help with our intelligent medical assistant available 24/7': 'Erhalten Sie sofortige Hilfe von unserem intelligenten medizinischen Assistenten, der rund um die Uhr verfügbar ist',
-                'Schedule appointments instantly with our user-friendly booking system': 'Terminieren Sie Termine sofort mit unserem benutzerfreundlichen Buchungssystem',
-                'Chat securely with your healthcare providers through our encrypted platform': 'Chatten Sie sicher mit Ihren Gesundheitsdienstleistern über unsere verschlüsselte Plattform',
-                'Access your healthcare anywhere, anytime with our responsive design': 'Greifen Sie jederzeit und überall auf Ihre Gesundheitsversorgung zu mit unserem responsiven Design',
-                'Your medical information is protected with industry-standard security': 'Ihre medizinischen Informationen sind mit branchenüblicher Sicherheit geschützt',
-                'Medical Specialties': 'Medizinische Fachgebiete',
-                'Find specialists across various medical fields': 'Finden Sie Spezialisten in verschiedenen medizinischen Bereichen',
-                'How It Works': 'Wie es funktioniert',
-                'Get started in just three simple steps': 'Beginnen Sie in nur drei einfachen Schritten',
-                'Ready to Get Started?': 'Bereit anzufangen?',
-                'Join thousands of patients who trust our platform for their healthcare needs': 'Schließen Sie sich Tausenden von Patienten an, die unserer Plattform für ihre Gesundheitsbedürfnisse vertrauen',
-                'Sign Up as Patient': 'Als Patient anmelden',
-                'Join as Practitioner': 'Als Arzt beitreten',
-                'Patient Login': 'Patienten-Login',
-                'Practitioner Login': 'Arzt-Login',
-                'Welcome': 'Willkommen',
-                'Logout': 'Abmelden'
-            },
-            'zh': {
-                'Find a Practitioner & Book Appointment': '寻找医生并预约',
-                'Connect with qualified healthcare professionals': '与合格的医疗专业人员联系',
-                'Search by practitioner name, specialty, or location...': '按医生姓名、专科或地点搜索...',
-                'Search Doctors': '搜索医生',
-                'Why Choose Our Platform?': '为什么选择我们的平台？',
-                'Experience healthcare the modern way': '体验现代化的医疗保健',
-                'Qualified Practitioners': '合格的医生',
-                'Easy Booking': '轻松预约',
-                'Secure Communication': '安全通信',
-                'Mobile Friendly': '移动友好',
-                'HIPAA Compliant': 'HIPAA合规',
-                'AI Assistant': 'AI助手',
-                'Get instant help with our intelligent medical assistant available 24/7': '通过我们24/7可用的智能医疗助手获得即时帮助',
-                'Schedule appointments instantly with our user-friendly booking system': '使用我们用户友好的预约系统即时安排预约',
-                'Chat securely with your healthcare providers through our encrypted platform': '通过我们的加密平台与您的医疗服务提供者安全聊天',
-                'Access your healthcare anywhere, anytime with our responsive design': '通过我们的响应式设计随时随地访问您的医疗保健',
-                'Your medical information is protected with industry-standard security': '您的医疗信息受到行业标准安全保护',
-                'Medical Specialties': '医疗专科',
-                'Find specialists across various medical fields': '在各个医疗领域寻找专家',
-                'How It Works': '工作原理',
-                'Get started in just three simple steps': '只需三个简单步骤即可开始',
-                'Ready to Get Started?': '准备开始了吗？',
-                'Join thousands of patients who trust our platform for their healthcare needs': '加入数千名信任我们平台满足其医疗需求的患者',
-                'Sign Up as Patient': '注册为患者',
-                'Join as Practitioner': '加入为医生',
-                'Patient Login': '患者登录',
-                'Practitioner Login': '医生登录',
-                'Welcome': '欢迎',
-                'Logout': '退出登录'
-            }
-        };
+        // Use translations from language_system.html (already loaded as window.dashboardTranslations)
+        // No need to redefine - just use window.dashboardTranslations directly
 
-        // Language names for display
+        // Language names for display - All 14 languages
         const languageNames = {
-            'en': 'English',
-            'es': 'Español',
-            'fr': 'Français',
-            'de': 'Deutsch',
-            'zh': '中文'
+            'en': '🇬🇧 English',
+            'es': '🇪🇸 Español',
+            'fr': '🇫🇷 Français',
+            'de': '🇩🇪 Deutsch',
+            'it': '🇮🇹 Italiano',
+            'pt': '🇵🇹 Português',
+            'pl': '🇵🇱 Polski',
+            'ja': '🇯🇵 日本語',
+            'zh': '🇨🇳 中文',
+            'tr': '🇹🇷 Türkçe',
+            'ko': '🇰🇷 한국어',
+            'ru': '🇷🇺 Русский',
+            'uk': '🇺🇦 Українська',
+            'hi': '🇮🇳 हिन्दी'
         };
 
         // Change language function - make it globally accessible
@@ -1404,7 +1275,19 @@
                 // Show success message
                 showLanguageChangeMessage(languageNames[langCode]);
                 
+                // Close dropdown
+                const dropdown = document.getElementById('language-dropdown');
+                if (dropdown) {
+                    dropdown.classList.add('hidden');
+                }
+                
                 console.log('Language changed successfully to:', langCode);
+                
+                // Reload page after 800ms for better translation accuracy
+                setTimeout(function() {
+                    window.location.reload();
+                }, 800);
+                
             } catch (error) {
                 console.error('Error changing language:', error);
             }
@@ -1439,18 +1322,32 @@
         // Translate page content
         function translatePage(langCode) {
             try {
-                console.log('Translating page to:', langCode);
-                const translation = translations[langCode] || translations['en'];
+                console.log('=== Starting Translation ===');
+                console.log('Target language:', langCode);
+                console.log('window.dashboardTranslations available:', !!window.dashboardTranslations);
+                
+                if (!window.dashboardTranslations) {
+                    console.error('CRITICAL: window.dashboardTranslations is undefined');
+                    return;
+                }
+                
+                const translation = window.dashboardTranslations[langCode] || window.dashboardTranslations['en'];
                 
                 if (!translation) {
                     console.error('No translation found for language:', langCode);
                     return;
                 }
                 
+                console.log('Translation object loaded, keys count:', Object.keys(translation).length);
+                
                 let translatedCount = 0;
+                let missingKeys = [];
                 
                 // Translate all elements with data-translate attribute
-                document.querySelectorAll('[data-translate]').forEach(element => {
+                const elementsToTranslate = document.querySelectorAll('[data-translate]');
+                console.log('Found elements with data-translate:', elementsToTranslate.length);
+                
+                elementsToTranslate.forEach(element => {
                     const key = element.getAttribute('data-translate');
                     if (translation[key]) {
                         if (element.tagName === 'INPUT' && (element.type === 'text' || element.type === 'search')) {
@@ -1459,8 +1356,17 @@
                             element.textContent = translation[key];
                         }
                         translatedCount++;
+                    } else {
+                        missingKeys.push(key);
                     }
                 });
+                
+                if (missingKeys.length > 0) {
+                    console.warn('Missing translation keys:', missingKeys.slice(0, 10)); // Show first 10
+                    if (missingKeys.length > 10) {
+                        console.warn(`... and ${missingKeys.length - 10} more`);
+                    }
+                }
                 
                 // Also translate navbar buttons that might not have data-translate
                 const patientLoginBtn = document.querySelector('a[href*="patient_login"]');
@@ -1568,35 +1474,61 @@
             }
             
             try {
-                console.log('Initializing language system...');
+                console.log('=== Language System Initialization ===');
+                console.log('window.dashboardTranslations exists:', !!window.dashboardTranslations);
                 
                 // Check if translations object is properly loaded
-                if (!translations || !translations.en) {
-                    console.error('Translations object not properly loaded');
+                if (!window.dashboardTranslations) {
+                    console.error('ERROR: window.dashboardTranslations is not defined!');
+                    console.log('Attempting to wait for it to load...');
+                    setTimeout(function() {
+                        if (window.dashboardTranslations) {
+                            console.log('Translations loaded after delay');
+                            initializeLanguageSystem();
+                        } else {
+                            console.error('CRITICAL: Translations still not loaded after delay');
+                        }
+                    }, 500);
                     return;
                 }
                 
-                const savedLanguage = localStorage.getItem('selectedLanguage') || 'en';
-                console.log('Saved language:', savedLanguage);
-                
-                // Update current language display
-                const currentLangElement = document.getElementById('current-language');
-                if (currentLangElement) {
-                    currentLangElement.textContent = languageNames[savedLanguage] || 'English';
+                if (!window.dashboardTranslations.en) {
+                    console.error('ERROR: English translations not found in window.dashboardTranslations');
+                    return;
                 }
                 
-                // Apply saved language if not English
-                if (savedLanguage !== 'en') {
-                    setTimeout(() => {
-                        changeLanguage(savedLanguage);
-                    }, 100);
-                }
+                console.log('Available languages:', Object.keys(window.dashboardTranslations));
+                initializeLanguageSystem();
                 
-                console.log('Language system initialized successfully');
             } catch (error) {
                 console.error('Error initializing language system:', error);
             }
         });
+        
+        function initializeLanguageSystem() {
+            const savedLanguage = localStorage.getItem('selectedLanguage') || 'en';
+            console.log('Saved language from localStorage:', savedLanguage);
+            
+            // Update current language display
+            const currentLangElement = document.getElementById('current-language');
+            if (currentLangElement) {
+                currentLangElement.textContent = languageNames[savedLanguage] || '🇬🇧 English';
+                console.log('Updated language display to:', languageNames[savedLanguage]);
+            }
+            
+            // Apply saved language translation WITHOUT reload on page load
+            if (savedLanguage !== 'en') {
+                console.log('Applying saved language:', savedLanguage);
+                setTimeout(() => {
+                    translatePage(savedLanguage);
+                    document.documentElement.setAttribute('lang', savedLanguage);
+                }, 100);
+            } else {
+                console.log('Default language (English) - no translation needed');
+            }
+            
+            console.log('Language system initialized successfully');
+        }
 
         // Professional Navbar Scroll Effect
         window.addEventListener('scroll', function() {

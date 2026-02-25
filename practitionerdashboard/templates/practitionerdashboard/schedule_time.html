@@ -293,10 +293,12 @@
         padding: 0;
     }
     
-    /* Day View Styles */
+    /* Day View Styles - Google Calendar Style */
     .day-view-container {
         display: none;
-        padding: 20px;
+        padding: 0;
+        min-height: 600px;
+        background: white;
     }
     
     .day-view-container.active {
@@ -304,67 +306,159 @@
     }
     
     .day-schedule {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
         background: white;
-        border: 1px solid #dadce0;
-        border-radius: 8px;
     }
     
     .day-header {
         padding: 16px 20px;
-        border-bottom: 1px solid #dadce0;
-        background: #f8f9fa;
+        border-bottom: 2px solid #e0e0e0;
+        background: white;
+        position: sticky;
+        top: 0;
+        z-index: 10;
     }
     
     .day-date {
-        font-size: 18px;
-        font-weight: 500;
+        font-size: 22px;
+        font-weight: 400;
         color: #3c4043;
+        font-family: 'Google Sans', Roboto, Arial, sans-serif;
     }
     
-    .time-slots-list {
-        padding: 20px;
-    }
-    
-    .time-slot-row {
+    .day-grid-container {
         display: flex;
-        align-items: center;
-        padding: 12px;
-        border-bottom: 1px solid #f1f3f4;
-        transition: background 0.2s;
+        flex: 1;
+        overflow-y: auto;
+        max-height: 700px;
     }
     
-    .time-slot-row:hover {
+    .day-time-column {
+        width: 80px;
+        border-right: 1px solid #dadce0;
+        background: #fafafa;
+        flex-shrink: 0;
+    }
+    
+    .day-time-slot {
+        height: 60px;
+        border-bottom: 1px solid #e0e0e0;
+        padding: 8px 12px 0 0;
+        text-align: right;
+        font-size: 11px;
+        color: #70757a;
+        font-weight: 500;
+        position: relative;
+    }
+    
+    .day-time-slot:first-child {
+        border-top: 1px solid #e0e0e0;
+    }
+    
+    .day-events-column {
+        flex: 1;
+        position: relative;
+        background: white;
+    }
+    
+    .day-hour-line {
+        height: 60px;
+        border-bottom: 1px solid #e0e0e0;
+        position: relative;
+    }
+    
+    .day-hour-line:first-child {
+        border-top: 1px solid #e0e0e0;
+    }
+    
+    .day-hour-line:hover {
         background: #f8f9fa;
     }
     
-    .time-label {
-        width: 100px;
-        font-size: 13px;
-        color: #5f6368;
-        font-weight: 500;
-    }
-    
-    .slot-content {
-        flex: 1;
-        padding: 12px 16px;
-        background: #e8f0fe;
-        border-left: 4px solid #1a73e8;
+    .day-event-block {
+        position: absolute;
+        left: 4px;
+        right: 4px;
+        background: #039be5;
+        border-left: 4px solid #0277bd;
         border-radius: 4px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+        padding: 8px;
+        color: white;
+        font-size: 12px;
+        cursor: pointer;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        transition: all 0.2s;
+        overflow: hidden;
+        z-index: 5;
     }
     
-    .slot-info {
-        font-size: 14px;
-        color: #1a73e8;
+    .day-event-block:hover {
+        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        transform: translateX(2px);
+    }
+    
+    .day-event-time {
+        font-weight: 600;
+        font-size: 11px;
+        margin-bottom: 4px;
+    }
+    
+    .day-event-title {
+        font-size: 13px;
         font-weight: 500;
+        margin-bottom: 2px;
+    }
+    
+    .day-event-remove {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        background: rgba(255, 255, 255, 0.3);
+        border: none;
+        color: white;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        transition: all 0.2s;
+    }
+    
+    .day-event-remove:hover {
+        background: rgba(255, 255, 255, 0.5);
+        transform: scale(1.1);
+    }
+    
+    .empty-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 60px 20px;
+        text-align: center;
+    }
+    
+    .empty-state i {
+        font-size: 64px;
+        color: #dadce0;
+        margin-bottom: 20px;
+    }
+    
+    .slot-remove-btn:hover {
+        background: rgba(95, 99, 104, 0.1) !important;
+        color: #d93025 !important;
     }
     
     /* Week View Styles */
     .week-view-container {
         display: none;
-        padding: 0;
+        padding: 20px;
+        min-height: 400px;
     }
     
     .week-view-container.active {
@@ -446,7 +540,7 @@
     
     /* Month View Styles */
     .month-view-container {
-        display: block;
+        display: none;
     }
     
     .month-view-container.active {
@@ -1104,8 +1198,8 @@
                         <div class="day-header">
                             <div class="day-date" id="dayViewDate"></div>
                         </div>
-                        <div class="time-slots-list" id="dayTimeSlots">
-                            <!-- Time slots will be generated by JavaScript -->
+                        <div class="day-grid-container" id="dayGridContainer">
+                            <!-- Time column and events will be generated by JavaScript -->
                         </div>
                     </div>
                 </div>
@@ -1279,77 +1373,177 @@
     let selectedDate = null;
     let currentView = 'month'; // Default view
     
-    // Switch View Function
-    function switchView(view) {
+    // Switch View Function - Make it globally accessible
+    window.switchView = function(view) {
+        console.log('Switching to view:', view);
         currentView = view;
         
         // Update active tab
         document.querySelectorAll('.view-tab').forEach(tab => tab.classList.remove('active'));
-        document.getElementById(`${view}ViewTab`).classList.add('active');
+        const targetTab = document.getElementById(`${view}ViewTab`);
+        if (targetTab) {
+            targetTab.classList.add('active');
+        }
         
         // Hide all views
-        document.getElementById('monthView').classList.remove('active');
-        document.getElementById('dayView').classList.remove('active');
-        document.getElementById('weekView').classList.remove('active');
+        const monthView = document.getElementById('monthView');
+        const dayView = document.getElementById('dayView');
+        const weekView = document.getElementById('weekView');
+        
+        if (monthView) monthView.classList.remove('active');
+        if (dayView) dayView.classList.remove('active');
+        if (weekView) weekView.classList.remove('active');
         
         // Show appropriate view
         if (view === 'day') {
-            document.getElementById('dayView').classList.add('active');
-            showDayView();
+            if (dayView) {
+                dayView.classList.add('active');
+                showDayView();
+            }
         } else if (view === 'week') {
-            document.getElementById('weekView').classList.add('active');
-            showWeekView();
+            if (weekView) {
+                weekView.classList.add('active');
+                showWeekView();
+            }
         } else {
-            document.getElementById('monthView').classList.add('active');
-            showMonthView();
+            if (monthView) {
+                monthView.classList.add('active');
+                showMonthView();
+            }
         }
         
         updateCurrentMonth();
     }
     
     function showDayView() {
-        const dateToShow = selectedDate || new Date();
+        console.log('showDayView called');
+        const dateToShow = selectedDate || currentDate || new Date();
         const dateStr = formatDate(dateToShow);
+        console.log('Showing day view for date:', dateStr);
+        console.log('Total slots available:', slots.length);
+        
         const daySlots = slots.filter(slot => slot.date === dateStr);
+        console.log('Slots for this day:', daySlots.length);
         
         // Update day header
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        document.getElementById('dayViewDate').textContent = dateToShow.toLocaleDateString('en-US', options);
+        const dayViewDateElement = document.getElementById('dayViewDate');
+        if (dayViewDateElement) {
+            dayViewDateElement.textContent = dateToShow.toLocaleDateString('en-US', options);
+        }
         
-        // Generate time slots for the day (9 AM to 6 PM)
-        const timeSlotsContainer = document.getElementById('dayTimeSlots');
-        timeSlotsContainer.innerHTML = '';
-        
-        if (daySlots.length === 0) {
-            timeSlotsContainer.innerHTML = `
-                <div class="empty-state" style="padding: 40px;">
-                    <i class="fas fa-calendar-plus"></i>
-                    <p style="font-size: 14px; font-weight: 400; margin-top: 8px; color: #5f6368;">
-                        No appointments scheduled for this day
-                    </p>
-                </div>
-            `;
+        // Get the grid container
+        const gridContainer = document.getElementById('dayGridContainer');
+        if (!gridContainer) {
+            console.error('dayGridContainer not found!');
             return;
         }
         
-        // Show all appointments for the day
+        gridContainer.innerHTML = '';
+        
+        // Create time column
+        const timeColumn = document.createElement('div');
+        timeColumn.className = 'day-time-column';
+        
+        // Create events column
+        const eventsColumn = document.createElement('div');
+        eventsColumn.className = 'day-events-column';
+        
+        // Generate hours from 6 AM to 10 PM (18 hours)
+        const startHour = 6;
+        const endHour = 22;
+        
+        for (let hour = startHour; hour <= endHour; hour++) {
+            // Time label
+            const timeSlot = document.createElement('div');
+            timeSlot.className = 'day-time-slot';
+            const displayHour = hour > 12 ? hour - 12 : (hour === 0 ? 12 : hour);
+            const ampm = hour >= 12 ? 'PM' : 'AM';
+            timeSlot.textContent = `${displayHour}:00 ${ampm}`;
+            timeColumn.appendChild(timeSlot);
+            
+            // Hour line in events column
+            const hourLine = document.createElement('div');
+            hourLine.className = 'day-hour-line';
+            hourLine.dataset.hour = hour;
+            eventsColumn.appendChild(hourLine);
+        }
+        
+        // Add event blocks for slots
         daySlots.forEach(slot => {
-            const slotRow = document.createElement('div');
-            slotRow.className = 'time-slot-row';
-            slotRow.innerHTML = `
-                <div class="time-label">${slot.start_time}</div>
-                <div class="slot-content">
-                    <div class="slot-info">
-                        <i class="fas fa-clock mr-2"></i>
-                        ${slot.start_time} - ${slot.end_time}
-                    </div>
-                    <button class="slot-remove-btn" onclick="removeSlotFromCalendar(${slot.id})" style="width: 24px; height: 24px;">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
+            const eventBlock = document.createElement('div');
+            eventBlock.className = 'day-event-block';
+            
+            // Calculate position based on time
+            const [startHourStr, startMinStr] = slot.start_time.split(':');
+            const [endHourStr, endMinStr] = slot.end_time.split(':');
+            const startHour = parseInt(startHourStr);
+            const startMin = parseInt(startMinStr);
+            const endHour = parseInt(endHourStr);
+            const endMin = parseInt(endMinStr);
+            
+            // Calculate top position (60px per hour)
+            const topPosition = ((startHour - 6) * 60) + (startMin);
+            
+            // Calculate height (duration in minutes)
+            const durationMinutes = ((endHour * 60 + endMin) - (startHour * 60 + startMin));
+            const height = durationMinutes;
+            
+            eventBlock.style.top = `${topPosition}px`;
+            eventBlock.style.height = `${height}px`;
+            
+            // Random colors for variety
+            const colors = [
+                { bg: '#039be5', border: '#0277bd' },
+                { bg: '#7cb342', border: '#558b2f' },
+                { bg: '#e53935', border: '#c62828' },
+                { bg: '#fb8c00', border: '#ef6c00' },
+                { bg: '#8e24aa', border: '#6a1b9a' },
+                { bg: '#00acc1', border: '#00838f' }
+            ];
+            const colorIndex = slot.id % colors.length;
+            const color = colors[colorIndex];
+            
+            eventBlock.style.background = color.bg;
+            eventBlock.style.borderLeftColor = color.border;
+            
+            eventBlock.innerHTML = `
+                <div class="day-event-time">${slot.start_time} - ${slot.end_time}</div>
+                <div class="day-event-title">Appointment Slot</div>
+                <button class="day-event-remove" onclick="removeSlotFromCalendar(${slot.id}); event.stopPropagation();">
+                    <i class="fas fa-times"></i>
+                </button>
             `;
-            timeSlotsContainer.appendChild(slotRow);
+            
+            eventsColumn.appendChild(eventBlock);
         });
+        
+        // If no slots, show empty state in events column
+        if (daySlots.length === 0) {
+            const emptyState = document.createElement('div');
+            emptyState.className = 'empty-state';
+            emptyState.style.position = 'absolute';
+            emptyState.style.top = '50%';
+            emptyState.style.left = '50%';
+            emptyState.style.transform = 'translate(-50%, -50%)';
+            emptyState.style.width = '100%';
+            emptyState.innerHTML = `
+                <i class="fas fa-calendar-plus"></i>
+                <p style="font-size: 16px; font-weight: 500; margin-top: 8px; color: #3c4043;">
+                    No appointments scheduled
+                </p>
+                <p style="font-size: 14px; color: #5f6368; margin-top: 8px;">
+                    Add a new appointment using the form below
+                </p>
+            `;
+            eventsColumn.style.position = 'relative';
+            eventsColumn.appendChild(emptyState);
+        }
+        
+        gridContainer.appendChild(timeColumn);
+        gridContainer.appendChild(eventsColumn);
+        
+        console.log('Day view rendered successfully');
     }
     
     function showWeekView() {
@@ -2075,6 +2269,12 @@
                 removeSlotFromCalendar(slotId);
             });
         });
+        
+        // Initialize default view (month)
+        const monthView = document.getElementById('monthView');
+        if (monthView) {
+            monthView.classList.add('active');
+        }
     });
 </script>
 {% endblock %}

@@ -427,13 +427,13 @@
     
     /* Month View */
     .month-view-container {
-        display: block;
+        display: none;
         flex: 1;
         overflow: auto;
     }
     
-    .month-view-container.hidden {
-        display: none;
+    .month-view-container.active {
+        display: block;
     }
     
     .calendar-grid {
@@ -801,6 +801,161 @@
         background: #f8f9fa;
     }
     
+    /* Day View Styles - Google Calendar Style */
+    .day-view-container {
+        display: none;
+        padding: 0;
+        min-height: 600px;
+        background: white;
+    }
+    
+    .day-view-container.active {
+        display: block;
+    }
+    
+    .day-schedule {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        background: white;
+    }
+    
+    .day-header {
+        padding: 16px 20px;
+        border-bottom: 2px solid #e0e0e0;
+        background: white;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+    
+    .day-date {
+        font-size: 22px;
+        font-weight: 400;
+        color: #3c4043;
+        font-family: 'Google Sans', Roboto, Arial, sans-serif;
+    }
+    
+    .day-grid-container {
+        display: flex;
+        flex: 1;
+        overflow-y: auto;
+        max-height: 700px;
+    }
+    
+    .day-time-column {
+        width: 80px;
+        border-right: 1px solid #dadce0;
+        background: #fafafa;
+        flex-shrink: 0;
+    }
+    
+    .day-time-slot {
+        height: 60px;
+        border-bottom: 1px solid #e0e0e0;
+        padding: 8px 12px 0 0;
+        text-align: right;
+        font-size: 11px;
+        color: #70757a;
+        font-weight: 500;
+        position: relative;
+    }
+    
+    .day-time-slot:first-child {
+        border-top: 1px solid #e0e0e0;
+    }
+    
+    .day-events-column {
+        flex: 1;
+        position: relative;
+        background: white;
+    }
+    
+    .day-hour-line {
+        height: 60px;
+        border-bottom: 1px solid #e0e0e0;
+        position: relative;
+    }
+    
+    .day-hour-line:first-child {
+        border-top: 1px solid #e0e0e0;
+    }
+    
+    .day-hour-line:hover {
+        background: #f8f9fa;
+    }
+    
+    .day-event-block {
+        position: absolute;
+        left: 4px;
+        right: 4px;
+        background: #039be5;
+        border-left: 4px solid #0277bd;
+        border-radius: 4px;
+        padding: 8px;
+        color: white;
+        font-size: 12px;
+        cursor: pointer;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        transition: all 0.2s;
+        overflow: hidden;
+        z-index: 5;
+    }
+    
+    .day-event-block:hover {
+        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        transform: translateX(2px);
+    }
+    
+    .day-event-time {
+        font-weight: 600;
+        font-size: 11px;
+        margin-bottom: 4px;
+    }
+    
+    .day-event-title {
+        font-size: 13px;
+        font-weight: 500;
+        margin-bottom: 2px;
+    }
+    
+    .day-event-book {
+        position: absolute;
+        bottom: 4px;
+        right: 4px;
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        color: #0277bd;
+        padding: 4px 8px;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 10px;
+        font-weight: 600;
+        transition: all 0.2s;
+    }
+    
+    .day-event-book:hover {
+        background: white;
+        transform: scale(1.05);
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #5f6368;
+    }
+    
+    .empty-state i {
+        font-size: 48px;
+        color: #dadce0;
+        margin-bottom: 16px;
+    }
+    
+    .empty-state p {
+        font-size: 14px;
+        margin-top: 8px;
+    }
+    
     /* Week View Styles */
     .week-view-container {
         display: none;
@@ -910,11 +1065,11 @@
     }
     
     .month-view-container {
-        display: block;
+        display: none;
     }
     
-    .month-view-container.hidden {
-        display: none;
+    .month-view-container.active {
+        display: block;
     }
 
     .calendar-grid {
@@ -1535,7 +1690,7 @@
             </div>
 
         <!-- Month View -->
-        <div class="month-view-container">
+        <div class="month-view-container active">
             <!-- Calendar Grid -->
             <div class="calendar-grid">
             <div class="week-days-header">
@@ -1606,6 +1761,18 @@
                 <p>There are no available appointment slots for this day. Please select another date.</p>
             </div>
             {% endif %}
+            </div>
+        </div>
+        
+        <!-- Day View -->
+        <div class="day-view-container" id="dayView">
+            <div class="day-schedule">
+                <div class="day-header">
+                    <div class="day-date" id="dayViewDate"></div>
+                </div>
+                <div class="day-grid-container" id="dayGridContainer">
+                    <!-- Time column and events will be generated by JavaScript -->
+                </div>
             </div>
         </div>
         
@@ -1922,26 +2089,6 @@ function changeMonthYear() {
     window.location.href = url.toString();
 }
 
-// View toggle functionality
-document.querySelectorAll('.view-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
-        this.classList.add('active');
-        currentView = this.getAttribute('data-view');
-        
-        const monthView = document.querySelector('.month-view-container');
-        const weekView = document.querySelector('.week-view-container');
-        
-        if (currentView === 'week') {
-            monthView.classList.add('hidden');
-            weekView.classList.add('active');
-        } else if (currentView === 'month') {
-            monthView.classList.remove('hidden');
-            weekView.classList.remove('active');
-        }
-    });
-});
-
 // Mini calendar navigation
 function navigateMiniMonth(direction) {
     const urlParams = new URLSearchParams(window.location.search);
@@ -1949,6 +2096,147 @@ function navigateMiniMonth(direction) {
     let date = new Date(currentDate);
     date.setMonth(date.getMonth() + direction);
     selectDate(date.toISOString().split('T')[0]);
+}
+
+// Show Day View
+function showDayView() {
+    console.log('showDayView called');
+    const urlParams = new URLSearchParams(window.location.search);
+    let currentDate = urlParams.get('date') || '{{ selected_date|date:"Y-m-d" }}';
+    const dateToShow = new Date(currentDate);
+    
+    console.log('Showing day view for date:', currentDate);
+    
+    // Update day header
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const dayViewDate = document.getElementById('dayViewDate');
+    if (dayViewDate) {
+        dayViewDate.textContent = dateToShow.toLocaleDateString('en-US', options);
+    }
+    
+    // Get slots for the selected date
+    const daySlots = [];
+    {% for slot in available_slots %}
+    if ('{{ slot.date|date:"Y-m-d" }}' === currentDate) {
+        daySlots.push({
+            id: {{ slot.id }},
+            start_time: '{{ slot.start_time|time:"H:i" }}',
+            end_time: '{{ slot.end_time|time:"H:i" }}',
+            practitioner: '{{ slot.practitioner.first_name }} {{ slot.practitioner.last_name }}'
+        });
+    }
+    {% endfor %}
+    
+    console.log('Slots for this day:', daySlots.length);
+    
+    // Get the grid container
+    const gridContainer = document.getElementById('dayGridContainer');
+    if (!gridContainer) {
+        console.error('dayGridContainer not found!');
+        return;
+    }
+    
+    gridContainer.innerHTML = '';
+    
+    // Create time column
+    const timeColumn = document.createElement('div');
+    timeColumn.className = 'day-time-column';
+    
+    // Create events column
+    const eventsColumn = document.createElement('div');
+    eventsColumn.className = 'day-events-column';
+    
+    // Generate hours from 6 AM to 10 PM (18 hours)
+    const startHour = 6;
+    const endHour = 22;
+    
+    for (let hour = startHour; hour <= endHour; hour++) {
+        // Time label
+        const timeSlot = document.createElement('div');
+        timeSlot.className = 'day-time-slot';
+        const displayHour = hour > 12 ? hour - 12 : (hour === 0 ? 12 : hour);
+        const ampm = hour >= 12 ? 'PM' : 'AM';
+        timeSlot.textContent = `${displayHour}:00 ${ampm}`;
+        timeColumn.appendChild(timeSlot);
+        
+        // Hour line in events column
+        const hourLine = document.createElement('div');
+        hourLine.className = 'day-hour-line';
+        hourLine.dataset.hour = hour;
+        eventsColumn.appendChild(hourLine);
+    }
+    
+    // Add event blocks for slots
+    daySlots.forEach(slot => {
+        const eventBlock = document.createElement('div');
+        eventBlock.className = 'day-event-block';
+        
+        // Calculate position based on time
+        const [startHourStr, startMinStr] = slot.start_time.split(':');
+        const [endHourStr, endMinStr] = slot.end_time.split(':');
+        const startHour = parseInt(startHourStr);
+        const startMin = parseInt(startMinStr);
+        const endHour = parseInt(endHourStr);
+        const endMin = parseInt(endMinStr);
+        
+        // Calculate top position (60px per hour)
+        const topPosition = ((startHour - 6) * 60) + (startMin);
+        
+        // Calculate height (duration in minutes)
+        const durationMinutes = ((endHour * 60 + endMin) - (startHour * 60 + startMin));
+        const height = durationMinutes;
+        
+        eventBlock.style.top = `${topPosition}px`;
+        eventBlock.style.height = `${height}px`;
+        
+        // Random colors for variety
+        const colors = [
+            { bg: '#039be5', border: '#0277bd' },
+            { bg: '#7cb342', border: '#558b2f' },
+            { bg: '#e53935', border: '#c62828' },
+            { bg: '#fb8c00', border: '#ef6c00' },
+            { bg: '#8e24aa', border: '#6a1b9a' },
+            { bg: '#00acc1', border: '#00838f' }
+        ];
+        const colorIndex = slot.id % colors.length;
+        const color = colors[colorIndex];
+        
+        eventBlock.style.background = color.bg;
+        eventBlock.style.borderLeftColor = color.border;
+        
+        eventBlock.innerHTML = `
+            <div class="day-event-time">${slot.start_time} - ${slot.end_time}</div>
+            <div class="day-event-title">${slot.practitioner}</div>
+            <button class="day-event-book" onclick="openBookingModal(${slot.id}); event.stopPropagation();">
+                <i class="fas fa-calendar-check"></i> Book
+            </button>
+        `;
+        
+        eventsColumn.appendChild(eventBlock);
+    });
+    
+    // If no slots, show empty state in events column
+    if (daySlots.length === 0) {
+        const emptyState = document.createElement('div');
+        emptyState.className = 'empty-state';
+        emptyState.style.position = 'absolute';
+        emptyState.style.top = '50%';
+        emptyState.style.left = '50%';
+        emptyState.style.transform = 'translate(-50%, -50%)';
+        emptyState.style.width = '100%';
+        emptyState.innerHTML = `
+            <i class="fas fa-calendar-times"></i>
+            <p>No available appointment slots</p>
+            <p style="font-size: 12px; margin-top: 8px;">Please select another date</p>
+        `;
+        eventsColumn.style.position = 'relative';
+        eventsColumn.appendChild(emptyState);
+    }
+    
+    gridContainer.appendChild(timeColumn);
+    gridContainer.appendChild(eventsColumn);
+    
+    console.log('Day view rendered successfully');
 }
 
 // Create modal shortcut
@@ -2022,6 +2310,79 @@ document.addEventListener('DOMContentLoaded', function() {
     if (selectedDate && selectedDate.querySelector('.slots-info')) {
         setTimeout(scrollToTimeSlots, 500);
     }
+    
+    // Initialize default view (month)
+    const monthView = document.querySelector('.month-view-container');
+    if (monthView) {
+        monthView.classList.add('active');
+    }
+    
+    // Setup view toggle functionality
+    console.log('Setting up view toggle functionality');
+    
+    const viewButtons = document.querySelectorAll('.view-btn');
+    console.log('Found view buttons:', viewButtons.length);
+    
+    viewButtons.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('View button clicked:', this.getAttribute('data-view'));
+            
+            document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            currentView = this.getAttribute('data-view');
+            
+            const monthView = document.querySelector('.month-view-container');
+            const weekView = document.querySelector('.week-view-container');
+            const dayView = document.querySelector('.day-view-container');
+            
+            console.log('Month view:', monthView ? 'found' : 'not found');
+            console.log('Week view:', weekView ? 'found' : 'not found');
+            console.log('Day view:', dayView ? 'found' : 'not found');
+            
+            // Hide all views first
+            if (monthView) {
+                monthView.style.display = 'none';
+                monthView.classList.remove('active');
+            }
+            if (weekView) {
+                weekView.style.display = 'none';
+                weekView.classList.remove('active');
+            }
+            if (dayView) {
+                dayView.style.display = 'none';
+                dayView.classList.remove('active');
+            }
+            
+            // Show selected view
+            if (currentView === 'day') {
+                if (dayView) {
+                    dayView.style.display = 'block';
+                    dayView.classList.add('active');
+                    showDayView();
+                    console.log('Day view activated');
+                } else {
+                    console.error('Day view container not found!');
+                }
+            } else if (currentView === 'week') {
+                if (weekView) {
+                    weekView.style.display = 'block';
+                    weekView.classList.add('active');
+                    console.log('Week view activated');
+                } else {
+                    console.error('Week view container not found!');
+                }
+            } else if (currentView === 'month') {
+                if (monthView) {
+                    monthView.style.display = 'block';
+                    monthView.classList.add('active');
+                    console.log('Month view activated');
+                } else {
+                    console.error('Month view container not found!');
+                }
+            }
+        });
+    });
 });
 </script>
 {% endblock %}
