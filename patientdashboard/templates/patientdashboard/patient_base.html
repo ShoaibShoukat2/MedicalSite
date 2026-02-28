@@ -206,7 +206,7 @@
 
         
         /* Custom Scrollbar */
-        .custom-scrollbar::-webkit-scrollbar {a
+        .custom-scrollbar::-webkit-scrollbar {
             width: 6px;
         }
         
@@ -463,6 +463,135 @@
         [dir="rtl"] .space-x-4 > * + * {
             margin-left: 0;
             margin-right: 1rem;
+        }
+        
+        /* Comprehensive RTL Support */
+        [dir="rtl"] .text-left {
+            text-align: right !important;
+        }
+        
+        [dir="rtl"] .text-right {
+            text-align: left !important;
+        }
+        
+        /* Margin and Padding RTL */
+        [dir="rtl"] .ml-2 { margin-left: 0; margin-right: 0.5rem; }
+        [dir="rtl"] .ml-3 { margin-left: 0; margin-right: 0.75rem; }
+        [dir="rtl"] .ml-4 { margin-left: 0; margin-right: 1rem; }
+        [dir="rtl"] .mr-2 { margin-right: 0; margin-left: 0.5rem; }
+        [dir="rtl"] .mr-3 { margin-right: 0; margin-left: 0.75rem; }
+        [dir="rtl"] .mr-4 { margin-right: 0; margin-left: 1rem; }
+        
+        [dir="rtl"] .pl-2 { padding-left: 0; padding-right: 0.5rem; }
+        [dir="rtl"] .pl-3 { padding-left: 0; padding-right: 0.75rem; }
+        [dir="rtl"] .pl-4 { padding-left: 0; padding-right: 1rem; }
+        [dir="rtl"] .pl-6 { padding-left: 0; padding-right: 1.5rem; }
+        [dir="rtl"] .pr-2 { padding-right: 0; padding-left: 0.5rem; }
+        [dir="rtl"] .pr-3 { padding-right: 0; padding-left: 0.75rem; }
+        [dir="rtl"] .pr-4 { padding-right: 0; padding-left: 1rem; }
+        [dir="rtl"] .pr-6 { padding-right: 0; padding-left: 1.5rem; }
+        
+        /* Border Radius RTL */
+        [dir="rtl"] .rounded-l-xl { border-radius: 0 0.75rem 0.75rem 0; }
+        [dir="rtl"] .rounded-r-xl { border-radius: 0.75rem 0 0 0.75rem; }
+        [dir="rtl"] .rounded-tl-xl { border-top-left-radius: 0; border-top-right-radius: 0.75rem; }
+        [dir="rtl"] .rounded-tr-xl { border-top-right-radius: 0; border-top-left-radius: 0.75rem; }
+        [dir="rtl"] .rounded-bl-xl { border-bottom-left-radius: 0; border-bottom-right-radius: 0.75rem; }
+        [dir="rtl"] .rounded-br-xl { border-bottom-right-radius: 0; border-bottom-left-radius: 0.75rem; }
+        
+        /* Icons RTL */
+        [dir="rtl"] .fa, [dir="rtl"] .fas, [dir="rtl"] .far {
+            margin-right: 0;
+            margin-left: 0.5rem;
+        }
+        
+        /* Sidebar RTL */
+        [dir="rtl"] #sidebar {
+            left: auto;
+            right: 0;
+        }
+        
+        [dir="rtl"] .sidebar {
+            transform: translateX(100%);
+        }
+        
+        [dir="rtl"] .sidebar.show {
+            transform: translateX(0);
+        }
+        
+        /* Dropdown RTL */
+        [dir="rtl"] .absolute.right-0 {
+            right: auto;
+            left: 0;
+        }
+        
+        [dir="rtl"] .absolute.left-0 {
+            left: auto;
+            right: 0;
+        }
+        
+        /* Flexbox Items RTL */
+        [dir="rtl"] .items-start {
+            align-items: flex-end;
+        }
+        
+        [dir="rtl"] .items-end {
+            align-items: flex-start;
+        }
+        
+        [dir="rtl"] .justify-start {
+            justify-content: flex-end;
+        }
+        
+        [dir="rtl"] .justify-end {
+            justify-content: flex-start;
+        }
+        
+        /* Transform RTL */
+        [dir="rtl"] .transform {
+            transform: scaleX(-1);
+        }
+        
+        /* Chevron and Arrow Icons RTL */
+        [dir="rtl"] .fa-chevron-right::before {
+            content: "\f053"; /* chevron-left */
+        }
+        
+        [dir="rtl"] .fa-chevron-left::before {
+            content: "\f054"; /* chevron-right */
+        }
+        
+        [dir="rtl"] .fa-arrow-right::before {
+            content: "\f060"; /* arrow-left */
+        }
+        
+        [dir="rtl"] .fa-arrow-left::before {
+            content: "\f061"; /* arrow-right */
+        }
+        
+        /* Grid RTL */
+        [dir="rtl"] .grid {
+            direction: rtl;
+        }
+        
+        /* Table RTL */
+        [dir="rtl"] table {
+            direction: rtl;
+        }
+        
+        [dir="rtl"] th, [dir="rtl"] td {
+            text-align: right;
+        }
+        
+        /* Form Elements RTL */
+        [dir="rtl"] input, [dir="rtl"] textarea, [dir="rtl"] select {
+            text-align: right;
+        }
+        
+        /* Language Dropdown RTL */
+        [dir="rtl"] #languageDropdown {
+            right: auto !important;
+            left: 0 !important;
         }
 
         @keyframes slideInRight {
@@ -1072,6 +1201,14 @@
                                     <div class="flex flex-col">
                                         <span class="font-medium">हिन्दी</span>
                                         <span class="text-xs text-gray-500">India</span>
+                                    </div>
+                                </button>
+                                
+                                <button onclick="changeDashboardLanguage('ar')" class="language-option w-full text-left px-4 py-3 hover:bg-gradient-to-r hover:from-patient-light-blue hover:to-blue-50 text-gray-700 hover:text-patient-dark-blue transition-all duration-200 flex items-center space-x-3 group">
+                                    <span class="w-8 h-6 bg-gradient-to-r from-green-700 via-white to-black rounded-md flex items-center justify-center text-white text-xs font-bold shadow-sm group-hover:shadow-md transition-shadow">🇸🇦</span>
+                                    <div class="flex flex-col">
+                                        <span class="font-medium">العربية</span>
+                                        <span class="text-xs text-gray-500">Saudi Arabia</span>
                                     </div>
                                 </button>
                             </div>
@@ -3600,6 +3737,29 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
         console.error('❌ Language selector button not found!');
     }
+    
+    // Initialize language label and RTL support on page load
+    const savedLanguage = localStorage.getItem('patientLanguage') || 'en';
+    const currentLangElement = document.getElementById('currentLanguage');
+    if (currentLangElement && window.dashboardLanguageNames) {
+        currentLangElement.textContent = window.dashboardLanguageNames[savedLanguage] || 'English';
+        console.log('✅ Initialized language label to:', window.dashboardLanguageNames[savedLanguage]);
+    }
+    
+    // Apply RTL if Arabic is selected
+    if (savedLanguage === 'ar') {
+        document.documentElement.setAttribute('dir', 'rtl');
+        document.documentElement.setAttribute('lang', 'ar');
+        document.body.style.direction = 'rtl';
+        document.body.classList.add('rtl-layout');
+        console.log('✅ Applied RTL for Arabic on page load');
+    } else {
+        document.documentElement.setAttribute('dir', 'ltr');
+        document.documentElement.setAttribute('lang', savedLanguage);
+        document.body.style.direction = 'ltr';
+        document.body.classList.remove('rtl-layout');
+        console.log('Applied LTR for:', savedLanguage);
+    }
 });
 
 // Backup: Also try on window load
@@ -3940,7 +4100,8 @@ if (!window.dashboardLanguageNames) {
         'ko': '한국어',
         'ru': 'Русский',
         'uk': 'Українська',
-        'hi': 'हिन्दी'
+        'hi': 'हिन्दी',
+        'ar': 'العربية'
     };
 }
 
@@ -3966,13 +4127,20 @@ window.changeDashboardLanguage = function(langCode) {
             chevron.style.transform = 'rotate(0deg)';
         }
         
-        // Set document direction for RTL languages
-        // Set document direction (all remaining languages are LTR)
-        document.documentElement.setAttribute('dir', 'ltr');
-        document.documentElement.setAttribute('lang', langCode);
-        document.body.style.direction = 'ltr';
-        document.body.classList.remove('rtl-layout');
-        console.log('Applied LTR for:', langCode);
+        // Set document direction - RTL for Arabic, LTR for all others
+        if (langCode === 'ar') {
+            document.documentElement.setAttribute('dir', 'rtl');
+            document.documentElement.setAttribute('lang', 'ar');
+            document.body.style.direction = 'rtl';
+            document.body.classList.add('rtl-layout');
+            console.log('✅ Applied RTL for Arabic');
+        } else {
+            document.documentElement.setAttribute('dir', 'ltr');
+            document.documentElement.setAttribute('lang', langCode);
+            document.body.style.direction = 'ltr';
+            document.body.classList.remove('rtl-layout');
+            console.log('Applied LTR for:', langCode);
+        }
         
         // Store language preference FIRST before reload
         localStorage.setItem('selectedLanguage', langCode);
