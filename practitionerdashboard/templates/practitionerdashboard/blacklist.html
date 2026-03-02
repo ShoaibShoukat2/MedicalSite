@@ -149,7 +149,7 @@
                     <i class="fas fa-user-slash text-red-600 mr-2 md:mr-3 text-xl md:text-2xl"></i>
                     <span data-translate="Patient Blacklist">Patient Blacklist</span>
                 </h1>
-                <p class="text-sm md:text-base text-doctor-dark-gray" data-translate="Manage patients with frequent appointment cancellations">Manage patients with frequent appointment cancellations (3+ cancellations)</p>
+                <p class="text-sm md:text-base text-doctor-dark-gray"><span data-translate="Manage patients with frequent appointment cancellations">Manage patients with frequent appointment cancellations</span> (3+ cancellations)</p>
             </div>
             <div class="flex md:hidden items-center justify-between bg-red-50 rounded-lg p-3">
                 <div>
@@ -289,11 +289,11 @@
                             <div class="p-3 md:p-4">
                                 <div class="grid grid-cols-2 gap-2 md:gap-4 mb-3 md:mb-4">
                                     <div class="text-center p-2 md:p-3 bg-gray-50 rounded-lg">
-                                        <p class="text-xs text-gray-500" data-translate="Phone">Phone</p>
+                                        <p class="text-xs text-gray-500"><span data-translate="Phone">Phone</span></p>
                                         <p class="font-medium text-gray-800 text-xs md:text-sm truncate">{{ patient.mobile_phone|default:"N/A" }}</p>
                                     </div>
                                     <div class="text-center p-2 md:p-3 bg-gray-50 rounded-lg">
-                                        <p class="text-xs text-gray-500" data-translate="Last Cancel">Last Cancel</p>
+                                        <p class="text-xs text-gray-500"><span data-translate="Last Cancel">Last Cancel</span></p>
                                         <p class="font-medium text-gray-800 text-xs md:text-sm">{{ patient.last_cancellation|date:"M d, Y" }}</p>
                                     </div>
                                 </div>
@@ -447,7 +447,7 @@
                                 </div>
                             </div>
                             {% empty %}
-                            <p class="text-gray-500 text-center py-4 text-sm" data-translate="No recent cancellations">No recent cancellations</p>
+                            <p class="text-sm md:text-base text-gray-600"><span data-translate="No recent cancellations">No recent cancellations</span></p>
                             {% endfor %}
                         </div>
                     </div>

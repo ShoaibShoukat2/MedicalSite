@@ -1,6 +1,6 @@
 {% load static %}
 
-<!-- D-ID Standing Avatar (Event-Driven Video Swapping) -->
+<!-- AI Avatar Icon - Bottom Left -->
 <div id="ai-avatar-container">
     <!-- Main Avatar Video (Transparent WebM) -->
     <video id="avatar-video" 
@@ -28,7 +28,7 @@
 <!-- Avatar Speech Display -->
 <div id="avatar-speech-display">
     <div id="speech-text">
-        <span id="speech-content">Hi! I'm your AI medical assistant. Click me to start chatting!</span>
+        <span id="speech-content">Hi! I'm Dr. Amanda, your AI medical assistant. Click me to start!</span>
     </div>
     <div id="speech-indicator">
         <span class="speech-dot"></span>
@@ -37,73 +37,104 @@
     </div>
 </div>
 
-<!-- Chatbot Window -->
+<!-- Modal Backdrop -->
+<div id="chatbot-backdrop" onclick="toggleChatbot()"></div>
+
+<!-- Professional Medical Consultation Window -->
 <div id="chatbot-window">
-    <div class="chat-header">
-        <span>AI Medical Assistant</span>
-        <button onclick="toggleChatbot()">&times;</button>
+    <!-- Left Side - Doctor Image Panel -->
+    <div class="doctor-panel">
+        <div class="doctor-image-container">
+            <!-- Doctor Image (Static) -->
+            <img src="https://res.cloudinary.com/dovwzsl4v/image/upload/v1752823658/avatar_zfdfcr.jpg" alt="Dr. Amanda" class="doctor-image">
+            
+            <!-- Doctor Info Badge -->
+            <div class="doctor-info-badge">
+                <div class="doctor-name">Dr. Amanda</div>
+                <div class="doctor-title">AI Medical Assistant</div>
+                <div class="online-status">
+                    <span class="status-dot"></span>
+                    <span>Online Now</span>
+                </div>
+            </div>
+        </div>
     </div>
     
-    <div class="chat-body" id="chat-messages">
-        <div class="bot-message">Hello! I'm your AI medical assistant. How can I help you today?</div>
-    </div>
+    <!-- Right Side - Chat Interface Panel -->
+    <div class="chat-panel">
+        <!-- Header -->
+        <div class="chat-header">
+            <div class="header-content">
+                <i class="fas fa-comments"></i>
+                <span>Medical Consultation</span>
+            </div>
+            <button onclick="toggleChatbot()" class="close-btn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <!-- Subheader -->
+        <div class="chat-subheader">
+            Secure & Confidential
+        </div>
+        
+        <!-- Messages Area -->
+        <div class="chat-body" id="chat-messages">
+            <!-- Welcome Card -->
+            <div class="welcome-card">
+                <h3>Welcome to your medical consultation!</h3>
+                <p>I'm Dr. Amanda, your AI medical assistant. I'm here to help answer your health questions, provide medical information, and assist with appointments. How can I help you today?</p>
+                
+                <!-- Quick Action Buttons -->
+                <div class="quick-actions">
+                    <button class="action-btn primary" onclick="quickMsg('I have flu symptoms')">
+                        <i class="fas fa-thermometer-half"></i> Flu Symptoms
+                    </button>
+                    <button class="action-btn secondary" onclick="quickMsg('I want to book an appointment')">
+                        <i class="fas fa-calendar-check"></i> Book Appointment
+                    </button>
+                    <button class="action-btn tertiary" onclick="quickMsg('Find a specialist for me')">
+                        <i class="fas fa-user-doctor"></i> Find Specialists
+                    </button>
+                </div>
+            </div>
+        </div>
 
-    <div class="chat-footer">
-        <input type="text" id="chat-input" placeholder="Type a message..." onkeypress="handleKeyPress(event)">
-        <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+        <!-- Input Footer -->
+        <div class="chat-footer">
+            <input type="text" id="chat-input" placeholder="Type your health question" onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()" class="send-btn">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
     </div>
 </div>
-
-<!-- Chatbot Button -->
-<button id="chatbot-btn" onclick="toggleChatbot()">
-    <i class="fas fa-comment"></i> Chat with AI
-</button>
 
 <script>
 let chatSocket;
 let selectedVoice = null;
 
 function initializeVoice() {
-    const maleVoiceNames = [
-        "Google US English Male",
-        "Microsoft David Desktop",
-        "Alex", "Daniel", "Fred",
-        "Microsoft Mark", "Microsoft Eric",
-        "English (America) - Male"
-    ];
-
-    speechSynthesis.onvoiceschanged = function() {
-        const voices = speechSynthesis.getVoices();
-        selectedVoice = voices.find(voice => 
-            maleVoiceNames.some(name => voice.name.includes(name)) ||
-            voices.find(voice => 
-                voice.lang.includes('en') && 
-                (voice.name.toLowerCase().includes('male') || 
-                 voice.name.toLowerCase().includes('david') ||
-                 voice.name.toLowerCase().includes('mark'))
-        ));
-        
-        if (!selectedVoice) {
-            selectedVoice = voices.find(voice => voice.lang.includes('en')) || voices[0];
-        }
-    };
-    
-    if (speechSynthesis.getVoices().length > 0) {
-        speechSynthesis.onvoiceschanged();
-    }
+    // Voice initialization removed - not needed anymore
+    console.log("🔇 Text-to-Speech disabled - using video only");
 }
 
 function toggleChatbot() {
     let chatbotWindow = document.getElementById("chatbot-window");
+    let chatbotBackdrop = document.getElementById("chatbot-backdrop");
     let avatarContainer = document.getElementById("ai-avatar-container");
     
     if (!chatbotWindow) {
-        console.error("Chatbot window not found!");
+        console.error("❌ Chatbot window not found!");
         return;
     }
     
     if (chatbotWindow.style.display === "none" || chatbotWindow.style.display === "") {
+        console.log("🚀 Opening chatbot window");
         chatbotWindow.style.display = "flex";
+        if (chatbotBackdrop) {
+            chatbotBackdrop.style.display = "block";
+        }
         chatbotWindow.style.zIndex = "1001";
         
         if (avatarContainer) {
@@ -112,9 +143,15 @@ function toggleChatbot() {
                 avatarContainer.classList.remove("attention");
             }, 2000);
         }
+        console.log("✅ Chatbot window opened");
     } else {
+        console.log("🔒 Closing chatbot window");
         chatbotWindow.style.display = "none";
-        speechSynthesis.cancel();
+        if (chatbotBackdrop) {
+            chatbotBackdrop.style.display = "none";
+        }
+        // No need to cancel speech synthesis anymore
+        console.log("✅ Chatbot window closed");
         if (avatarContainer) {
             avatarContainer.classList.remove("talking");
             avatarContainer.classList.remove("attention");
@@ -123,29 +160,39 @@ function toggleChatbot() {
 }
 
 function connectWebSocket() {
-    chatSocket = new WebSocket("ws://" + window.location.host + "/ws/ai-chat/");
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    chatSocket = new WebSocket(protocol + "//" + window.location.host + "/ws/ai-chat/");
 
     chatSocket.onopen = function () {
-        console.log("AI Chatbot WebSocket connected.");
+        console.log("✅ AI Chatbot WebSocket connected successfully!");
     };
 
     chatSocket.onmessage = function(event) {
+        console.log("📨 Message received from server:", event.data);
+        
         let data = JSON.parse(event.data);
         let botMessage = data.message;
         
+        console.log("🤖 Bot response:", botMessage);
+        
         displayMessage(botMessage, "bot");
+        console.log("✅ Message displayed in chat");
+        
         avatarGetAttention();
+        console.log("👀 Avatar attention animation started");
+        
         setTimeout(() => {
+            console.log("🎬 Starting avatar video/speech generation...");
             didAvatarManager.generateAndPlayVideo(botMessage);
         }, 500);
     };
 
     chatSocket.onerror = function (error) {
-        console.error("WebSocket Error:", error);
+        console.error("❌ WebSocket Error:", error);
     };
 
     chatSocket.onclose = function(event) {
-        console.log("WebSocket closed. Reconnecting in 3 seconds...");
+        console.log("⚠️ WebSocket closed. Reconnecting in 3 seconds...");
         setTimeout(connectWebSocket, 3000);
     };
 }
@@ -154,12 +201,23 @@ function sendMessage() {
     let userInput = document.getElementById("chat-input").value;
     if (userInput.trim() === "") return;
 
+    console.log("📤 Sending message:", userInput);
+
+    // Remove welcome card on first message
+    const welcomeCard = document.querySelector('.welcome-card');
+    if (welcomeCard) {
+        welcomeCard.remove();
+        console.log("🗑️ Welcome card removed");
+    }
+
     displayMessage(userInput, "user");
+    console.log("✅ User message displayed");
 
     chatSocket.send(JSON.stringify({ 
         "message": userInput,
         "patient_id": "{{ request.session.patient_id|default:'' }}"  
     }));
+    console.log("📨 Message sent to server via WebSocket");
 
     document.getElementById("chat-input").value = "";
 }
@@ -168,6 +226,11 @@ function handleKeyPress(event) {
     if (event.key === "Enter") {
         sendMessage();
     }
+}
+
+function quickMsg(text) {
+    document.getElementById("chat-input").value = text;
+    sendMessage();
 }
 
 function displayMessage(message, sender) {
@@ -189,35 +252,40 @@ class DIDAvatarManager {
         this.speechContent = document.getElementById("speech-content");
         this.isGenerating = false;
         this.currentVideoUrl = null;
+        console.log("🎭 DIDAvatarManager initialized");
     }
     
     showLoading() {
+        console.log("⏳ Showing loading state...");
         this.avatarLoading.style.display = "block";
         this.avatarImg.style.opacity = "0.3";
     }
     
     hideLoading() {
+        console.log("✅ Hiding loading state");
         this.avatarLoading.style.display = "none";
         this.avatarImg.style.opacity = "1";
     }
     
     showSpeechText(text) {
+        console.log("💬 Showing speech bubble:", text);
         this.speechContent.textContent = text;
         this.speechDisplay.classList.add("active");
         this.speechDisplay.classList.add("speaking");
     }
     
     hideSpeechText() {
+        console.log("🔇 Hiding speech bubble");
         this.speechDisplay.classList.remove("speaking");
         setTimeout(() => {
             this.speechDisplay.classList.remove("active");
-            this.speechContent.textContent = "Hi! I'm your AI medical assistant. Click me to start chatting!";
+            this.speechContent.textContent = "Hi! I'm Dr. Amanda, your AI medical assistant. Click me to start!";
         }, 3000);
     }
     
     async generateAndPlayVideo(text) {
         if (this.isGenerating) {
-            console.log("Already generating video, please wait...");
+            console.log("⚠️ Already generating video, please wait...");
             return;
         }
         
@@ -226,7 +294,7 @@ class DIDAvatarManager {
         this.showSpeechText(text);
         
         try {
-            console.log("Generating D-ID avatar video for:", text);
+            console.log("🎬 Generating D-ID avatar video for:", text);
             
             const response = await fetch('/generate-avatar-response/', {
                 method: 'POST',
@@ -237,18 +305,22 @@ class DIDAvatarManager {
                 body: JSON.stringify({ message: text })
             });
             
+            console.log("📡 D-ID API response received");
             const data = await response.json();
+            console.log("📦 Response data:", data);
             
             if (data.success && data.avatar_video) {
+                console.log("✅ D-ID video URL received:", data.avatar_video);
                 await this.playAvatarVideo(data.avatar_video);
-                console.log("D-ID video played successfully");
+                console.log("🎥 D-ID video played successfully");
             } else {
-                console.log("Video generation failed, using TTS fallback");
+                console.log("⚠️ Video generation failed, using TTS fallback");
                 this.fallbackToTTS(data.response_text || text);
             }
             
         } catch (error) {
-            console.error("Avatar generation error:", error);
+            console.error("❌ Avatar generation error:", error);
+            console.log("🔊 Falling back to Text-to-Speech");
             this.fallbackToTTS(text);
         } finally {
             this.isGenerating = false;
@@ -257,27 +329,29 @@ class DIDAvatarManager {
     }
     
     async playAvatarVideo(videoUrl) {
+        console.log("▶️ Playing avatar video:", videoUrl);
         return new Promise((resolve, reject) => {
             this.avatarImg.style.display = "none";
             this.avatarVideo.src = videoUrl;
             this.avatarVideo.style.display = "block";
             
             this.avatarVideo.onloadeddata = () => {
+                console.log("📹 Video loaded, starting playback...");
                 this.avatarVideo.play().then(() => {
-                    console.log("Avatar video started playing");
+                    console.log("✅ Avatar video started playing");
                     resolve();
                 }).catch(reject);
             };
             
             this.avatarVideo.onended = () => {
+                console.log("🏁 Avatar video ended");
                 this.avatarVideo.style.display = "none";
                 this.avatarImg.style.display = "block";
                 this.hideSpeechText();
-                console.log("Avatar video ended");
             };
             
             this.avatarVideo.onerror = (error) => {
-                console.error("Video playback error:", error);
+                console.error("❌ Video playback error:", error);
                 this.avatarVideo.style.display = "none";
                 this.avatarImg.style.display = "block";
                 reject(error);
@@ -286,44 +360,39 @@ class DIDAvatarManager {
     }
     
     fallbackToTTS(text) {
-        if (!selectedVoice) {
-            initializeVoice();
-        }
-
-        let speech = new SpeechSynthesisUtterance(text);
-        speech.lang = "en-US";
-        speech.pitch = 0.9;
-        speech.rate = 0.9;
+        console.log("🔊 TTS fallback disabled - showing text only");
+        console.log("📢 Text to display:", text);
         
-        if (selectedVoice) {
-            speech.voice = selectedVoice;
-        }
+        // Just show the speech bubble without speaking
+        // Speech bubble is already shown by showSpeechText()
         
-        speech.onend = () => {
+        // Hide speech bubble after 5 seconds
+        setTimeout(() => {
             this.hideSpeechText();
-        };
-        
-        speechSynthesis.cancel();
-        speechSynthesis.speak(speech);
+        }, 5000);
     }
 }
 
 const didAvatarManager = new DIDAvatarManager();
 
 function avatarGetAttention() {
+    console.log("👋 Avatar getting attention animation");
     let avatarContainer = document.getElementById("ai-avatar-container");
     avatarContainer.classList.add("attention");
     
     setTimeout(() => {
         avatarContainer.classList.remove("attention");
+        console.log("✅ Attention animation completed");
     }, 3000);
 }
 
 function avatarGreeting() {
+    console.log("👋 Avatar greeting started");
     const avatarContainer = document.getElementById("ai-avatar-container");
     avatarContainer.classList.add("attention");
     
-    const greetingText = "Hello! I'm your AI medical assistant. How can I help you today?";
+    const greetingText = "Hello! I'm Dr. Amanda, your AI medical assistant. How can I help you today?";
+    console.log("💬 Greeting text:", greetingText);
     
     setTimeout(() => {
         didAvatarManager.generateAndPlayVideo(greetingText);
@@ -332,24 +401,38 @@ function avatarGreeting() {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
+    console.log("🚀 AI Medical Consultation System Starting...");
+    
     initializeVoice();
+    console.log("🎤 Voice system initialized");
     
     const chatbotWindow = document.getElementById("chatbot-window");
+    const chatbotBackdrop = document.getElementById("chatbot-backdrop");
+    
     if (chatbotWindow) {
         chatbotWindow.style.display = "none";
+        console.log("✅ Chatbot window hidden initially");
+    }
+    
+    if (chatbotBackdrop) {
+        chatbotBackdrop.style.display = "none";
+        console.log("✅ Backdrop hidden initially");
     }
     
     const avatarContainer = document.getElementById("ai-avatar-container");
     if (avatarContainer) {
         avatarContainer.addEventListener("click", function() {
+            console.log("🖱️ Avatar clicked!");
             toggleChatbot();
         });
+        console.log("✅ Avatar click listener added");
     }
     
     let hasGreeted = false;
     if (avatarContainer) {
         avatarContainer.addEventListener("click", function() {
             if (!hasGreeted) {
+                console.log("👋 First time click - playing greeting");
                 setTimeout(() => {
                     avatarGreeting();
                 }, 500);
@@ -358,7 +441,8 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
     
-    console.log("AI Avatar initialized - Standing avatar with face animation ready!");
+    console.log("✅ AI Medical Consultation initialized successfully!");
+    console.log("📋 System ready - Click avatar to start consultation");
 });
 
 connectWebSocket();

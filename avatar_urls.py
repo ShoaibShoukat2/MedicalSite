@@ -1,5 +1,5 @@
 from django.urls import path
-from . import avatar_views
+import avatar_views
 
 urlpatterns = [
     path('generate-avatar-response/', avatar_views.generate_avatar_response, name='generate_avatar_response'),

@@ -2,97 +2,87 @@
 {% load static %}
 
 {% block temp_content %}
-<!-- Modern Medical Hero Section -->
-<section class="relative min-h-screen flex items-center justify-center medical-gradient overflow-hidden pt-20">
-    <!-- Background Pattern -->
-    <div class="absolute inset-0 opacity-10">
-        <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="%23ffffff" fill-opacity="0.1"><circle cx="30" cy="30" r="2"/></g></g></svg>'); background-size: 60px 60px;"></div>
+<!-- Hero Section with Animated Background -->
+<section class="hero-section relative overflow-hidden">
+    <!-- Animated Background Shapes -->
+    <div class="absolute inset-0 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-500">
+        <div class="absolute top-0 left-0 w-96 h-96 bg-white/10 rounded-full blur-3xl animate-blob"></div>
+        <div class="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl animate-blob animation-delay-2000"></div>
+        <div class="absolute bottom-0 left-1/2 w-96 h-96 bg-white/10 rounded-full blur-3xl animate-blob animation-delay-4000"></div>
     </div>
     
     <!-- Floating Medical Icons -->
     <div class="absolute inset-0 overflow-hidden pointer-events-none">
-        <div class="absolute top-20 left-10 text-white/20 text-4xl medical-icon-bounce" style="animation-delay: 0s;">
+        <div class="absolute top-20 left-10 text-white/20 text-5xl animate-float">
             <i class="fas fa-heartbeat"></i>
         </div>
-        <div class="absolute top-40 right-20 text-white/20 text-3xl medical-icon-bounce" style="animation-delay: 1s;">
+        <div class="absolute top-40 right-20 text-white/20 text-4xl animate-float animation-delay-1000">
             <i class="fas fa-stethoscope"></i>
         </div>
-        <div class="absolute bottom-40 left-20 text-white/20 text-3xl medical-icon-bounce" style="animation-delay: 2s;">
+        <div class="absolute bottom-40 left-20 text-white/20 text-4xl animate-float animation-delay-2000">
             <i class="fas fa-user-md"></i>
         </div>
-        <div class="absolute bottom-20 right-10 text-white/20 text-4xl medical-icon-bounce" style="animation-delay: 1.5s;">
+        <div class="absolute bottom-20 right-10 text-white/20 text-5xl animate-float animation-delay-3000">
             <i class="fas fa-hospital"></i>
         </div>
     </div>
 
-    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div class="animate-fade-in-up">
+    <div class="relative z-10 container mx-auto px-4 py-32 text-center">
+        <div class="max-w-5xl mx-auto">
+            <!-- Badge -->
+            <div class="inline-flex items-center px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-white mb-8 animate-fade-in">
+                <i class="fas fa-star text-yellow-300 mr-2"></i>
+                <span class="text-sm font-medium" data-translate="Trusted by 50,000+ Patients">Trusted by 50,000+ Patients</span>
+            </div>
+            
             <!-- Main Heading -->
-            <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-6 leading-tight px-4">
-                <span data-translate="Find a">Find a</span> <span class="text-medical-light-blue" data-translate="Practitioner">Practitioner</span><br class="hidden sm:block">
-                <span class="sm:hidden"> </span>& <span data-translate="Book">Book</span> <span class="text-medical-light-green" data-translate="Appointment">Appointment</span>
+            <h1 class="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight animate-slide-up">
+                <span data-translate="Your Health">Your Health</span>,<br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-pink-300" data-translate="Our Priority">Our Priority</span>
             </h1>
             
             <!-- Subtitle -->
-            <p class="text-lg sm:text-xl md:text-2xl text-white/90 mb-8 sm:mb-12 max-w-4xl mx-auto leading-relaxed px-4" data-translate="Connect with qualified healthcare professionals and get the care you deserve">
-                Connect with qualified healthcare professionals and get the care you deserve. Our platform makes it easy to find, book, and manage your medical appointments.
+            <p class="text-xl md:text-2xl text-white/90 mb-12 max-w-3xl mx-auto animate-slide-up animation-delay-200" data-translate="Connect with top healthcare professionals instantly. Book appointments, get consultations, and manage your health - all in one place.">
+                Connect with top healthcare professionals instantly. Book appointments, get consultations, and manage your health - all in one place.
             </p>
             
-            <!-- Search Form -->
-            <div class="max-w-4xl mx-auto mb-8 px-4">
+            <!-- Search Bar -->
+            <div class="max-w-3xl mx-auto mb-12 animate-slide-up animation-delay-400">
                 <form method="GET" action="{% url 'frontend:index' %}" class="relative">
-                    <div class="flex flex-col sm:flex-row bg-white rounded-2xl shadow-2xl p-3 gap-3">
+                    <div class="flex flex-col md:flex-row bg-white rounded-2xl shadow-2xl p-2 gap-2">
                         <div class="flex-1 relative">
+                            <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                             <input type="text" 
                                    name="q" 
-                                   class="w-full px-4 sm:px-6 py-3 sm:py-4 text-base sm:text-lg border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-medical-blue/50 placeholder-gray-500" 
-                                   placeholder="Search doctors by name, specialty (e.g., Cardiology, Neurology)..." 
-                                   data-translate="Search by practitioner name, specialty, or location..."
-                                   value="{{ request.GET.q }}"
-                                   autocomplete="off"
-                                   id="search-input">
-                            <i class="fas fa-search absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm sm:text-base"></i>
+                                   class="w-full pl-12 pr-4 py-4 text-lg border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500" 
+                                   placeholder="Search doctors, specialties, or symptoms..." 
+                                   data-translate="Search doctors, specialties, or symptoms..."
+                                   value="{{ request.GET.q }}">
                         </div>
-                        <button type="submit" class="px-6 sm:px-8 py-3 sm:py-4 bg-medical-green text-white rounded-xl hover:bg-green-600 transition-all duration-300 font-semibold text-base sm:text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 whitespace-nowrap">
-                            <i class="fas fa-search mr-2"></i>
-                            <span class="hidden sm:inline" data-translate="Search Doctors">Search Doctors</span>
-                            <span class="sm:hidden" data-translate="Search">Search</span>
+                        <button type="submit" class="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl hover:shadow-lg transition-all duration-300 font-semibold text-lg">
+                            <i class="fas fa-search mr-2"></i><span data-translate="Search">Search</span>
                         </button>
-                    </div>
-                    
-                    <!-- Search Suggestions -->
-                    <div id="search-suggestions" class="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 py-2 hidden z-50">
-                        <div class="px-4 py-2 hover:bg-medical-light-blue cursor-pointer transition-colors">Cardiology</div>
-                        <div class="px-4 py-2 hover:bg-medical-light-blue cursor-pointer transition-colors">Neurology</div>
-                        <div class="px-4 py-2 hover:bg-medical-light-blue cursor-pointer transition-colors">Orthopedics</div>
-                        <div class="px-4 py-2 hover:bg-medical-light-blue cursor-pointer transition-colors">Pediatrics</div>
                     </div>
                 </form>
             </div>
             
-            <!-- Quick Stats -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 max-w-4xl mx-auto px-4">
-                <div class="text-center animate-fade-in-up" style="animation-delay: 0.2s;">
-                    <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2">1000+</div>
-                    <div class="text-white/80 text-sm sm:text-base" data-translate="Qualified Doctors">Qualified Doctors</div>
-                </div>
-                <div class="text-center animate-fade-in-up" style="animation-delay: 0.4s;">
-                    <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2">50K+</div>
-                    <div class="text-white/80 text-sm sm:text-base" data-translate="Happy Patients">Happy Patients</div>
-                </div>
-                <div class="text-center animate-fade-in-up" style="animation-delay: 0.6s;">
-                    <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2">24/7</div>
-                    <div class="text-white/80 text-sm sm:text-base" data-translate="Medical Support">Medical Support</div>
-                </div>
+            <!-- Quick Actions -->
+            <div class="flex flex-wrap justify-center gap-4 animate-slide-up animation-delay-600">
+                <button onclick="checkAuthAndBookAppointment()" class="px-6 py-3 bg-white text-purple-600 rounded-xl hover:bg-gray-100 transition-all duration-300 font-semibold shadow-lg">
+                    <i class="fas fa-calendar-plus mr-2"></i><span data-translate="Book Appointment">Book Appointment</span>
+                </button>
+                <button onclick="checkAuthAndBrowseSpecialists()" class="px-6 py-3 bg-white/20 backdrop-blur-sm text-white rounded-xl hover:bg-white/30 transition-all duration-300 font-semibold">
+                    <i class="fas fa-user-md mr-2"></i><span data-translate="Find Specialists">Find Specialists</span>
+                </button>
             </div>
         </div>
     </div>
     
-    <!-- Scroll Indicator -->
-    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-        <div class="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center">
-            <div class="w-1 h-3 bg-white/50 rounded-full mt-2 animate-pulse"></div>
-        </div>
+    <!-- Wave Divider -->
+    <div class="absolute bottom-0 left-0 right-0">
+        <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 120L60 110C120 100 240 80 360 70C480 60 600 60 720 65C840 70 960 80 1080 85C1200 90 1320 90 1380 90L1440 90V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="white"/>
+        </svg>
     </div>
 </section>
 {% endblock temp_content %}
@@ -100,71 +90,57 @@
 {% block temp_index %}
 <!-- Search Results Section -->
 {% if request.GET.q %}
-<section class="py-16 search-results-section">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Search Results Header -->
+<section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
         <div class="text-center mb-12">
-            <h2 class="text-3xl md:text-4xl font-bold text-medical-dark-blue mb-4">
-                Search Results for "<span class="text-medical-blue">{{ request.GET.q }}</span>"
+            <h2 class="text-4xl font-bold text-gray-800 mb-4">
+                Search Results for "<span class="text-purple-600">{{ request.GET.q }}</span>"
             </h2>
-            <p class="text-lg text-medical-dark-gray">
+            <p class="text-lg text-gray-600">
                 {% if practitioners %}
-                    Found {{ practitioners|length }} practitioner{{ practitioners|length|pluralize }} matching your search
+                    Found {{ practitioners|length }} practitioner{{ practitioners|length|pluralize }}
                 {% else %}
-                    No practitioners found matching your search criteria
+                    No practitioners found
                 {% endif %}
             </p>
         </div>
 
         {% if practitioners %}
-        <!-- Practitioners Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {% for practitioner in practitioners %}
-            <div class="practitioner-card group medical-card-hover bg-white rounded-2xl p-6 shadow-lg">
-                <!-- Practitioner Photo -->
+            <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
                 <div class="text-center mb-6">
                     {% if practitioner.profile_photo %}
                         <img src="{{ practitioner.profile_photo.url }}" 
-                             alt="Dr. {{ practitioner.first_name }} {{ practitioner.last_name }}" 
-                             class="w-24 h-24 rounded-full mx-auto object-cover border-4 border-medical-light-blue group-hover:border-medical-blue transition-colors">
+                             alt="Dr. {{ practitioner.first_name }}" 
+                             class="w-24 h-24 rounded-full mx-auto object-cover border-4 border-purple-200">
                     {% else %}
-                        <div class="w-24 h-24 bg-gradient-to-br from-medical-blue to-medical-dark-blue rounded-full flex items-center justify-center mx-auto group-hover:scale-110 transition-transform duration-300">
+                        <div class="w-24 h-24 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto">
                             <i class="fas fa-user-md text-3xl text-white"></i>
                         </div>
                     {% endif %}
                 </div>
 
-                <!-- Practitioner Info -->
                 <div class="text-center">
-                    <h4 class="text-xl font-bold text-medical-dark-blue mb-2">
+                    <h4 class="text-xl font-bold text-gray-800 mb-2">
                         {{ practitioner.civility }} {{ practitioner.first_name }} {{ practitioner.last_name }}
                     </h4>
-                    <p class="text-medical-blue font-medium mb-2">{{ practitioner.specialty }}</p>
-                    <p class="text-medical-dark-gray text-sm mb-4">{{ practitioner.doctor_type }}</p>
+                    <p class="text-purple-600 font-medium mb-2">{{ practitioner.specialty }}</p>
                     
-                    <!-- Contact Info -->
                     {% if practitioner.email %}
-                    <div class="flex items-center justify-center text-sm text-medical-dark-gray mb-2">
-                        <i class="fas fa-envelope mr-2 text-medical-blue"></i>
+                    <div class="flex items-center justify-center text-sm text-gray-600 mb-2">
+                        <i class="fas fa-envelope mr-2"></i>
                         <span>{{ practitioner.email }}</span>
                     </div>
                     {% endif %}
-                    
-                    {% if practitioner.phone %}
-                    <div class="flex items-center justify-center text-sm text-medical-dark-gray mb-4">
-                        <i class="fas fa-phone mr-2 text-medical-blue"></i>
-                        <span>{{ practitioner.phone }}</span>
-                    </div>
-                    {% endif %}
 
-                    <!-- Action Buttons -->
-                    <div class="space-y-2">
+                    <div class="mt-4 space-y-2">
                         <button onclick="checkAuthAndBookAppointment()" 
-                                class="block w-full px-4 py-2 bg-medical-green text-white rounded-lg hover:bg-green-600 transition-colors font-medium">
+                                class="w-full px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:shadow-lg transition-all">
                             <i class="fas fa-calendar-plus mr-2"></i>Book Appointment
                         </button>
                         <button onclick="checkAuthAndViewProfile({{ practitioner.id }})" 
-                                class="block w-full px-4 py-2 border-2 border-medical-blue text-medical-blue rounded-lg hover:bg-medical-blue hover:text-white transition-colors font-medium">
+                                class="w-full px-4 py-2 border-2 border-purple-600 text-purple-600 rounded-lg hover:bg-purple-50 transition-all">
                             <i class="fas fa-user mr-2"></i>View Profile
                         </button>
                     </div>
@@ -172,2621 +148,312 @@
             </div>
             {% endfor %}
         </div>
-
-        <!-- Search Again Section -->
-        <div class="text-center bg-white rounded-2xl p-8 shadow-lg">
-            <h3 class="text-2xl font-bold text-medical-dark-blue mb-4">Didn't find what you're looking for?</h3>
-            <p class="text-medical-dark-gray mb-6">Try searching with different keywords or browse all our specialists</p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="{% url 'frontend:index' %}" 
-                   class="px-6 py-3 bg-medical-blue text-white rounded-lg hover:bg-medical-dark-blue transition-colors font-medium">
-                    <i class="fas fa-search mr-2"></i>New Search
-                </a>
-                <button onclick="checkAuthAndBrowseSpecialists()" 
-                        class="px-6 py-3 border-2 border-medical-blue text-medical-blue rounded-lg hover:bg-medical-blue hover:text-white transition-colors font-medium">
-                    <i class="fas fa-list mr-2"></i>Browse All Specialists
-                </button>
-            </div>
-        </div>
-
         {% else %}
-        <!-- No Results Found -->
         <div class="text-center bg-white rounded-2xl p-12 shadow-lg">
-            <div class="w-24 h-24 bg-medical-blue rounded-full flex items-center justify-center mx-auto mb-6">
-                <i class="fas fa-search text-3xl text-white"></i>
+            <div class="w-24 h-24 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-search text-4xl text-purple-600"></i>
             </div>
-            <h3 class="text-2xl font-bold text-medical-dark-blue mb-4">No practitioners found</h3>
-            <p class="text-medical-dark-gray mb-6 max-w-2xl mx-auto">
-                We couldn't find any practitioners matching "<strong>{{ request.GET.q }}</strong>". 
-                Try searching with different keywords, check your spelling, or browse our specialists by category.
-            </p>
-            
-            <!-- Search Suggestions -->
-            <div class="mb-8">
-                <h4 class="text-lg font-semibold text-medical-dark-blue mb-4">Try searching for:</h4>
-                <div class="flex flex-wrap justify-center gap-2">
-                    <span class="search-suggestion-tag px-3 py-1 bg-medical-light-blue text-medical-blue rounded-full text-sm cursor-pointer hover:bg-medical-blue hover:text-white transition-colors" onclick="searchFor('Cardiology')">Cardiology</span>
-                    <span class="search-suggestion-tag px-3 py-1 bg-medical-light-blue text-medical-blue rounded-full text-sm cursor-pointer hover:bg-medical-blue hover:text-white transition-colors" onclick="searchFor('Neurology')">Neurology</span>
-                    <span class="search-suggestion-tag px-3 py-1 bg-medical-light-blue text-medical-blue rounded-full text-sm cursor-pointer hover:bg-medical-blue hover:text-white transition-colors" onclick="searchFor('Orthopedics')">Orthopedics</span>
-                    <span class="search-suggestion-tag px-3 py-1 bg-medical-light-blue text-medical-blue rounded-full text-sm cursor-pointer hover:bg-medical-blue hover:text-white transition-colors" onclick="searchFor('Pediatrics')">Pediatrics</span>
-                    <span class="search-suggestion-tag px-3 py-1 bg-medical-light-blue text-medical-blue rounded-full text-sm cursor-pointer hover:bg-medical-blue hover:text-white transition-colors" onclick="searchFor('Dentistry')">Dentistry</span>
-                </div>
-            </div>
-            
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="{% url 'frontend:index' %}" 
-                   class="px-6 py-3 bg-medical-blue text-white rounded-lg hover:bg-medical-dark-blue transition-colors font-medium">
-                    <i class="fas fa-search mr-2"></i>Try New Search
-                </a>
-                <button onclick="checkAuthAndBrowseSpecialists()" 
-                        class="px-6 py-3 border-2 border-medical-blue text-medical-blue rounded-lg hover:bg-medical-blue hover:text-white transition-colors font-medium">
-                    <i class="fas fa-list mr-2"></i>Browse All Specialists
-                </button>
-            </div>
+            <h3 class="text-2xl font-bold text-gray-800 mb-4">No practitioners found</h3>
+            <p class="text-gray-600 mb-8">Try searching with different keywords</p>
+            <a href="{% url 'frontend:index' %}" 
+               class="inline-block px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:shadow-lg transition-all">
+                <i class="fas fa-search mr-2"></i>New Search
+            </a>
         </div>
         {% endif %}
     </div>
 </section>
 {% endif %}
 
-<!-- Modern Features Section -->
-<section class="py-20 bg-gradient-to-br from-medical-gray to-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Section Header -->
-        <div class="text-center mb-16 animate-fade-in-up">
-            <h2 class="text-4xl md:text-5xl font-bold text-medical-dark-blue mb-6" data-translate="Why Choose Our Platform?">
-                Why Choose Our <span class="text-medical-blue">Platform?</span>
+<!-- Features Section -->
+<section class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+                <span data-translate="Why Choose">Why Choose</span> <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600" data-translate="Us?">Us?</span>
             </h2>
-            <p class="text-xl text-medical-dark-gray max-w-3xl mx-auto leading-relaxed" data-translate="Experience healthcare the modern way">
-                Experience healthcare the modern way with our comprehensive medical platform
-            </p>
+            <p class="text-xl text-gray-600" data-translate="Experience healthcare the modern way">Experience healthcare the modern way</p>
         </div>
         
-        <!-- Features Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <!-- Feature 1 -->
-            <div class="group medical-card-hover bg-white rounded-2xl p-8 shadow-lg border border-gray-100 animate-fade-in-up" style="animation-delay: 0.1s;">
-                <div class="w-16 h-16 bg-gradient-to-br from-medical-blue to-medical-dark-blue rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+            <div class="group p-8 bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl hover:shadow-xl transition-all duration-300">
+                <div class="w-16 h-16 bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                     <i class="fas fa-user-md text-2xl text-white"></i>
                 </div>
-                <h4 class="text-2xl font-bold text-medical-dark-blue mb-4" data-translate="Qualified Practitioners">Qualified Practitioners</h4>
-                <p class="text-medical-dark-gray leading-relaxed" data-translate="Connect with certified healthcare professionals across various specialties">Connect with certified healthcare professionals across various specialties</p>
+                <h4 class="text-2xl font-bold text-gray-800 mb-4" data-translate="Qualified Doctors">Qualified Doctors</h4>
+                <p class="text-gray-600" data-translate="Connect with certified healthcare professionals">Connect with certified healthcare professionals</p>
             </div>
             
             <!-- Feature 2 -->
-            <div class="group medical-card-hover bg-white rounded-2xl p-8 shadow-lg border border-gray-100 animate-fade-in-up" style="animation-delay: 0.2s;">
-                <div class="w-16 h-16 bg-gradient-to-br from-medical-green to-green-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+            <div class="group p-8 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl hover:shadow-xl transition-all duration-300">
+                <div class="w-16 h-16 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                     <i class="fas fa-calendar-check text-2xl text-white"></i>
                 </div>
-                <h4 class="text-2xl font-bold text-medical-dark-blue mb-4" data-translate="Easy Booking">Easy Booking</h4>
-                <p class="text-medical-dark-gray leading-relaxed" data-translate="Schedule appointments instantly with our user-friendly booking system">Schedule appointments instantly with our user-friendly booking system</p>
+                <h4 class="text-2xl font-bold text-gray-800 mb-4" data-translate="Easy Booking">Easy Booking</h4>
+                <p class="text-gray-600" data-translate="Schedule appointments instantly online">Schedule appointments instantly online</p>
             </div>
             
             <!-- Feature 3 -->
-            <div class="group medical-card-hover bg-white rounded-2xl p-8 shadow-lg border border-gray-100 animate-fade-in-up" style="animation-delay: 0.3s;">
-                <div class="w-16 h-16 bg-gradient-to-br from-medical-teal to-teal-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                    <i class="fas fa-comments text-2xl text-white"></i>
+            <div class="group p-8 bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl hover:shadow-xl transition-all duration-300">
+                <div class="w-16 h-16 bg-gradient-to-br from-green-600 to-emerald-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <i class="fas fa-shield-alt text-2xl text-white"></i>
                 </div>
-                <h4 class="text-2xl font-bold text-medical-dark-blue mb-4" data-translate="Secure Communication">Secure Communication</h4>
-                <p class="text-medical-dark-gray leading-relaxed" data-translate="Chat securely with your healthcare providers through our encrypted platform">Chat securely with your healthcare providers through our encrypted platform</p>
+                <h4 class="text-2xl font-bold text-gray-800 mb-4" data-translate="Secure & Private">Secure & Private</h4>
+                <p class="text-gray-600" data-translate="Your data is protected with encryption">Your data is protected with encryption</p>
             </div>
             
             <!-- Feature 4 -->
-            <div class="group medical-card-hover bg-white rounded-2xl p-8 shadow-lg border border-gray-100 animate-fade-in-up" style="animation-delay: 0.4s;">
-                <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-700 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+            <div class="group p-8 bg-gradient-to-br from-orange-50 to-red-50 rounded-2xl hover:shadow-xl transition-all duration-300">
+                <div class="w-16 h-16 bg-gradient-to-br from-orange-600 to-red-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                     <i class="fas fa-mobile-alt text-2xl text-white"></i>
                 </div>
-                <h4 class="text-2xl font-bold text-medical-dark-blue mb-4" data-translate="Mobile Friendly">Mobile Friendly</h4>
-                <p class="text-medical-dark-gray leading-relaxed" data-translate="Access your healthcare anywhere, anytime with our responsive design">Access your healthcare anywhere, anytime with our responsive design</p>
+                <h4 class="text-2xl font-bold text-gray-800 mb-4" data-translate="Mobile Friendly">Mobile Friendly</h4>
+                <p class="text-gray-600" data-translate="Access healthcare anywhere, anytime">Access healthcare anywhere, anytime</p>
             </div>
             
             <!-- Feature 5 -->
-            <div class="group medical-card-hover bg-white rounded-2xl p-8 shadow-lg border border-gray-100 animate-fade-in-up" style="animation-delay: 0.5s;">
-                <div class="w-16 h-16 bg-gradient-to-br from-medical-orange to-orange-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                    <i class="fas fa-shield-alt text-2xl text-white"></i>
+            <div class="group p-8 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl hover:shadow-xl transition-all duration-300">
+                <div class="w-16 h-16 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <i class="fas fa-comments text-2xl text-white"></i>
                 </div>
-                <h4 class="text-2xl font-bold text-medical-dark-blue mb-4" data-translate="HIPAA Compliant">HIPAA Compliant</h4>
-                <p class="text-medical-dark-gray leading-relaxed" data-translate="Your medical information is protected with industry-standard security">Your medical information is protected with industry-standard security</p>
+                <h4 class="text-2xl font-bold text-gray-800 mb-4" data-translate="24/7 Support">24/7 Support</h4>
+                <p class="text-gray-600" data-translate="Get help whenever you need it">Get help whenever you need it</p>
             </div>
             
             <!-- Feature 6 -->
-            <div class="group medical-card-hover bg-white rounded-2xl p-8 shadow-lg border border-gray-100 animate-fade-in-up" style="animation-delay: 0.6s;">
-                <div class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-indigo-700 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+            <div class="group p-8 bg-gradient-to-br from-yellow-50 to-amber-50 rounded-2xl hover:shadow-xl transition-all duration-300">
+                <div class="w-16 h-16 bg-gradient-to-br from-yellow-600 to-amber-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                     <i class="fas fa-robot text-2xl text-white"></i>
                 </div>
-                <h4 class="text-2xl font-bold text-medical-dark-blue mb-4" data-translate="AI Assistant">AI Assistant</h4>
-                <p class="text-medical-dark-gray leading-relaxed" data-translate="Get instant help with our intelligent medical assistant available 24/7">Get instant help with our intelligent medical assistant available 24/7</p>
+                <h4 class="text-2xl font-bold text-gray-800 mb-4" data-translate="AI Assistant">AI Assistant</h4>
+                <p class="text-gray-600" data-translate="Smart health recommendations">Smart health recommendations</p>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Medical Specialties Section -->
-<section class="py-20 medical-gradient-light">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Section Header -->
-        <div class="text-center mb-16 animate-fade-in-up">
-            <h2 class="text-4xl md:text-5xl font-bold text-medical-dark-blue mb-6" data-translate="Medical Specialties">
-                Medical <span class="text-medical-blue">Specialties</span>
+<!-- Specialties Section -->
+<section class="py-20 bg-gradient-to-br from-purple-50 to-pink-50">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+                <span data-translate="Medical">Medical</span> <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600" data-translate="Specialties">Specialties</span>
             </h2>
-            <p class="text-xl text-medical-dark-gray max-w-3xl mx-auto leading-relaxed" data-translate="Find specialists across various medical fields">
-                Find specialists across various medical fields
-            </p>
+            <p class="text-xl text-gray-600" data-translate="Find the right specialist for your needs">Find the right specialist for your needs</p>
         </div>
         
-        <!-- Specialties Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-6">
             <!-- Cardiology -->
-            <div class="group medical-card-hover bg-white rounded-2xl p-6 text-center shadow-lg border border-gray-100 animate-fade-in-up" style="animation-delay: 0.1s;">
-                <div class="w-20 h-20 bg-gradient-to-br from-red-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+            <div class="bg-white rounded-2xl p-6 text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer">
+                <div class="w-20 h-20 bg-gradient-to-br from-red-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
                     <i class="fas fa-heartbeat text-3xl text-white"></i>
                 </div>
-                <h5 class="text-xl font-bold text-medical-dark-blue mb-2" data-translate="Cardiology">Cardiology</h5>
-                <p class="text-medical-dark-gray text-sm" data-translate="Heart and cardiovascular specialists">Heart and cardiovascular specialists</p>
+                <h5 class="text-lg font-bold text-gray-800 mb-2" data-translate="Cardiology">Cardiology</h5>
+                <p class="text-sm text-gray-600" data-translate="Heart specialists">Heart specialists</p>
             </div>
             
             <!-- Neurology -->
-            <div class="group medical-card-hover bg-white rounded-2xl p-6 text-center shadow-lg border border-gray-100 animate-fade-in-up" style="animation-delay: 0.2s;">
-                <div class="w-20 h-20 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+            <div class="bg-white rounded-2xl p-6 text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer">
+                <div class="w-20 h-20 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-full flex items-center justify-center mx-auto mb-4">
                     <i class="fas fa-brain text-3xl text-white"></i>
                 </div>
-                <h5 class="text-xl font-bold text-medical-dark-blue mb-2" data-translate="Neurology">Neurology</h5>
-                <p class="text-medical-dark-gray text-sm" data-translate="Brain and nervous system experts">Brain and nervous system experts</p>
+                <h5 class="text-lg font-bold text-gray-800 mb-2" data-translate="Neurology">Neurology</h5>
+                <p class="text-sm text-gray-600" data-translate="Brain experts">Brain experts</p>
             </div>
             
             <!-- Orthopedics -->
-            <div class="group medical-card-hover bg-white rounded-2xl p-6 text-center shadow-lg border border-gray-100 animate-fade-in-up" style="animation-delay: 0.3s;">
-                <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+            <div class="bg-white rounded-2xl p-6 text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer">
+                <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4">
                     <i class="fas fa-bone text-3xl text-white"></i>
                 </div>
-                <h5 class="text-xl font-bold text-medical-dark-blue mb-2" data-translate="Orthopedics">Orthopedics</h5>
-                <p class="text-medical-dark-gray text-sm" data-translate="Bone and joint specialists">Bone and joint specialists</p>
-            </div>
-            
-            <!-- Ophthalmology -->
-            <div class="group medical-card-hover bg-white rounded-2xl p-6 text-center shadow-lg border border-gray-100 animate-fade-in-up" style="animation-delay: 0.4s;">
-                <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                    <i class="fas fa-eye text-3xl text-white"></i>
-                </div>
-                <h5 class="text-xl font-bold text-medical-dark-blue mb-2" data-translate="Ophthalmology">Ophthalmology</h5>
-                <p class="text-medical-dark-gray text-sm" data-translate="Eye care professionals">Eye care professionals</p>
-            </div>
-            
-            <!-- Dentistry -->
-            <div class="group medical-card-hover bg-white rounded-2xl p-6 text-center shadow-lg border border-gray-100 animate-fade-in-up" style="animation-delay: 0.5s;">
-                <div class="w-20 h-20 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                    <i class="fas fa-tooth text-3xl text-white"></i>
-                </div>
-                <h5 class="text-xl font-bold text-medical-dark-blue mb-2" data-translate="Dentistry">Dentistry</h5>
-                <p class="text-medical-dark-gray text-sm" data-translate="Dental care specialists">Dental care specialists</p>
+                <h5 class="text-lg font-bold text-gray-800 mb-2" data-translate="Orthopedics">Orthopedics</h5>
+                <p class="text-sm text-gray-600" data-translate="Bone & joints">Bone & joints</p>
             </div>
             
             <!-- Pediatrics -->
-            <div class="group medical-card-hover bg-white rounded-2xl p-6 text-center shadow-lg border border-gray-100 animate-fade-in-up" style="animation-delay: 0.6s;">
-                <div class="w-20 h-20 bg-gradient-to-br from-pink-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+            <div class="bg-white rounded-2xl p-6 text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer">
+                <div class="w-20 h-20 bg-gradient-to-br from-pink-500 to-rose-500 rounded-full flex items-center justify-center mx-auto mb-4">
                     <i class="fas fa-baby text-3xl text-white"></i>
                 </div>
-                <h5 class="text-xl font-bold text-medical-dark-blue mb-2" data-translate="Pediatrics">Pediatrics</h5>
-                <p class="text-medical-dark-gray text-sm" data-translate="Children's healthcare experts">Children's healthcare experts</p>
+                <h5 class="text-lg font-bold text-gray-800 mb-2" data-translate="Pediatrics">Pediatrics</h5>
+                <p class="text-sm text-gray-600" data-translate="Child care">Child care</p>
+            </div>
+            
+            <!-- Dentistry -->
+            <div class="bg-white rounded-2xl p-6 text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer">
+                <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-tooth text-3xl text-white"></i>
+                </div>
+                <h5 class="text-lg font-bold text-gray-800 mb-2" data-translate="Dentistry">Dentistry</h5>
+                <p class="text-sm text-gray-600" data-translate="Dental care">Dental care</p>
+            </div>
+            
+            <!-- Ophthalmology -->
+            <div class="bg-white rounded-2xl p-6 text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer">
+                <div class="w-20 h-20 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-eye text-3xl text-white"></i>
+                </div>
+                <h5 class="text-lg font-bold text-gray-800 mb-2" data-translate="Ophthalmology">Ophthalmology</h5>
+                <p class="text-sm text-gray-600" data-translate="Eye care">Eye care</p>
             </div>
             
             <!-- Gynecology -->
-            <div class="group medical-card-hover bg-white rounded-2xl p-6 text-center shadow-lg border border-gray-100 animate-fade-in-up" style="animation-delay: 0.7s;">
-                <div class="w-20 h-20 bg-gradient-to-br from-rose-500 to-rose-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+            <div class="bg-white rounded-2xl p-6 text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer">
+                <div class="w-20 h-20 bg-gradient-to-br from-rose-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
                     <i class="fas fa-female text-3xl text-white"></i>
                 </div>
-                <h5 class="text-xl font-bold text-medical-dark-blue mb-2" data-translate="Gynecology">Gynecology</h5>
-                <p class="text-medical-dark-gray text-sm" data-translate="Women's health specialists">Women's health specialists</p>
+                <h5 class="text-lg font-bold text-gray-800 mb-2" data-translate="Gynecology">Gynecology</h5>
+                <p class="text-sm text-gray-600" data-translate="Women's health">Women's health</p>
             </div>
             
             <!-- Pulmonology -->
-            <div class="group medical-card-hover bg-white rounded-2xl p-6 text-center shadow-lg border border-gray-100 animate-fade-in-up" style="animation-delay: 0.8s;">
-                <div class="w-20 h-20 bg-gradient-to-br from-teal-500 to-teal-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+            <div class="bg-white rounded-2xl p-6 text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer">
+                <div class="w-20 h-20 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-full flex items-center justify-center mx-auto mb-4">
                     <i class="fas fa-lungs text-3xl text-white"></i>
                 </div>
-                <h5 class="text-xl font-bold text-medical-dark-blue mb-2" data-translate="Pulmonology">Pulmonology</h5>
-                <p class="text-medical-dark-gray text-sm" data-translate="Respiratory system experts">Respiratory system experts</p>
+                <h5 class="text-lg font-bold text-gray-800 mb-2" data-translate="Pulmonology">Pulmonology</h5>
+                <p class="text-sm text-gray-600" data-translate="Lung care">Lung care</p>
             </div>
         </div>
     </div>
 </section>
 
-<!-- How It Works Section -->
-<section class="py-20 bg-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Section Header -->
-        <div class="text-center mb-16 animate-fade-in-up">
-            <h2 class="text-4xl md:text-5xl font-bold text-medical-dark-blue mb-6" data-translate="How It Works">
-                How It <span class="text-medical-blue">Works</span>
-            </h2>
-            <p class="text-xl text-medical-dark-gray max-w-3xl mx-auto leading-relaxed" data-translate="Get started in just three simple steps">
-                Get started in just three simple steps
-            </p>
-        </div>
-        
-        <!-- Steps -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
-            <!-- Step 1 -->
-            <div class="relative text-center animate-fade-in-up" style="animation-delay: 0.1s;">
-                <div class="relative">
-                    <div class="w-24 h-24 bg-gradient-to-br from-medical-blue to-medical-dark-blue rounded-full flex items-center justify-center mx-auto mb-6 medical-pulse">
-                        <i class="fas fa-search text-3xl text-white"></i>
-                    </div>
-                    <div class="absolute -top-2 -right-2 w-8 h-8 bg-medical-green rounded-full flex items-center justify-center text-white font-bold text-sm">1</div>
-                </div>
-                <h4 class="text-2xl font-bold text-medical-dark-blue mb-4" data-translate="Search & Find">Search & Find</h4>
-                <p class="text-medical-dark-gray leading-relaxed" data-translate="Search for healthcare providers by specialty, location, or name. Browse profiles and read reviews.">Search for healthcare providers by specialty, location, or name. Browse profiles and read reviews.</p>
-                
-                <!-- Connection Line -->
-                <div class="hidden md:block absolute top-12 left-full w-full h-0.5 bg-gradient-to-r from-medical-blue to-medical-light-blue transform -translate-x-1/2" style="width: calc(100% - 6rem);"></div>
-            </div>
-            
-            <!-- Step 2 -->
-            <div class="relative text-center animate-fade-in-up" style="animation-delay: 0.3s;">
-                <div class="relative">
-                    <div class="w-24 h-24 bg-gradient-to-br from-medical-green to-green-600 rounded-full flex items-center justify-center mx-auto mb-6 medical-pulse" style="animation-delay: 0.5s;">
-                        <i class="fas fa-calendar-plus text-3xl text-white"></i>
-                    </div>
-                    <div class="absolute -top-2 -right-2 w-8 h-8 bg-medical-green rounded-full flex items-center justify-center text-white font-bold text-sm">2</div>
-                </div>
-                <h4 class="text-2xl font-bold text-medical-dark-blue mb-4" data-translate="Book Appointment">Book Appointment</h4>
-                <p class="text-medical-dark-gray leading-relaxed" data-translate="Select your preferred time slot and book your appointment instantly. Receive confirmation immediately.">Select your preferred time slot and book your appointment instantly. Receive confirmation immediately.</p>
-                
-                <!-- Connection Line -->
-                <div class="hidden md:block absolute top-12 left-full w-full h-0.5 bg-gradient-to-r from-medical-green to-medical-light-green transform -translate-x-1/2" style="width: calc(100% - 6rem);"></div>
-            </div>
-            
-            <!-- Step 3 -->
-            <div class="relative text-center animate-fade-in-up" style="animation-delay: 0.5s;">
-                <div class="relative">
-                    <div class="w-24 h-24 bg-gradient-to-br from-medical-teal to-teal-600 rounded-full flex items-center justify-center mx-auto mb-6 medical-pulse" style="animation-delay: 1s;">
-                        <i class="fas fa-stethoscope text-3xl text-white"></i>
-                    </div>
-                    <div class="absolute -top-2 -right-2 w-8 h-8 bg-medical-green rounded-full flex items-center justify-center text-white font-bold text-sm">3</div>
-                </div>
-                <h4 class="text-2xl font-bold text-medical-dark-blue mb-4" data-translate="Get Care">Get Care</h4>
-                <p class="text-medical-dark-gray leading-relaxed" data-translate="Attend your appointment and receive quality healthcare. Follow up through our secure messaging system.">Attend your appointment and receive quality healthcare. Follow up through our secure messaging system.</p>
-            </div>
+<!-- CTA Section -->
+<section class="py-20 bg-gradient-to-r from-purple-600 to-pink-600">
+    <div class="container mx-auto px-4 text-center">
+        <h2 class="text-4xl md:text-5xl font-bold text-white mb-6" data-translate="Ready to Get Started?">
+            Ready to Get Started?
+        </h2>
+        <p class="text-xl text-white/90 mb-8 max-w-2xl mx-auto" data-translate="Join thousands of patients who trust our platform for their healthcare needs">
+            Join thousands of patients who trust our platform for their healthcare needs
+        </p>
+        <div class="flex flex-wrap justify-center gap-4">
+            <a href="{% url 'frontend:patient_signup' %}" class="px-8 py-4 bg-white text-purple-600 rounded-xl hover:bg-gray-100 transition-all duration-300 font-semibold text-lg shadow-lg">
+                <i class="fas fa-user-plus mr-2"></i><span data-translate="Sign Up as Patient">Sign Up as Patient</span>
+            </a>
+            <a href="{% url 'frontend:practitioner_signup' %}" class="px-8 py-4 bg-white/20 backdrop-blur-sm text-white rounded-xl hover:bg-white/30 transition-all duration-300 font-semibold text-lg">
+                <i class="fas fa-user-md mr-2"></i><span data-translate="Join as Practitioner">Join as Practitioner</span>
+            </a>
         </div>
     </div>
 </section>
-
-<!-- Modern CTA Section -->
-<section class="py-20 medical-gradient relative overflow-hidden">
-    <!-- Background Pattern -->
-    <div class="absolute inset-0 opacity-10">
-        <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="%23ffffff" fill-opacity="0.1"><path d="M20 20c0-5.5-4.5-10-10-10s-10 4.5-10 10 4.5 10 10 10 10-4.5 10-10zm10 0c0-5.5-4.5-10-10-10s-10 4.5-10 10 4.5 10 10 10 10-4.5 10-10z"/></g></g></svg>'); background-size: 40px 40px;"></div>
-    </div>
-    
-    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div class="animate-fade-in-up">
-            <h2 class="text-4xl md:text-5xl font-bold text-white mb-6" data-translate="Ready to Get Started?">
-                Ready to Get <span class="text-medical-light-green">Started?</span>
-            </h2>
-            <p class="text-xl text-white/90 mb-12 max-w-3xl mx-auto leading-relaxed" data-translate="Join thousands of patients who trust our platform for their healthcare needs">
-                Join thousands of patients who trust our platform for their healthcare needs
-            </p>
-            
-            <!-- CTA Buttons -->
-            <div class="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center px-4">
-                <a href="{% url 'frontend:patient_signup' %}" class="group w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-white text-medical-blue rounded-2xl hover:bg-medical-light-blue hover:text-medical-dark-blue transition-all duration-300 font-bold text-base sm:text-lg shadow-xl hover:shadow-2xl transform hover:-translate-y-2 flex items-center justify-center space-x-3">
-                    <i class="fas fa-user-plus text-lg sm:text-xl group-hover:scale-110 transition-transform"></i>
-                    <span data-translate="Sign Up as Patient">Sign Up as Patient</span>
-                </a>
-                <a href="{% url 'frontend:practitioner_signup' %}" class="group w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 border-2 border-white text-white rounded-2xl hover:bg-white hover:text-medical-blue transition-all duration-300 font-bold text-base sm:text-lg shadow-xl hover:shadow-2xl transform hover:-translate-y-2 flex items-center justify-center space-x-3">
-                    <i class="fas fa-user-md text-lg sm:text-xl group-hover:scale-110 transition-transform"></i>
-                    <span data-translate="Join as Practitioner">Join as Practitioner</span>
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Professional AI Avatar Assistant -->
-<div id="ai-avatar-assistant">
-    <div id="avatar-icon" onclick="toggleAvatarChat()">
-        <div class="avatar-image-container">
-            <img src="https://res.cloudinary.com/dovwzsl4v/image/upload/v1752823658/avatar_zfdfcr.jpg" 
-                 alt="AI Medical Assistant" 
-                 class="avatar-image"
-                 id="avatar-main-image">
-            <div class="avatar-status-indicator"></div>
-        </div>
-        <div class="pulse-ring"></div>
-        <div class="notification-badge" id="notification-badge">
-            <i class="fas fa-comment"></i>
-        </div>
-        <div class="avatar-tooltip">
-            <span>Dr. Amanda - AI Assistant</span>
-            <small>Click to chat with me</small>
-        </div>
-    </div>
-    
-    <!-- Chat Backdrop -->
-    <div id="chat-backdrop" class="chat-backdrop" onclick="toggleAvatarChat()"></div>
-    
-    <!-- Side-by-Side Chat Interface -->
-    <div id="avatar-chat" class="avatar-chat-hidden">
-        <div class="chat-container">
-            <!-- Left Side: AI Avatar -->
-            <div class="avatar-side">
-                <div class="avatar-display">
-                    <!-- Loading Placeholder -->
-                    <div id="avatar-loading" class="avatar-loading">
-                        <div class="loading-spinner-large"></div>
-                        <p>Loading Dr. Amanda...</p>
-                    </div>
-                    
-                    <!-- Static Image (fallback) -->
-                    <img id="avatar-static-image" 
-                         src="https://res.cloudinary.com/dovwzsl4v/image/upload/v1752823658/avatar_zfdfcr.jpg" 
-                         alt="Dr. Amanda" 
-                         class="avatar-full-image"
-                         onload="hideAvatarLoading()"
-                         onerror="showAvatarError()">
-                    
-                    <!-- D-ID Video Container - Enhanced for Natural Appearance -->
-                    <div id="avatar-video-container" style="display: none;">
-                        <!-- Ambient lighting effect -->
-                        <div class="ambient-lighting"></div>
-                        
-                        <!-- Main video -->
-                        <video id="avatar-video" 
-                               autoplay 
-                               muted="false" 
-                               playsinline 
-                               controls="false"
-                               preload="auto"
-                               disablePictureInPicture
-                               controlslist="nodownload nofullscreen noremoteplayback"
-                               class="avatar-video">
-                        </video>
-                        
-                        <!-- Subtle overlay for depth -->
-                        <div class="video-overlay"></div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Right Side: Chat -->
-            <div class="chat-side">
-                <div class="chat-header">
-                    <div class="chat-header-content">
-                        <div class="chat-title">
-                            <h4><i class="fas fa-comments me-2"></i>Medical Consultation</h4>
-                            <small>Secure & Confidential</small>
-                        </div>
-                    </div>
-                    <button class="btn-close" onclick="toggleAvatarChat()">&times;</button>
-                </div>
-                
-                <div class="chat-messages-container">
-                    <div id="chat-messages">
-                        <div class="bot-message welcome-message">
-                            <div class="message-content">
-                                <strong>Welcome to your medical consultation!</strong><br>
-                                I'm Dr. Amanda, your AI medical assistant. I'm here to help answer your health questions, provide medical information, and assist with appointments. How can I help you today?
-                            </div>
-                            <div class="quick-actions">
-                                <button class="quick-btn" onclick="askQuickQuestion('What are the symptoms of flu?')">
-                                    <i class="fas fa-thermometer-half me-1"></i>Flu Symptoms
-                                </button>
-                                <button class="quick-btn" onclick="askQuickQuestion('How do I book an appointment?')">
-                                    <i class="fas fa-calendar-plus me-1"></i>Book Appointment
-                                </button>
-                                <button class="quick-btn" onclick="askQuickQuestion('What specialists are available?')">
-                                    <i class="fas fa-user-md me-1"></i>Find Specialists
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="chat-input-container">
-                    {% csrf_token %}
-                    <div class="input-group">
-                        <input type="text" id="user-question" class="form-control chat-input" 
-                               placeholder="Type your health question here..." 
-                               onkeypress="handleEnterKey(event)">
-                        <button class="btn btn-primary send-btn" onclick="askAvatarQuestion()">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 <style>
-/* Professional Landing Page Styles */
-.section-title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: #2c3e50;
-    margin-bottom: 1rem;
+@keyframes blob {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    25% { transform: translate(20px, -50px) scale(1.1); }
+    50% { transform: translate(-20px, 20px) scale(0.9); }
+    75% { transform: translate(50px, 50px) scale(1.05); }
 }
 
-.section-subtitle {
-    font-size: 1.2rem;
-    color: #6c757d;
-    margin-bottom: 3rem;
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
 }
 
-/* Features Section */
-.features-section {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+@keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
-.feature-card {
-    background: white;
-    padding: 2.5rem 2rem;
-    border-radius: 15px;
-    text-align: center;
-    height: 100%;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-    transition: all 0.3s ease;
-    border: 1px solid #e9ecef;
+@keyframes slide-up {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-.feature-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+.animate-blob {
+    animation: blob 7s infinite;
 }
 
-.feature-icon {
-    width: 80px;
-    height: 80px;
-    background: linear-gradient(135deg, #007bff, #0056b3);
-    border-radius: 50%;
+.animate-float {
+    animation: float 3s ease-in-out infinite;
+}
+
+.animate-fade-in {
+    animation: fade-in 1s ease-out;
+}
+
+.animate-slide-up {
+    animation: slide-up 0.8s ease-out;
+}
+
+.animation-delay-200 {
+    animation-delay: 0.2s;
+}
+
+.animation-delay-400 {
+    animation-delay: 0.4s;
+}
+
+.animation-delay-600 {
+    animation-delay: 0.6s;
+}
+
+.animation-delay-1000 {
+    animation-delay: 1s;
+}
+
+.animation-delay-2000 {
+    animation-delay: 2s;
+}
+
+.animation-delay-3000 {
+    animation-delay: 3s;
+}
+
+.animation-delay-4000 {
+    animation-delay: 4s;
+}
+
+.hero-section {
+    min-height: 100vh;
     display: flex;
     align-items: center;
-    justify-content: center;
-    margin: 0 auto 1.5rem;
-    color: white;
-    font-size: 2rem;
-}
-
-.feature-card h4 {
-    color: #2c3e50;
-    font-weight: 600;
-    margin-bottom: 1rem;
-}
-
-.feature-card p {
-    color: #6c757d;
-    line-height: 1.6;
-}
-
-/* Specialties Section */
-.specialty-card {
-    background: white;
-    padding: 2rem 1.5rem;
-    border-radius: 12px;
-    text-align: center;
-    height: 100%;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
-    transition: all 0.3s ease;
-    border: 1px solid #e9ecef;
-}
-
-.specialty-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-}
-
-.specialty-icon {
-    width: 60px;
-    height: 60px;
-    background: linear-gradient(135deg, #28a745, #20c997);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 1rem;
-    color: white;
-    font-size: 1.5rem;
-}
-
-.specialty-card h5 {
-    color: #2c3e50;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-}
-
-.specialty-card p {
-    color: #6c757d;
-    font-size: 0.9rem;
-}
-
-/* How It Works Section */
-.step-card {
-    text-align: center;
-    padding: 2rem 1rem;
-    position: relative;
-}
-
-.step-number {
-    position: absolute;
-    top: -15px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 40px;
-    height: 40px;
-    background: #007bff;
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    font-size: 1.2rem;
-}
-
-.step-icon {
-    width: 80px;
-    height: 80px;
-    background: linear-gradient(135deg, #6f42c1, #e83e8c);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 2rem auto 1.5rem;
-    color: white;
-    font-size: 2rem;
-}
-
-.step-card h4 {
-    color: #2c3e50;
-    font-weight: 600;
-    margin-bottom: 1rem;
-}
-
-.step-card p {
-    color: #6c757d;
-    line-height: 1.6;
-}
-
-/* CTA Section */
-.cta-section {
-    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
-}
-
-.cta-buttons .btn {
-    padding: 12px 30px;
-    font-weight: 600;
-    border-radius: 50px;
-    transition: all 0.3s ease;
-}
-
-.cta-buttons .btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-}
-
-/* Professional AI Avatar Assistant */
-#ai-avatar-assistant {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    z-index: 1000;
-}
-
-/* Notification Badge */
-.notification-badge {
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    width: 24px;
-    height: 24px;
-    background: linear-gradient(135deg, #ff4757, #ff3742);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 0.7rem;
-    animation: badge-bounce 2s ease-in-out infinite;
-    box-shadow: 0 2px 8px rgba(255, 71, 87, 0.4);
-}
-
-@keyframes badge-bounce {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-}
-
-/* Avatar Tooltip */
-.avatar-tooltip {
-    position: absolute;
-    bottom: 80px;
-    right: 0;
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 10px;
-    font-size: 0.8rem;
-    white-space: nowrap;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(10px);
-    transition: all 0.3s ease;
-    text-align: center;
-}
-
-.avatar-tooltip small {
-    display: block;
-    font-size: 0.7rem;
-    opacity: 0.8;
-}
-
-#avatar-icon:hover .avatar-tooltip {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-}
-
-#avatar-icon {
-    width: 80px;
-    height: 80px;
-    cursor: pointer;
-    position: relative;
-}
-
-.avatar-image-container {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    overflow: hidden;
-    position: relative;
-    box-shadow: 0 8px 25px rgba(0,123,255,0.3);
-    transition: all 0.3s ease;
-    border: 3px solid #ffffff;
-}
-
-.avatar-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: all 0.3s ease;
-}
-
-.avatar-image-container:hover {
-    transform: scale(1.1);
-    box-shadow: 0 12px 35px rgba(0,123,255,0.4);
-}
-
-.avatar-image-container:hover .avatar-image {
-    transform: scale(1.05);
-}
-
-/* Status Indicator */
-.avatar-status-indicator {
-    position: absolute;
-    bottom: 5px;
-    right: 5px;
-    width: 16px;
-    height: 16px;
-    background: #28a745;
-    border: 2px solid white;
-    border-radius: 50%;
-    animation: status-pulse 2s ease-in-out infinite;
-}
-
-@keyframes status-pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
-}
-
-/* Speaking Animation for Avatar */
-.avatar-image-container.speaking {
-    animation: speaking-pulse 1s ease-in-out infinite;
-    box-shadow: 0 0 25px rgba(0,123,255,0.6), 0 0 45px rgba(0,123,255,0.4);
-    border-color: #28a745;
-}
-
-.avatar-image-container.speaking .avatar-status-indicator {
-    background: #ffc107;
-    animation: speaking-indicator 0.8s ease-in-out infinite;
-}
-
-@keyframes speaking-indicator {
-    0%, 100% { 
-        transform: scale(1);
-        background: #ffc107;
-    }
-    50% { 
-        transform: scale(1.2);
-        background: #ff6b35;
-    }
-}
-
-@keyframes speaking-pulse {
-    0%, 100% {
-        transform: scale(1);
-        filter: brightness(1);
-    }
-    50% {
-        transform: scale(1.05);
-        filter: brightness(1.2);
-    }
-}
-
-/* Enhanced Chat Messages */
-.bot-message.speaking {
-    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-    border-left: 3px solid #2196f3;
-    animation: message-glow 2s ease-in-out infinite;
-}
-
-@keyframes message-glow {
-    0%, 100% {
-        box-shadow: 0 2px 8px rgba(33, 150, 243, 0.2);
-    }
-    50% {
-        box-shadow: 0 4px 16px rgba(33, 150, 243, 0.4);
-    }
-}
-
-.pulse-ring {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 70px;
-    height: 70px;
-    border: 2px solid #007bff;
-    border-radius: 50%;
-    animation: pulse 2s infinite;
-    opacity: 0.6;
-}
-
-@keyframes pulse {
-    0% {
-        transform: translate(-50%, -50%) scale(1);
-        opacity: 0.6;
-    }
-    100% {
-        transform: translate(-50%, -50%) scale(1.5);
-        opacity: 0;
-    }
-}
-
-/* Chat Backdrop */
-.chat-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(5px);
-    z-index: 9998;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-}
-
-.chat-backdrop.visible {
-    opacity: 1;
-    visibility: visible;
-}
-
-/* Side-by-Side Chat Interface */
-#avatar-chat {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 90vw;
-    max-width: 1200px;
-    height: 80vh;
-    max-height: 700px;
-    background: white;
-    border-radius: 20px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    overflow: hidden;
-    z-index: 9999;
-}
-
-.chat-container {
-    display: flex;
-    height: 100%;
-    width: 100%;
-}
-
-.avatar-chat-hidden {
-    opacity: 0;
-    visibility: hidden;
-    transform: translate(-50%, -50%) scale(0.9);
-}
-
-.avatar-chat-visible {
-    opacity: 1;
-    visibility: visible;
-    transform: translate(-50%, -50%) scale(1);
-}
-
-/* Avatar Side (Left) */
-.avatar-side {
-    flex: 1;
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-    position: relative;
-    border-right: 1px solid #dee2e6;
-    min-height: 500px;
-}
-
-.avatar-side::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: 
-        radial-gradient(circle at 30% 20%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
-        radial-gradient(circle at 70% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 50%);
-    pointer-events: none;
-}
-
-.avatar-display {
-    text-align: center;
-    position: relative;
-    width: 100%;
-    max-width: 320px;
-    margin: 0 auto;
-}
-
-.avatar-full-image {
-    width: 100%;
-    max-width: 320px;
-    height: auto;
-    aspect-ratio: 3/4;
-    object-fit: cover;
-    object-position: center top;
-    border-radius: 20px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.15);
-    transition: all 0.3s ease;
-    border: 4px solid white;
-    display: block;
-}
-
-.avatar-full-image.speaking {
-    box-shadow: 0 20px 50px rgba(0,123,255,0.4);
-    border-color: #28a745;
-    animation: avatar-speaking 1.5s ease-in-out infinite;
-}
-
-@keyframes avatar-speaking {
-    0%, 100% { 
-        transform: scale(1);
-        filter: brightness(1.1);
-    }
-    50% { 
-        transform: scale(1.02);
-        filter: brightness(1.2);
-    }
-}
-
-/* Enhanced D-ID Video - Natural Human Appearance */
-#avatar-video-container {
-    position: relative;
-    width: 100%;
-    max-width: 320px;
-    height: auto;
-    aspect-ratio: 3/4;
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 
-        0 25px 50px rgba(0,0,0,0.2),
-        0 10px 20px rgba(0,0,0,0.1),
-        inset 0 1px 0 rgba(255,255,255,0.1);
-    border: 4px solid rgba(255,255,255,0.9);
-    margin: 0 auto;
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    z-index: 2;
-    transition: all 0.3s ease;
-}
-
-#avatar-video-container::before {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    background: linear-gradient(45deg, 
-        rgba(59, 130, 246, 0.3) 0%, 
-        rgba(139, 92, 246, 0.3) 25%,
-        rgba(16, 185, 129, 0.3) 50%,
-        rgba(59, 130, 246, 0.3) 75%,
-        rgba(139, 92, 246, 0.3) 100%);
-    border-radius: 22px;
-    z-index: -1;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-#avatar-video-container.speaking::before {
-    opacity: 1;
-    animation: speaking-glow 2s ease-in-out infinite;
-}
-
-@keyframes speaking-glow {
-    0%, 100% { 
-        transform: scale(1);
-        opacity: 0.6;
-    }
-    50% { 
-        transform: scale(1.02);
-        opacity: 0.8;
-    }
-}
-
-.avatar-video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center top;
-    border-radius: 16px;
-    background: transparent;
-    display: block;
-    filter: 
-        contrast(1.1) 
-        brightness(1.05) 
-        saturate(1.1)
-        drop-shadow(0 2px 4px rgba(0,0,0,0.1));
-    transition: all 0.3s ease;
-}
-
-/* Natural breathing effect when video plays */
-.avatar-video.playing {
-    animation: natural-presence 4s ease-in-out infinite;
-}
-
-@keyframes natural-presence {
-    0%, 100% { 
-        transform: scale(1) translateY(0px);
-        filter: 
-            contrast(1.1) 
-            brightness(1.05) 
-            saturate(1.1)
-            drop-shadow(0 2px 4px rgba(0,0,0,0.1));
-    }
-    50% { 
-        transform: scale(1.01) translateY(-1px);
-        filter: 
-            contrast(1.12) 
-            brightness(1.08) 
-            saturate(1.15)
-            drop-shadow(0 3px 6px rgba(0,0,0,0.15));
-    }
-}
-
-/* Remove video player appearance */
-.avatar-video::-webkit-media-controls {
-    display: none !important;
-}
-
-.avatar-video::-webkit-media-controls-panel {
-    display: none !important;
-}
-
-.avatar-video::-webkit-media-controls-play-button {
-    display: none !important;
-}
-
-.avatar-video::-webkit-media-controls-start-playback-button {
-    display: none !important;
-}
-
-.avatar-video::-moz-media-controls {
-    display: none !important;
-}
-
-.avatar-video::--ms-media-controls {
-    display: none !important;
-}
-
-/* Ambient lighting effect */
-.ambient-lighting {
-    position: absolute;
-    top: -10px;
-    left: -10px;
-    right: -10px;
-    bottom: -10px;
-    background: radial-gradient(
-        ellipse at center,
-        rgba(255, 255, 255, 0.1) 0%,
-        rgba(59, 130, 246, 0.05) 30%,
-        rgba(139, 92, 246, 0.05) 60%,
-        transparent 100%
-    );
-    border-radius: 30px;
-    z-index: -1;
-    opacity: 0;
-    transition: opacity 0.5s ease;
-}
-
-#avatar-video-container.speaking .ambient-lighting {
-    opacity: 1;
-    animation: ambient-pulse 3s ease-in-out infinite;
-}
-
-@keyframes ambient-pulse {
-    0%, 100% { 
-        transform: scale(1);
-        opacity: 0.3;
-    }
-    50% { 
-        transform: scale(1.1);
-        opacity: 0.6;
-    }
-}
-
-/* Video overlay for natural depth */
-.video-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0.02) 0%,
-        transparent 20%,
-        transparent 80%,
-        rgba(0, 0, 0, 0.05) 100%
-    );
-    border-radius: 16px;
-    pointer-events: none;
-    z-index: 1;
-}
-
-/* Enhanced shadow for standing effect */
-#avatar-video-container::after {
-    content: '';
-    position: absolute;
-    bottom: -15px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80%;
-    height: 10px;
-    background: radial-gradient(
-        ellipse,
-        rgba(0, 0, 0, 0.2) 0%,
-        rgba(0, 0, 0, 0.1) 40%,
-        transparent 70%
-    );
-    border-radius: 50%;
-    z-index: -1;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-#avatar-video-container.speaking::after {
-    opacity: 1;
-}
-
-/* Natural head movement simulation */
-.avatar-video.natural-movement {
-    animation: 
-        natural-presence 4s ease-in-out infinite,
-        subtle-head-movement 8s ease-in-out infinite;
-}
-
-@keyframes subtle-head-movement {
-    0%, 100% { 
-        transform: scale(1) translateY(0px) rotateZ(0deg);
-    }
-    25% { 
-        transform: scale(1.005) translateY(-0.5px) rotateZ(0.2deg);
-    }
-    50% { 
-        transform: scale(1.01) translateY(-1px) rotateZ(0deg);
-    }
-    75% { 
-        transform: scale(1.005) translateY(-0.5px) rotateZ(-0.2deg);
-    }
-}
-
-.avatar-status-display {
-    margin-top: 2rem;
-    text-align: center;
-}
-
-.status-indicator-large {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    border-radius: 25px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    margin-bottom: 1rem;
-}
-
-.status-indicator-large.online {
-    background: rgba(40, 167, 69, 0.1);
-    color: #28a745;
-    border: 1px solid rgba(40, 167, 69, 0.3);
-}
-
-.status-indicator-large.speaking {
-    background: rgba(255, 193, 7, 0.1);
-    color: #ffc107;
-    border: 1px solid rgba(255, 193, 7, 0.3);
-    animation: status-pulse 1s ease-in-out infinite;
-}
-
-.status-indicator-large.thinking {
-    background: rgba(108, 117, 125, 0.1);
-    color: #6c757d;
-    border: 1px solid rgba(108, 117, 125, 0.3);
-    animation: thinking-pulse 1.5s ease-in-out infinite;
-}
-
-@keyframes thinking-pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.6; }
-}
-
-/* Avatar Loading State */
-.avatar-loading {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    max-width: 320px;
-    height: 400px;
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    border-radius: 20px;
-    border: 4px solid white;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.15);
-}
-
-.avatar-loading.hidden {
-    display: none;
-}
-
-.loading-spinner-large {
-    width: 50px;
-    height: 50px;
-    border: 4px solid #e9ecef;
-    border-top: 4px solid #007bff;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin-bottom: 1rem;
-}
-
-.avatar-loading p {
-    color: #6c757d;
-    font-size: 1rem;
-    margin: 0;
-    font-weight: 500;
-}
-
-/* Avatar Error State */
-.avatar-error {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    max-width: 320px;
-    height: 400px;
-    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-    border-radius: 20px;
-    border: 4px solid white;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.15);
-    color: #dc2626;
-    text-align: center;
-    padding: 2rem;
-}
-
-.avatar-error i {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-    opacity: 0.7;
-}
-
-.avatar-error p {
-    margin: 0;
-    font-size: 0.9rem;
-    line-height: 1.5;
-}
-
-.avatar-name {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #2c3e50;
-    margin-bottom: 0.5rem;
-}
-
-.avatar-title {
-    font-size: 1rem;
-    color: #6c757d;
-    margin-bottom: 1rem;
-}
-
-.avatar-status-text {
-    background: rgba(255,255,255,0.9);
-    padding: 1rem 1.5rem;
-    border-radius: 15px;
-    font-size: 0.9rem;
-    color: #495057;
-    line-height: 1.5;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    max-width: 100%;
-    margin: 0 auto;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255,255,255,0.3);
-}
-
-/* Chat Side (Right) */
-.chat-side {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    background: white;
-}
-
-.chat-header {
-    background: linear-gradient(135deg, #007bff, #0056b3);
-    color: white;
-    padding: 1.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-}
-
-.chat-title h4 {
-    margin: 0;
-    font-size: 1.2rem;
-    font-weight: 600;
-}
-
-.chat-title small {
-    opacity: 0.9;
-    font-size: 0.8rem;
-}
-
-.chat-messages-container {
-    flex: 1;
-    overflow-y: auto;
-    padding: 1.5rem;
-    background: linear-gradient(to bottom, #ffffff 0%, #f8f9fa 100%);
-}
-
-.chat-messages-container::-webkit-scrollbar {
-    width: 6px;
-}
-
-.chat-messages-container::-webkit-scrollbar-track {
-    background: #f1f3f4;
-    border-radius: 10px;
-}
-
-.chat-messages-container::-webkit-scrollbar-thumb {
-    background: #c1c8cd;
-    border-radius: 10px;
-}
-
-.chat-input-container {
-    padding: 1.5rem;
-    border-top: 1px solid #dee2e6;
-    background: white;
-}
-
-.chat-input {
-    border: 2px solid #e9ecef;
-    border-radius: 25px;
-    padding: 1rem 1.5rem;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-}
-
-.chat-input:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
-}
-
-.send-btn {
-    border-radius: 25px;
-    padding: 1rem 1.5rem;
-    font-weight: 600;
-    transition: all 0.3s ease;
-}
-
-.send-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0,123,255,0.3);
-}
-
-.chat-avatar-mini {
-    position: relative;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-}
-
-.chat-avatar-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.chat-status-dot {
-    position: absolute;
-    bottom: 2px;
-    right: 2px;
-    width: 10px;
-    height: 10px;
-    background: #28a745;
-    border: 2px solid white;
-    border-radius: 50%;
-}
-
-.chat-header-info h5 {
-    margin: 0;
-    font-size: 1rem;
-    font-weight: 600;
-}
-
-.chat-header-info small {
-    opacity: 0.9;
-    font-size: 0.8rem;
-}
-
-.btn-close {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 1.2rem;
-    cursor: pointer;
-    opacity: 0.8;
-}
-
-.btn-close:hover {
-    opacity: 1;
-}
-
-.chat-body {
-    padding: 1rem;
-}
-
-#chat-messages {
-    max-height: 300px;
-    overflow-y: auto;
-    margin-bottom: 1rem;
-}
-
-.bot-message, .user-message {
-    padding: 1rem;
-    margin-bottom: 1rem;
-    border-radius: 15px;
-    font-size: 0.9rem;
-    line-height: 1.5;
-    position: relative;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.bot-message {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    border-left: 4px solid #007bff;
-    margin-right: 2rem;
-}
-
-.user-message {
-    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
-    color: white;
-    margin-left: 2rem;
-    text-align: right;
-}
-
-/* Message Header Styles */
-.message-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 0.5rem;
-    font-weight: 600;
-    font-size: 0.85rem;
-}
-
-.user-message .message-header {
-    justify-content: flex-end;
-}
-
-.avatar-mini {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    overflow: hidden;
-    margin-right: 0.5rem;
-    border: 2px solid #007bff;
-}
-
-.avatar-mini-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.message-content {
-    color: #2c3e50;
-    line-height: 1.6;
-}
-
-.user-message .message-content {
-    color: white;
-}
-
-/* Welcome Message Enhancements */
-.welcome-message {
-    background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%);
-    border-left: 4px solid #28a745;
-    border-radius: 15px;
-    padding: 1.5rem;
-}
-
-.status-indicator {
-    background: #28a745;
-    color: white;
-    font-size: 0.7rem;
-    padding: 2px 8px;
-    border-radius: 10px;
-    margin-left: auto;
-    font-weight: 500;
-}
-
-/* Quick Actions */
-.quick-actions {
-    margin-top: 1rem;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-}
-
-.quick-btn {
-    background: linear-gradient(135deg, #007bff, #0056b3);
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    font-weight: 500;
-}
-
-.quick-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
-}
-
-.quick-btn:active {
-    transform: translateY(0);
-}
-
-/* Typing Indicator */
-.typing-indicator {
-    display: flex;
-    align-items: center;
-    padding: 1rem;
-    background: #f8f9fa;
-    border-radius: 15px;
-    margin-bottom: 1rem;
-}
-
-.typing-dots {
-    display: flex;
-    gap: 4px;
-}
-
-.typing-dot {
-    width: 8px;
-    height: 8px;
-    background: #007bff;
-    border-radius: 50%;
-    animation: typing-bounce 1.4s ease-in-out infinite both;
-}
-
-.typing-dot:nth-child(1) { animation-delay: -0.32s; }
-.typing-dot:nth-child(2) { animation-delay: -0.16s; }
-.typing-dot:nth-child(3) { animation-delay: 0s; }
-
-@keyframes typing-bounce {
-    0%, 80%, 100% {
-        transform: scale(0.8);
-        opacity: 0.5;
-    }
-    40% {
-        transform: scale(1.2);
-        opacity: 1;
-    }
-}
-
-.chat-input .input-group {
-    border-radius: 25px;
-    overflow: hidden;
-}
-
-.chat-input .form-control {
-    border: 1px solid #dee2e6;
-    border-right: none;
-}
-
-.chat-input .btn {
-    border-radius: 0 25px 25px 0;
-}
-
-/* Search Suggestions */
-.search-suggestions {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background: white;
-    border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    z-index: 1000;
-    margin-top: 5px;
-}
-
-.suggestion-item {
-    padding: 12px 20px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border-bottom: 1px solid #f0f0f0;
-}
-
-.suggestion-item:hover {
-    background: #f8f9fa;
-    color: var(--primary-blue);
-}
-
-.suggestion-item:last-child {
-    border-bottom: none;
-}
-
-/* Enhanced Professional Animations */
-.feature-card, .specialty-card, .step-card {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: all 0.6s ease;
-}
-
-.feature-card.animate-in, .specialty-card.animate-in, .step-card.animate-in {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* Professional Loading States */
-.search-button.loading {
-    position: relative;
-    color: transparent;
-}
-
-.search-button.loading::after {
-    content: '';
-    position: absolute;
-    width: 16px;
-    height: 16px;
-    top: 50%;
-    left: 50%;
-    margin-left: -8px;
-    margin-top: -8px;
-    border: 2px solid #ffffff;
-    border-radius: 50%;
-    border-top-color: transparent;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .section-title {
-        font-size: 2rem;
-    }
-    
-    .feature-card, .specialty-card {
-        margin-bottom: 2rem;
-    }
-    
-    #avatar-chat {
-        width: 300px;
-        right: -20px;
-    }
-    
-    .cta-buttons .btn {
-        display: block;
-        width: 100%;
-        margin-bottom: 1rem;
-    }
-    
-    .cta-buttons .btn:last-child {
-        margin-bottom: 0;
-    }
-    
-    .search-suggestions {
-        margin-top: 10px;
-    }
-}
-
-/* Responsive Design for Side-by-Side Layout */
-@media (max-width: 1200px) {
-    #avatar-chat {
-        width: 95vw;
-        height: 85vh;
-    }
-    
-    .avatar-display {
-        max-width: 280px;
-    }
-}
-
-@media (max-width: 1024px) {
-    #avatar-chat {
-        width: 98vw;
-        height: 90vh;
-    }
-    
-    .avatar-display {
-        max-width: 240px;
-    }
-    
-    .avatar-side {
-        padding: 1.5rem;
-    }
-}
-
-@media (max-width: 768px) {
-    #avatar-chat {
-        width: 100vw;
-        height: 100vh;
-        border-radius: 0;
-    }
-    
-    .chat-container {
-        flex-direction: column;
-        height: 100%;
-    }
-    
-    .avatar-side {
-        flex: 0 0 auto;
-        padding: 1rem;
-        border-right: none;
-        border-bottom: 1px solid #dee2e6;
-        min-height: 40vh;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
-    
-    .avatar-display {
-        max-width: 200px;
-    }
-    
-    .avatar-status-display {
-        margin-top: 1rem;
-    }
-    
-    .avatar-status-text {
-        font-size: 0.8rem;
-        padding: 0.75rem 1rem;
-    }
-    
-    .avatar-name {
-        font-size: 1.3rem;
-    }
-    
-    .avatar-title {
-        font-size: 0.9rem;
-    }
-    
-    .chat-side {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .chat-messages-container {
-        padding: 1rem;
-        flex: 1;
-    }
-    
-    .chat-input-container {
-        padding: 1rem;
-    }
-}
-
-@media (max-width: 576px) {
-    #ai-avatar-assistant {
-        bottom: 20px;
-        right: 20px;
-    }
-    
-    .avatar-side {
-        min-height: 35vh;
-        padding: 0.75rem;
-    }
-    
-    .avatar-display {
-        max-width: 160px;
-    }
-    
-    .avatar-name {
-        font-size: 1.1rem;
-    }
-    
-    .avatar-title {
-        font-size: 0.8rem;
-    }
-    
-    .avatar-status-text {
-        font-size: 0.75rem;
-        padding: 0.5rem 0.75rem;
-    }
-    
-    .status-indicator-large {
-        font-size: 0.8rem;
-        padding: 0.4rem 0.8rem;
-    }
-    
-    .chat-header {
-        padding: 1rem;
-    }
-    
-    .chat-title h4 {
-        font-size: 1rem;
-    }
-    
-    .chat-messages-container {
-        padding: 0.75rem;
-    }
-    
-    .chat-input-container {
-        padding: 0.75rem;
-    }
-    
-    .chat-input {
-        padding: 0.75rem 1rem;
-        font-size: 0.9rem;
-    }
 }
 </style>
 
 <script>
-// Simple Avatar Chat Functionality
-let isChatOpen = false;
-
-function toggleAvatarChat() {
-    const chat = document.getElementById('avatar-chat');
-    const backdrop = document.getElementById('chat-backdrop');
-    isChatOpen = !isChatOpen;
-    
-    if (isChatOpen) {
-        // Show backdrop and chat
-        backdrop.classList.add('visible');
-        chat.classList.remove('avatar-chat-hidden');
-        chat.classList.add('avatar-chat-visible');
-        
-        // Prevent body scroll
-        document.body.style.overflow = 'hidden';
-        
-        // Mark as welcomed (no voice on open)
-        if (!window.hasWelcomed) {
-            window.hasWelcomed = true;
-        }
-    } else {
-        // Hide backdrop and chat
-        backdrop.classList.remove('visible');
-        chat.classList.remove('avatar-chat-visible');
-        chat.classList.add('avatar-chat-hidden');
-        
-        // Restore body scroll
-        document.body.style.overflow = '';
-        
-        // Stop any ongoing speech when closing
-        if (window.speechSynthesis.speaking) {
-            window.speechSynthesis.cancel();
-        }
-        
-        // Reset avatar state
-        const staticImage = document.getElementById('avatar-static-image');
-        const videoContainer = document.getElementById('avatar-video-container');
-        
-        if (staticImage) staticImage.classList.remove('speaking');
-        if (videoContainer) videoContainer.style.display = 'none';
-        
-        updateAvatarStatus('online', 'Ready to help you with your health questions');
-    }
+function checkAuthAndBookAppointment() {
+    {% if user.is_authenticated %}
+        window.location.href = "{% url 'patientdashboard:specialties' %}";
+    {% else %}
+        window.location.href = "{% url 'frontend:patient_login' %}";
+    {% endif %}
 }
 
-function handleEnterKey(event) {
-    if (event.key === 'Enter') {
-        askAvatarQuestion();
-    }
+function checkAuthAndBrowseSpecialists() {
+    {% if user.is_authenticated %}
+        window.location.href = "{% url 'chat:browse_practitioners' %}";
+    {% else %}
+        window.location.href = "{% url 'frontend:patient_login' %}";
+    {% endif %}
 }
 
-async function askAvatarQuestion() {
-    const input = document.getElementById('user-question');
-    const question = input.value.trim();
-    
-    if (!question) return;
-    
-    // Add user message
-    addMessage(question, 'user');
-    input.value = '';
-    
-    // Add enhanced thinking message
-    addThinkingMessage();
-    
-    // Update avatar status
-    updateAvatarStatus('thinking', 'Analyzing your question...');
-    
-    try {
-        const response = await fetch('/ask-avatar/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-            },
-            body: JSON.stringify({ 
-                message: question,
-                language: window.aiLanguage || 'en'
-            })
-        });
-        
-        const data = await response.json();
-        
-        // Remove thinking message
-        removeThinkingMessage();
-        
-        if (data.success && data.answer) {
-            // Add bot message
-            addMessage(data.answer, 'bot');
-            
-            // Check if D-ID video is available
-            if (data.has_video && data.video_url) {
-                console.log('Playing D-ID video:', data.video_url);
-                showDIDVideo(data.video_url, data.answer);
-            } else {
-                console.log('No D-ID video, showing text only (no voice)');
-                updateAvatarStatus('online', 'Response ready - check the chat');
-            }
-        } else {
-            const errorMsg = 'Sorry, I couldn\'t process your request. Please try again.';
-            addMessage(errorMsg, 'bot');
-            updateAvatarStatus('online', 'Please try again');
-        }
-        
-    } catch (error) {
-        console.error('Avatar Error:', error);
-        removeThinkingMessage();
-        const errorMsg = 'Connection error. Please try again.';
-        addMessage(errorMsg, 'bot');
-        updateAvatarStatus('online', 'Connection error - please try again');
-    }
+function checkAuthAndViewProfile(practitionerId) {
+    {% if user.is_authenticated %}
+        window.location.href = `/practitioner/${practitionerId}/profile/`;
+    {% else %}
+        window.location.href = "{% url 'frontend:patient_login' %}";
+    {% endif %}
 }
-
-// Professional Text-to-Speech Function
-function speakResponse(text) {
-    // Cancel any ongoing speech
-    if (window.speechSynthesis.speaking) {
-        window.speechSynthesis.cancel();
-    }
-    
-    const utterance = new SpeechSynthesisUtterance(text);
-    
-    // Professional voice settings
-    utterance.lang = 'en-US';
-    utterance.rate = 0.9;  // Slightly slower for clarity
-    utterance.pitch = 1.1; // Slightly higher for female voice
-    utterance.volume = 0.9;
-    
-    // Try to use a professional female voice
-    const voices = window.speechSynthesis.getVoices();
-    const professionalVoice = voices.find(voice => 
-        voice.name.includes('Samantha') || 
-        voice.name.includes('Karen') ||
-        voice.name.includes('Moira') ||
-        voice.name.includes('Aria') ||
-        voice.name.includes('Female') ||
-        (voice.lang.includes('en-US') && voice.name.includes('Google'))
-    );
-    
-    if (professionalVoice) {
-        utterance.voice = professionalVoice;
-        console.log('Using professional voice:', professionalVoice.name);
-    }
-    
-    // Add visual feedback during speech
-    const avatarContainer = document.querySelector('.avatar-image-container');
-    const chatStatusDot = document.querySelector('.chat-status-dot');
-    
-    utterance.onstart = function() {
-        console.log('AI Assistant started speaking');
-        avatarContainer.classList.add('speaking');
-        if (chatStatusDot) chatStatusDot.style.background = '#ffc107';
-    };
-    
-    utterance.onend = function() {
-        console.log('AI Assistant finished speaking');
-        avatarContainer.classList.remove('speaking');
-        if (chatStatusDot) chatStatusDot.style.background = '#28a745';
-    };
-    
-    utterance.onerror = function(event) {
-        console.error('Speech synthesis error:', event.error);
-        avatarContainer.classList.remove('speaking');
-        if (chatStatusDot) chatStatusDot.style.background = '#28a745';
-    };
-    
-    // Speak the text
-    window.speechSynthesis.speak(utterance);
-}
-
-// Load voices when available
-window.speechSynthesis.onvoiceschanged = function() {
-    const voices = window.speechSynthesis.getVoices();
-    console.log('Available voices:', voices.length);
-    
-    const femaleVoices = voices.filter(voice => 
-        voice.name.includes('Female') || 
-        voice.name.includes('Samantha') || 
-        voice.name.includes('Karen') ||
-        voice.name.includes('Aria') ||
-        voice.name.includes('Moira')
-    );
-    
-    if (femaleVoices.length > 0) {
-        console.log('Professional female voices available:', femaleVoices.map(v => v.name));
-    }
-};
-
-function addMessage(message, type, isThinking = false) {
-    const messagesContainer = document.getElementById('chat-messages');
-    const messageDiv = document.createElement('div');
-    messageDiv.className = type === 'user' ? 'user-message' : 'bot-message';
-    
-    if (isThinking) {
-        messageDiv.id = 'thinking-message';
-        messageDiv.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>' + message;
-    } else {
-        if (type === 'bot') {
-            messageDiv.innerHTML = `
-                <div class="message-header">
-                    <div class="avatar-mini">
-                        <img src="https://res.cloudinary.com/dovwzsl4v/image/upload/v1752823658/avatar_zfdfcr.jpg" 
-                             alt="Dr. Amanda" class="avatar-mini-image">
-                    </div>
-                    <strong>Dr. Amanda</strong>
-                </div>
-                <div class="message-content">${message}</div>
-            `;
-            
-            // Add speaking class for visual feedback
-            if (!isThinking) {
-                messageDiv.classList.add('speaking');
-                setTimeout(() => {
-                    messageDiv.classList.remove('speaking');
-                }, 3000);
-            }
-        } else {
-            messageDiv.innerHTML = `
-                <div class="message-header">
-                    <strong>You</strong>
-                </div>
-                <div class="message-content">${message}</div>
-            `;
-        }
-    }
-    
-    messagesContainer.appendChild(messageDiv);
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    
-    // Animate message appearance
-    messageDiv.style.opacity = '0';
-    messageDiv.style.transform = 'translateY(10px)';
-    
-    setTimeout(() => {
-        messageDiv.style.transition = 'all 0.3s ease';
-        messageDiv.style.opacity = '1';
-        messageDiv.style.transform = 'translateY(0)';
-    }, 50);
-}
-
-function removeThinkingMessage() {
-    const thinkingMessage = document.getElementById('thinking-message');
-    if (thinkingMessage) {
-        thinkingMessage.remove();
-    }
-}
-
-// Close chat when clicking outside
-document.addEventListener('click', function(event) {
-    const avatar = document.getElementById('ai-avatar-assistant');
-    const chat = document.getElementById('avatar-chat');
-    
-    if (isChatOpen && !avatar.contains(event.target)) {
-        toggleAvatarChat();
-    }
-});
-
-// Enhanced Search Functionality
-const indexSearchInput = document.querySelector('.search-input');
-const searchSuggestions = document.getElementById('search-suggestions');
-const suggestionItems = document.querySelectorAll('.suggestion-item');
-
-if (indexSearchInput && searchSuggestions) {
-    indexSearchInput.addEventListener('focus', function() {
-        if (this.value.length === 0) {
-            searchSuggestions.style.display = 'block';
-        }
-    });
-    
-    indexSearchInput.addEventListener('input', function() {
-        if (this.value.length > 0) {
-            searchSuggestions.style.display = 'none';
-        } else {
-            searchSuggestions.style.display = 'block';
-        }
-    });
-    
-    document.addEventListener('click', function(e) {
-        if (!indexSearchInput.contains(e.target) && !searchSuggestions.contains(e.target)) {
-            searchSuggestions.style.display = 'none';
-        }
-    });
-    
-    suggestionItems.forEach(item => {
-        item.addEventListener('click', function() {
-            indexSearchInput.value = this.textContent;
-            searchSuggestions.style.display = 'none';
-            indexSearchInput.focus();
-        });
-    });
-}
-
-// Professional Form Submission
-const searchForm = document.querySelector('.search-container form');
-if (searchForm) {
-    searchForm.addEventListener('submit', function(e) {
-        const submitBtn = this.querySelector('.search-button');
-        submitBtn.classList.add('loading');
-        
-        // Remove loading state after 3 seconds (fallback)
-        setTimeout(() => {
-            submitBtn.classList.remove('loading');
-        }, 3000);
-    });
-}
-
-// Intersection Observer for Professional Animations
-const indexObserverOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-};
-
-const indexObserver = new IntersectionObserver(function(entries) {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('animate-in');
-        }
-    });
-}, indexObserverOptions);
-
-// Observe all animated elements
-document.querySelectorAll('.feature-card, .specialty-card, .step-card').forEach(el => {
-    indexObserver.observe(el);
-});
-
-// Professional Scroll Effects
-window.addEventListener('scroll', function() {
-    const scrolled = window.pageYOffset;
-    const parallax = document.querySelector('.hero-section');
-    
-    if (parallax) {
-        const speed = scrolled * 0.5;
-        parallax.style.transform = `translateY(${speed}px)`;
-    }
-});
-
-// Enhanced Button Interactions
-document.querySelectorAll('.btn').forEach(button => {
-    button.addEventListener('mouseenter', function() {
-        this.style.transform = 'translateY(-2px)';
-    });
-    
-    button.addEventListener('mouseleave', function() {
-        this.style.transform = 'translateY(0)';
-    });
-    
-    button.addEventListener('click', function() {
-        this.style.transform = 'scale(0.98)';
-        setTimeout(() => {
-            this.style.transform = 'translateY(-2px)';
-        }, 150);
-    });
-});
-
-// Professional Loading Animation
-window.addEventListener('load', function() {
-    document.body.classList.add('loaded');
-    
-    // Staggered animation for cards
-    const cards = document.querySelectorAll('.feature-card, .specialty-card');
-    cards.forEach((card, index) => {
-        setTimeout(() => {
-            card.style.opacity = '1';
-            card.style.transform = 'translateY(0)';
-        }, index * 100);
-    });
-});
-
-// Quick Question Function
-function askQuickQuestion(question) {
-    const input = document.getElementById('user-question');
-    input.value = question;
-    askAvatarQuestion();
-}
-
-// Enhanced Thinking Message
-function addThinkingMessage() {
-    const messagesContainer = document.getElementById('chat-messages');
-    const thinkingDiv = document.createElement('div');
-    thinkingDiv.id = 'thinking-message';
-    thinkingDiv.className = 'bot-message typing-indicator';
-    thinkingDiv.innerHTML = `
-        <div class="message-header">
-            <div class="avatar-mini">
-                <img src="https://res.cloudinary.com/dovwzsl4v/image/upload/v1752823658/avatar_zfdfcr.jpg" 
-                     alt="Dr. Amanda" class="avatar-mini-image">
-            </div>
-            <strong>Dr. Amanda</strong>
-            <span class="status-indicator" style="background: #ffc107;">Thinking</span>
-        </div>
-        <div class="message-content">
-            <span>Dr. Amanda is analyzing your question</span>
-            <div class="typing-dots">
-                <div class="typing-dot"></div>
-                <div class="typing-dot"></div>
-                <div class="typing-dot"></div>
-            </div>
-        </div>
-    `;
-    
-    messagesContainer.appendChild(thinkingDiv);
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-}
-
-// Auto-scroll to bottom when new messages arrive
-function scrollToBottom() {
-    const messagesContainer = document.getElementById('chat-messages');
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-}
-
-// Initialize voices on page load
-document.addEventListener('DOMContentLoaded', function() {
-    // Load voices
-    if (window.speechSynthesis.getVoices().length === 0) {
-        window.speechSynthesis.addEventListener('voiceschanged', function() {
-            console.log('Voices loaded:', window.speechSynthesis.getVoices().length);
-        });
-    }
-    
-    // Add pulse animation to avatar
-    const avatarIcon = document.getElementById('avatar-icon');
-    if (avatarIcon) {
-        setInterval(() => {
-            if (!isChatOpen) {
-                avatarIcon.style.animation = 'none';
-                setTimeout(() => {
-                    avatarIcon.style.animation = 'pulse 2s ease-in-out';
-                }, 10);
-            }
-        }, 5000);
-    }
-});
-
-// D-ID Video Integration
-function showDIDVideo(videoUrl, text) {
-    const staticImage = document.getElementById('avatar-static-image');
-    const videoContainer = document.getElementById('avatar-video-container');
-    const video = document.getElementById('avatar-video');
-    
-    console.log('Loading D-ID video:', videoUrl);
-    
-    // Update avatar status
-    updateAvatarStatus('speaking', text);
-    
-    // Stop any ongoing text-to-speech
-    if (window.speechSynthesis.speaking) {
-        window.speechSynthesis.cancel();
-    }
-    
-    // Reset video properties
-    video.src = '';
-    video.load();
-    
-    // Set video source and properties for audio
-    video.src = videoUrl;
-    video.muted = false; // Ensure audio is enabled
-    video.volume = 1.0; // Full volume
-    video.autoplay = true;
-    video.playsInline = true;
-    
-    // Show video container with smooth transition
-    videoContainer.style.display = 'block';
-    videoContainer.style.opacity = '0';
-    staticImage.style.transition = 'opacity 0.3s ease';
-    staticImage.style.opacity = '0';
-    
-    // Fade in video container
-    setTimeout(() => {
-        videoContainer.style.transition = 'opacity 0.3s ease';
-        videoContainer.style.opacity = '1';
-    }, 100);
-    
-    // Force video to load
-    video.load();
-    
-    video.onloadedmetadata = () => {
-        console.log('D-ID video metadata loaded');
-        console.log('Video duration:', video.duration);
-        console.log('Video dimensions:', video.videoWidth, 'x', video.videoHeight);
-        
-        // Check for audio tracks
-        if (video.audioTracks) {
-            console.log('Audio tracks:', video.audioTracks.length);
-        }
-        if (video.webkitAudioDecodedByteCount !== undefined) {
-            console.log('Audio decoded bytes:', video.webkitAudioDecodedByteCount);
-        }
-    };
-    
-    video.oncanplaythrough = () => {
-        console.log('D-ID video can play through');
-        
-        // Ensure video is unmuted and has volume
-        video.muted = false;
-        video.volume = 1.0;
-        
-        // Try to play the video
-        const playPromise = video.play();
-        
-        if (playPromise !== undefined) {
-            playPromise.then(() => {
-                console.log('D-ID video started playing successfully');
-                console.log('Audio enabled:', !video.muted, 'Volume:', video.volume);
-                
-                // Double-check audio is working and enhance natural appearance
-                setTimeout(() => {
-                    if (video.muted) {
-                        video.muted = false;
-                        console.log('Unmuted video after play start');
-                    }
-                    
-                    // Enhance video to look more natural
-                    enhanceVideoNaturalness(video, videoContainer);
-                }, 100);
-                
-            }).catch(error => {
-                console.error('Video play failed:', error);
-                console.log('Trying to enable audio with user interaction...');
-                
-                // Show a message to user to click for audio
-                updateAvatarStatus('speaking', 'Click anywhere to enable audio');
-                
-                // Add click listener for user interaction
-                const enableAudio = () => {
-                    video.muted = false;
-                    video.volume = 1.0;
-                    video.play().then(() => {
-                        console.log('Video started with audio after user interaction');
-                        updateAvatarStatus('speaking', text);
-                    }).catch(e => {
-                        console.error('Video still failed after interaction:', e);
-                        fallbackToStaticAnimation(text);
-                    });
-                    document.removeEventListener('click', enableAudio);
-                };
-                
-                document.addEventListener('click', enableAudio, { once: true });
-            });
-        }
-    };
-    
-    video.onplay = () => {
-        console.log('D-ID video is playing');
-        console.log('Muted:', video.muted, 'Volume:', video.volume);
-        
-        // Add natural effects when video starts playing
-        video.classList.add('playing', 'natural-movement');
-        videoContainer.classList.add('speaking');
-        
-        // Remove video player cursor
-        video.style.cursor = 'default';
-        
-        // Enhance video quality
-        video.style.filter = `
-            contrast(1.15) 
-            brightness(1.08) 
-            saturate(1.2)
-            drop-shadow(0 4px 8px rgba(0,0,0,0.15))
-        `;
-    };
-    
-    video.onended = () => {
-        console.log('D-ID video ended');
-        
-        // Remove natural effects
-        video.classList.remove('playing', 'natural-movement');
-        videoContainer.classList.remove('speaking');
-        
-        // Smooth transition back to static image
-        videoContainer.style.transition = 'opacity 0.5s ease';
-        videoContainer.style.opacity = '0';
-        
-        setTimeout(() => {
-            videoContainer.style.display = 'none';
-            staticImage.style.opacity = '1';
-            updateAvatarStatus('online', 'How else can I help you?');
-        }, 500);
-    };
-    
-    video.onerror = (e) => {
-        console.error('D-ID video error:', e);
-        console.error('Video error details:', video.error);
-        fallbackToStaticAnimation(text);
-    };
-    
-    video.onvolumechange = () => {
-        console.log('Volume changed - Muted:', video.muted, 'Volume:', video.volume);
-    };
-    
-    video.onpause = () => {
-        console.log('Video paused');
-    };
-    
-    video.onstalled = () => {
-        console.log('Video stalled');
-    };
-    
-    video.onwaiting = () => {
-        console.log('Video waiting for data');
-    };
-    
-    // Timeout fallback
-    setTimeout(() => {
-        if (video.readyState < 3) { // HAVE_FUTURE_DATA
-            console.log('D-ID video timeout - readyState:', video.readyState);
-            fallbackToStaticAnimation(text);
-        }
-    }, 20000);
-}
-
-// Fallback to static image animation (no voice)
-function fallbackToStaticAnimation(text) {
-    const staticImage = document.getElementById('avatar-static-image');
-    const videoContainer = document.getElementById('avatar-video-container');
-    
-    console.log('Falling back to static animation (no voice)');
-    
-    // Hide video container
-    videoContainer.style.display = 'none';
-    videoContainer.style.opacity = '0';
-    
-    // Show static image
-    staticImage.style.opacity = '1';
-    
-    // Only visual animation, no text-to-speech
-    startSpeakingAnimation(text, false);
-}
-
-// Start speaking animation for static image
-function startSpeakingAnimation(text, useVoice = true) {
-    const staticImage = document.getElementById('avatar-static-image');
-    
-    staticImage.classList.add('speaking');
-    updateAvatarStatus('speaking', text);
-    
-    // Only use text-to-speech if explicitly requested (for fallback only)
-    if (useVoice) {
-        speakResponse(text);
-    }
-    
-    // Calculate speaking duration
-    const words = text.split(' ').length;
-    const duration = Math.max((words / 150) * 60 * 1000, 3000);
-    
-    setTimeout(() => {
-        staticImage.classList.remove('speaking');
-        updateAvatarStatus('online', 'How else can I help you?');
-    }, duration);
-}
-
-// Update avatar status display
-function updateAvatarStatus(status, message) {
-    const statusIndicator = document.querySelector('.status-indicator-large');
-    const statusText = document.getElementById('avatar-status-text');
-    
-    if (!statusIndicator) return;
-    
-    // Remove all status classes
-    statusIndicator.classList.remove('online', 'speaking', 'thinking');
-    
-    // Add new status
-    statusIndicator.classList.add(status);
-    
-    // Update status text
-    if (statusText) {
-        statusText.textContent = message;
-    }
-    
-    // Update status indicator content
-    const statusIcon = statusIndicator.querySelector('i');
-    if (statusIcon) {
-        switch(status) {
-            case 'online':
-                statusIcon.className = 'fas fa-circle';
-                break;
-            case 'speaking':
-                statusIcon.className = 'fas fa-volume-up';
-                break;
-            case 'thinking':
-                statusIcon.className = 'fas fa-brain';
-                break;
-        }
-    }
-}
-
-// Avatar Loading Functions
-function hideAvatarLoading() {
-    const loading = document.getElementById('avatar-loading');
-    const staticImage = document.getElementById('avatar-static-image');
-    
-    if (loading) {
-        loading.classList.add('hidden');
-    }
-    if (staticImage) {
-        staticImage.style.opacity = '1';
-    }
-}
-
-function showAvatarError() {
-    const loading = document.getElementById('avatar-loading');
-    const staticImage = document.getElementById('avatar-static-image');
-    const avatarDisplay = document.querySelector('.avatar-display');
-    
-    if (loading) {
-        loading.classList.add('hidden');
-    }
-    if (staticImage) {
-        staticImage.style.display = 'none';
-    }
-    
-    // Create error display
-    const errorDiv = document.createElement('div');
-    errorDiv.className = 'avatar-error';
-    errorDiv.style.display = 'flex';
-    errorDiv.innerHTML = `
-        <i class="fas fa-exclamation-triangle"></i>
-        <p>Unable to load avatar image.<br>Please check your connection and try again.</p>
-    `;
-    
-    if (avatarDisplay) {
-        avatarDisplay.appendChild(errorDiv);
-    }
-}
-
-// Initialize avatar on page load
-document.addEventListener('DOMContentLoaded', function() {
-    const staticImage = document.getElementById('avatar-static-image');
-    if (staticImage) {
-        // Show loading initially
-        staticImage.style.opacity = '0';
-        
-        // If image is already loaded
-        if (staticImage.complete) {
-            hideAvatarLoading();
-        }
-    }
-});
-
-// Enhance video to look like a real person
-function enhanceVideoNaturalness(video, container) {
-    // Remove any video-like appearance
-    video.style.outline = 'none';
-    video.style.border = 'none';
-    video.style.cursor = 'default';
-    
-    // Disable context menu
-    video.oncontextmenu = () => false;
-    
-    // Disable video selection
-    video.onselectstart = () => false;
-    video.ondragstart = () => false;
-    
-    // Add natural lighting effects
-    const currentTime = new Date().getHours();
-    let lightingFilter = '';
-    
-    if (currentTime >= 6 && currentTime < 12) {
-        // Morning light
-        lightingFilter = 'sepia(0.1) brightness(1.1) contrast(1.1)';
-    } else if (currentTime >= 12 && currentTime < 18) {
-        // Afternoon light
-        lightingFilter = 'brightness(1.05) contrast(1.15) saturate(1.1)';
-    } else {
-        // Evening/night light
-        lightingFilter = 'brightness(0.95) contrast(1.2) saturate(1.05) hue-rotate(5deg)';
-    }
-    
-    video.style.filter = `
-        ${lightingFilter}
-        drop-shadow(0 4px 12px rgba(0,0,0,0.2))
-    `;
-    
-    // Add subtle random movements for realism
-    let movementInterval = setInterval(() => {
-        if (video.paused || video.ended) {
-            clearInterval(movementInterval);
-            return;
-        }
-        
-        const randomX = (Math.random() - 0.5) * 0.5;
-        const randomY = (Math.random() - 0.5) * 0.3;
-        const randomScale = 1 + (Math.random() - 0.5) * 0.01;
-        
-        video.style.transform = `
-            translateX(${randomX}px) 
-            translateY(${randomY}px) 
-            scale(${randomScale})
-        `;
-        
-        setTimeout(() => {
-            video.style.transform = '';
-        }, 200);
-        
-    }, 3000 + Math.random() * 2000); // Random interval between 3-5 seconds
-    
-    console.log('Video enhanced for natural human appearance');
-}
-
-// Disable video download and other controls
-document.addEventListener('DOMContentLoaded', function() {
-    const video = document.getElementById('avatar-video');
-    if (video) {
-        // Disable right-click context menu
-        video.addEventListener('contextmenu', e => e.preventDefault());
-        
-        // Disable drag and drop
-        video.addEventListener('dragstart', e => e.preventDefault());
-        
-        // Disable text selection
-        video.addEventListener('selectstart', e => e.preventDefault());
-        
-        // Remove focus outline
-        video.style.outline = 'none';
-    }
-});
-
-console.log('🏥 Professional Medical Landing Page with Natural AI Assistant Ready!');
 </script>
-{% endblock temp_index %}
+
+<!-- AI Chatbot Widget (Original Implementation) -->
+{% include 'ai_chatbot.html' %}
+
+<style>
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: .5;
+    }
+}
+
+.animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+</style>
+{% endblock %}

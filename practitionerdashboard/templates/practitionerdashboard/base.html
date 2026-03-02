@@ -508,7 +508,7 @@
                 
                 <a href="{% url 'practitionerdashboard:schedule_timming' %}" class="flex items-center space-x-3 px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'schedule_timming' %}bg-white/20 text-white{% endif %}">
                     <i class="fas fa-clock text-lg"></i>
-                    <span class="font-medium" data-translate="Schedule">Schedule Timings</span>
+                    <span class="font-medium" data-translate="Schedule Timings">Schedule Timings</span>
                 </a>
                 
                 <a href="{% url 'practitioner_dashboard:accepted_appointments' %}" class="flex items-center space-x-3 px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 {% if request.resolver_match.url_name == 'accepted_appointments' %}bg-white/20 text-white{% endif %}">
@@ -1887,17 +1887,27 @@ const practitionerTranslations = {
     }
 };
 
-// Language names
+// Language names - All 15 languages
 const practitionerLanguageNames = {
     'en': 'English',
-    'ur': 'اردو',
-    'ar': 'العربية',
-    'hi': 'हिन्दी',
     'es': 'Español',
     'fr': 'Français',
     'de': 'Deutsch',
-    'zh': '中文'
+    'it': 'Italiano',
+    'pt': 'Português',
+    'pl': 'Polski',
+    'ja': '日本語',
+    'zh': '中文',
+    'tr': 'Türkçe',
+    'ko': '한국어',
+    'ru': 'Русский',
+    'uk': 'Українська',
+    'hi': 'हिन्दी',
+    'ar': 'العربية'
 };
+
+// Make it globally accessible
+window.dashboardLanguageNames = practitionerLanguageNames;
 
 // Define changePractitionerLanguage globally
 window.changePractitionerLanguage = function(langCode) {
@@ -1979,9 +1989,55 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('   - Language Dropdown:', document.getElementById('practitionerLangDropdown') ? '✅ Found' : '❌ Not Found');
     console.log('   - Language Options:', document.querySelectorAll('.practitioner-lang-option').length, 'found');
     
+    // Get elements
+    const langBtn = document.getElementById('practitionerLanguageBtn');
+    const langDropdown = document.getElementById('practitionerLangDropdown');
+    const chevron = document.getElementById('practitionerLangChevron');
+    const currentLangSpan = document.getElementById('practitionerCurrentLang');
+    
+    // Load saved language and update button label
+    const savedLang = localStorage.getItem('practitionerLanguage') || localStorage.getItem('selectedLanguage') || 'en';
+    const savedLangName = window.dashboardLanguageNames[savedLang] || 'English';
+    
+    if (currentLangSpan) {
+        currentLangSpan.textContent = savedLangName;
+        console.log('✅ Set button label to:', savedLangName);
+    }
+    
+    // Add click handler to toggle dropdown
+    if (langBtn && langDropdown) {
+        langBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const isHidden = langDropdown.style.display === 'none' || langDropdown.style.display === '';
+            
+            if (isHidden) {
+                langDropdown.style.display = 'block';
+                if (chevron) chevron.style.transform = 'rotate(180deg)';
+                console.log('📂 Dropdown opened');
+            } else {
+                langDropdown.style.display = 'none';
+                if (chevron) chevron.style.transform = 'rotate(0deg)';
+                console.log('📁 Dropdown closed');
+            }
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!langBtn.contains(e.target) && !langDropdown.contains(e.target)) {
+                langDropdown.style.display = 'none';
+                if (chevron) chevron.style.transform = 'rotate(0deg)';
+            }
+        });
+        
+        console.log('✅ Language button click handler added');
+    } else {
+        console.error('❌ Language button or dropdown not found!');
+    }
+    
     // Apply RTL if Arabic is selected
-    const savedLanguage = localStorage.getItem('practitionerLanguage') || localStorage.getItem('selectedLanguage') || 'en';
-    if (savedLanguage === 'ar') {
+    if (savedLang === 'ar') {
         document.documentElement.setAttribute('dir', 'rtl');
         document.documentElement.setAttribute('lang', 'ar');
         document.body.style.direction = 'rtl';
@@ -1989,238 +2045,48 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('✅ Applied RTL for Arabic on page load');
     } else {
         document.documentElement.setAttribute('dir', 'ltr');
-        document.documentElement.setAttribute('lang', savedLanguage);
+        document.documentElement.setAttribute('lang', savedLang);
         document.body.style.direction = 'ltr';
         document.body.classList.remove('rtl-layout');
-        console.log('Applied LTR for:', savedLanguage);
+        console.log('Applied LTR for:', savedLang);
     }
     
-    // Wait a bit for all elements to load
-    setTimeout(function() {
-        initializePractitionerLanguageSystem();
-    }, 500);
+    // Translate page content on load if not English
+    if (savedLang !== 'en') {
+        console.log('🔄 Translating page to:', savedLang);
+        translatePractitionerPage(savedLang);
+    }
 });
 
-function initializePractitionerLanguageSystem() {
-    console.log('🔧 Setting up practitioner language system...');
-    
-    const langBtn = document.getElementById('practitionerLanguageBtn');
-    const langDropdown = document.getElementById('practitionerLangDropdown');
-    const langOptions = document.querySelectorAll('.practitioner-lang-option');
-    const currentLangSpan = document.getElementById('practitionerCurrentLang');
-    const chevron = document.getElementById('practitionerLangChevron');
-    
-    if (!langBtn || !langDropdown) {
-        console.error('❌ Language elements not found!');
+// Function to translate page content
+function translatePractitionerPage(langCode) {
+    if (!window.dashboardTranslations) {
+        console.error('❌ dashboardTranslations not found!');
         return;
     }
     
-    console.log('✅ Language elements found successfully');
-    console.log('📊 Found', langOptions.length, 'language options');
-    console.log('🔍 Found', document.querySelectorAll('[data-translate]').length, 'translatable elements');
-    
-    // Load saved language
-    const savedLang = localStorage.getItem('practitionerLanguage') || localStorage.getItem('selectedLanguage') || 'en';
-    const savedLangName = window.dashboardLanguageNames[savedLang] || 'English';
-    
-    console.log('💾 Saved language:', savedLang, savedLangName);
-    
-    if (currentLangSpan) {
-        currentLangSpan.textContent = savedLangName;
-    }
-    
-    // Apply saved language
-    applyPractitionerLanguage(savedLang);
-    
-    // Add click event to language button
-    langBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        console.log('🖱️ Language button clicked!');
-        console.log('   Current dropdown display:', langDropdown.style.display);
-        
-        const isHidden = langDropdown.style.display === 'none' || langDropdown.style.display === '';
-        console.log('   Is hidden?', isHidden);
-        
-        if (isHidden) {
-            langDropdown.style.display = 'block';
-            langDropdown.style.visibility = 'visible';
-            langDropdown.style.opacity = '1';
-            if (chevron) chevron.style.transform = 'rotate(180deg)';
-            console.log('📂 Dropdown opened - display:', langDropdown.style.display);
-        } else {
-            langDropdown.style.display = 'none';
-            if (chevron) chevron.style.transform = 'rotate(0deg)';
-            console.log('📁 Dropdown closed');
-        }
-    });
-    
-    // Add click events to language options
-    langOptions.forEach(function(option) {
-        option.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            const langCode = this.getAttribute('data-lang');
-            const langName = this.getAttribute('data-name');
-            
-            console.log('🌍 Language selected:', langCode, langName);
-            console.log('🔍 Elements with data-translate:', document.querySelectorAll('[data-translate]').length);
-            
-            // Update display
-            if (currentLangSpan) {
-                currentLangSpan.textContent = langName;
-                console.log('✅ Updated language display to:', langName);
-            }
-            
-            // Save preference
-            localStorage.setItem('practitionerLanguage', langCode);
-            localStorage.setItem('practitionerLanguageName', langName);
-            console.log('💾 Saved language preference:', langCode);
-            
-            // Apply language
-            applyPractitionerLanguage(langCode);
-            
-            // Close dropdown
-            langDropdown.style.display = 'none';
-            if (chevron) chevron.style.transform = 'rotate(0deg)';
-            
-            // Show success message
-            showPractitionerLanguageNotification(langName);
-        });
-    });
-    
-    // Close dropdown when clicking outside
-    document.addEventListener('click', function(e) {
-        if (!langBtn.contains(e.target) && !langDropdown.contains(e.target)) {
-            langDropdown.style.display = 'none';
-            if (chevron) chevron.style.transform = 'rotate(0deg)';
-        }
-    });
-    
-    console.log('✅ Practitioner language system initialized successfully!');
-}
-
-function applyPractitionerLanguage(langCode) {
-    console.log('🌍 Applying practitioner language:', langCode);
-    
-    // Apply RTL for Arabic and Urdu
-    const rtlLanguages = ['ar', 'ur'];
-    const htmlElement = document.documentElement;
-    
-    if (rtlLanguages.includes(langCode)) {
-        htmlElement.setAttribute('dir', 'rtl');
-        htmlElement.setAttribute('lang', langCode);
-        document.body.classList.add('rtl-layout');
-        console.log('📝 Applied RTL layout for', langCode);
-    } else {
-        htmlElement.setAttribute('dir', 'ltr');
-        htmlElement.setAttribute('lang', langCode);
-        document.body.classList.remove('rtl-layout');
-        console.log('📝 Applied LTR layout for', langCode);
-    }
-    
-    // Translate content
-    translatePractitionerContent(langCode);
-    
-    // Test translation by checking a few key elements
-    setTimeout(() => {
-        const dashboardElement = document.querySelector('[data-translate="Dashboard"]');
-        const profileElement = document.querySelector('[data-translate="Profile"]');
-        
-        if (dashboardElement && profileElement) {
-            console.log('🧪 Translation test results:');
-            console.log('   Dashboard element text:', dashboardElement.textContent);
-            console.log('   Profile element text:', profileElement.textContent);
-            
-            const translations = practitionerTranslations[langCode] || practitionerTranslations['en'];
-            const expectedDashboard = translations['Dashboard'] || 'Dashboard';
-            const expectedProfile = translations['Profile'] || 'Profile';
-            
-            if (dashboardElement.textContent === expectedDashboard && profileElement.textContent === expectedProfile) {
-                console.log('✅ Translation verification PASSED');
-            } else {
-                console.log('❌ Translation verification FAILED');
-                console.log('   Expected Dashboard:', expectedDashboard, 'Got:', dashboardElement.textContent);
-                console.log('   Expected Profile:', expectedProfile, 'Got:', profileElement.textContent);
-            }
-        }
-    }, 100);
-}
-
-function translatePractitionerContent(langCode) {
-    const translations = practitionerTranslations[langCode] || practitionerTranslations['en'];
+    const translations = window.dashboardTranslations[langCode] || window.dashboardTranslations['en'];
     let translatedCount = 0;
-    let missingTranslations = [];
     
-    console.log(`🔄 Starting translation to ${langCode}...`);
-    console.log(`📚 Available translations for ${langCode}:`, Object.keys(translations).length);
+    console.log('📚 Translating with', Object.keys(translations).length, 'translations for', langCode);
     
     // Translate all elements with data-translate attribute
-    document.querySelectorAll('[data-translate]').forEach(function(element) {
+    document.querySelectorAll('[data-translate]').forEach(element => {
         const key = element.getAttribute('data-translate');
         if (translations[key]) {
-            const oldText = element.textContent || element.placeholder;
             if (element.tagName === 'INPUT' && (element.type === 'text' || element.type === 'search')) {
                 element.placeholder = translations[key];
             } else {
                 element.textContent = translations[key];
             }
-            console.log(`✅ Translated "${key}": "${oldText}" → "${translations[key]}"`);
             translatedCount++;
-        } else {
-            missingTranslations.push(key);
-            console.warn(`❌ Missing translation for "${key}" in ${langCode}`);
         }
     });
     
-    console.log(`🎯 Translation complete: ${translatedCount} elements translated to ${langCode}`);
-    if (missingTranslations.length > 0) {
-        console.warn(`⚠️ Missing translations for ${langCode}:`, missingTranslations);
-    }
-    
-    // Force a visual update
-    document.body.style.display = 'none';
-    document.body.offsetHeight; // Trigger reflow
-    document.body.style.display = '';
+    console.log('✅ Translated', translatedCount, 'elements to', langCode);
 }
 
-function showPractitionerLanguageNotification(langName) {
-    // Remove any existing notifications
-    const existingNotification = document.querySelector('.practitioner-lang-notification');
-    if (existingNotification) {
-        existingNotification.remove();
-    }
-    
-    // Create notification
-    const notification = document.createElement('div');
-    notification.className = 'practitioner-lang-notification fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-xl shadow-lg z-[10000] transform translate-x-full transition-transform duration-300';
-    notification.innerHTML = `
-        <div class="flex items-center space-x-3">
-            <i class="fas fa-check-circle text-lg"></i>
-            <span class="font-medium">Language changed to ${langName}</span>
-        </div>
-    `;
-    
-    document.body.appendChild(notification);
-    
-    // Animate in
-    setTimeout(() => {
-        notification.style.transform = 'translateX(0)';
-    }, 100);
-    
-    // Animate out and remove
-    setTimeout(() => {
-        notification.style.transform = 'translateX(100%)';
-        setTimeout(() => {
-            if (document.body.contains(notification)) {
-                document.body.removeChild(notification);
-            }
-        }, 300);
-    }, 3000);
-}
-
-console.log('✅ Practitioner Language System Loaded!');
+console.log('✅ Practitioner Dashboard Using Unified Language System!');
 
 // Alert Bell for Pending Appointments
 let pendingAppointmentsData = [];

@@ -13,6 +13,9 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- AI Chatbot Styles -->
+    <link rel="stylesheet" href="{% static 'css/ai_chatbot.css' %}">
     <script>
         tailwind.config = {
             theme: {
@@ -1082,6 +1085,10 @@
                                     <span class="text-xl">🇮🇳</span>
                                     <span class="font-medium">हिन्दी</span>
                                 </a>
+                                <a href="#" onclick="changeLanguage('ar')" class="flex items-center space-x-3 px-4 py-3 hover:bg-medical-light-blue transition-colors">
+                                    <span class="text-xl">🇸🇦</span>
+                                    <span class="font-medium">العربية</span>
+                                </a>
                             </div>
                         </div>
 
@@ -1228,7 +1235,7 @@
         // Use translations from language_system.html (already loaded as window.dashboardTranslations)
         // No need to redefine - just use window.dashboardTranslations directly
 
-        // Language names for display - All 14 languages
+        // Language names for display - 15 languages (Urdu removed)
         const languageNames = {
             'en': '🇬🇧 English',
             'es': '🇪🇸 Español',
@@ -1243,7 +1250,8 @@
             'ko': '🇰🇷 한국어',
             'ru': '🇷🇺 Русский',
             'uk': '🇺🇦 Українська',
-            'hi': '🇮🇳 हिन्दी'
+            'hi': '🇮🇳 हिन्दी',
+            'ar': '🇸🇦 العربية'
         };
 
         // Change language function - make it globally accessible
@@ -1257,8 +1265,16 @@
                     currentLangElement.textContent = languageNames[langCode];
                 }
                 
-                // Set document direction for RTL languages (none currently)
-                document.documentElement.setAttribute('dir', 'ltr');
+                // Set document direction for RTL languages (Arabic only)
+                if (langCode === 'ar') {
+                    document.documentElement.setAttribute('dir', 'rtl');
+                    document.body.style.direction = 'rtl';
+                    document.body.style.textAlign = 'right';
+                } else {
+                    document.documentElement.setAttribute('dir', 'ltr');
+                    document.body.style.direction = 'ltr';
+                    document.body.style.textAlign = 'left';
+                }
                 document.documentElement.setAttribute('lang', langCode);
                 
                 // Store language preference
