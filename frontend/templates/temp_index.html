@@ -125,7 +125,7 @@
                     <h4 class="text-xl font-bold text-gray-800 mb-2">
                         {{ practitioner.civility }} {{ practitioner.first_name }} {{ practitioner.last_name }}
                     </h4>
-                    <p class="text-purple-600 font-medium mb-2">{{ practitioner.specialty }}</p>
+                    <p class="text-purple-600 font-medium mb-2"><span data-translate="{{ practitioner.specialty }}">{{ practitioner.specialty }}</span></p>
                     
                     {% if practitioner.email %}
                     <div class="flex items-center justify-center text-sm text-gray-600 mb-2">

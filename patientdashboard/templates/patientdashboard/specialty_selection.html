@@ -77,8 +77,34 @@
         
         <!-- Card Content -->
         <div class="p-6">
-            <h3 class="text-lg font-bold text-patient-dark-blue mb-2 group-hover:text-patient-blue transition-colors" data-translate="{{ value }}">
-                {{ value }}
+            <h3 class="text-lg font-bold text-patient-dark-blue mb-2 group-hover:text-patient-blue transition-colors">
+                {% if key == 'occupational_therapist' %}
+                    <span data-translate="Occupational Therapist">Occupational Therapist</span>
+                {% elif key == 'physiotherapist' %}
+                    <span data-translate="Physiotherapist">Physiotherapist</span>
+                {% elif key == 'neuropsychologist' %}
+                    <span data-translate="Neuropsychologist">Neuropsychologist</span>
+                {% elif key == 'speech_therapist' %}
+                    <span data-translate="Speech Therapist">Speech Therapist</span>
+                {% elif key == 'psychologist' %}
+                    <span data-translate="Psychologist">Psychologist</span>
+                {% elif key == 'chiropractor' %}
+                    <span data-translate="Chiropractor">Chiropractor</span>
+                {% elif key == 'nutritionist' %}
+                    <span data-translate="Nutritionist">Nutritionist</span>
+                {% elif key == 'general_practitioner' %}
+                    <span data-translate="General Practitioner">General Practitioner</span>
+                {% elif key == 'podiatrist' %}
+                    <span data-translate="Podiatrist">Podiatrist</span>
+                {% elif key == 'psychomotor_therapist' %}
+                    <span data-translate="Psychomotor Therapist">Psychomotor Therapist</span>
+                {% elif key == 'orthoptist' %}
+                    <span data-translate="Orthoptist">Orthoptist</span>
+                {% elif key == 'dietitian' %}
+                    <span data-translate="Dietitian">Dietitian</span>
+                {% else %}
+                    <span data-translate="{{ value }}">{{ value }}</span>
+                {% endif %}
             </h3>
             <p class="text-sm text-patient-dark-gray mb-4">
                 {% if key == 'occupational_therapist' %}
